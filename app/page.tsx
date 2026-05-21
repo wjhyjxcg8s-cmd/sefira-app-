@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const navLinks = [
   { label: "Find Rooms", href: "#" },
@@ -124,11 +124,41 @@ export default function Home() {
   const [activeMatch, setActiveMatch] = useState(0);
   const [searchInput, setSearchInput] = useState("");
   const [searchTab, setSearchTab] = useState("Room");
+  const [countries, setCountries] = useState<string[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [cities, setCities] = useState<string[]>([]);
+  const [selectedCity, setSelectedCity] = useState("");
+  const [loadingCities, setLoadingCities] = useState(false);
 
   const toggleListing = (id: number) =>
     setLikedListings((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
   const toggleProfile = (id: number) =>
     setLikedProfiles((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+
+  useEffect(() => {
+    fetch("https://countriesnow.space/api/v0.1/countries")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.data) {
+          setCountries(data.data.map((c: { country: string }) => c.country).sort());
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (!selectedCountry) { setCities([]); setSelectedCity(""); return; }
+    setLoadingCities(true);
+    fetch("https://countriesnow.space/api/v0.1/countries/cities", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ country: selectedCountry }),
+    })
+      .then((r) => r.json())
+      .then((data) => { if (data?.data) setCities(data.data); })
+      .catch(() => setCities([]))
+      .finally(() => setLoadingCities(false));
+  }, [selectedCountry]);
 
   const profile = matchProfiles[activeMatch];
 
@@ -204,6 +234,27 @@ export default function Home() {
                 </button>
               ))}
             </div>
+            <select
+              value={selectedCountry}
+              onChange={(e) => { setSelectedCountry(e.target.value); setSelectedCity(""); }}
+              className="bg-slate-900 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-slate-400 outline-none cursor-pointer flex-shrink-0"
+            >
+              <option value="">Country</option>
+              {countries.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+            <select
+              value={selectedCity}
+              onChange={(e) => setSelectedCity(e.target.value)}
+              disabled={!selectedCountry || loadingCities}
+              className="bg-slate-900 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-slate-400 outline-none cursor-pointer flex-shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <option value="">{loadingCities ? "Loading…" : "City"}</option>
+              {cities.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
             <input
               type="text"
               placeholder="Search city, neighborhood, or keyword..."
@@ -216,7 +267,10 @@ export default function Home() {
             </button>
           </div>
           <div className="flex flex-wrap justify-center gap-2 mb-14">
-            {["Berlin", "Dubai", "Istanbul", "Barcelona", "London"].map((city) => (
+            {(selectedCountry && cities.length > 0
+              ? cities.slice(0, 5)
+              : ["Berlin", "Dubai", "Istanbul", "Barcelona", "London"]
+            ).map((city) => (
               <button
                 key={city}
                 className="px-4 py-1.5 text-xs font-medium text-slate-400 bg-white/5 border border-white/10 rounded-full hover:border-white/25 hover:text-white transition-all duration-200"
