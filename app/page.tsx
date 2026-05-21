@@ -2,30 +2,226 @@
 
 import { useState, useEffect } from "react";
 
-const navLinks = [
-  { label: "Find Rooms", href: "#" },
-  { label: "Find Roommates", href: "#" },
-  { label: "List Property", href: "#" },
-  { label: "Community", href: "#" },
-];
+// ─── i18n ─────────────────────────────────────────────────────────────────────
+const translations = {
+  tr: {
+    navLinks: [
+      { label: "Oda Bul", href: "#" },
+      { label: "Ev Arkadaşı Bul", href: "#" },
+      { label: "İlan Ver", href: "#" },
+      { label: "Topluluk", href: "#" },
+    ],
+    stats: [
+      { value: "127K+", label: "Doğrulanmış Kullanıcı" },
+      { value: "52",    label: "Dünya Genelinde Şehir" },
+      { value: "98%",   label: "Eşleşme Memnuniyeti" },
+      { value: "4.9★",  label: "Uygulama Puanı" },
+    ],
+    signIn: "Giriş Yap",
+    getStarted: "Başla",
+    heroBadge: "52 şehirde 127.000'den fazla doğrulanmış kullanıcı tarafından güvenilir",
+    heroLine1: "İdeal Evinizi",
+    heroLine2: "ve Ev Arkadaşınızı",
+    heroLine3: "Bulun.",
+    heroP: "Yapay zeka destekli ev arkadaşı eşleştirme ve premium kiralık ilan keşfi. Yurt dışında yaşayanlar, öğrenciler ve modern profesyoneller için tasarlandı.",
+    searchTabs: ["Oda", "Ev Arkadaşı", "Daire"],
+    countryPlaceholder: "Ülke",
+    cityPlaceholder: "Şehir",
+    loadingText: "Yükleniyor…",
+    searchPlaceholder: "Şehir, mahalle veya anahtar kelime ara...",
+    searchBtn: "Ara",
+    matchesThisWeek: "Bu hafta 2.847 eşleşme",
+    reviewsLabel: "12.000'den fazla değerlendirmeden 4.9 yıldız",
+    storiesTitle: "Topluluk Hikayeleri",
+    storiesLive: "Canlı",
+    addStory: "Hikaye Ekle",
+    aiMatchBadge: "Yapay Zeka Destekli Eşleştirme",
+    aiMatchLine1: "Mükemmel Eşiniz",
+    aiMatchLine2: "Sizi Buluyor.",
+    aiMatchP: "Yapay zekamız, uyku düzeninden sosyal alışkanlıklara kadar 40'tan fazla uyumluluk faktörünü analiz eder; gerçekten birlikte yaşamak isteyeceğiniz kişileri öne çıkarır.",
+    compatBars: [
+      { label: "Yaşam Tarzı Uyumu", value: 97,  color: "from-blue-500 to-violet-600" },
+      { label: "Uyku Düzeni",       value: 94,  color: "from-emerald-500 to-teal-600" },
+      { label: "Temizlik",          value: 100, color: "from-amber-500 to-orange-600" },
+      { label: "Bütçe Aralığı",     value: 88,  color: "from-rose-500 to-pink-600" },
+    ],
+    findMatchesBtn: "Eşleşmelerimi Bul",
+    matchLabel: "Eşleşme",
+    verifiedLabel: "Doğrulandı",
+    petsOk: "Evcil Hayvan Olabilir",
+    noPets: "Evcil Hayvan Yok",
+    smoker: "Sigara İçiyor",
+    nonSmoker: "Sigara İçmiyor",
+    skipBtn: "Geç",
+    likeBtn: "Beğen",
+    featuredH2: "Öne Çıkan İlanlar",
+    featuredP: "Premium doğrulanmış odalar ve daireler",
+    listingFilterAll: "Tümü",
+    listingVerified: "Doğrulandı",
+    perMonth: "/ay",
+    viewAllBtn: "Tüm İlanları Gör",
+    howH2: "Sefira Nasıl Çalışır?",
+    howP: "Profilden mükemmel eve 48 saatin altında.",
+    howItWorks: [
+      { step: "01", title: "Profil Oluştur",         desc: "Yaşam tarzınızı, bütçenizi ve kişiliğinizi bize anlatın. Yapay zekamız sizi benzersiz kılan şeyleri öğrenir.",               icon: "✦", gradient: "from-blue-500 to-indigo-600" },
+      { step: "02", title: "Yapay Zeka Eşleşmeleri", desc: "40'tan fazla uyumluluk faktörü anında analiz edildi. Mükemmel ev arkadaşınız düşündüğünüzden daha yakın.",                   icon: "◈", gradient: "from-violet-500 to-purple-600" },
+      { step: "03", title: "Kaydır ve Bağlan",       desc: "Beğen, eşleş ve mesajlaş. Herhangi bir taahhüt vermeden önce video ile doğrula.",                                            icon: "◎", gradient: "from-pink-500 to-rose-600" },
+      { step: "04", title: "Taşın",                  desc: "Dijital olarak imzala, topluluk desteği al ve mükemmel evinize yerleş.",                                                      icon: "⌂", gradient: "from-emerald-500 to-teal-600" },
+    ],
+    roommatesH2: "Yakınındaki En İyi Eşleşmeler",
+    roommatesP: "Şu anda Berlin'de ev arkadaşı arayan kişiler",
+    viewAll: "Tümünü Gör",
+    matchedBtn: "Eşleşildi!",
+    connectBtn: "Bağlan",
+    petsOkShort: "Evcil Hayvan Olabilir",
+    noPetsShort: "Evcil Hayvan Yok",
+    trendingH2: "Popüler Şehirler",
+    trendingP: "Modern insanların 2025'te taşındığı yerler",
+    activeListings: "aktif ilan",
+    communityBadge: "Topluluk Akışı",
+    communityH2: "Gerçek Hikayeler. Gerçek İnsanlar.",
+    communityP: "127.000'den fazla üyenin yolculuğunu paylaştığı topluluğa katılın",
+    likesLabel: "beğeni",
+    commentsLabel: "yorum",
+    shareLabel: "Paylaş",
+    testiH2: "Binlerce Kişi Tarafından Seviliyor",
+    testiReviews: "12.000'den fazla değerlendirmeden",
+    appH2a: "Sefira cebinizde.",
+    appH2b: "Her Yerde. Her Zaman.",
+    appP: "Anında eşleşme bildirimleri, gerçek zamanlı mesajlaşma ve gidilen her yerde ilan kaydırma.",
+    appStoreLabel: "İndir:",
+    appStoreName: "App Store",
+    googlePlayLabel: "Şuradan edin:",
+    googlePlayName: "Google Play",
+    newMatch: "Yeni Eşleşme!",
+    likedProfile: "Emma W. profilinizi beğendi",
+    compatibility: "%97 uyumluluk · 2 dakika önce",
+    suggested: "Önerilen",
+    footerDesc: "Ev arkadaşı ve ev bulmak için en güvenilir platform. Modern, sınırsız yaşam için tasarlandı.",
+    footerLinks: [
+      { title: "Ürün",   links: ["Oda Bul", "Ev Arkadaşı Bul", "İlan Ver", "Yapay Zeka Eşleştirme", "Premium"] },
+      { title: "Şirket", links: ["Hakkımızda", "Blog", "Kariyer", "Basın", "İletişim"] },
+      { title: "Destek", links: ["Yardım Merkezi", "Güvenlik", "Kullanım Koşulları", "Gizlilik", "Çerezler"] },
+    ],
+    footerCopy: "2025 Sefira Technologies, Inc. Tüm hakları saklıdır.",
+    footerLegal: ["Kullanım Koşulları", "Gizlilik", "Çerezler"],
+  },
+  en: {
+    navLinks: [
+      { label: "Find Rooms", href: "#" },
+      { label: "Find Roommates", href: "#" },
+      { label: "List Property", href: "#" },
+      { label: "Community", href: "#" },
+    ],
+    stats: [
+      { value: "127K+", label: "Verified Users" },
+      { value: "52",    label: "Cities Worldwide" },
+      { value: "98%",   label: "Match Satisfaction" },
+      { value: "4.9★",  label: "App Rating" },
+    ],
+    signIn: "Sign In",
+    getStarted: "Get Started",
+    heroBadge: "Trusted by 127,000+ verified users across 52 cities",
+    heroLine1: "Find Your",
+    heroLine2: "Perfect Home",
+    heroLine3: "and Roommate.",
+    heroP: "AI-powered roommate matching meets premium rental discovery. Built for expats, students, and modern professionals.",
+    searchTabs: ["Room", "Roommate", "Flat"],
+    countryPlaceholder: "Country",
+    cityPlaceholder: "City",
+    loadingText: "Loading…",
+    searchPlaceholder: "Search city, neighborhood, or keyword...",
+    searchBtn: "Search",
+    matchesThisWeek: "2,847 matches this week",
+    reviewsLabel: "4.9 stars from 12,000+ reviews",
+    storiesTitle: "Community Stories",
+    storiesLive: "Live",
+    addStory: "Add Story",
+    aiMatchBadge: "AI-Powered Matching",
+    aiMatchLine1: "Your Perfect Match",
+    aiMatchLine2: "Finds You.",
+    aiMatchP: "Our AI analyzes 40+ compatibility factors from sleep schedules to social habits, surfacing people you will genuinely want to live with.",
+    compatBars: [
+      { label: "Lifestyle Match", value: 97,  color: "from-blue-500 to-violet-600" },
+      { label: "Sleep Schedule",  value: 94,  color: "from-emerald-500 to-teal-600" },
+      { label: "Cleanliness",     value: 100, color: "from-amber-500 to-orange-600" },
+      { label: "Budget Range",    value: 88,  color: "from-rose-500 to-pink-600" },
+    ],
+    findMatchesBtn: "Find My Matches",
+    matchLabel: "Match",
+    verifiedLabel: "Verified",
+    petsOk: "Pets OK",
+    noPets: "No Pets",
+    smoker: "Smoker",
+    nonSmoker: "Non-smoker",
+    skipBtn: "Skip",
+    likeBtn: "Like",
+    featuredH2: "Featured Listings",
+    featuredP: "Premium verified rooms and apartments",
+    listingFilterAll: "All",
+    listingVerified: "Verified",
+    perMonth: "/mo",
+    viewAllBtn: "View All Listings",
+    howH2: "How Sefira Works",
+    howP: "From profile to perfect home in under 48 hours.",
+    howItWorks: [
+      { step: "01", title: "Build Your Profile", desc: "Tell us your lifestyle, budget, and personality. Our AI learns what makes you unique.",         icon: "✦", gradient: "from-blue-500 to-indigo-600" },
+      { step: "02", title: "Get AI Matches",     desc: "40+ compatibility factors analyzed instantly. Your perfect roommate is closer than you think.", icon: "◈", gradient: "from-violet-500 to-purple-600" },
+      { step: "03", title: "Swipe and Connect",  desc: "Like, match, and message. Video verify before any commitment is made.",                         icon: "◎", gradient: "from-pink-500 to-rose-600" },
+      { step: "04", title: "Move In",            desc: "Sign digitally, get community support, and settle into your perfect home.",                    icon: "⌂", gradient: "from-emerald-500 to-teal-600" },
+    ],
+    roommatesH2: "Top Matches Near You",
+    roommatesP: "People looking for roommates in Berlin right now",
+    viewAll: "View all",
+    matchedBtn: "Matched!",
+    connectBtn: "Connect",
+    petsOkShort: "Pets OK",
+    noPetsShort: "No pets",
+    trendingH2: "Trending Cities",
+    trendingP: "Where modern people are moving in 2025",
+    activeListings: "active listings",
+    communityBadge: "Community Feed",
+    communityH2: "Real Stories. Real People.",
+    communityP: "Join 127,000+ members sharing their journey",
+    likesLabel: "likes",
+    commentsLabel: "comments",
+    shareLabel: "Share",
+    testiH2: "Loved by Thousands",
+    testiReviews: "from 12,000+ reviews",
+    appH2a: "Sefira in your pocket.",
+    appH2b: "Anywhere. Anytime.",
+    appP: "Instant match notifications, real-time messaging, and swipe through listings on the go.",
+    appStoreLabel: "Download on the",
+    appStoreName: "App Store",
+    googlePlayLabel: "Get it on",
+    googlePlayName: "Google Play",
+    newMatch: "New Match!",
+    likedProfile: "Emma W. liked your profile",
+    compatibility: "97% compatibility · 2 min ago",
+    suggested: "Suggested",
+    footerDesc: "The most trusted platform for finding roommates and rooms. Built for modern, borderless living.",
+    footerLinks: [
+      { title: "Product", links: ["Find Rooms", "Find Roommates", "List Property", "AI Matching", "Premium"] },
+      { title: "Company", links: ["About", "Blog", "Careers", "Press", "Contact"] },
+      { title: "Support", links: ["Help Center", "Safety", "Terms", "Privacy", "Cookies"] },
+    ],
+    footerCopy: "2025 Sefira Technologies, Inc. All rights reserved.",
+    footerLegal: ["Terms", "Privacy", "Cookies"],
+  },
+};
+type Lang = keyof typeof translations;
 
-const stats = [
-  { value: "127K+", label: "Verified Users" },
-  { value: "52", label: "Cities Worldwide" },
-  { value: "98%", label: "Match Satisfaction" },
-  { value: "4.9★", label: "App Rating" },
-];
-
+// ─── Static structural data ───────────────────────────────────────────────────
 const stories = [
-  { id: 1, name: "Add Story", isAdd: true, gradient: "from-slate-700 to-slate-800", initials: "+", city: "", online: false },
-  { id: 2, name: "Sarah K.", isAdd: false, online: true, initials: "SK", gradient: "from-pink-500 to-rose-600", city: "Berlin" },
-  { id: 3, name: "Ahmed M.", isAdd: false, online: true, initials: "AM", gradient: "from-blue-500 to-indigo-600", city: "Dubai" },
-  { id: 4, name: "Yuki T.", isAdd: false, online: false, initials: "YT", gradient: "from-violet-500 to-purple-600", city: "Tokyo" },
-  { id: 5, name: "Maria L.", isAdd: false, online: true, initials: "ML", gradient: "from-amber-500 to-orange-600", city: "BCN" },
-  { id: 6, name: "James W.", isAdd: false, online: false, initials: "JW", gradient: "from-emerald-500 to-teal-600", city: "London" },
-  { id: 7, name: "Priya S.", isAdd: false, online: true, initials: "PS", gradient: "from-rose-500 to-pink-600", city: "Mumbai" },
-  { id: 8, name: "Carlos R.", isAdd: false, online: true, initials: "CR", gradient: "from-cyan-500 to-blue-600", city: "Madrid" },
-  { id: 9, name: "Lena M.", isAdd: false, online: false, initials: "LM", gradient: "from-purple-500 to-violet-600", city: "Paris" },
+  { id: 1, name: "Add Story", isAdd: true,  gradient: "from-slate-700 to-slate-800",   initials: "+",  city: "",       online: false },
+  { id: 2, name: "Sarah K.", isAdd: false, gradient: "from-pink-500 to-rose-600",      initials: "SK", city: "Berlin", online: true  },
+  { id: 3, name: "Ahmed M.", isAdd: false, gradient: "from-blue-500 to-indigo-600",    initials: "AM", city: "Dubai",  online: true  },
+  { id: 4, name: "Yuki T.",  isAdd: false, gradient: "from-violet-500 to-purple-600",  initials: "YT", city: "Tokyo",  online: false },
+  { id: 5, name: "Maria L.", isAdd: false, gradient: "from-amber-500 to-orange-600",   initials: "ML", city: "BCN",    online: true  },
+  { id: 6, name: "James W.", isAdd: false, gradient: "from-emerald-500 to-teal-600",   initials: "JW", city: "London", online: false },
+  { id: 7, name: "Priya S.", isAdd: false, gradient: "from-rose-500 to-pink-600",      initials: "PS", city: "Mumbai", online: true  },
+  { id: 8, name: "Carlos R.",isAdd: false, gradient: "from-cyan-500 to-blue-600",      initials: "CR", city: "Madrid", online: true  },
+  { id: 9, name: "Lena M.",  isAdd: false, gradient: "from-purple-500 to-violet-600",  initials: "LM", city: "Paris",  online: false },
 ];
 
 const matchProfiles = [
@@ -84,51 +280,41 @@ const listings = [
 ];
 
 const trendingCities = [
-  { name: "Istanbul", country: "Turkey", listings: "2,847", growth: "+23%", glow: "bg-orange-500/10", border: "border-orange-500/20", emoji: "🕌" },
-  { name: "Berlin", country: "Germany", listings: "1,923", growth: "+18%", glow: "bg-blue-500/10", border: "border-blue-500/20", emoji: "🐻" },
-  { name: "Dubai", country: "UAE", listings: "1,456", growth: "+31%", glow: "bg-amber-500/10", border: "border-amber-500/20", emoji: "🏙️" },
-  { name: "Barcelona", country: "Spain", listings: "1,234", growth: "+15%", glow: "bg-yellow-500/10", border: "border-yellow-500/20", emoji: "🏖️" },
-  { name: "Amsterdam", country: "Netherlands", listings: "987", growth: "+12%", glow: "bg-red-500/10", border: "border-red-500/20", emoji: "🚲" },
-  { name: "London", country: "UK", listings: "3,201", growth: "+8%", glow: "bg-indigo-500/10", border: "border-indigo-500/20", emoji: "🎡" },
+  { name: "Istanbul",  country: "Turkey",      listings: "2,847", growth: "+23%", glow: "bg-orange-500/10", border: "border-orange-500/20", emoji: "🕌" },
+  { name: "Berlin",    country: "Germany",     listings: "1,923", growth: "+18%", glow: "bg-blue-500/10",   border: "border-blue-500/20",   emoji: "🐻" },
+  { name: "Dubai",     country: "UAE",         listings: "1,456", growth: "+31%", glow: "bg-amber-500/10",  border: "border-amber-500/20",  emoji: "🏙️" },
+  { name: "Barcelona", country: "Spain",       listings: "1,234", growth: "+15%", glow: "bg-yellow-500/10", border: "border-yellow-500/20", emoji: "🏖️" },
+  { name: "Amsterdam", country: "Netherlands", listings: "987",   growth: "+12%", glow: "bg-red-500/10",    border: "border-red-500/20",    emoji: "🚲" },
+  { name: "London",    country: "UK",          listings: "3,201", growth: "+8%",  glow: "bg-indigo-500/10", border: "border-indigo-500/20", emoji: "🎡" },
 ];
 
 const testimonials = [
-  { name: "Alex Morrison", role: "Digital Nomad", city: "Amsterdam", quote: "Found my perfect roommate in 48 hours. The AI matching is insanely accurate. Same sleep schedule, same cleaning habits.", rating: 5, gradient: "from-blue-500 to-indigo-600", initials: "AM" },
-  { name: "Layla Hassan", role: "Medical Student", city: "Berlin", quote: "As an expat I was terrified about finding safe housing. Sefiras verification system and warm community made me feel at home.", rating: 5, gradient: "from-emerald-500 to-teal-600", initials: "LH" },
-  { name: "Daniel Park", role: "Tech Professional", city: "Dubai", quote: "The UI is addictive. I kept swiping through profiles until I found a place that actually feels like home, not just a room.", rating: 5, gradient: "from-rose-500 to-pink-600", initials: "DP" },
-];
-
-const howItWorks = [
-  { step: "01", title: "Build Your Profile", desc: "Tell us your lifestyle, budget, and personality. Our AI learns what makes you unique.", icon: "✦", gradient: "from-blue-500 to-indigo-600" },
-  { step: "02", title: "Get AI Matches", desc: "40+ compatibility factors analyzed instantly. Your perfect roommate is closer than you think.", icon: "◈", gradient: "from-violet-500 to-purple-600" },
-  { step: "03", title: "Swipe and Connect", desc: "Like, match, and message. Video verify before any commitment is made.", icon: "◎", gradient: "from-pink-500 to-rose-600" },
-  { step: "04", title: "Move In", desc: "Sign digitally, get community support, and settle into your perfect home.", icon: "⌂", gradient: "from-emerald-500 to-teal-600" },
+  { name: "Alex Morrison", role: "Digital Nomad",     city: "Amsterdam", quote: "Found my perfect roommate in 48 hours. The AI matching is insanely accurate. Same sleep schedule, same cleaning habits.",                                              rating: 5, gradient: "from-blue-500 to-indigo-600",   initials: "AM" },
+  { name: "Layla Hassan",  role: "Medical Student",   city: "Berlin",    quote: "As an expat I was terrified about finding safe housing. Sefiras verification system and warm community made me feel at home.",                                          rating: 5, gradient: "from-emerald-500 to-teal-600", initials: "LH" },
+  { name: "Daniel Park",   role: "Tech Professional", city: "Dubai",     quote: "The UI is addictive. I kept swiping through profiles until I found a place that actually feels like home, not just a room.",                                            rating: 5, gradient: "from-rose-500 to-pink-600",    initials: "DP" },
 ];
 
 const communityPosts = [
-  { id: 1, user: "Sarah K.", location: "Berlin, Germany", content: "Just found the most amazing flatmates through Sefira! Moving in next weekend. This city finally feels like home.", likes: 342, comments: 28, gradient: "from-pink-500 to-rose-600", initials: "SK", time: "2h ago" },
-  { id: 2, user: "Ahmed M.", location: "Dubai, UAE", content: "Roommate tip: be honest about your sleep schedule! Mine is a night owl and we matched perfectly. 6 months in, zero issues.", likes: 218, comments: 45, gradient: "from-blue-500 to-indigo-600", initials: "AM", time: "5h ago" },
-  { id: 3, user: "Yuki T.", location: "Amsterdam, NL", content: "First week in my new flat. Sefira matched me with 3 others who love minimalist design and early mornings. Dream team.", likes: 456, comments: 67, gradient: "from-violet-500 to-purple-600", initials: "YT", time: "1d ago" },
-];
-
-const footerLinks = [
-  { title: "Product", links: ["Find Rooms", "Find Roommates", "List Property", "AI Matching", "Premium"] },
-  { title: "Company", links: ["About", "Blog", "Careers", "Press", "Contact"] },
-  { title: "Support", links: ["Help Center", "Safety", "Terms", "Privacy", "Cookies"] },
+  { id: 1, user: "Sarah K.", location: "Berlin, Germany", content: "Just found the most amazing flatmates through Sefira! Moving in next weekend. This city finally feels like home.",                               likes: 342, comments: 28, gradient: "from-pink-500 to-rose-600",    initials: "SK", time: "2h ago" },
+  { id: 2, user: "Ahmed M.", location: "Dubai, UAE",      content: "Roommate tip: be honest about your sleep schedule! Mine is a night owl and we matched perfectly. 6 months in, zero issues.",                    likes: 218, comments: 45, gradient: "from-blue-500 to-indigo-600",  initials: "AM", time: "5h ago" },
+  { id: 3, user: "Yuki T.",  location: "Amsterdam, NL",   content: "First week in my new flat. Sefira matched me with 3 others who love minimalist design and early mornings. Dream team.",                          likes: 456, comments: 67, gradient: "from-violet-500 to-purple-600",initials: "YT", time: "1d ago" },
 ];
 
 export default function Home() {
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [activeFilter, setActiveFilter] = useState("all");
   const [likedListings, setLikedListings] = useState<number[]>([]);
   const [likedProfiles, setLikedProfiles] = useState<number[]>([]);
   const [activeMatch, setActiveMatch] = useState(0);
   const [searchInput, setSearchInput] = useState("");
-  const [searchTab, setSearchTab] = useState("Room");
+  const [searchTabIdx, setSearchTabIdx] = useState(0);
   const [countries, setCountries] = useState<string[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [cities, setCities] = useState<string[]>([]);
   const [selectedCity, setSelectedCity] = useState("");
   const [loadingCities, setLoadingCities] = useState(false);
+  const [lang, setLang] = useState<Lang>("tr");
+
+  const t = translations[lang];
 
   const toggleListing = (id: number) =>
     setLikedListings((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
@@ -177,18 +363,26 @@ export default function Home() {
             </span>
           </div>
           <div className="hidden lg:flex items-center gap-7">
-            {navLinks.map((l) => (
+            {t.navLinks.map((l) => (
               <a key={l.label} href={l.href} className="text-sm text-slate-400 hover:text-white transition-colors duration-200 font-medium">
                 {l.label}
               </a>
             ))}
           </div>
           <div className="flex items-center gap-3 flex-shrink-0">
+            <button
+              onClick={() => setLang((l) => (l === "tr" ? "en" : "tr"))}
+              className="hidden sm:flex items-center gap-1.5 text-xs font-bold bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-slate-300 hover:text-white hover:border-white/25 hover:bg-white/10 transition-all duration-200"
+            >
+              <span>{lang === "tr" ? "🇹🇷 TR" : "🇬🇧 EN"}</span>
+              <span className="text-slate-600">·</span>
+              <span className="text-slate-500">{lang === "tr" ? "EN" : "TR"}</span>
+            </button>
             <button className="hidden sm:block text-sm text-slate-400 hover:text-white transition-colors font-medium px-3 py-2">
-              Sign In
+              {t.signIn}
             </button>
             <button className="text-sm font-bold bg-gradient-to-r from-blue-500 to-violet-600 px-5 py-2.5 rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/25">
-              Get Started
+              {t.getStarted}
             </button>
           </div>
         </div>
@@ -202,30 +396,28 @@ export default function Home() {
         <div className="relative max-w-7xl mx-auto px-5 py-24 text-center">
           <div className="inline-flex items-center gap-2.5 bg-white/5 border border-white/10 rounded-full px-5 py-2 mb-10 text-sm text-slate-300">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
-            Trusted by{" "}
-            <strong className="text-white ml-1">127,000+</strong>
-            {" "}verified users across 52 cities
+            {t.heroBadge}
           </div>
           <h1 className="text-6xl sm:text-7xl lg:text-8xl font-black leading-tight tracking-tighter mb-7">
-            <span className="text-white">Find Your</span>
+            <span className="text-white">{t.heroLine1}</span>
             <br />
             <span className="bg-gradient-to-r from-blue-400 via-violet-400 to-indigo-400 bg-clip-text text-transparent">
-              Perfect Home
+              {t.heroLine2}
             </span>
             <br />
-            <span className="text-white">and Roommate.</span>
+            <span className="text-white">{t.heroLine3}</span>
           </h1>
           <p className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-            AI-powered roommate matching meets premium rental discovery. Built for expats, students, and modern professionals.
+            {t.heroP}
           </p>
           <div className="max-w-3xl mx-auto bg-white/5 border border-white/10 rounded-2xl p-2 flex flex-col sm:flex-row gap-2 mb-5 shadow-2xl">
             <div className="flex bg-white/5 rounded-xl p-1 gap-1 flex-shrink-0">
-              {["Room", "Roommate", "Flat"].map((tab) => (
+              {t.searchTabs.map((tab, i) => (
                 <button
                   key={tab}
-                  onClick={() => setSearchTab(tab)}
+                  onClick={() => setSearchTabIdx(i)}
                   className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 ${
-                    searchTab === tab
+                    searchTabIdx === i
                       ? "bg-gradient-to-r from-blue-500 to-violet-600 text-white shadow-lg"
                       : "text-slate-400 hover:text-white"
                   }`}
@@ -239,7 +431,7 @@ export default function Home() {
               onChange={(e) => { setSelectedCountry(e.target.value); setSelectedCity(""); }}
               className="bg-slate-900 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-slate-400 outline-none cursor-pointer flex-shrink-0"
             >
-              <option value="">Country</option>
+              <option value="">{t.countryPlaceholder}</option>
               {countries.map((c) => (
                 <option key={c} value={c}>{c}</option>
               ))}
@@ -250,20 +442,20 @@ export default function Home() {
               disabled={!selectedCountry || loadingCities}
               className="bg-slate-900 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-slate-400 outline-none cursor-pointer flex-shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              <option value="">{loadingCities ? "Loading…" : "City"}</option>
+              <option value="">{loadingCities ? t.loadingText : t.cityPlaceholder}</option>
               {cities.map((c) => (
                 <option key={c} value={c}>{c}</option>
               ))}
             </select>
             <input
               type="text"
-              placeholder="Search city, neighborhood, or keyword..."
+              placeholder={t.searchPlaceholder}
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               className="flex-1 bg-transparent px-4 py-2.5 text-white placeholder:text-slate-500 outline-none text-sm min-w-0"
             />
             <button className="bg-gradient-to-r from-blue-500 to-violet-600 text-white px-7 py-3 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/25 whitespace-nowrap">
-              Search
+              {t.searchBtn}
             </button>
           </div>
           <div className="flex flex-wrap justify-center gap-2 mb-14">
@@ -297,8 +489,8 @@ export default function Home() {
               ))}
             </div>
             <div className="text-left">
-              <div className="text-sm font-bold text-white">2,847 matches this week</div>
-              <div className="text-xs text-slate-500">4.9 stars from 12,000+ reviews</div>
+              <div className="text-sm font-bold text-white">{t.matchesThisWeek}</div>
+              <div className="text-xs text-slate-500">{t.reviewsLabel}</div>
             </div>
           </div>
         </div>
@@ -312,7 +504,7 @@ export default function Home() {
       {/* STATS */}
       <div className="border-y border-white/5 bg-slate-900/30">
         <div className="max-w-7xl mx-auto px-5 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
-          {stats.map((s) => (
+          {t.stats.map((s) => (
             <div key={s.label} className="text-center">
               <div className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent mb-1">
                 {s.value}
@@ -326,9 +518,9 @@ export default function Home() {
       {/* STORIES */}
       <section className="max-w-7xl mx-auto px-5 py-12">
         <div className="flex items-center gap-3 mb-6">
-          <h2 className="text-lg font-bold text-white">Community Stories</h2>
+          <h2 className="text-lg font-bold text-white">{t.storiesTitle}</h2>
           <span className="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full font-medium">
-            Live
+            {t.storiesLive}
           </span>
         </div>
         <div className="flex gap-5 overflow-x-auto pb-3" style={{ scrollbarWidth: "none" }}>
@@ -353,7 +545,7 @@ export default function Home() {
                 )}
               </div>
               <span className="text-xs text-slate-400 group-hover:text-white transition-colors whitespace-nowrap">
-                {s.name}
+                {s.isAdd ? t.addStory : s.name}
               </span>
               {s.city && <span className="text-xs text-slate-600">{s.city}</span>}
             </div>
@@ -366,25 +558,20 @@ export default function Home() {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-bold text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-2 mb-7">
-              AI-Powered Matching
+              {t.aiMatchBadge}
             </div>
             <h2 className="text-4xl sm:text-5xl font-black leading-tight text-white mb-6 tracking-tight">
-              Your Perfect Match
+              {t.aiMatchLine1}
               <br />
               <span className="bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">
-                Finds You.
+                {t.aiMatchLine2}
               </span>
             </h2>
             <p className="text-lg text-slate-400 leading-relaxed mb-9">
-              Our AI analyzes 40+ compatibility factors from sleep schedules to social habits, surfacing people you will genuinely want to live with.
+              {t.aiMatchP}
             </p>
             <div className="space-y-5 mb-9">
-              {[
-                { label: "Lifestyle Match", value: 97, color: "from-blue-500 to-violet-600" },
-                { label: "Sleep Schedule", value: 94, color: "from-emerald-500 to-teal-600" },
-                { label: "Cleanliness", value: 100, color: "from-amber-500 to-orange-600" },
-                { label: "Budget Range", value: 88, color: "from-rose-500 to-pink-600" },
-              ].map((bar) => (
+              {t.compatBars.map((bar) => (
                 <div key={bar.label}>
                   <div className="flex justify-between text-sm mb-2">
                     <span className="text-slate-400 font-medium">{bar.label}</span>
@@ -400,7 +587,7 @@ export default function Home() {
               ))}
             </div>
             <button className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-violet-600 text-white px-7 py-3.5 rounded-xl font-bold hover:opacity-90 transition-opacity shadow-xl shadow-blue-500/25">
-              Find My Matches
+              {t.findMatchesBtn}
             </button>
           </div>
           <div className="relative flex justify-center lg:justify-end">
@@ -421,11 +608,11 @@ export default function Home() {
                 </div>
                 <div className="absolute top-4 right-4 bg-black/40 backdrop-blur-md border border-white/15 rounded-2xl px-4 py-2 text-center">
                   <div className="text-2xl font-black text-white">{profile.match}%</div>
-                  <div className="text-xs text-white/60">Match</div>
+                  <div className="text-xs text-white/60">{t.matchLabel}</div>
                 </div>
                 {profile.verified && (
                   <div className="absolute top-4 left-4 bg-blue-500/80 backdrop-blur-md rounded-full px-3 py-1 text-xs font-bold text-white">
-                    Verified
+                    {t.verifiedLabel}
                   </div>
                 )}
               </div>
@@ -453,8 +640,8 @@ export default function Home() {
                   ))}
                 </div>
                 <div className="flex items-center gap-4 text-xs text-slate-500 mb-5">
-                  <span>{profile.pets ? "Pets OK" : "No Pets"}</span>
-                  <span>{profile.smoking ? "Smoker" : "Non-smoker"}</span>
+                  <span>{profile.pets ? t.petsOk : t.noPets}</span>
+                  <span>{profile.smoking ? t.smoker : t.nonSmoker}</span>
                   <span>{profile.budget}/mo</span>
                 </div>
                 <div className="flex gap-3">
@@ -462,7 +649,7 @@ export default function Home() {
                     onClick={() => setActiveMatch((p) => (p + 1) % matchProfiles.length)}
                     className="flex-1 bg-white/5 border border-white/10 rounded-2xl py-3 text-slate-400 hover:text-white hover:border-white/20 transition-all duration-200 font-semibold"
                   >
-                    Skip
+                    {t.skipBtn}
                   </button>
                   <button
                     onClick={() => {
@@ -471,7 +658,7 @@ export default function Home() {
                     }}
                     className="flex-1 bg-gradient-to-r from-blue-500 to-violet-600 rounded-2xl py-3 text-white font-bold hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/25"
                   >
-                    Like
+                    {t.likeBtn}
                   </button>
                 </div>
               </div>
@@ -496,12 +683,12 @@ export default function Home() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
           <div>
             <h2 className="text-3xl sm:text-4xl font-black text-white mb-2 tracking-tight">
-              Featured Listings
+              {t.featuredH2}
             </h2>
-            <p className="text-slate-400">Premium verified rooms and apartments</p>
+            <p className="text-slate-400">{t.featuredP}</p>
           </div>
           <div className="flex gap-2 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
-            {["All", "Berlin", "Dubai", "Istanbul", "Barcelona"].map((f) => (
+            {["all", "Berlin", "Dubai", "Istanbul", "Barcelona"].map((f) => (
               <button
                 key={f}
                 onClick={() => setActiveFilter(f)}
@@ -511,7 +698,7 @@ export default function Home() {
                     : "bg-white/5 text-slate-400 hover:text-white border border-white/10 hover:border-white/20"
                 }`}
               >
-                {f}
+                {f === "all" ? t.listingFilterAll : f}
               </button>
             ))}
           </div>
@@ -542,7 +729,7 @@ export default function Home() {
                 {listing.verified && (
                   <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-black/40 backdrop-blur-sm rounded-full px-2.5 py-1">
                     <span className="w-2.5 h-2.5 rounded-full bg-blue-400" />
-                    <span className="text-xs text-white font-medium">Verified</span>
+                    <span className="text-xs text-white font-medium">{t.listingVerified}</span>
                   </div>
                 )}
                 <div className="absolute bottom-3 right-3 bg-black/50 backdrop-blur-sm rounded-xl px-3 py-1.5">
@@ -550,7 +737,7 @@ export default function Home() {
                     {listing.sym === "EUR" ? "€" : "$"}
                     {listing.price}
                   </span>
-                  <span className="text-white/50 text-xs">/mo</span>
+                  <span className="text-white/50 text-xs">{t.perMonth}</span>
                 </div>
               </div>
               <div className="p-4">
@@ -580,7 +767,7 @@ export default function Home() {
         </div>
         <div className="text-center mt-10">
           <button className="bg-white/5 border border-white/10 text-white px-8 py-3.5 rounded-xl font-bold hover:bg-white/10 hover:border-white/20 transition-all duration-200">
-            View All Listings
+            {t.viewAllBtn}
           </button>
         </div>
       </section>
@@ -590,16 +777,16 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-5">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 tracking-tight">
-              How Sefira Works
+              {t.howH2}
             </h2>
             <p className="text-slate-400 text-lg max-w-xl mx-auto">
-              From profile to perfect home in under 48 hours.
+              {t.howP}
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
-            {howItWorks.map((step, i) => (
+            {t.howItWorks.map((step, i) => (
               <div key={step.step} className="relative text-center group">
-                {i < howItWorks.length - 1 && (
+                {i < t.howItWorks.length - 1 && (
                   <div className="hidden lg:block absolute top-8 left-full w-full h-px bg-gradient-to-r from-white/10 to-transparent -translate-x-1/2 z-0" />
                 )}
                 <div
@@ -623,12 +810,12 @@ export default function Home() {
         <div className="flex items-end justify-between mb-10">
           <div>
             <h2 className="text-3xl sm:text-4xl font-black text-white mb-2 tracking-tight">
-              Top Matches Near You
+              {t.roommatesH2}
             </h2>
-            <p className="text-slate-400">People looking for roommates in Berlin right now</p>
+            <p className="text-slate-400">{t.roommatesP}</p>
           </div>
           <button className="text-sm text-blue-400 hover:text-blue-300 transition-colors hidden sm:block font-medium">
-            View all
+            {t.viewAll}
           </button>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -645,11 +832,11 @@ export default function Home() {
                 </div>
                 <div className="absolute top-3 right-3 bg-black/40 backdrop-blur-md rounded-2xl px-3 py-1.5 text-center">
                   <div className="text-lg font-black text-white">{p.match}%</div>
-                  <div className="text-xs text-white/60">Match</div>
+                  <div className="text-xs text-white/60">{t.matchLabel}</div>
                 </div>
                 {p.verified && (
                   <div className="absolute top-3 left-3 bg-blue-500/75 backdrop-blur-sm rounded-full px-2.5 py-0.5 text-xs font-bold text-white">
-                    Verified
+                    {t.verifiedLabel}
                   </div>
                 )}
               </div>
@@ -676,7 +863,7 @@ export default function Home() {
                 </div>
                 <div className="flex items-center gap-3 text-xs text-slate-500 mb-5">
                   <span>{p.budget}/mo</span>
-                  <span>{p.pets ? "Pets OK" : "No pets"}</span>
+                  <span>{p.pets ? t.petsOkShort : t.noPetsShort}</span>
                   <span className="ml-auto text-slate-600">{p.city}</span>
                 </div>
                 <button
@@ -687,7 +874,7 @@ export default function Home() {
                       : "bg-gradient-to-r from-blue-500 to-violet-600 text-white hover:opacity-90 shadow-lg shadow-blue-500/20"
                   }`}
                 >
-                  {likedProfiles.includes(p.id) ? "Matched!" : "Connect"}
+                  {likedProfiles.includes(p.id) ? t.matchedBtn : t.connectBtn}
                 </button>
               </div>
             </div>
@@ -699,9 +886,9 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-5 py-20">
         <div className="text-center mb-14">
           <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 tracking-tight">
-            Trending Cities
+            {t.trendingH2}
           </h2>
-          <p className="text-slate-400">Where modern people are moving in 2025</p>
+          <p className="text-slate-400">{t.trendingP}</p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {trendingCities.map((city) => (
@@ -721,7 +908,7 @@ export default function Home() {
                 <p className="text-sm text-slate-400 mb-4">{city.country}</p>
                 <div>
                   <span className="text-2xl font-black text-white">{city.listings}</span>
-                  <span className="text-sm text-slate-500 ml-2">active listings</span>
+                  <span className="text-sm text-slate-500 ml-2">{t.activeListings}</span>
                 </div>
               </div>
             </div>
@@ -734,12 +921,12 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-5">
           <div className="text-center mb-14">
             <div className="inline-flex items-center gap-2 text-xs font-bold text-violet-400 bg-violet-500/10 border border-violet-500/20 rounded-full px-4 py-2 mb-6">
-              Community Feed
+              {t.communityBadge}
             </div>
             <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 tracking-tight">
-              Real Stories. Real People.
+              {t.communityH2}
             </h2>
-            <p className="text-slate-400">Join 127,000+ members sharing their journey</p>
+            <p className="text-slate-400">{t.communityP}</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {communityPosts.map((post) => (
@@ -761,9 +948,9 @@ export default function Home() {
                 </div>
                 <p className="text-sm text-slate-300 leading-relaxed mb-5">{post.content}</p>
                 <div className="flex items-center gap-5 text-xs text-slate-500">
-                  <button className="hover:text-rose-400 transition-colors">{post.likes} likes</button>
-                  <button className="hover:text-blue-400 transition-colors">{post.comments} comments</button>
-                  <button className="hover:text-violet-400 transition-colors ml-auto">Share</button>
+                  <button className="hover:text-rose-400 transition-colors">{post.likes} {t.likesLabel}</button>
+                  <button className="hover:text-blue-400 transition-colors">{post.comments} {t.commentsLabel}</button>
+                  <button className="hover:text-violet-400 transition-colors ml-auto">{t.shareLabel}</button>
                 </div>
               </div>
             ))}
@@ -775,40 +962,38 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-5 py-20">
         <div className="text-center mb-14">
           <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 tracking-tight">
-            Loved by Thousands
+            {t.testiH2}
           </h2>
           <div className="flex items-center justify-center gap-2">
             <span className="text-amber-400 text-xl">★★★★★</span>
             <span className="text-white font-black text-xl">4.9</span>
-            <span className="text-slate-500">from 12,000+ reviews</span>
+            <span className="text-slate-500">{t.testiReviews}</span>
           </div>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map((t) => (
+          {testimonials.map((item) => (
             <div
-              key={t.name}
+              key={item.name}
               className="bg-slate-900 border border-white/5 rounded-2xl p-7 hover:border-white/10 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200"
             >
               <div className="flex gap-1 mb-5">
-                {Array.from({ length: t.rating }).map((_, i) => (
-                  <span key={i} className="text-amber-400 text-sm">
-                    ★
-                  </span>
+                {Array.from({ length: item.rating }).map((_, i) => (
+                  <span key={i} className="text-amber-400 text-sm">★</span>
                 ))}
               </div>
               <p className="text-slate-300 text-sm leading-relaxed mb-6 italic">
-                &ldquo;{t.quote}&rdquo;
+                &ldquo;{item.quote}&rdquo;
               </p>
               <div className="flex items-center gap-3">
                 <div
-                  className={`w-11 h-11 rounded-full bg-gradient-to-br ${t.gradient} flex items-center justify-center text-sm font-black flex-shrink-0 shadow-lg`}
+                  className={`w-11 h-11 rounded-full bg-gradient-to-br ${item.gradient} flex items-center justify-center text-sm font-black flex-shrink-0 shadow-lg`}
                 >
-                  {t.initials}
+                  {item.initials}
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-white">{t.name}</p>
+                  <p className="text-sm font-bold text-white">{item.name}</p>
                   <p className="text-xs text-slate-500">
-                    {t.role} · {t.city}
+                    {item.role} · {item.city}
                   </p>
                 </div>
               </div>
@@ -824,28 +1009,28 @@ export default function Home() {
         <div className="relative max-w-7xl mx-auto px-5 grid lg:grid-cols-2 gap-16 items-center">
           <div>
             <h2 className="text-3xl sm:text-4xl font-black text-white mb-5 tracking-tight leading-tight">
-              Sefira in your pocket.
+              {t.appH2a}
               <br />
               <span className="bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">
-                Anywhere. Anytime.
+                {t.appH2b}
               </span>
             </h2>
             <p className="text-lg text-slate-400 leading-relaxed mb-9">
-              Instant match notifications, real-time messaging, and swipe through listings on the go.
+              {t.appP}
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <button className="flex items-center gap-4 bg-white text-slate-900 px-6 py-4 rounded-2xl font-bold hover:bg-white/90 transition-colors shadow-2xl">
                 <span className="text-3xl leading-none">🍎</span>
                 <div className="text-left">
-                  <div className="text-xs text-slate-500 font-normal">Download on the</div>
-                  <div className="text-sm font-black">App Store</div>
+                  <div className="text-xs text-slate-500 font-normal">{t.appStoreLabel}</div>
+                  <div className="text-sm font-black">{t.appStoreName}</div>
                 </div>
               </button>
               <button className="flex items-center gap-4 bg-white/10 border border-white/20 text-white px-6 py-4 rounded-2xl font-bold hover:bg-white/15 transition-colors">
                 <span className="text-3xl leading-none">▶</span>
                 <div className="text-left">
-                  <div className="text-xs text-slate-400 font-normal">Get it on</div>
-                  <div className="text-sm font-black">Google Play</div>
+                  <div className="text-xs text-slate-400 font-normal">{t.googlePlayLabel}</div>
+                  <div className="text-sm font-black">{t.googlePlayName}</div>
                 </div>
               </button>
             </div>
@@ -866,15 +1051,15 @@ export default function Home() {
                       <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-violet-600 rounded-full shadow-lg" />
                     </div>
                     <div className="bg-gradient-to-r from-blue-600/20 to-violet-600/20 border border-blue-500/20 rounded-xl p-3">
-                      <div className="text-xs text-blue-400 font-bold mb-1">New Match!</div>
-                      <div className="text-xs text-white">Emma W. liked your profile</div>
-                      <div className="text-xs text-slate-500">97% compatibility · 2 min ago</div>
+                      <div className="text-xs text-blue-400 font-bold mb-1">{t.newMatch}</div>
+                      <div className="text-xs text-white">{t.likedProfile}</div>
+                      <div className="text-xs text-slate-500">{t.compatibility}</div>
                     </div>
-                    <div className="text-xs text-slate-500 font-medium px-1">Suggested</div>
+                    <div className="text-xs text-slate-500 font-medium px-1">{t.suggested}</div>
                     {[
-                      { init: "KT", name: "Kai T.", match: 94, grad: "from-cyan-500 to-blue-600" },
+                      { init: "KT", name: "Kai T.",   match: 94, grad: "from-cyan-500 to-blue-600" },
                       { init: "SR", name: "Sofia R.", match: 91, grad: "from-rose-500 to-pink-600" },
-                      { init: "LM", name: "Lena M.", match: 89, grad: "from-violet-500 to-purple-600" },
+                      { init: "LM", name: "Lena M.",  match: 89, grad: "from-violet-500 to-purple-600" },
                     ].map((c) => (
                       <div key={c.init} className="flex items-center gap-2 bg-white/5 rounded-xl p-2">
                         <div
@@ -884,7 +1069,7 @@ export default function Home() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="text-xs text-white font-medium">{c.name}</div>
-                          <div className="text-xs text-slate-500">{c.match}% match</div>
+                          <div className="text-xs text-slate-500">{c.match}% {t.matchLabel.toLowerCase()}</div>
                         </div>
                         <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-violet-600 rounded-full flex items-center justify-center text-xs text-white flex-shrink-0">
                           →
@@ -916,7 +1101,7 @@ export default function Home() {
                 </span>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed max-w-xs mb-7">
-                The most trusted platform for finding roommates and rooms. Built for modern, borderless living.
+                {t.footerDesc}
               </p>
               <div className="flex gap-2.5">
                 {["X", "in", "ig", "yt"].map((icon) => (
@@ -940,7 +1125,7 @@ export default function Home() {
                 </a>
               </div>
             </div>
-            {footerLinks.map((col) => (
+            {t.footerLinks.map((col) => (
               <div key={col.title}>
                 <h4 className="text-sm font-bold text-white mb-5">{col.title}</h4>
                 <ul className="space-y-3">
@@ -960,10 +1145,10 @@ export default function Home() {
           </div>
           <div className="border-t border-white/5 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-xs text-slate-600">
-              2025 Sefira Technologies, Inc. All rights reserved.
+              {t.footerCopy}
             </p>
             <div className="flex items-center gap-6">
-              {["Terms", "Privacy", "Cookies"].map((l) => (
+              {t.footerLegal.map((l) => (
                 <a
                   key={l}
                   href="#"
