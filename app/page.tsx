@@ -352,10 +352,10 @@ export default function Home() {
     <div className="min-h-screen bg-slate-950 text-white overflow-x-hidden">
 
       {/* NAVBAR */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-white/5">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-white/5 shadow-2xl shadow-slate-950/60">
         <div className="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between gap-6">
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center font-black text-sm shadow-lg shadow-blue-500/30">
+          <div className="flex items-center gap-2 flex-shrink-0 group cursor-pointer">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center font-black text-sm shadow-lg shadow-blue-500/30 group-hover:scale-110 group-hover:shadow-blue-500/50 transition-all duration-300">
               S
             </div>
             <span className="text-xl font-black tracking-tight bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">
@@ -364,7 +364,7 @@ export default function Home() {
           </div>
           <div className="hidden lg:flex items-center gap-7">
             {t.navLinks.map((l) => (
-              <a key={l.label} href={l.href} className="text-sm text-slate-400 hover:text-white transition-colors duration-200 font-medium">
+              <a key={l.label} href={l.href} className="text-sm text-slate-400 hover:text-white transition-all duration-200 font-medium relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-blue-400 after:transition-all after:duration-300 hover:after:w-full">
                 {l.label}
               </a>
             ))}
@@ -372,16 +372,16 @@ export default function Home() {
           <div className="flex items-center gap-3 flex-shrink-0">
             <button
               onClick={() => setLang((l) => (l === "tr" ? "en" : "tr"))}
-              className="hidden sm:flex items-center gap-1.5 text-xs font-bold bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-slate-300 hover:text-white hover:border-white/25 hover:bg-white/10 transition-all duration-200"
+              className="hidden sm:flex items-center gap-1.5 text-xs font-bold bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-slate-300 hover:text-white hover:border-white/25 hover:bg-white/10 transition-all duration-200 active:scale-95"
             >
               <span>{lang === "tr" ? "🇹🇷 TR" : "🇬🇧 EN"}</span>
               <span className="text-slate-600">·</span>
               <span className="text-slate-500">{lang === "tr" ? "EN" : "TR"}</span>
             </button>
-            <button className="hidden sm:block text-sm text-slate-400 hover:text-white transition-colors font-medium px-3 py-2">
+            <button className="hidden sm:block text-sm text-slate-400 hover:text-white transition-all duration-200 font-medium px-3 py-2 rounded-lg hover:bg-white/5">
               {t.signIn}
             </button>
-            <button className="text-sm font-bold bg-gradient-to-r from-blue-500 to-violet-600 px-5 py-2.5 rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/25">
+            <button className="text-sm font-bold bg-gradient-to-r from-blue-500 to-violet-600 px-5 py-2.5 rounded-xl hover:opacity-95 transition-all duration-200 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/40 active:scale-95">
               {t.getStarted}
             </button>
           </div>
@@ -393,12 +393,13 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950" />
         <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 w-72 h-72 bg-indigo-600/5 rounded-full blur-3xl pointer-events-none -translate-x-1/2 -translate-y-1/2" />
         <div className="relative max-w-7xl mx-auto px-5 py-24 text-center">
-          <div className="inline-flex items-center gap-2.5 bg-white/5 border border-white/10 rounded-full px-5 py-2 mb-10 text-sm text-slate-300">
+          <div className="inline-flex items-center gap-2.5 bg-white/5 border border-white/10 rounded-full px-5 py-2 mb-10 text-sm text-slate-300 hover:bg-white/8 hover:border-white/20 transition-all duration-300 cursor-default shadow-lg shadow-blue-500/5 animate-fade-in-up">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
             {t.heroBadge}
           </div>
-          <h1 className="text-6xl sm:text-7xl lg:text-8xl font-black leading-tight tracking-tighter mb-7">
+          <h1 className="text-6xl sm:text-7xl lg:text-8xl font-black leading-tight tracking-tighter mb-7 animate-fade-in-up stagger-2">
             <span className="text-white">{t.heroLine1}</span>
             <br />
             <span className="bg-gradient-to-r from-blue-400 via-violet-400 to-indigo-400 bg-clip-text text-transparent">
@@ -407,10 +408,10 @@ export default function Home() {
             <br />
             <span className="text-white">{t.heroLine3}</span>
           </h1>
-          <p className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+          <p className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up stagger-3">
             {t.heroP}
           </p>
-          <div className="max-w-3xl mx-auto bg-white/5 border border-white/10 rounded-2xl p-2 flex flex-col sm:flex-row gap-2 mb-5 shadow-2xl">
+          <div className="max-w-3xl mx-auto bg-white/5 border border-white/10 rounded-2xl p-2 flex flex-col sm:flex-row gap-2 mb-5 shadow-2xl focus-within:border-white/20 focus-within:shadow-blue-500/10 focus-within:shadow-2xl transition-all duration-300 animate-fade-in-up stagger-4">
             <div className="flex bg-white/5 rounded-xl p-1 gap-1 flex-shrink-0">
               {t.searchTabs.map((tab, i) => (
                 <button
@@ -418,8 +419,8 @@ export default function Home() {
                   onClick={() => setSearchTabIdx(i)}
                   className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 ${
                     searchTabIdx === i
-                      ? "bg-gradient-to-r from-blue-500 to-violet-600 text-white shadow-lg"
-                      : "text-slate-400 hover:text-white"
+                      ? "bg-gradient-to-r from-blue-500 to-violet-600 text-white shadow-lg shadow-blue-500/30"
+                      : "text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-200"
                   }`}
                 >
                   {tab}
@@ -429,7 +430,7 @@ export default function Home() {
             <select
               value={selectedCountry}
               onChange={(e) => { setSelectedCountry(e.target.value); setSelectedCity(""); }}
-              className="bg-slate-900 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-slate-400 outline-none cursor-pointer flex-shrink-0"
+              className="bg-slate-900 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-slate-400 outline-none cursor-pointer flex-shrink-0 hover:border-white/25 focus:border-blue-500/30 transition-colors duration-200"
             >
               <option value="">{t.countryPlaceholder}</option>
               {countries.map((c) => (
@@ -440,7 +441,7 @@ export default function Home() {
               value={selectedCity}
               onChange={(e) => setSelectedCity(e.target.value)}
               disabled={!selectedCountry || loadingCities}
-              className="bg-slate-900 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-slate-400 outline-none cursor-pointer flex-shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="bg-slate-900 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-slate-400 outline-none cursor-pointer flex-shrink-0 disabled:opacity-40 disabled:cursor-not-allowed hover:border-white/25 focus:border-blue-500/30 transition-colors duration-200"
             >
               <option value="">{loadingCities ? t.loadingText : t.cityPlaceholder}</option>
               {cities.map((c) => (
@@ -454,7 +455,7 @@ export default function Home() {
               onChange={(e) => setSearchInput(e.target.value)}
               className="flex-1 bg-transparent px-4 py-2.5 text-white placeholder:text-slate-500 outline-none text-sm min-w-0"
             />
-            <button className="bg-gradient-to-r from-blue-500 to-violet-600 text-white px-7 py-3 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/25 whitespace-nowrap">
+            <button className="bg-gradient-to-r from-blue-500 to-violet-600 text-white px-7 py-3 rounded-xl font-bold text-sm hover:opacity-95 transition-all duration-200 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/40 active:scale-95 whitespace-nowrap">
               {t.searchBtn}
             </button>
           </div>
@@ -465,7 +466,7 @@ export default function Home() {
             ).map((city) => (
               <button
                 key={city}
-                className="px-4 py-1.5 text-xs font-medium text-slate-400 bg-white/5 border border-white/10 rounded-full hover:border-white/25 hover:text-white transition-all duration-200"
+                className="px-4 py-1.5 text-xs font-medium text-slate-400 bg-white/5 border border-white/10 rounded-full hover:border-white/25 hover:text-white hover:bg-white/10 hover:scale-105 transition-all duration-200 active:scale-95"
               >
                 {city}
               </button>
@@ -505,11 +506,11 @@ export default function Home() {
       <div className="border-y border-white/5 bg-slate-900/30">
         <div className="max-w-7xl mx-auto px-5 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
           {t.stats.map((s) => (
-            <div key={s.label} className="text-center">
-              <div className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent mb-1">
+            <div key={s.label} className="text-center group cursor-default hover:scale-105 transition-transform duration-200">
+              <div className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent mb-1 group-hover:from-blue-300 group-hover:to-violet-300 transition-all duration-300">
                 {s.value}
               </div>
-              <div className="text-sm text-slate-500">{s.label}</div>
+              <div className="text-sm text-slate-500 group-hover:text-slate-400 transition-colors duration-200">{s.label}</div>
             </div>
           ))}
         </div>
@@ -519,7 +520,7 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-5 py-12">
         <div className="flex items-center gap-3 mb-6">
           <h2 className="text-lg font-bold text-white">{t.storiesTitle}</h2>
-          <span className="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full font-medium">
+          <span className="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full font-medium shadow-sm shadow-emerald-500/10">
             {t.storiesLive}
           </span>
         </div>
@@ -530,7 +531,7 @@ export default function Home() {
                 <div
                   className={`w-16 h-16 rounded-full bg-gradient-to-br ${s.gradient} flex items-center justify-center font-bold text-sm group-hover:scale-105 transition-transform duration-200 ${
                     !s.isAdd
-                      ? "ring-2 ring-violet-500/50 ring-offset-2 ring-offset-slate-950"
+                      ? "ring-2 ring-violet-500/50 ring-offset-2 ring-offset-slate-950 group-hover:ring-violet-400/80 group-hover:shadow-lg group-hover:shadow-violet-500/20 transition-all duration-200"
                       : "border-2 border-dashed border-white/20"
                   }`}
                 >
@@ -557,7 +558,7 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-5 py-20">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-bold text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-2 mb-7">
+            <div className="inline-flex items-center gap-2 text-xs font-bold text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-2 mb-7 shadow-lg shadow-blue-500/10">
               {t.aiMatchBadge}
             </div>
             <h2 className="text-4xl sm:text-5xl font-black leading-tight text-white mb-6 tracking-tight">
@@ -579,14 +580,14 @@ export default function Home() {
                   </div>
                   <div className="h-2 bg-white/5 rounded-full overflow-hidden">
                     <div
-                      className={`h-full bg-gradient-to-r ${bar.color} rounded-full`}
+                      className={`h-full bg-gradient-to-r ${bar.color} rounded-full transition-all duration-1000`}
                       style={{ width: `${bar.value}%` }}
                     />
                   </div>
                 </div>
               ))}
             </div>
-            <button className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-violet-600 text-white px-7 py-3.5 rounded-xl font-bold hover:opacity-90 transition-opacity shadow-xl shadow-blue-500/25">
+            <button className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-violet-600 text-white px-7 py-3.5 rounded-xl font-bold hover:opacity-95 transition-all duration-200 shadow-xl shadow-blue-500/25 hover:shadow-2xl hover:shadow-blue-500/40 active:scale-95">
               {t.findMatchesBtn}
             </button>
           </div>
@@ -599,7 +600,7 @@ export default function Home() {
               className="absolute top-2.5 left-4 right-4 bottom-0 bg-white/5 rounded-3xl border border-white/5"
               style={{ transform: "rotate(1deg)" }}
             />
-            <div className="relative w-full max-w-sm bg-slate-900 border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
+            <div className="relative w-full max-w-sm bg-slate-900 border border-white/10 rounded-3xl overflow-hidden shadow-2xl hover:border-white/20 hover:shadow-[0_0_60px_-12px_rgba(99,102,241,0.25)] transition-all duration-500">
               <div
                 className={`h-72 bg-gradient-to-br ${profile.gradient} relative flex items-center justify-center`}
               >
@@ -647,7 +648,7 @@ export default function Home() {
                 <div className="flex gap-3">
                   <button
                     onClick={() => setActiveMatch((p) => (p + 1) % matchProfiles.length)}
-                    className="flex-1 bg-white/5 border border-white/10 rounded-2xl py-3 text-slate-400 hover:text-white hover:border-white/20 transition-all duration-200 font-semibold"
+                    className="flex-1 bg-white/5 border border-white/10 rounded-2xl py-3 text-slate-400 hover:text-white hover:border-white/20 hover:bg-white/8 transition-all duration-200 font-semibold active:scale-95"
                   >
                     {t.skipBtn}
                   </button>
@@ -656,7 +657,7 @@ export default function Home() {
                       toggleProfile(profile.id);
                       setActiveMatch((p) => (p + 1) % matchProfiles.length);
                     }}
-                    className="flex-1 bg-gradient-to-r from-blue-500 to-violet-600 rounded-2xl py-3 text-white font-bold hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/25"
+                    className="flex-1 bg-gradient-to-r from-blue-500 to-violet-600 rounded-2xl py-3 text-white font-bold hover:opacity-95 transition-all duration-200 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/40 active:scale-95"
                   >
                     {t.likeBtn}
                   </button>
@@ -669,7 +670,7 @@ export default function Home() {
                   key={i}
                   onClick={() => setActiveMatch(i)}
                   className={`h-2 rounded-full transition-all duration-300 ${
-                    i === activeMatch ? "w-7 bg-blue-500" : "w-2 bg-white/20 hover:bg-white/40"
+                    i === activeMatch ? "w-7 bg-blue-500 shadow-sm shadow-blue-500/50" : "w-2 bg-white/20 hover:bg-white/40 hover:scale-125"
                   }`}
                 />
               ))}
@@ -707,7 +708,7 @@ export default function Home() {
           {listings.map((listing) => (
             <div
               key={listing.id}
-              className="group bg-slate-900 border border-white/5 rounded-2xl overflow-hidden hover:border-white/15 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-pointer"
+              className="group bg-slate-900 border border-white/5 rounded-2xl overflow-hidden hover:border-white/15 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/5 hover:-translate-y-1 cursor-pointer hover:ring-1 hover:ring-white/8"
             >
               <div className="relative h-52">
                 <div className={`absolute inset-0 bg-gradient-to-br ${listing.gradient}`} />
@@ -718,10 +719,10 @@ export default function Home() {
                 </div>
                 <button
                   onClick={() => toggleListing(listing.id)}
-                  className={`absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 font-bold ${
+                  className={`absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 font-bold active:scale-90 ${
                     likedListings.includes(listing.id)
-                      ? "bg-rose-500 text-white shadow-lg"
-                      : "bg-black/30 backdrop-blur-sm text-white/50 hover:text-white hover:bg-black/50"
+                      ? "bg-rose-500 text-white shadow-lg shadow-rose-500/40 scale-110"
+                      : "bg-black/30 backdrop-blur-sm text-white/50 hover:text-white hover:bg-black/50 hover:scale-110"
                   }`}
                 >
                   ♥
@@ -766,7 +767,7 @@ export default function Home() {
           ))}
         </div>
         <div className="text-center mt-10">
-          <button className="bg-white/5 border border-white/10 text-white px-8 py-3.5 rounded-xl font-bold hover:bg-white/10 hover:border-white/20 transition-all duration-200">
+          <button className="bg-white/5 border border-white/10 text-white px-8 py-3.5 rounded-xl font-bold hover:bg-white/10 hover:border-white/20 transition-all duration-200 hover:shadow-lg active:scale-95">
             {t.viewAllBtn}
           </button>
         </div>
@@ -787,17 +788,17 @@ export default function Home() {
             {t.howItWorks.map((step, i) => (
               <div key={step.step} className="relative text-center group">
                 {i < t.howItWorks.length - 1 && (
-                  <div className="hidden lg:block absolute top-8 left-full w-full h-px bg-gradient-to-r from-white/10 to-transparent -translate-x-1/2 z-0" />
+                  <div className="hidden lg:block absolute top-8 left-full w-full h-px bg-gradient-to-r from-white/15 to-transparent -translate-x-1/2 z-0" />
                 )}
                 <div
-                  className={`relative z-10 w-16 h-16 rounded-2xl bg-gradient-to-br ${step.gradient} flex items-center justify-center text-2xl mx-auto mb-5 shadow-xl group-hover:scale-110 transition-transform duration-300`}
+                  className={`relative z-10 w-16 h-16 rounded-2xl bg-gradient-to-br ${step.gradient} flex items-center justify-center text-2xl mx-auto mb-5 shadow-xl group-hover:scale-110 group-hover:shadow-2xl group-hover:shadow-blue-500/20 transition-all duration-300`}
                 >
                   {step.icon}
                 </div>
-                <div className="text-xs font-black text-slate-600 mb-2 tracking-widest">
+                <div className="text-xs font-black text-slate-600 mb-2 tracking-widest group-hover:text-slate-400 transition-colors duration-300">
                   {step.step}
                 </div>
-                <h3 className="font-bold text-white mb-2">{step.title}</h3>
+                <h3 className="font-bold text-white mb-2 group-hover:text-blue-200 transition-colors duration-300">{step.title}</h3>
                 <p className="text-sm text-slate-500 leading-relaxed">{step.desc}</p>
               </div>
             ))}
@@ -814,7 +815,7 @@ export default function Home() {
             </h2>
             <p className="text-slate-400">{t.roommatesP}</p>
           </div>
-          <button className="text-sm text-blue-400 hover:text-blue-300 transition-colors hidden sm:block font-medium">
+          <button className="text-sm text-blue-400 hover:text-blue-300 transition-all duration-200 hidden sm:block font-medium hover:underline underline-offset-2">
             {t.viewAll}
           </button>
         </div>
@@ -822,7 +823,7 @@ export default function Home() {
           {matchProfiles.map((p) => (
             <div
               key={p.id}
-              className="group bg-slate-900 border border-white/5 rounded-2xl overflow-hidden hover:border-white/15 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-pointer"
+              className="group bg-slate-900 border border-white/5 rounded-2xl overflow-hidden hover:border-white/15 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/5 hover:-translate-y-1 cursor-pointer hover:ring-1 hover:ring-blue-500/10"
             >
               <div
                 className={`h-44 bg-gradient-to-br ${p.gradient} relative flex items-center justify-center`}
@@ -870,8 +871,8 @@ export default function Home() {
                   onClick={() => toggleProfile(p.id)}
                   className={`w-full py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
                     likedProfiles.includes(p.id)
-                      ? "bg-rose-500/20 border border-rose-500/40 text-rose-400"
-                      : "bg-gradient-to-r from-blue-500 to-violet-600 text-white hover:opacity-90 shadow-lg shadow-blue-500/20"
+                      ? "bg-rose-500/20 border border-rose-500/40 text-rose-400 shadow-sm shadow-rose-500/10"
+                      : "bg-gradient-to-r from-blue-500 to-violet-600 text-white hover:opacity-95 shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/35 active:scale-95 transition-all duration-200"
                   }`}
                 >
                   {likedProfiles.includes(p.id) ? t.matchedBtn : t.connectBtn}
@@ -894,13 +895,13 @@ export default function Home() {
           {trendingCities.map((city) => (
             <div
               key={city.name}
-              className={`group relative ${city.glow} border ${city.border} bg-slate-900/60 rounded-2xl p-6 cursor-pointer hover:scale-105 transition-all duration-300 overflow-hidden`}
+              className={`group relative ${city.glow} border ${city.border} bg-slate-900/60 rounded-2xl p-6 cursor-pointer hover:scale-105 hover:-translate-y-1 transition-all duration-300 overflow-hidden shadow-lg hover:shadow-2xl`}
             >
               <div className="absolute inset-0 bg-gradient-to-br from-white/3 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative">
                 <div className="flex items-start justify-between mb-5">
                   <span className="text-5xl">{city.emoji}</span>
-                  <span className="text-emerald-400 text-sm font-bold bg-emerald-500/10 border border-emerald-500/20 rounded-full px-3 py-1">
+                  <span className="text-emerald-400 text-sm font-bold bg-emerald-500/10 border border-emerald-500/20 rounded-full px-3 py-1 shadow-sm shadow-emerald-500/15 group-hover:bg-emerald-500/15 transition-colors duration-200">
                     {city.growth}
                   </span>
                 </div>
@@ -932,7 +933,7 @@ export default function Home() {
             {communityPosts.map((post) => (
               <div
                 key={post.id}
-                className="bg-slate-900 border border-white/5 rounded-2xl p-6 hover:border-white/10 transition-colors duration-200"
+                className="bg-slate-900 border border-white/5 rounded-2xl p-6 hover:border-white/10 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-200"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div
@@ -974,7 +975,7 @@ export default function Home() {
           {testimonials.map((item) => (
             <div
               key={item.name}
-              className="bg-slate-900 border border-white/5 rounded-2xl p-7 hover:border-white/10 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200"
+              className="bg-slate-900 border border-white/5 rounded-2xl p-7 hover:border-white/10 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-500/5 hover:ring-1 hover:ring-white/8 transition-all duration-200"
             >
               <div className="flex gap-1 mb-5">
                 {Array.from({ length: item.rating }).map((_, i) => (
@@ -1019,14 +1020,14 @@ export default function Home() {
               {t.appP}
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="flex items-center gap-4 bg-white text-slate-900 px-6 py-4 rounded-2xl font-bold hover:bg-white/90 transition-colors shadow-2xl">
+              <button className="flex items-center gap-4 bg-white text-slate-900 px-6 py-4 rounded-2xl font-bold hover:bg-white/90 transition-all duration-200 shadow-2xl hover:-translate-y-0.5 active:scale-95">
                 <span className="text-3xl leading-none">🍎</span>
                 <div className="text-left">
                   <div className="text-xs text-slate-500 font-normal">{t.appStoreLabel}</div>
                   <div className="text-sm font-black">{t.appStoreName}</div>
                 </div>
               </button>
-              <button className="flex items-center gap-4 bg-white/10 border border-white/20 text-white px-6 py-4 rounded-2xl font-bold hover:bg-white/15 transition-colors">
+              <button className="flex items-center gap-4 bg-white/10 border border-white/20 text-white px-6 py-4 rounded-2xl font-bold hover:bg-white/15 hover:border-white/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:scale-95">
                 <span className="text-3xl leading-none">▶</span>
                 <div className="text-left">
                   <div className="text-xs text-slate-400 font-normal">{t.googlePlayLabel}</div>
@@ -1036,7 +1037,7 @@ export default function Home() {
             </div>
           </div>
           <div className="flex justify-center lg:justify-end">
-            <div className="relative w-60 h-[500px]">
+            <div className="relative w-60 h-[500px] animate-float">
               <div className="absolute inset-0 bg-slate-900 rounded-[2.5rem] border-4 border-white/10 shadow-2xl overflow-hidden">
                 <div className="absolute inset-2 bg-slate-950 rounded-[2rem] overflow-hidden">
                   <div className="flex items-center justify-between px-4 pt-3 pb-2">
@@ -1107,7 +1108,7 @@ export default function Home() {
                 {["X", "in", "ig", "yt"].map((icon) => (
                   <button
                     key={icon}
-                    className="w-9 h-9 bg-white/5 border border-white/10 rounded-lg text-xs text-slate-400 hover:text-white hover:border-white/25 hover:bg-white/10 transition-all duration-200 font-bold"
+                    className="w-9 h-9 bg-white/5 border border-white/10 rounded-lg text-xs text-slate-400 hover:text-white hover:border-white/25 hover:bg-white/10 transition-all duration-200 font-bold hover:scale-110 active:scale-90"
                   >
                     {icon}
                   </button>
@@ -1117,7 +1118,7 @@ export default function Home() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Join our Telegram"
-                  className="w-9 h-9 bg-white/5 border border-white/10 rounded-lg text-slate-400 hover:text-white hover:border-white/25 hover:bg-white/10 transition-all duration-200 flex items-center justify-center"
+                  className="w-9 h-9 bg-white/5 border border-white/10 rounded-lg text-slate-400 hover:text-white hover:border-white/25 hover:bg-white/10 transition-all duration-200 flex items-center justify-center hover:scale-110 active:scale-90"
                 >
                   <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
                     <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
@@ -1152,7 +1153,7 @@ export default function Home() {
                 <a
                   key={l}
                   href="#"
-                  className="text-xs text-slate-600 hover:text-slate-400 transition-colors"
+                  className="text-xs text-slate-600 hover:text-slate-400 transition-colors duration-200"
                 >
                   {l}
                 </a>
