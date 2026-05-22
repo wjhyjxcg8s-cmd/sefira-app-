@@ -393,11 +393,12 @@ export default function Home() {
           <div className="flex items-center gap-3 flex-shrink-0">
             <button
               onClick={() => setLang((l) => (l === "tr" ? "en" : "tr"))}
-              className="hidden sm:flex items-center gap-1.5 text-xs font-bold bg-stone-100 border border-stone-200 rounded-lg px-3 py-2 text-stone-600 hover:text-stone-900 hover:border-stone-400 hover:bg-stone-200 transition-all duration-200 active:scale-95"
+              className="flex items-center gap-1.5 text-xs font-bold bg-stone-100 border border-stone-200 rounded-lg px-3 py-2.5 sm:py-2 text-stone-600 hover:text-stone-900 hover:border-stone-400 hover:bg-stone-200 transition-all duration-200 active:scale-95"
             >
-              <span>{lang === "tr" ? "🇹🇷 TR" : "🇬🇧 EN"}</span>
-              <span className="text-stone-400">·</span>
-              <span className="text-stone-400">{lang === "tr" ? "EN" : "TR"}</span>
+              <span className="text-sm sm:text-xs leading-none">{lang === "tr" ? "🇹🇷" : "🇬🇧"}</span>
+              <span>{lang === "tr" ? "TR" : "EN"}</span>
+              <span className="hidden sm:inline text-stone-400">·</span>
+              <span className="hidden sm:inline text-stone-400">{lang === "tr" ? "EN" : "TR"}</span>
             </button>
             <button className="hidden sm:block text-sm text-stone-500 hover:text-stone-900 transition-all duration-200 font-medium px-3 py-2 rounded-lg hover:bg-stone-100">
               {t.signIn}
