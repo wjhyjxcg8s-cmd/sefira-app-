@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import RoommateCards from "@/app/components/RoommateCards";
 import InstagramCTA from "@/app/components/InstagramCTA";
+import PopularCities from "@/app/components/PopularCities";
 
 // ─── i18n ─────────────────────────────────────────────────────────────────────
 const translations = {
@@ -261,6 +263,8 @@ const listings = [
     available: "Jun 1", gradient: "from-blue-600 via-indigo-700 to-violet-800",
     verified: true, amenities: ["WiFi", "Gym", "Balcony"], tag: "Most Popular",
     tagColor: "from-blue-500 to-indigo-600", gender: "Any",
+    // Unsplash: bright modern apartment living room
+    image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: 2, title: "Luxury Sea-View Apartment", city: "Dubai", country: "UAE",
@@ -268,6 +272,8 @@ const listings = [
     available: "Now", gradient: "from-amber-500 via-orange-600 to-rose-700",
     verified: true, amenities: ["Pool", "Gym", "Concierge"], tag: "New",
     tagColor: "from-amber-500 to-orange-600", gender: "Male",
+    // Unsplash: luxury penthouse / high-rise interior
+    image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: 3, title: "Charming Room near Bosphorus", city: "Istanbul", country: "Turkey",
@@ -275,6 +281,8 @@ const listings = [
     available: "May 25", gradient: "from-emerald-500 via-teal-600 to-cyan-700",
     verified: false, amenities: ["WiFi", "Kitchen", "Sea View"], tag: "Best Value",
     tagColor: "from-emerald-500 to-teal-600", gender: "Any",
+    // Unsplash: cozy bright room with natural light
+    image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: 4, title: "Designer Loft in Eixample", city: "Barcelona", country: "Spain",
@@ -282,6 +290,8 @@ const listings = [
     available: "Jun 15", gradient: "from-rose-500 via-pink-600 to-fuchsia-700",
     verified: true, amenities: ["WiFi", "Rooftop", "A/C"], tag: "Top Rated",
     tagColor: "from-rose-500 to-pink-600", gender: "Female",
+    // Unsplash: designer loft with exposed brick and warm light
+    image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
   },
 ];
 
@@ -679,8 +689,20 @@ export default function Home() {
               key={listing.id}
               className="group bg-white border border-stone-200 rounded-2xl overflow-hidden hover:border-orange-200 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/5 hover:-translate-y-1 cursor-pointer hover:ring-1 hover:ring-orange-200"
             >
-              <div className="relative h-52">
+              <div className="relative h-52 overflow-hidden">
+                {/* Gradient fallback behind the photo */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${listing.gradient}`} />
+                {/* Real photo */}
+                <Image
+                  src={listing.image}
+                  alt={listing.title}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                  quality={80}
+                />
+                {/* Subtle top-to-bottom darkening so badges stay legible */}
+                <div className="absolute inset-0 bg-gradient-to-b from-stone-900/25 via-transparent to-stone-900/30" />
                 <div
                   className={`absolute top-3 left-3 bg-gradient-to-r ${listing.tagColor} text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg`}
                 >
@@ -852,39 +874,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TRENDING CITIES */}
-      <section className="max-w-7xl mx-auto px-5 py-20">
-        <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-4 tracking-tight">
-            {t.trendingH2}
-          </h2>
-          <p className="text-stone-500">{t.trendingP}</p>
-        </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {trendingCities.map((city) => (
-            <div
-              key={city.name}
-              className={`group relative ${city.glow} border ${city.border} bg-white/90 rounded-2xl p-6 cursor-pointer hover:scale-105 hover:-translate-y-1 transition-all duration-300 overflow-hidden shadow-lg hover:shadow-2xl`}
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-stone-100/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="relative">
-                <div className="flex items-start justify-between mb-5">
-                  <span className="text-5xl">{city.emoji}</span>
-                  <span className="text-emerald-600 text-sm font-bold bg-emerald-50 border border-emerald-200 rounded-full px-3 py-1 shadow-sm shadow-emerald-500/15 group-hover:bg-emerald-100 transition-colors duration-200">
-                    {city.growth}
-                  </span>
-                </div>
-                <h3 className="text-xl font-black text-stone-900 mb-1">{city.name}</h3>
-                <p className="text-sm text-stone-600 mb-4">{city.country}</p>
-                <div>
-                  <span className="text-2xl font-black text-stone-900">{city.listings}</span>
-                  <span className="text-sm text-stone-600 ml-2">{t.activeListings}</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* POPULAR CITIES */}
+      <PopularCities lang={lang} />
 
       {/* COMMUNITY FEED */}
       <section className="bg-orange-50/60 border-y border-orange-100 py-20">
