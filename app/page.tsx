@@ -213,7 +213,7 @@ type Lang = keyof typeof translations;
 
 // ─── Static structural data ───────────────────────────────────────────────────
 const stories = [
-  { id: 1, name: "Add Story", isAdd: true,  gradient: "from-slate-700 to-slate-800",   initials: "+",  city: "",       online: false },
+  { id: 1, name: "Add Story", isAdd: true,  gradient: "from-stone-200 to-stone-300",    initials: "+",  city: "",       online: false },
   { id: 2, name: "Sarah K.", isAdd: false, gradient: "from-pink-500 to-rose-600",      initials: "SK", city: "Berlin", online: true  },
   { id: 3, name: "Ahmed M.", isAdd: false, gradient: "from-blue-500 to-indigo-600",    initials: "AM", city: "Dubai",  online: true  },
   { id: 4, name: "Yuki T.",  isAdd: false, gradient: "from-violet-500 to-purple-600",  initials: "YT", city: "Tokyo",  online: false },
@@ -349,22 +349,22 @@ export default function Home() {
   const profile = matchProfiles[activeMatch];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white overflow-x-hidden">
+    <div className="min-h-screen bg-stone-50 text-stone-900 overflow-x-hidden">
 
       {/* NAVBAR */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-white/5 shadow-2xl shadow-slate-950/60">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-stone-200 shadow-sm shadow-stone-200/80">
         <div className="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between gap-6">
           <div className="flex items-center gap-2 flex-shrink-0 group cursor-pointer">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center font-black text-sm shadow-lg shadow-blue-500/30 group-hover:scale-110 group-hover:shadow-blue-500/50 transition-all duration-300">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-sm shadow-lg shadow-orange-500/30 group-hover:scale-110 group-hover:shadow-orange-500/50 transition-all duration-300">
               S
             </div>
-            <span className="text-xl font-black tracking-tight bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">
+            <span className="text-xl font-black tracking-tight bg-gradient-to-r from-orange-500 to-amber-600 bg-clip-text text-transparent">
               Sefira
             </span>
           </div>
           <div className="hidden lg:flex items-center gap-7">
             {t.navLinks.map((l) => (
-              <a key={l.label} href={l.href} className="text-sm text-slate-400 hover:text-white transition-all duration-200 font-medium relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-blue-400 after:transition-all after:duration-300 hover:after:w-full">
+              <a key={l.label} href={l.href} className="text-sm text-stone-500 hover:text-stone-900 transition-all duration-200 font-medium relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-orange-500 after:transition-all after:duration-300 hover:after:w-full">
                 {l.label}
               </a>
             ))}
@@ -372,16 +372,16 @@ export default function Home() {
           <div className="flex items-center gap-3 flex-shrink-0">
             <button
               onClick={() => setLang((l) => (l === "tr" ? "en" : "tr"))}
-              className="hidden sm:flex items-center gap-1.5 text-xs font-bold bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-slate-300 hover:text-white hover:border-white/25 hover:bg-white/10 transition-all duration-200 active:scale-95"
+              className="hidden sm:flex items-center gap-1.5 text-xs font-bold bg-stone-100 border border-stone-200 rounded-lg px-3 py-2 text-stone-600 hover:text-stone-900 hover:border-stone-400 hover:bg-stone-200 transition-all duration-200 active:scale-95"
             >
               <span>{lang === "tr" ? "🇹🇷 TR" : "🇬🇧 EN"}</span>
-              <span className="text-slate-600">·</span>
-              <span className="text-slate-500">{lang === "tr" ? "EN" : "TR"}</span>
+              <span className="text-stone-400">·</span>
+              <span className="text-stone-400">{lang === "tr" ? "EN" : "TR"}</span>
             </button>
-            <button className="hidden sm:block text-sm text-slate-400 hover:text-white transition-all duration-200 font-medium px-3 py-2 rounded-lg hover:bg-white/5">
+            <button className="hidden sm:block text-sm text-stone-500 hover:text-stone-900 transition-all duration-200 font-medium px-3 py-2 rounded-lg hover:bg-stone-100">
               {t.signIn}
             </button>
-            <button className="text-sm font-bold bg-gradient-to-r from-blue-500 to-violet-600 px-5 py-2.5 rounded-xl hover:opacity-95 transition-all duration-200 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/40 active:scale-95">
+            <button className="text-sm font-bold bg-gradient-to-r from-orange-500 to-amber-500 text-white px-5 py-2.5 rounded-xl hover:opacity-95 transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/40 active:scale-95">
               {t.getStarted}
             </button>
           </div>
@@ -390,37 +390,37 @@ export default function Home() {
 
       {/* HERO */}
       <section className="relative min-h-screen flex flex-col justify-center pt-16 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950" />
-        <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 w-72 h-72 bg-indigo-600/5 rounded-full blur-3xl pointer-events-none -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute inset-0 bg-gradient-to-b from-stone-50 via-amber-50/50 to-stone-50" />
+        <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-orange-400/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 w-72 h-72 bg-orange-300/10 rounded-full blur-3xl pointer-events-none -translate-x-1/2 -translate-y-1/2" />
         <div className="relative max-w-7xl mx-auto px-5 py-24 text-center">
-          <div className="inline-flex items-center gap-2.5 bg-white/5 border border-white/10 rounded-full px-5 py-2 mb-10 text-sm text-slate-300 hover:bg-white/8 hover:border-white/20 transition-all duration-300 cursor-default shadow-lg shadow-blue-500/5 animate-fade-in-up">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
+          <div className="inline-flex items-center gap-2.5 bg-orange-50 border border-orange-200 rounded-full px-5 py-2 mb-10 text-sm text-orange-700 hover:bg-orange-100 hover:border-orange-300 transition-all duration-300 cursor-default shadow-lg shadow-orange-500/5 animate-fade-in-up">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
             {t.heroBadge}
           </div>
           <h1 className="text-6xl sm:text-7xl lg:text-8xl font-black leading-tight tracking-tighter mb-7 animate-fade-in-up stagger-2">
-            <span className="text-white">{t.heroLine1}</span>
+            <span className="text-stone-900">{t.heroLine1}</span>
             <br />
-            <span className="bg-gradient-to-r from-blue-400 via-violet-400 to-indigo-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 bg-clip-text text-transparent">
               {t.heroLine2}
             </span>
             <br />
-            <span className="text-white">{t.heroLine3}</span>
+            <span className="text-stone-900">{t.heroLine3}</span>
           </h1>
-          <p className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up stagger-3">
+          <p className="text-lg sm:text-xl text-stone-600 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up stagger-3">
             {t.heroP}
           </p>
-          <div className="max-w-3xl mx-auto bg-white/5 border border-white/10 rounded-2xl p-2 flex flex-col sm:flex-row gap-2 mb-5 shadow-2xl focus-within:border-white/20 focus-within:shadow-blue-500/10 focus-within:shadow-2xl transition-all duration-300 animate-fade-in-up stagger-4">
-            <div className="flex bg-white/5 rounded-xl p-1 gap-1 flex-shrink-0">
+          <div className="max-w-3xl mx-auto bg-white border border-stone-200 rounded-2xl p-2 flex flex-col sm:flex-row gap-2 mb-5 shadow-xl focus-within:border-orange-300 focus-within:shadow-orange-500/10 focus-within:shadow-2xl transition-all duration-300 animate-fade-in-up stagger-4">
+            <div className="flex bg-stone-100 rounded-xl p-1 gap-1 flex-shrink-0">
               {t.searchTabs.map((tab, i) => (
                 <button
                   key={tab}
                   onClick={() => setSearchTabIdx(i)}
                   className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 ${
                     searchTabIdx === i
-                      ? "bg-gradient-to-r from-blue-500 to-violet-600 text-white shadow-lg shadow-blue-500/30"
-                      : "text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-200"
+                      ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/30"
+                      : "text-stone-500 hover:text-stone-900 hover:bg-white transition-all duration-200"
                   }`}
                 >
                   {tab}
@@ -430,7 +430,7 @@ export default function Home() {
             <select
               value={selectedCountry}
               onChange={(e) => { setSelectedCountry(e.target.value); setSelectedCity(""); }}
-              className="bg-slate-900 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-slate-400 outline-none cursor-pointer flex-shrink-0 hover:border-white/25 focus:border-blue-500/30 transition-colors duration-200"
+              className="bg-white border border-stone-200 rounded-xl px-3 py-2.5 text-sm text-stone-600 outline-none cursor-pointer flex-shrink-0 hover:border-stone-400 focus:border-orange-400 transition-colors duration-200"
             >
               <option value="">{t.countryPlaceholder}</option>
               {countries.map((c) => (
@@ -441,7 +441,7 @@ export default function Home() {
               value={selectedCity}
               onChange={(e) => setSelectedCity(e.target.value)}
               disabled={!selectedCountry || loadingCities}
-              className="bg-slate-900 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-slate-400 outline-none cursor-pointer flex-shrink-0 disabled:opacity-40 disabled:cursor-not-allowed hover:border-white/25 focus:border-blue-500/30 transition-colors duration-200"
+              className="bg-white border border-stone-200 rounded-xl px-3 py-2.5 text-sm text-stone-600 outline-none cursor-pointer flex-shrink-0 disabled:opacity-40 disabled:cursor-not-allowed hover:border-stone-400 focus:border-orange-400 transition-colors duration-200"
             >
               <option value="">{loadingCities ? t.loadingText : t.cityPlaceholder}</option>
               {cities.map((c) => (
@@ -453,9 +453,9 @@ export default function Home() {
               placeholder={t.searchPlaceholder}
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              className="flex-1 bg-transparent px-4 py-2.5 text-white placeholder:text-slate-500 outline-none text-sm min-w-0"
+              className="flex-1 bg-transparent px-4 py-2.5 text-stone-800 placeholder:text-stone-400 outline-none text-sm min-w-0"
             />
-            <button className="bg-gradient-to-r from-blue-500 to-violet-600 text-white px-7 py-3 rounded-xl font-bold text-sm hover:opacity-95 transition-all duration-200 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/40 active:scale-95 whitespace-nowrap">
+            <button className="bg-gradient-to-r from-orange-500 to-amber-500 text-white px-7 py-3 rounded-xl font-bold text-sm hover:opacity-95 transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/40 active:scale-95 whitespace-nowrap">
               {t.searchBtn}
             </button>
           </div>
@@ -466,7 +466,7 @@ export default function Home() {
             ).map((city) => (
               <button
                 key={city}
-                className="px-4 py-1.5 text-xs font-medium text-slate-400 bg-white/5 border border-white/10 rounded-full hover:border-white/25 hover:text-white hover:bg-white/10 hover:scale-105 transition-all duration-200 active:scale-95"
+                className="px-4 py-1.5 text-xs font-medium text-stone-600 bg-stone-100 border border-stone-200 rounded-full hover:border-stone-400 hover:text-stone-900 hover:bg-stone-200 hover:scale-105 transition-all duration-200 active:scale-95"
               >
                 {city}
               </button>
@@ -483,34 +483,34 @@ export default function Home() {
               ].map(([init, grad], i) => (
                 <div
                   key={i}
-                  className={`w-10 h-10 rounded-full bg-gradient-to-br ${grad} border-2 border-slate-950 flex items-center justify-center text-xs font-bold shadow-lg`}
+                  className={`w-10 h-10 rounded-full bg-gradient-to-br ${grad} border-2 border-stone-50 flex items-center justify-center text-xs font-bold shadow-lg`}
                 >
                   {init}
                 </div>
               ))}
             </div>
             <div className="text-left">
-              <div className="text-sm font-bold text-white">{t.matchesThisWeek}</div>
-              <div className="text-xs text-slate-500">{t.reviewsLabel}</div>
+              <div className="text-sm font-bold text-stone-900">{t.matchesThisWeek}</div>
+              <div className="text-xs text-stone-500">{t.reviewsLabel}</div>
             </div>
           </div>
         </div>
         <div className="relative flex justify-center pb-10">
-          <div className="w-6 h-10 border-2 border-white/15 rounded-full flex justify-center pt-2 animate-bounce">
-            <div className="w-1 h-2 bg-white/30 rounded-full" />
+          <div className="w-6 h-10 border-2 border-stone-400/40 rounded-full flex justify-center pt-2 animate-bounce">
+            <div className="w-1 h-2 bg-stone-400/40 rounded-full" />
           </div>
         </div>
       </section>
 
       {/* STATS */}
-      <div className="border-y border-white/5 bg-slate-900/30">
+      <div className="border-y border-orange-100 bg-orange-50/60 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-5 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
           {t.stats.map((s) => (
             <div key={s.label} className="text-center group cursor-default hover:scale-105 transition-transform duration-200">
-              <div className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent mb-1 group-hover:from-blue-300 group-hover:to-violet-300 transition-all duration-300">
+              <div className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent mb-1 group-hover:from-orange-400 group-hover:to-amber-400 transition-all duration-300">
                 {s.value}
               </div>
-              <div className="text-sm text-slate-500 group-hover:text-slate-400 transition-colors duration-200">{s.label}</div>
+              <div className="text-sm text-stone-500 group-hover:text-stone-600 transition-colors duration-200">{s.label}</div>
             </div>
           ))}
         </div>
@@ -519,8 +519,8 @@ export default function Home() {
       {/* STORIES */}
       <section className="max-w-7xl mx-auto px-5 py-12">
         <div className="flex items-center gap-3 mb-6">
-          <h2 className="text-lg font-bold text-white">{t.storiesTitle}</h2>
-          <span className="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full font-medium shadow-sm shadow-emerald-500/10">
+          <h2 className="text-lg font-bold text-stone-900">{t.storiesTitle}</h2>
+          <span className="text-xs text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full font-medium shadow-sm shadow-emerald-500/10">
             {t.storiesLive}
           </span>
         </div>
@@ -531,24 +531,24 @@ export default function Home() {
                 <div
                   className={`w-16 h-16 rounded-full bg-gradient-to-br ${s.gradient} flex items-center justify-center font-bold text-sm group-hover:scale-105 transition-transform duration-200 ${
                     !s.isAdd
-                      ? "ring-2 ring-violet-500/50 ring-offset-2 ring-offset-slate-950 group-hover:ring-violet-400/80 group-hover:shadow-lg group-hover:shadow-violet-500/20 transition-all duration-200"
-                      : "border-2 border-dashed border-white/20"
+                      ? "ring-2 ring-orange-400/50 ring-offset-2 ring-offset-stone-50 group-hover:ring-orange-400/80 group-hover:shadow-lg group-hover:shadow-orange-500/20 transition-all duration-200"
+                      : "border-2 border-dashed border-stone-300"
                   }`}
                 >
                   {s.isAdd ? (
-                    <span className="text-2xl text-slate-400 font-light">+</span>
+                    <span className="text-2xl text-stone-400 font-light">+</span>
                   ) : (
                     s.initials
                   )}
                 </div>
                 {!s.isAdd && s.online && (
-                  <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-emerald-400 rounded-full border-2 border-slate-950" />
+                  <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-emerald-400 rounded-full border-2 border-stone-50" />
                 )}
               </div>
-              <span className="text-xs text-slate-400 group-hover:text-white transition-colors whitespace-nowrap">
+              <span className="text-xs text-stone-500 group-hover:text-stone-900 transition-colors whitespace-nowrap">
                 {s.isAdd ? t.addStory : s.name}
               </span>
-              {s.city && <span className="text-xs text-slate-600">{s.city}</span>}
+              {s.city && <span className="text-xs text-stone-400">{s.city}</span>}
             </div>
           ))}
         </div>
@@ -558,27 +558,27 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-5 py-20">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-bold text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-2 mb-7 shadow-lg shadow-blue-500/10">
+            <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-600 bg-orange-500/10 border border-orange-400/30 rounded-full px-4 py-2 mb-7 shadow-lg shadow-orange-500/10">
               {t.aiMatchBadge}
             </div>
-            <h2 className="text-4xl sm:text-5xl font-black leading-tight text-white mb-6 tracking-tight">
+            <h2 className="text-4xl sm:text-5xl font-black leading-tight text-stone-900 mb-6 tracking-tight">
               {t.aiMatchLine1}
               <br />
-              <span className="bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
                 {t.aiMatchLine2}
               </span>
             </h2>
-            <p className="text-lg text-slate-400 leading-relaxed mb-9">
+            <p className="text-lg text-stone-600 leading-relaxed mb-9">
               {t.aiMatchP}
             </p>
             <div className="space-y-5 mb-9">
               {t.compatBars.map((bar) => (
                 <div key={bar.label}>
                   <div className="flex justify-between text-sm mb-2">
-                    <span className="text-slate-400 font-medium">{bar.label}</span>
-                    <span className="text-white font-bold">{bar.value}%</span>
+                    <span className="text-stone-600 font-medium">{bar.label}</span>
+                    <span className="text-stone-900 font-bold">{bar.value}%</span>
                   </div>
-                  <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                  <div className="h-2 bg-stone-100 rounded-full overflow-hidden">
                     <div
                       className={`h-full bg-gradient-to-r ${bar.color} rounded-full transition-all duration-1000`}
                       style={{ width: `${bar.value}%` }}
@@ -587,32 +587,32 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <button className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-violet-600 text-white px-7 py-3.5 rounded-xl font-bold hover:opacity-95 transition-all duration-200 shadow-xl shadow-blue-500/25 hover:shadow-2xl hover:shadow-blue-500/40 active:scale-95">
+            <button className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-7 py-3.5 rounded-xl font-bold hover:opacity-95 transition-all duration-200 shadow-xl shadow-orange-500/25 hover:shadow-2xl hover:shadow-orange-500/40 active:scale-95">
               {t.findMatchesBtn}
             </button>
           </div>
           <div className="relative flex justify-center lg:justify-end">
             <div
-              className="absolute top-5 left-8 right-8 bottom-0 bg-white/3 rounded-3xl border border-white/5"
+              className="absolute top-5 left-8 right-8 bottom-0 bg-orange-100/70 rounded-3xl border border-orange-200/50"
               style={{ transform: "rotate(3deg)" }}
             />
             <div
-              className="absolute top-2.5 left-4 right-4 bottom-0 bg-white/5 rounded-3xl border border-white/5"
+              className="absolute top-2.5 left-4 right-4 bottom-0 bg-orange-50 rounded-3xl border border-orange-200/50"
               style={{ transform: "rotate(1deg)" }}
             />
-            <div className="relative w-full max-w-sm bg-slate-900 border border-white/10 rounded-3xl overflow-hidden shadow-2xl hover:border-white/20 hover:shadow-[0_0_60px_-12px_rgba(99,102,241,0.25)] transition-all duration-500">
+            <div className="relative w-full max-w-sm bg-white border border-stone-200 rounded-3xl overflow-hidden shadow-2xl hover:border-orange-200 hover:shadow-[0_0_60px_-12px_rgba(249,115,22,0.2)] transition-all duration-500">
               <div
                 className={`h-72 bg-gradient-to-br ${profile.gradient} relative flex items-center justify-center`}
               >
                 <div className="w-28 h-28 rounded-full bg-white/15 border-4 border-white/25 flex items-center justify-center text-3xl font-black shadow-2xl">
                   {profile.initials}
                 </div>
-                <div className="absolute top-4 right-4 bg-black/40 backdrop-blur-md border border-white/15 rounded-2xl px-4 py-2 text-center">
+                <div className="absolute top-4 right-4 bg-stone-900/75 backdrop-blur-md border border-white/15 rounded-2xl px-4 py-2 text-center">
                   <div className="text-2xl font-black text-white">{profile.match}%</div>
-                  <div className="text-xs text-white/60">{t.matchLabel}</div>
+                  <div className="text-xs text-white/70">{t.matchLabel}</div>
                 </div>
                 {profile.verified && (
-                  <div className="absolute top-4 left-4 bg-blue-500/80 backdrop-blur-md rounded-full px-3 py-1 text-xs font-bold text-white">
+                  <div className="absolute top-4 left-4 bg-orange-500/80 backdrop-blur-md rounded-full px-3 py-1 text-xs font-bold text-white">
                     {t.verifiedLabel}
                   </div>
                 )}
@@ -620,27 +620,27 @@ export default function Home() {
               <div className="p-6">
                 <div className="flex items-start justify-between mb-2">
                   <div>
-                    <h3 className="text-xl font-bold text-white">
+                    <h3 className="text-xl font-bold text-stone-900">
                       {profile.name}, {profile.age}
                     </h3>
-                    <p className="text-sm text-slate-400">
+                    <p className="text-sm text-stone-500">
                       {profile.occupation} · {profile.city}
                     </p>
                   </div>
-                  <span className="text-xs text-slate-400">{profile.nationality}</span>
+                  <span className="text-xs text-stone-400">{profile.nationality}</span>
                 </div>
-                <p className="text-sm text-slate-400 leading-relaxed mb-4">{profile.bio}</p>
+                <p className="text-sm text-stone-500 leading-relaxed mb-4">{profile.bio}</p>
                 <div className="flex flex-wrap gap-2 mb-5">
                   {profile.lifestyle.map((tag) => (
                     <span
                       key={tag}
-                      className="text-xs bg-white/5 border border-white/10 rounded-full px-3 py-1 text-slate-300"
+                      className="text-xs bg-stone-100 border border-stone-200 rounded-full px-3 py-1 text-stone-700"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
-                <div className="flex items-center gap-4 text-xs text-slate-500 mb-5">
+                <div className="flex items-center gap-4 text-xs text-stone-500 mb-5">
                   <span>{profile.pets ? t.petsOk : t.noPets}</span>
                   <span>{profile.smoking ? t.smoker : t.nonSmoker}</span>
                   <span>{profile.budget}/mo</span>
@@ -648,7 +648,7 @@ export default function Home() {
                 <div className="flex gap-3">
                   <button
                     onClick={() => setActiveMatch((p) => (p + 1) % matchProfiles.length)}
-                    className="flex-1 bg-white/5 border border-white/10 rounded-2xl py-3 text-slate-400 hover:text-white hover:border-white/20 hover:bg-white/8 transition-all duration-200 font-semibold active:scale-95"
+                    className="flex-1 bg-stone-50 border border-stone-200 rounded-2xl py-3 text-stone-600 hover:text-stone-900 hover:border-stone-400 hover:bg-stone-100 transition-all duration-200 font-semibold active:scale-95"
                   >
                     {t.skipBtn}
                   </button>
@@ -657,7 +657,7 @@ export default function Home() {
                       toggleProfile(profile.id);
                       setActiveMatch((p) => (p + 1) % matchProfiles.length);
                     }}
-                    className="flex-1 bg-gradient-to-r from-blue-500 to-violet-600 rounded-2xl py-3 text-white font-bold hover:opacity-95 transition-all duration-200 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/40 active:scale-95"
+                    className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl py-3 text-white font-bold hover:opacity-95 transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/40 active:scale-95"
                   >
                     {t.likeBtn}
                   </button>
@@ -670,7 +670,7 @@ export default function Home() {
                   key={i}
                   onClick={() => setActiveMatch(i)}
                   className={`h-2 rounded-full transition-all duration-300 ${
-                    i === activeMatch ? "w-7 bg-blue-500 shadow-sm shadow-blue-500/50" : "w-2 bg-white/20 hover:bg-white/40 hover:scale-125"
+                    i === activeMatch ? "w-7 bg-orange-500 shadow-sm shadow-orange-500/50" : "w-2 bg-stone-300 hover:bg-stone-500 hover:scale-125"
                   }`}
                 />
               ))}
@@ -683,10 +683,10 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-5 py-20">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
           <div>
-            <h2 className="text-3xl sm:text-4xl font-black text-white mb-2 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-2 tracking-tight">
               {t.featuredH2}
             </h2>
-            <p className="text-slate-400">{t.featuredP}</p>
+            <p className="text-stone-500">{t.featuredP}</p>
           </div>
           <div className="flex gap-2 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
             {["all", "Berlin", "Dubai", "Istanbul", "Barcelona"].map((f) => (
@@ -695,8 +695,8 @@ export default function Home() {
                 onClick={() => setActiveFilter(f)}
                 className={`px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 whitespace-nowrap ${
                   activeFilter === f
-                    ? "bg-gradient-to-r from-blue-500 to-violet-600 text-white shadow-lg shadow-blue-500/25"
-                    : "bg-white/5 text-slate-400 hover:text-white border border-white/10 hover:border-white/20"
+                    ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/25"
+                    : "bg-stone-100 text-stone-600 hover:text-stone-900 border border-stone-200 hover:border-stone-300"
                 }`}
               >
                 {f === "all" ? t.listingFilterAll : f}
@@ -708,7 +708,7 @@ export default function Home() {
           {listings.map((listing) => (
             <div
               key={listing.id}
-              className="group bg-slate-900 border border-white/5 rounded-2xl overflow-hidden hover:border-white/15 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/5 hover:-translate-y-1 cursor-pointer hover:ring-1 hover:ring-white/8"
+              className="group bg-white border border-stone-200 rounded-2xl overflow-hidden hover:border-orange-200 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/5 hover:-translate-y-1 cursor-pointer hover:ring-1 hover:ring-orange-200"
             >
               <div className="relative h-52">
                 <div className={`absolute inset-0 bg-gradient-to-br ${listing.gradient}`} />
@@ -722,18 +722,18 @@ export default function Home() {
                   className={`absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 font-bold active:scale-90 ${
                     likedListings.includes(listing.id)
                       ? "bg-rose-500 text-white shadow-lg shadow-rose-500/40 scale-110"
-                      : "bg-black/30 backdrop-blur-sm text-white/50 hover:text-white hover:bg-black/50 hover:scale-110"
+                      : "bg-stone-900/25 backdrop-blur-sm text-white/60 hover:text-white hover:bg-stone-900/50 hover:scale-110"
                   }`}
                 >
                   ♥
                 </button>
                 {listing.verified && (
-                  <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-black/40 backdrop-blur-sm rounded-full px-2.5 py-1">
-                    <span className="w-2.5 h-2.5 rounded-full bg-blue-400" />
+                  <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-stone-900/50 backdrop-blur-sm rounded-full px-2.5 py-1">
+                    <span className="w-2.5 h-2.5 rounded-full bg-orange-400" />
                     <span className="text-xs text-white font-medium">{t.listingVerified}</span>
                   </div>
                 )}
-                <div className="absolute bottom-3 right-3 bg-black/50 backdrop-blur-sm rounded-xl px-3 py-1.5">
+                <div className="absolute bottom-3 right-3 bg-stone-900/60 backdrop-blur-sm rounded-xl px-3 py-1.5">
                   <span className="text-white font-black text-sm">
                     {listing.sym === "EUR" ? "€" : "$"}
                     {listing.price}
@@ -742,45 +742,45 @@ export default function Home() {
                 </div>
               </div>
               <div className="p-4">
-                <h3 className="font-bold text-white mb-1.5 group-hover:text-blue-300 transition-colors text-sm leading-snug">
+                <h3 className="font-bold text-stone-900 mb-1.5 group-hover:text-orange-600 transition-colors text-sm leading-snug">
                   {listing.title}
                 </h3>
-                <p className="text-xs text-slate-500 mb-3">
+                <p className="text-xs text-stone-500 mb-3">
                   {listing.city}, {listing.country}
                 </p>
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-amber-400 text-xs">★</span>
-                  <span className="text-white text-xs font-bold">{listing.rating}</span>
-                  <span className="text-slate-600 text-xs">({listing.reviews})</span>
-                  <span className="ml-auto text-xs text-slate-500">{listing.available}</span>
+                  <span className="text-amber-500 text-xs">★</span>
+                  <span className="text-stone-900 text-xs font-bold">{listing.rating}</span>
+                  <span className="text-stone-400 text-xs">({listing.reviews})</span>
+                  <span className="ml-auto text-xs text-stone-500">{listing.available}</span>
                 </div>
                 <div className="flex gap-1.5 flex-wrap items-center">
                   {listing.amenities.map((a) => (
-                    <span key={a} className="text-xs bg-white/5 rounded-md px-2 py-0.5 text-slate-400">
+                    <span key={a} className="text-xs bg-stone-100 rounded-md px-2 py-0.5 text-stone-500">
                       {a}
                     </span>
                   ))}
-                  <span className="text-xs text-slate-600 ml-auto">{listing.gender}</span>
+                  <span className="text-xs text-stone-400 ml-auto">{listing.gender}</span>
                 </div>
               </div>
             </div>
           ))}
         </div>
         <div className="text-center mt-10">
-          <button className="bg-white/5 border border-white/10 text-white px-8 py-3.5 rounded-xl font-bold hover:bg-white/10 hover:border-white/20 transition-all duration-200 hover:shadow-lg active:scale-95">
+          <button className="bg-stone-100 border border-stone-200 text-stone-800 px-8 py-3.5 rounded-xl font-bold hover:bg-stone-200 hover:border-stone-300 transition-all duration-200 hover:shadow-lg active:scale-95">
             {t.viewAllBtn}
           </button>
         </div>
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="bg-slate-900/40 border-y border-white/5 py-20">
+      <section className="bg-amber-50/80 border-y border-amber-100 py-20">
         <div className="max-w-7xl mx-auto px-5">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-4 tracking-tight">
               {t.howH2}
             </h2>
-            <p className="text-slate-400 text-lg max-w-xl mx-auto">
+            <p className="text-stone-600 text-lg max-w-xl mx-auto">
               {t.howP}
             </p>
           </div>
@@ -788,18 +788,18 @@ export default function Home() {
             {t.howItWorks.map((step, i) => (
               <div key={step.step} className="relative text-center group">
                 {i < t.howItWorks.length - 1 && (
-                  <div className="hidden lg:block absolute top-8 left-full w-full h-px bg-gradient-to-r from-white/15 to-transparent -translate-x-1/2 z-0" />
+                  <div className="hidden lg:block absolute top-8 left-full w-full h-px bg-gradient-to-r from-stone-300 to-transparent -translate-x-1/2 z-0" />
                 )}
                 <div
-                  className={`relative z-10 w-16 h-16 rounded-2xl bg-gradient-to-br ${step.gradient} flex items-center justify-center text-2xl mx-auto mb-5 shadow-xl group-hover:scale-110 group-hover:shadow-2xl group-hover:shadow-blue-500/20 transition-all duration-300`}
+                  className={`relative z-10 w-16 h-16 rounded-2xl bg-gradient-to-br ${step.gradient} flex items-center justify-center text-2xl mx-auto mb-5 shadow-xl group-hover:scale-110 group-hover:shadow-2xl group-hover:shadow-orange-500/20 transition-all duration-300`}
                 >
                   {step.icon}
                 </div>
-                <div className="text-xs font-black text-slate-600 mb-2 tracking-widest group-hover:text-slate-400 transition-colors duration-300">
+                <div className="text-xs font-black text-stone-400 mb-2 tracking-widest group-hover:text-stone-600 transition-colors duration-300">
                   {step.step}
                 </div>
-                <h3 className="font-bold text-white mb-2 group-hover:text-blue-200 transition-colors duration-300">{step.title}</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">{step.desc}</p>
+                <h3 className="font-bold text-stone-900 mb-2 group-hover:text-orange-600 transition-colors duration-300">{step.title}</h3>
+                <p className="text-sm text-stone-500 leading-relaxed">{step.desc}</p>
               </div>
             ))}
           </div>
@@ -810,12 +810,12 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-5 py-20">
         <div className="flex items-end justify-between mb-10">
           <div>
-            <h2 className="text-3xl sm:text-4xl font-black text-white mb-2 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-2 tracking-tight">
               {t.roommatesH2}
             </h2>
-            <p className="text-slate-400">{t.roommatesP}</p>
+            <p className="text-stone-500">{t.roommatesP}</p>
           </div>
-          <button className="text-sm text-blue-400 hover:text-blue-300 transition-all duration-200 hidden sm:block font-medium hover:underline underline-offset-2">
+          <button className="text-sm text-orange-500 hover:text-orange-600 transition-all duration-200 hidden sm:block font-medium hover:underline underline-offset-2">
             {t.viewAll}
           </button>
         </div>
@@ -823,7 +823,7 @@ export default function Home() {
           {matchProfiles.map((p) => (
             <div
               key={p.id}
-              className="group bg-slate-900 border border-white/5 rounded-2xl overflow-hidden hover:border-white/15 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/5 hover:-translate-y-1 cursor-pointer hover:ring-1 hover:ring-blue-500/10"
+              className="group bg-white border border-stone-200 rounded-2xl overflow-hidden hover:border-orange-200 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/5 hover:-translate-y-1 cursor-pointer hover:ring-1 hover:ring-orange-500/15"
             >
               <div
                 className={`h-44 bg-gradient-to-br ${p.gradient} relative flex items-center justify-center`}
@@ -831,12 +831,12 @@ export default function Home() {
                 <div className="w-20 h-20 rounded-full bg-white/15 border-4 border-white/25 flex items-center justify-center text-2xl font-black shadow-xl">
                   {p.initials}
                 </div>
-                <div className="absolute top-3 right-3 bg-black/40 backdrop-blur-md rounded-2xl px-3 py-1.5 text-center">
+                <div className="absolute top-3 right-3 bg-stone-900/75 backdrop-blur-md rounded-2xl px-3 py-1.5 text-center">
                   <div className="text-lg font-black text-white">{p.match}%</div>
-                  <div className="text-xs text-white/60">{t.matchLabel}</div>
+                  <div className="text-xs text-white/70">{t.matchLabel}</div>
                 </div>
                 {p.verified && (
-                  <div className="absolute top-3 left-3 bg-blue-500/75 backdrop-blur-sm rounded-full px-2.5 py-0.5 text-xs font-bold text-white">
+                  <div className="absolute top-3 left-3 bg-orange-500/75 backdrop-blur-sm rounded-full px-2.5 py-0.5 text-xs font-bold text-white">
                     {t.verifiedLabel}
                   </div>
                 )}
@@ -844,35 +844,35 @@ export default function Home() {
               <div className="p-5">
                 <div className="flex items-start justify-between mb-2">
                   <div>
-                    <h3 className="font-bold text-white">
+                    <h3 className="font-bold text-stone-900">
                       {p.name}, {p.age}
                     </h3>
-                    <p className="text-xs text-slate-500">{p.occupation}</p>
+                    <p className="text-xs text-stone-500">{p.occupation}</p>
                   </div>
-                  <span className="text-xs text-slate-400">{p.nationality}</span>
+                  <span className="text-xs text-stone-400">{p.nationality}</span>
                 </div>
-                <p className="text-xs text-slate-400 leading-relaxed mb-4">{p.bio}</p>
+                <p className="text-xs text-stone-500 leading-relaxed mb-4">{p.bio}</p>
                 <div className="flex flex-wrap gap-1.5 mb-4">
                   {p.lifestyle.map((tag) => (
                     <span
                       key={tag}
-                      className="text-xs bg-white/5 border border-white/5 rounded-full px-2.5 py-0.5 text-slate-400"
+                      className="text-xs bg-stone-100 border border-stone-200 rounded-full px-2.5 py-0.5 text-stone-600"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
-                <div className="flex items-center gap-3 text-xs text-slate-500 mb-5">
+                <div className="flex items-center gap-3 text-xs text-stone-500 mb-5">
                   <span>{p.budget}/mo</span>
                   <span>{p.pets ? t.petsOkShort : t.noPetsShort}</span>
-                  <span className="ml-auto text-slate-600">{p.city}</span>
+                  <span className="ml-auto text-stone-400">{p.city}</span>
                 </div>
                 <button
                   onClick={() => toggleProfile(p.id)}
                   className={`w-full py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
                     likedProfiles.includes(p.id)
-                      ? "bg-rose-500/20 border border-rose-500/40 text-rose-400 shadow-sm shadow-rose-500/10"
-                      : "bg-gradient-to-r from-blue-500 to-violet-600 text-white hover:opacity-95 shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/35 active:scale-95 transition-all duration-200"
+                      ? "bg-rose-500/20 border border-rose-500/40 text-rose-500 shadow-sm shadow-rose-500/10"
+                      : "bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:opacity-95 shadow-lg shadow-orange-500/20 hover:shadow-xl hover:shadow-orange-500/35 active:scale-95 transition-all duration-200"
                   }`}
                 >
                   {likedProfiles.includes(p.id) ? t.matchedBtn : t.connectBtn}
@@ -886,30 +886,30 @@ export default function Home() {
       {/* TRENDING CITIES */}
       <section className="max-w-7xl mx-auto px-5 py-20">
         <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-4 tracking-tight">
             {t.trendingH2}
           </h2>
-          <p className="text-slate-400">{t.trendingP}</p>
+          <p className="text-stone-500">{t.trendingP}</p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {trendingCities.map((city) => (
             <div
               key={city.name}
-              className={`group relative ${city.glow} border ${city.border} bg-slate-900/60 rounded-2xl p-6 cursor-pointer hover:scale-105 hover:-translate-y-1 transition-all duration-300 overflow-hidden shadow-lg hover:shadow-2xl`}
+              className={`group relative ${city.glow} border ${city.border} bg-white/90 rounded-2xl p-6 cursor-pointer hover:scale-105 hover:-translate-y-1 transition-all duration-300 overflow-hidden shadow-lg hover:shadow-2xl`}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-white/3 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-br from-stone-100/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative">
                 <div className="flex items-start justify-between mb-5">
                   <span className="text-5xl">{city.emoji}</span>
-                  <span className="text-emerald-400 text-sm font-bold bg-emerald-500/10 border border-emerald-500/20 rounded-full px-3 py-1 shadow-sm shadow-emerald-500/15 group-hover:bg-emerald-500/15 transition-colors duration-200">
+                  <span className="text-emerald-600 text-sm font-bold bg-emerald-50 border border-emerald-200 rounded-full px-3 py-1 shadow-sm shadow-emerald-500/15 group-hover:bg-emerald-100 transition-colors duration-200">
                     {city.growth}
                   </span>
                 </div>
-                <h3 className="text-xl font-black text-white mb-1">{city.name}</h3>
-                <p className="text-sm text-slate-400 mb-4">{city.country}</p>
+                <h3 className="text-xl font-black text-stone-900 mb-1">{city.name}</h3>
+                <p className="text-sm text-stone-600 mb-4">{city.country}</p>
                 <div>
-                  <span className="text-2xl font-black text-white">{city.listings}</span>
-                  <span className="text-sm text-slate-500 ml-2">{t.activeListings}</span>
+                  <span className="text-2xl font-black text-stone-900">{city.listings}</span>
+                  <span className="text-sm text-stone-600 ml-2">{t.activeListings}</span>
                 </div>
               </div>
             </div>
@@ -918,22 +918,22 @@ export default function Home() {
       </section>
 
       {/* COMMUNITY FEED */}
-      <section className="bg-slate-900/30 border-y border-white/5 py-20">
+      <section className="bg-orange-50/60 border-y border-orange-100 py-20">
         <div className="max-w-7xl mx-auto px-5">
           <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 text-xs font-bold text-violet-400 bg-violet-500/10 border border-violet-500/20 rounded-full px-4 py-2 mb-6">
+            <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-600 bg-orange-500/10 border border-orange-500/20 rounded-full px-4 py-2 mb-6">
               {t.communityBadge}
             </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-4 tracking-tight">
               {t.communityH2}
             </h2>
-            <p className="text-slate-400">{t.communityP}</p>
+            <p className="text-stone-600">{t.communityP}</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {communityPosts.map((post) => (
               <div
                 key={post.id}
-                className="bg-slate-900 border border-white/5 rounded-2xl p-6 hover:border-white/10 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-200"
+                className="bg-white border border-stone-200 rounded-2xl p-6 hover:border-stone-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-orange-500/5 transition-all duration-200"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div
@@ -942,16 +942,16 @@ export default function Home() {
                     {post.initials}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-white truncate">{post.user}</p>
-                    <p className="text-xs text-slate-500">{post.location}</p>
+                    <p className="text-sm font-bold text-stone-900 truncate">{post.user}</p>
+                    <p className="text-xs text-stone-500">{post.location}</p>
                   </div>
-                  <span className="text-xs text-slate-600 flex-shrink-0">{post.time}</span>
+                  <span className="text-xs text-stone-400 flex-shrink-0">{post.time}</span>
                 </div>
-                <p className="text-sm text-slate-300 leading-relaxed mb-5">{post.content}</p>
-                <div className="flex items-center gap-5 text-xs text-slate-500">
-                  <button className="hover:text-rose-400 transition-colors">{post.likes} {t.likesLabel}</button>
-                  <button className="hover:text-blue-400 transition-colors">{post.comments} {t.commentsLabel}</button>
-                  <button className="hover:text-violet-400 transition-colors ml-auto">{t.shareLabel}</button>
+                <p className="text-sm text-stone-700 leading-relaxed mb-5">{post.content}</p>
+                <div className="flex items-center gap-5 text-xs text-stone-500">
+                  <button className="hover:text-rose-500 transition-colors">{post.likes} {t.likesLabel}</button>
+                  <button className="hover:text-orange-500 transition-colors">{post.comments} {t.commentsLabel}</button>
+                  <button className="hover:text-amber-600 transition-colors ml-auto">{t.shareLabel}</button>
                 </div>
               </div>
             ))}
@@ -962,27 +962,27 @@ export default function Home() {
       {/* TESTIMONIALS */}
       <section className="max-w-7xl mx-auto px-5 py-20">
         <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-4 tracking-tight">
             {t.testiH2}
           </h2>
           <div className="flex items-center justify-center gap-2">
             <span className="text-amber-400 text-xl">★★★★★</span>
-            <span className="text-white font-black text-xl">4.9</span>
-            <span className="text-slate-500">{t.testiReviews}</span>
+            <span className="text-stone-900 font-black text-xl">4.9</span>
+            <span className="text-stone-500">{t.testiReviews}</span>
           </div>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {testimonials.map((item) => (
             <div
               key={item.name}
-              className="bg-slate-900 border border-white/5 rounded-2xl p-7 hover:border-white/10 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-500/5 hover:ring-1 hover:ring-white/8 transition-all duration-200"
+              className="bg-white border border-stone-200 rounded-2xl p-7 hover:border-orange-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-orange-500/5 hover:ring-1 hover:ring-stone-200 transition-all duration-200"
             >
               <div className="flex gap-1 mb-5">
                 {Array.from({ length: item.rating }).map((_, i) => (
                   <span key={i} className="text-amber-400 text-sm">★</span>
                 ))}
               </div>
-              <p className="text-slate-300 text-sm leading-relaxed mb-6 italic">
+              <p className="text-stone-700 text-sm leading-relaxed mb-6 italic">
                 &ldquo;{item.quote}&rdquo;
               </p>
               <div className="flex items-center gap-3">
@@ -992,8 +992,8 @@ export default function Home() {
                   {item.initials}
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-white">{item.name}</p>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-sm font-bold text-stone-900">{item.name}</p>
+                  <p className="text-xs text-stone-500">
                     {item.role} · {item.city}
                   </p>
                 </div>
@@ -1004,33 +1004,33 @@ export default function Home() {
       </section>
 
       {/* DOWNLOAD APP */}
-      <section className="relative overflow-hidden border-y border-white/5 py-20 bg-gradient-to-br from-blue-950/60 via-indigo-950/60 to-violet-950/60">
-        <div className="absolute top-0 left-1/4 w-72 h-72 bg-blue-500/8 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-violet-500/8 rounded-full blur-3xl pointer-events-none" />
+      <section className="relative overflow-hidden border-y border-amber-200 py-20 bg-gradient-to-br from-amber-100 via-orange-50 to-stone-50">
+        <div className="absolute top-0 left-1/4 w-72 h-72 bg-orange-400/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative max-w-7xl mx-auto px-5 grid lg:grid-cols-2 gap-16 items-center">
           <div>
-            <h2 className="text-3xl sm:text-4xl font-black text-white mb-5 tracking-tight leading-tight">
+            <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-5 tracking-tight leading-tight">
               {t.appH2a}
               <br />
-              <span className="bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
                 {t.appH2b}
               </span>
             </h2>
-            <p className="text-lg text-slate-400 leading-relaxed mb-9">
+            <p className="text-lg text-stone-600 leading-relaxed mb-9">
               {t.appP}
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="flex items-center gap-4 bg-white text-slate-900 px-6 py-4 rounded-2xl font-bold hover:bg-white/90 transition-all duration-200 shadow-2xl hover:-translate-y-0.5 active:scale-95">
+              <button className="flex items-center gap-4 bg-stone-900 text-white px-6 py-4 rounded-2xl font-bold hover:bg-stone-800 transition-all duration-200 shadow-2xl shadow-stone-900/25 hover:-translate-y-0.5 active:scale-95">
                 <span className="text-3xl leading-none">🍎</span>
                 <div className="text-left">
-                  <div className="text-xs text-slate-500 font-normal">{t.appStoreLabel}</div>
+                  <div className="text-xs text-stone-400 font-normal">{t.appStoreLabel}</div>
                   <div className="text-sm font-black">{t.appStoreName}</div>
                 </div>
               </button>
-              <button className="flex items-center gap-4 bg-white/10 border border-white/20 text-white px-6 py-4 rounded-2xl font-bold hover:bg-white/15 hover:border-white/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:scale-95">
+              <button className="flex items-center gap-4 bg-orange-500 text-white px-6 py-4 rounded-2xl font-bold hover:bg-orange-600 border border-orange-400 transition-all duration-200 shadow-lg shadow-orange-500/25 hover:-translate-y-0.5 hover:shadow-xl active:scale-95">
                 <span className="text-3xl leading-none">▶</span>
                 <div className="text-left">
-                  <div className="text-xs text-slate-400 font-normal">{t.googlePlayLabel}</div>
+                  <div className="text-xs text-orange-100 font-normal">{t.googlePlayLabel}</div>
                   <div className="text-sm font-black">{t.googlePlayName}</div>
                 </div>
               </button>
@@ -1038,31 +1038,31 @@ export default function Home() {
           </div>
           <div className="flex justify-center lg:justify-end">
             <div className="relative w-60 h-[500px] animate-float">
-              <div className="absolute inset-0 bg-slate-900 rounded-[2.5rem] border-4 border-white/10 shadow-2xl overflow-hidden">
-                <div className="absolute inset-2 bg-slate-950 rounded-[2rem] overflow-hidden">
+              <div className="absolute inset-0 bg-stone-800 rounded-[2.5rem] border-4 border-stone-700/50 shadow-2xl overflow-hidden">
+                <div className="absolute inset-2 bg-stone-900 rounded-[2rem] overflow-hidden">
                   <div className="flex items-center justify-between px-4 pt-3 pb-2">
                     <span className="text-xs text-white font-medium">9:41</span>
                     <span className="text-xs text-white/40">● ● ● ●</span>
                   </div>
                   <div className="px-3 py-2 space-y-3">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-black bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">
+                      <span className="text-sm font-black bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
                         Sefira
                       </span>
-                      <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-violet-600 rounded-full shadow-lg" />
+                      <div className="w-6 h-6 bg-gradient-to-br from-orange-500 to-amber-500 rounded-full shadow-lg" />
                     </div>
-                    <div className="bg-gradient-to-r from-blue-600/20 to-violet-600/20 border border-blue-500/20 rounded-xl p-3">
-                      <div className="text-xs text-blue-400 font-bold mb-1">{t.newMatch}</div>
+                    <div className="bg-gradient-to-r from-orange-500/20 to-amber-500/20 border border-orange-400/20 rounded-xl p-3">
+                      <div className="text-xs text-orange-400 font-bold mb-1">{t.newMatch}</div>
                       <div className="text-xs text-white">{t.likedProfile}</div>
-                      <div className="text-xs text-slate-500">{t.compatibility}</div>
+                      <div className="text-xs text-white/50">{t.compatibility}</div>
                     </div>
-                    <div className="text-xs text-slate-500 font-medium px-1">{t.suggested}</div>
+                    <div className="text-xs text-white/40 font-medium px-1">{t.suggested}</div>
                     {[
                       { init: "KT", name: "Kai T.",   match: 94, grad: "from-cyan-500 to-blue-600" },
                       { init: "SR", name: "Sofia R.", match: 91, grad: "from-rose-500 to-pink-600" },
                       { init: "LM", name: "Lena M.",  match: 89, grad: "from-violet-500 to-purple-600" },
                     ].map((c) => (
-                      <div key={c.init} className="flex items-center gap-2 bg-white/5 rounded-xl p-2">
+                      <div key={c.init} className="flex items-center gap-2 bg-white/10 rounded-xl p-2">
                         <div
                           className={`w-8 h-8 rounded-full bg-gradient-to-br ${c.grad} flex items-center justify-center text-xs font-black flex-shrink-0`}
                         >
@@ -1070,9 +1070,9 @@ export default function Home() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="text-xs text-white font-medium">{c.name}</div>
-                          <div className="text-xs text-slate-500">{c.match}% {t.matchLabel.toLowerCase()}</div>
+                          <div className="text-xs text-white/40">{c.match}% {t.matchLabel.toLowerCase()}</div>
                         </div>
-                        <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-violet-600 rounded-full flex items-center justify-center text-xs text-white flex-shrink-0">
+                        <div className="w-6 h-6 bg-gradient-to-br from-orange-500 to-amber-500 rounded-full flex items-center justify-center text-xs text-white flex-shrink-0">
                           →
                         </div>
                       </div>
@@ -1080,35 +1080,35 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="absolute right-[-3px] top-28 w-1 h-14 bg-white/15 rounded-full" />
-              <div className="absolute left-[-3px] top-20 w-1 h-8 bg-white/15 rounded-full" />
-              <div className="absolute left-[-3px] top-32 w-1 h-14 bg-white/15 rounded-full" />
+              <div className="absolute right-[-3px] top-28 w-1 h-14 bg-stone-600 rounded-full" />
+              <div className="absolute left-[-3px] top-20 w-1 h-8 bg-stone-600 rounded-full" />
+              <div className="absolute left-[-3px] top-32 w-1 h-14 bg-stone-600 rounded-full" />
             </div>
           </div>
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer className="bg-slate-950 border-t border-white/5">
+      <footer className="bg-stone-900 border-t border-stone-700">
         <div className="max-w-7xl mx-auto px-5 py-16">
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-12 mb-14">
             <div className="lg:col-span-2">
               <div className="flex items-center gap-2 mb-5">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center font-black text-sm shadow-lg shadow-blue-500/25">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-sm shadow-lg shadow-orange-500/25">
                   S
                 </div>
-                <span className="text-xl font-black tracking-tight bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">
+                <span className="text-xl font-black tracking-tight bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
                   Sefira
                 </span>
               </div>
-              <p className="text-sm text-slate-500 leading-relaxed max-w-xs mb-7">
+              <p className="text-sm text-stone-400 leading-relaxed max-w-xs mb-7">
                 {t.footerDesc}
               </p>
               <div className="flex gap-2.5">
                 {["X", "in", "ig", "yt"].map((icon) => (
                   <button
                     key={icon}
-                    className="w-9 h-9 bg-white/5 border border-white/10 rounded-lg text-xs text-slate-400 hover:text-white hover:border-white/25 hover:bg-white/10 transition-all duration-200 font-bold hover:scale-110 active:scale-90"
+                    className="w-9 h-9 bg-white/5 border border-white/10 rounded-lg text-xs text-stone-400 hover:text-white hover:border-white/25 hover:bg-white/10 transition-all duration-200 font-bold hover:scale-110 active:scale-90"
                   >
                     {icon}
                   </button>
@@ -1118,7 +1118,7 @@ export default function Home() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Join our Telegram"
-                  className="w-9 h-9 bg-white/5 border border-white/10 rounded-lg text-slate-400 hover:text-white hover:border-white/25 hover:bg-white/10 transition-all duration-200 flex items-center justify-center hover:scale-110 active:scale-90"
+                  className="w-9 h-9 bg-white/5 border border-white/10 rounded-lg text-stone-400 hover:text-white hover:border-white/25 hover:bg-white/10 transition-all duration-200 flex items-center justify-center hover:scale-110 active:scale-90"
                 >
                   <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
                     <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
@@ -1134,7 +1134,7 @@ export default function Home() {
                     <li key={link}>
                       <a
                         href="#"
-                        className="text-sm text-slate-500 hover:text-white transition-colors duration-200"
+                        className="text-sm text-stone-400 hover:text-white transition-colors duration-200"
                       >
                         {link}
                       </a>
@@ -1144,8 +1144,8 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <div className="border-t border-white/5 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-slate-600">
+          <div className="border-t border-stone-700 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-stone-500">
               {t.footerCopy}
             </p>
             <div className="flex items-center gap-6">
@@ -1153,7 +1153,7 @@ export default function Home() {
                 <a
                   key={l}
                   href="#"
-                  className="text-xs text-slate-600 hover:text-slate-400 transition-colors duration-200"
+                  className="text-xs text-stone-500 hover:text-stone-300 transition-colors duration-200"
                 >
                   {l}
                 </a>
