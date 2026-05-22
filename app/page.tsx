@@ -28,6 +28,8 @@ const translations = {
     countryPlaceholder: "Ülke",
     cityPlaceholder: "Şehir",
     loadingText: "Yükleniyor…",
+    priorityGroupLabel: "⭐ Popüler Ülkeler",
+    allCountriesLabel: "Tüm Ülkeler",
     searchPlaceholder: "Şehir, mahalle veya anahtar kelime ara...",
     searchBtn: "Ara",
     matchesThisWeek: "Bu hafta 2.847 eşleşme",
@@ -130,6 +132,8 @@ const translations = {
     countryPlaceholder: "Country",
     cityPlaceholder: "City",
     loadingText: "Loading…",
+    priorityGroupLabel: "⭐ Top Destinations",
+    allCountriesLabel: "All Countries",
     searchPlaceholder: "Search city, neighborhood, or keyword...",
     searchBtn: "Search",
     matchesThisWeek: "2,847 matches this week",
@@ -300,6 +304,23 @@ const communityPosts = [
   { id: 3, user: "Yuki T.",  location: "Amsterdam, NL",   content: "First week in my new flat. Sefira matched me with 3 others who love minimalist design and early mornings. Dream team.",                          likes: 456, comments: 67, gradient: "from-violet-500 to-purple-600",initials: "YT", time: "1d ago" },
 ];
 
+const PRIORITY_COUNTRIES = [
+  "Turkey", "Germany", "United States", "Spain", "Brazil",
+  "Italy", "France", "United Arab Emirates", "South Korea",
+];
+
+const PRIORITY_CITIES: Record<string, string[]> = {
+  "Turkey":               ["Istanbul", "Ankara", "Izmir", "Antalya", "Bursa", "Adana"],
+  "Germany":              ["Berlin", "Munich", "Hamburg", "Frankfurt", "Cologne", "Stuttgart"],
+  "United States":        ["New York", "Los Angeles", "Chicago", "Houston", "Miami", "San Francisco"],
+  "Spain":                ["Madrid", "Barcelona", "Valencia", "Seville", "Bilbao", "Malaga"],
+  "Brazil":               ["São Paulo", "Rio de Janeiro", "Brasília", "Salvador", "Fortaleza", "Curitiba"],
+  "Italy":                ["Rome", "Milan", "Naples", "Turin", "Florence", "Bologna"],
+  "France":               ["Paris", "Marseille", "Lyon", "Toulouse", "Nice", "Bordeaux"],
+  "United Arab Emirates": ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "Ras Al Khaimah", "Al Ain"],
+  "South Korea":          ["Seoul", "Busan", "Incheon", "Daegu", "Daejeon", "Gwangju"],
+};
+
 export default function Home() {
   const [activeFilter, setActiveFilter] = useState("all");
   const [likedListings, setLikedListings] = useState<number[]>([]);
@@ -433,9 +454,18 @@ export default function Home() {
               className="bg-white border border-stone-200 rounded-xl px-3 py-2.5 text-sm text-stone-600 outline-none cursor-pointer flex-shrink-0 hover:border-stone-400 focus:border-orange-400 transition-colors duration-200"
             >
               <option value="">{t.countryPlaceholder}</option>
-              {countries.map((c) => (
-                <option key={c} value={c}>{c}</option>
-              ))}
+              <optgroup label={t.priorityGroupLabel}>
+                {PRIORITY_COUNTRIES.map((c) => (
+                  <option key={`p-${c}`} value={c}>{c}</option>
+                ))}
+              </optgroup>
+              <optgroup label={t.allCountriesLabel}>
+                {countries
+                  .filter((c) => !PRIORITY_COUNTRIES.includes(c))
+                  .map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+              </optgroup>
             </select>
             <select
               value={selectedCity}
@@ -460,13 +490,20 @@ export default function Home() {
             </button>
           </div>
           <div className="flex flex-wrap justify-center gap-2 mb-14">
-            {(selectedCountry && cities.length > 0
-              ? cities.slice(0, 5)
-              : ["Berlin", "Dubai", "Istanbul", "Barcelona", "London"]
+            {(selectedCountry && PRIORITY_CITIES[selectedCountry]
+              ? PRIORITY_CITIES[selectedCountry]
+              : selectedCountry && cities.length > 0
+              ? cities.slice(0, 6)
+              : ["Berlin", "Dubai", "Istanbul", "Barcelona", "Paris", "Rome"]
             ).map((city) => (
               <button
                 key={city}
-                className="px-4 py-1.5 text-xs font-medium text-stone-600 bg-stone-100 border border-stone-200 rounded-full hover:border-stone-400 hover:text-stone-900 hover:bg-stone-200 hover:scale-105 transition-all duration-200 active:scale-95"
+                onClick={() => setSelectedCity(city)}
+                className={`px-4 py-1.5 text-xs font-medium rounded-full border transition-all duration-200 active:scale-95 hover:scale-105 ${
+                  selectedCity === city
+                    ? "bg-orange-500 text-white border-orange-500 shadow-md shadow-orange-500/25"
+                    : "text-stone-600 bg-stone-100 border-stone-200 hover:border-stone-400 hover:text-stone-900 hover:bg-stone-200"
+                }`}
               >
                 {city}
               </button>
