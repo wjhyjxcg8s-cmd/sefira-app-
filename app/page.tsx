@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import RoommateCards from "@/app/components/RoommateCards";
 
 // ─── i18n ─────────────────────────────────────────────────────────────────────
 const translations = {
@@ -325,7 +326,6 @@ export default function Home() {
   const [activeFilter, setActiveFilter] = useState("all");
   const [likedListings, setLikedListings] = useState<number[]>([]);
   const [likedProfiles, setLikedProfiles] = useState<number[]>([]);
-  const [activeMatch, setActiveMatch] = useState(0);
   const [searchInput, setSearchInput] = useState("");
   const [searchTabIdx, setSearchTabIdx] = useState(0);
   const [countries, setCountries] = useState<string[]>([]);
@@ -366,8 +366,6 @@ export default function Home() {
       .catch(() => setCities([]))
       .finally(() => setLoadingCities(false));
   }, [selectedCountry]);
-
-  const profile = matchProfiles[activeMatch];
 
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900 overflow-x-hidden">
@@ -629,90 +627,8 @@ export default function Home() {
               {t.findMatchesBtn}
             </button>
           </div>
-          <div className="relative flex justify-center lg:justify-end">
-            <div
-              className="absolute top-5 left-8 right-8 bottom-0 bg-orange-100/70 rounded-3xl border border-orange-200/50"
-              style={{ transform: "rotate(3deg)" }}
-            />
-            <div
-              className="absolute top-2.5 left-4 right-4 bottom-0 bg-orange-50 rounded-3xl border border-orange-200/50"
-              style={{ transform: "rotate(1deg)" }}
-            />
-            <div className="relative w-full max-w-sm bg-white border border-stone-200 rounded-3xl overflow-hidden shadow-2xl hover:border-orange-200 hover:shadow-[0_0_60px_-12px_rgba(249,115,22,0.2)] transition-all duration-500">
-              <div
-                className={`h-72 bg-gradient-to-br ${profile.gradient} relative flex items-center justify-center`}
-              >
-                <div className="w-28 h-28 rounded-full bg-white/15 border-4 border-white/25 flex items-center justify-center text-3xl font-black shadow-2xl">
-                  {profile.initials}
-                </div>
-                <div className="absolute top-4 right-4 bg-stone-900/75 backdrop-blur-md border border-white/15 rounded-2xl px-4 py-2 text-center">
-                  <div className="text-2xl font-black text-white">{profile.match}%</div>
-                  <div className="text-xs text-white/70">{t.matchLabel}</div>
-                </div>
-                {profile.verified && (
-                  <div className="absolute top-4 left-4 bg-orange-500/80 backdrop-blur-md rounded-full px-3 py-1 text-xs font-bold text-white">
-                    {t.verifiedLabel}
-                  </div>
-                )}
-              </div>
-              <div className="p-6">
-                <div className="flex items-start justify-between mb-2">
-                  <div>
-                    <h3 className="text-xl font-bold text-stone-900">
-                      {profile.name}, {profile.age}
-                    </h3>
-                    <p className="text-sm text-stone-500">
-                      {profile.occupation} · {profile.city}
-                    </p>
-                  </div>
-                  <span className="text-xs text-stone-400">{profile.nationality}</span>
-                </div>
-                <p className="text-sm text-stone-500 leading-relaxed mb-4">{profile.bio}</p>
-                <div className="flex flex-wrap gap-2 mb-5">
-                  {profile.lifestyle.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-xs bg-stone-100 border border-stone-200 rounded-full px-3 py-1 text-stone-700"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <div className="flex items-center gap-4 text-xs text-stone-500 mb-5">
-                  <span>{profile.pets ? t.petsOk : t.noPets}</span>
-                  <span>{profile.smoking ? t.smoker : t.nonSmoker}</span>
-                  <span>{profile.budget}/mo</span>
-                </div>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => setActiveMatch((p) => (p + 1) % matchProfiles.length)}
-                    className="flex-1 bg-stone-50 border border-stone-200 rounded-2xl py-3 text-stone-600 hover:text-stone-900 hover:border-stone-400 hover:bg-stone-100 transition-all duration-200 font-semibold active:scale-95"
-                  >
-                    {t.skipBtn}
-                  </button>
-                  <button
-                    onClick={() => {
-                      toggleProfile(profile.id);
-                      setActiveMatch((p) => (p + 1) % matchProfiles.length);
-                    }}
-                    className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl py-3 text-white font-bold hover:opacity-95 transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/40 active:scale-95"
-                  >
-                    {t.likeBtn}
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className="absolute -bottom-8 flex gap-2">
-              {matchProfiles.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActiveMatch(i)}
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    i === activeMatch ? "w-7 bg-orange-500 shadow-sm shadow-orange-500/50" : "w-2 bg-stone-300 hover:bg-stone-500 hover:scale-125"
-                  }`}
-                />
-              ))}
-            </div>
+          <div className="flex justify-center lg:justify-end">
+            <RoommateCards lang={lang} />
           </div>
         </div>
       </section>

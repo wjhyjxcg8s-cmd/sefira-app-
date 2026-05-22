@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(head -20)",
+      "PowerShell(New-Item -ItemType Directory -Path \"e:\\\\sefıra-web\\\\sefira-app\\\\app\\\\components\" -Force)"
+    ]
+  }
+}
