@@ -11,6 +11,7 @@ import {
   CURRENCY_SYMBOLS,
   convertPrice,
   displayPrice,
+  fetchLiveRates,
 } from "@/app/lib/currency";
 
 // ─── i18n ─────────────────────────────────────────────────────────────────────
@@ -391,6 +392,16 @@ export default function Home() {
   // ── Currency ──────────────────────────────────────────────────────────────
   const [currency, setCurrency] = useState<Currency>("USD");
   const sym = CURRENCY_SYMBOLS[currency];
+
+  // ── Live exchange rates ────────────────────────────────────────────────────
+  // fetchLiveRates() patches CURRENCY_RATES in-place; the state bump forces
+  // a re-render so every conversion call picks up the real values.
+  const [, setRatesReady] = useState(false);
+  useEffect(() => {
+    fetchLiveRates()
+      .then(() => setRatesReady(true))
+      .catch(() => {});
+  }, []);
 
   // ── Wizard ────────────────────────────────────────────────────────────────
   const [wizardMode, setWizardMode] = useState<WizardMode>(null);
