@@ -292,7 +292,7 @@ function SwipeCard({
         dir="ltr" is critical: isolates every card from any ancestor RTL context
         so numbers, ranges (e.g. $700–$1,000) and flex layout never flip.
       */}
-      <div dir="ltr" className="w-full h-full rounded-3xl overflow-hidden flex flex-col" style={CARD_STYLE}>
+      <div dir="ltr" className="w-full h-full rounded-3xl overflow-hidden flex flex-col" style={isTop ? { ...CARD_STYLE, background: "rgba(255,255,255,1)" } : CARD_STYLE}>
 
         {/* Header gradient */}
         <div className={`relative bg-gradient-to-br ${profile.gradient} h-44 flex-shrink-0`}>

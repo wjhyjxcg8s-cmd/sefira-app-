@@ -43,7 +43,7 @@ export function convertBudgetRange(range: string, to: Currency): string {
     const min = convertPrice(parts[0], "EUR", to);
     const max = convertPrice(parts[1], "EUR", to);
     const fmt = (n: number) =>
-      n >= 10000 ? `${sym}${Math.round(n / 1000)}K` : `${sym}${n.toLocaleString()}`;
+      n >= 10000 ? `${sym}${Math.round(n / 1000)}K` : `${sym}${n.toLocaleString("en-US")}`;
     return `${fmt(min)}–${fmt(max)}`;
   }
   return `€${range}`;
