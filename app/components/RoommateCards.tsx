@@ -248,7 +248,7 @@ function SwipeCard({
 
   return (
     <motion.div
-      className={`absolute inset-0 select-none touch-none origin-bottom ${
+      className={`absolute inset-0 select-none touch-none origin-bottom overflow-hidden ${
         isTop ? "cursor-grab active:cursor-grabbing" : "pointer-events-none"
       }`}
       style={{
@@ -292,48 +292,51 @@ function SwipeCard({
         dir="ltr" is critical: isolates every card from any ancestor RTL context
         so numbers, ranges (e.g. $700–$1,000) and flex layout never flip.
       */}
-      <div dir="ltr" className="w-full h-full rounded-3xl overflow-hidden flex flex-col" style={isTop ? { ...CARD_STYLE, background: "rgba(255,255,255,1)" } : CARD_STYLE}>
+      <div dir="ltr" className="w-full h-full rounded-3xl overflow-hidden flex flex-col" style={{ ...CARD_STYLE, background: "rgba(255,255,255,1)" }}>
 
         {/* Header gradient */}
         <div className={`relative bg-gradient-to-br ${profile.gradient} h-44 flex-shrink-0`}>
 
-          {/* Verified badge */}
-          {profile.verified && (
-            <div className="absolute top-3.5 left-4 flex items-center gap-1 bg-emerald-500/90 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-md shadow-emerald-600/30">
-              ✓ {labels.verified}
-            </div>
+          {isTop && (
+            <>
+              {/* Verified badge */}
+              {profile.verified && (
+                <div className="absolute top-3.5 left-4 flex items-center gap-1 bg-emerald-500/90 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-md shadow-emerald-600/30">
+                  ✓ {labels.verified}
+                </div>
+              )}
+
+              {/* Match % pill */}
+              <div
+                className="absolute top-3.5 right-4 rounded-2xl px-3 py-1.5 shadow-lg"
+                style={{ background: "rgba(255,255,255,0.93)", backdropFilter: "blur(12px)" }}
+              >
+                <span className="text-xs font-black bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent" style={{ direction: "ltr", unicodeBidi: "embed" }}>
+                  {profile.match}% {labels.match}
+                </span>
+              </div>
+
+              {/* Avatar + name overlay */}
+              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/55 to-transparent flex items-end gap-3">
+                <div
+                  className="w-12 h-12 flex-shrink-0 rounded-2xl border border-white/30 flex items-center justify-center font-black text-base text-white shadow-xl"
+                  style={{ background: "rgba(255,255,255,0.18)", backdropFilter: "blur(12px)" }}
+                >
+                  {profile.initials}
+                </div>
+                <div>
+                  <p className="font-black text-white text-base leading-tight drop-shadow">
+                    {profile.name}, {profile.age}
+                  </p>
+                  <p className="text-white/80 text-xs font-medium">{profile.occupation}</p>
+                </div>
+              </div>
+            </>
           )}
-
-          {/* Match % pill */}
-          <div
-            className="absolute top-3.5 right-4 rounded-2xl px-3 py-1.5 shadow-lg"
-            style={{ background: "rgba(255,255,255,0.93)", backdropFilter: "blur(12px)" }}
-          >
-            {/* Explicit ltr so "97% Match" never reverses */}
-            <span className="text-xs font-black bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent" style={{ direction: "ltr", unicodeBidi: "embed" }}>
-              {profile.match}% {labels.match}
-            </span>
-          </div>
-
-          {/* Avatar + name overlay */}
-          <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/55 to-transparent flex items-end gap-3">
-            <div
-              className="w-12 h-12 flex-shrink-0 rounded-2xl border border-white/30 flex items-center justify-center font-black text-base text-white shadow-xl"
-              style={{ background: "rgba(255,255,255,0.18)", backdropFilter: "blur(12px)" }}
-            >
-              {profile.initials}
-            </div>
-            <div>
-              <p className="font-black text-white text-base leading-tight drop-shadow">
-                {profile.name}, {profile.age}
-              </p>
-              <p className="text-white/80 text-xs font-medium">{profile.occupation}</p>
-            </div>
-          </div>
         </div>
 
         {/* Card body */}
-        <div className="flex-1 px-4 pt-3 pb-3 flex flex-col gap-2 overflow-hidden min-h-0">
+        <div className="flex-1 px-4 pt-3 pb-3 flex flex-col gap-2 overflow-hidden min-h-0" style={!isTop ? { visibility: "hidden" } : undefined}>
 
           {/* Location */}
           <div className="flex items-center text-xs font-medium text-stone-500">
@@ -656,7 +659,7 @@ export default function RoommateCards({
         </div>
 
         {/* Card stack */}
-        <div className="relative w-full max-w-[320px] sm:max-w-[340px] h-[540px]">
+        <div className="relative w-full max-w-[320px] sm:max-w-[340px] h-[540px] overflow-hidden">
           {stack.map(({ profile, stackIndex, seqKey }) => (
             <SwipeCard
               key={seqKey}
