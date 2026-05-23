@@ -5,6 +5,7 @@ import Image from "next/image";
 import RoommateCards from "@/app/components/RoommateCards";
 import InstagramCTA from "@/app/components/InstagramCTA";
 import PopularCities from "@/app/components/PopularCities";
+import PropertyFilters from "@/app/components/PropertyFilters";
 
 // ─── i18n ─────────────────────────────────────────────────────────────────────
 const translations = {
@@ -524,6 +525,11 @@ export default function Home() {
               <button className="bg-gradient-to-r from-orange-500 via-fuchsia-500 to-violet-600 text-white px-7 py-3 rounded-xl font-bold text-sm hover:opacity-95 transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-violet-500/30 active:scale-95 whitespace-nowrap">
                 {t.searchBtn}
               </button>
+            </div>
+
+            {/* Property Filters */}
+            <div className="w-full mb-4">
+              <PropertyFilters lang={lang} />
             </div>
 
             {/* Quick city chips */}
