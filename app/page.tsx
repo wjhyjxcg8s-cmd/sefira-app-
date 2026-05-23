@@ -574,19 +574,19 @@ export default function Home() {
           </div>
 
           {/* ── RIGHT: hero-bg.png with floating effect ──────────────── */}
-          <div className="hidden lg:flex items-center justify-center relative py-12">
+          <div className="flex items-center justify-center relative py-8 lg:py-12">
 
             {/* Outer glow halo — Orange → Magenta → Deep Purple */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-[460px] h-[460px] rounded-full bg-gradient-to-br from-orange-400/20 via-fuchsia-500/15 to-violet-600/20 blur-3xl" />
+              <div className="w-72 h-72 lg:w-[460px] lg:h-[460px] rounded-full bg-gradient-to-br from-orange-400/20 via-fuchsia-500/15 to-violet-600/20 blur-3xl" />
             </div>
             {/* Subtle inner ring */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-[340px] h-[340px] rounded-full border border-fuchsia-300/20 bg-gradient-to-br from-orange-500/5 via-pink-500/5 to-violet-500/5" />
+              <div className="w-52 h-52 lg:w-[340px] lg:h-[340px] rounded-full border border-fuchsia-300/20 bg-gradient-to-br from-orange-500/5 via-pink-500/5 to-violet-500/5" />
             </div>
 
-            {/* Floating image wrapper */}
-            <div className="relative animate-float z-10">
+            {/* Floating image wrapper — responsive width */}
+            <div className="relative animate-float z-10 w-64 sm:w-80 lg:w-[500px]">
 
               {/* Colored drop-shadow beneath image */}
               <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-3/4 h-10 bg-gradient-to-r from-orange-500/35 via-fuchsia-500/35 to-violet-600/35 blur-2xl rounded-full pointer-events-none" />
@@ -596,14 +596,14 @@ export default function Home() {
                 alt="Sefira — find your perfect home and roommate"
                 width={500}
                 height={520}
-                className="rounded-3xl object-contain drop-shadow-2xl ring-1 ring-white/40"
+                className="w-full h-auto rounded-3xl object-contain drop-shadow-2xl ring-1 ring-white/40"
                 priority
               />
 
               {/* Floating badge — top-left: verified users */}
-              <div className="absolute -top-5 -left-10 bg-white/95 border border-stone-100 rounded-2xl px-4 py-3 shadow-2xl shadow-stone-900/10 backdrop-blur-md animate-fade-in-up stagger-2 z-20">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-black text-sm shadow-lg shadow-emerald-500/30">
+              <div className="absolute -top-5 -left-5 sm:-left-10 bg-white/95 border border-stone-100 rounded-2xl px-3 py-2.5 sm:px-4 sm:py-3 shadow-2xl shadow-stone-900/10 backdrop-blur-md animate-fade-in-up stagger-2 z-20">
+                <div className="flex items-center gap-2 sm:gap-2.5">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-black text-sm shadow-lg shadow-emerald-500/30">
                     ✓
                   </div>
                   <div>
@@ -614,9 +614,9 @@ export default function Home() {
               </div>
 
               {/* Floating badge — bottom-right: star rating */}
-              <div className="absolute -bottom-5 -right-10 bg-white/95 border border-stone-100 rounded-2xl px-4 py-3 shadow-2xl shadow-stone-900/10 backdrop-blur-md animate-fade-in-up stagger-4 z-20">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 via-fuchsia-500 to-violet-600 flex items-center justify-center text-white font-black text-sm shadow-lg shadow-orange-500/30">
+              <div className="absolute -bottom-5 -right-5 sm:-right-10 bg-white/95 border border-stone-100 rounded-2xl px-3 py-2.5 sm:px-4 sm:py-3 shadow-2xl shadow-stone-900/10 backdrop-blur-md animate-fade-in-up stagger-4 z-20">
+                <div className="flex items-center gap-2 sm:gap-2.5">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-orange-500 via-fuchsia-500 to-violet-600 flex items-center justify-center text-white font-black text-sm shadow-lg shadow-orange-500/30">
                     ★
                   </div>
                   <div>
