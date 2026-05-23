@@ -430,129 +430,206 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* HERO */}
+      {/* HERO — split-screen */}
       <section className="relative min-h-screen flex flex-col justify-center pt-16 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-stone-50 via-amber-50/50 to-stone-50" />
-        <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-orange-400/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 w-72 h-72 bg-orange-300/10 rounded-full blur-3xl pointer-events-none -translate-x-1/2 -translate-y-1/2" />
-        <div className="relative max-w-7xl mx-auto px-5 py-24 text-center">
-          <div className="inline-flex items-center gap-2.5 bg-orange-50 border border-orange-200 rounded-full px-5 py-2 mb-10 text-sm text-orange-700 hover:bg-orange-100 hover:border-orange-300 transition-all duration-300 cursor-default shadow-lg shadow-orange-500/5 animate-fade-in-up">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
-            {t.heroBadge}
-          </div>
-          <h1 className="text-6xl sm:text-7xl lg:text-8xl font-black leading-tight tracking-tighter mb-7 animate-fade-in-up stagger-2">
-            <span className="text-stone-900">{t.heroLine1}</span>
-            <br />
-            <span className="bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 bg-clip-text text-transparent">
-              {t.heroLine2}
-            </span>
-            <br />
-            <span className="text-stone-900">{t.heroLine3}</span>
-          </h1>
-          <p className="text-lg sm:text-xl text-stone-600 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up stagger-3">
-            {t.heroP}
-          </p>
-          <div className="max-w-3xl mx-auto bg-white border border-stone-200 rounded-2xl p-2 flex flex-col sm:flex-row gap-2 mb-5 shadow-xl focus-within:border-orange-300 focus-within:shadow-orange-500/10 focus-within:shadow-2xl transition-all duration-300 animate-fade-in-up stagger-4">
-            <div className="flex bg-stone-100 rounded-xl p-1 gap-1 flex-shrink-0">
-              {t.searchTabs.map((tab, i) => (
+
+        {/* Layered background: warm base + Orange → Magenta → Deep Purple glow blobs */}
+        <div className="absolute inset-0 bg-gradient-to-br from-stone-50 via-orange-50/40 to-violet-50/20" />
+        <div className="absolute -top-24 -left-16 w-[600px] h-[600px] bg-orange-400/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-fuchsia-500/10 rounded-full blur-3xl pointer-events-none -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute -bottom-20 -right-16 w-[560px] h-[560px] bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
+
+        {/* Split-screen grid */}
+        <div className="relative max-w-7xl mx-auto px-5 py-16 grid lg:grid-cols-[1.15fr_0.85fr] gap-12 xl:gap-20 items-center w-full">
+
+          {/* ── LEFT: Typography + Search ───────────────────────────── */}
+          <div className="flex flex-col items-start">
+
+            {/* Trust badge */}
+            <div className="inline-flex items-center gap-2.5 bg-orange-50 border border-orange-200 rounded-full px-5 py-2 mb-8 text-sm text-orange-700 hover:bg-orange-100 hover:border-orange-300 transition-all duration-300 cursor-default shadow-lg shadow-orange-500/5 animate-fade-in-up backdrop-blur-sm">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
+              {t.heroBadge}
+            </div>
+
+            {/* Headline */}
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-[1.08] tracking-tighter mb-6 animate-fade-in-up stagger-2">
+              <span className="text-stone-900">{t.heroLine1}</span>
+              <br />
+              <span className="bg-gradient-to-r from-orange-500 via-fuchsia-500 to-violet-600 bg-clip-text text-transparent">
+                {t.heroLine2}
+              </span>
+              <br />
+              <span className="text-stone-900">{t.heroLine3}</span>
+            </h1>
+
+            {/* Subtitle */}
+            <p className="text-lg sm:text-xl text-stone-600 max-w-xl mb-8 leading-relaxed animate-fade-in-up stagger-3">
+              {t.heroP}
+            </p>
+
+            {/* Search bar */}
+            <div className="w-full bg-white border border-stone-200 rounded-2xl p-2 flex flex-col sm:flex-row flex-wrap gap-2 mb-4 shadow-xl focus-within:border-orange-300 focus-within:shadow-orange-500/10 focus-within:shadow-2xl transition-all duration-300 animate-fade-in-up stagger-4">
+              <div className="flex bg-stone-100 rounded-xl p-1 gap-1 flex-shrink-0">
+                {t.searchTabs.map((tab, i) => (
+                  <button
+                    key={tab}
+                    onClick={() => setSearchTabIdx(i)}
+                    className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 ${
+                      searchTabIdx === i
+                        ? "bg-gradient-to-r from-orange-500 via-fuchsia-500 to-violet-600 text-white shadow-lg shadow-orange-500/30"
+                        : "text-stone-500 hover:text-stone-900 hover:bg-white transition-all duration-200"
+                    }`}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
+              <select
+                value={selectedCountry}
+                onChange={(e) => { setSelectedCountry(e.target.value); setSelectedCity(""); }}
+                className="bg-white border border-stone-200 rounded-xl px-3 py-2.5 text-sm text-stone-600 outline-none cursor-pointer flex-shrink-0 hover:border-stone-400 focus:border-orange-400 transition-colors duration-200"
+              >
+                <option value="">{t.countryPlaceholder}</option>
+                <optgroup label={t.priorityGroupLabel}>
+                  {PRIORITY_COUNTRIES.map((c) => (
+                    <option key={`p-${c}`} value={c}>{c}</option>
+                  ))}
+                </optgroup>
+                <optgroup label={t.allCountriesLabel}>
+                  {countries
+                    .filter((c) => !PRIORITY_COUNTRIES.includes(c))
+                    .map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                </optgroup>
+              </select>
+              <select
+                value={selectedCity}
+                onChange={(e) => setSelectedCity(e.target.value)}
+                disabled={!selectedCountry || loadingCities}
+                className="bg-white border border-stone-200 rounded-xl px-3 py-2.5 text-sm text-stone-600 outline-none cursor-pointer flex-shrink-0 disabled:opacity-40 disabled:cursor-not-allowed hover:border-stone-400 focus:border-orange-400 transition-colors duration-200"
+              >
+                <option value="">{loadingCities ? t.loadingText : t.cityPlaceholder}</option>
+                {cities.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+              <input
+                type="text"
+                placeholder={t.searchPlaceholder}
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                className="flex-1 bg-transparent px-4 py-2.5 text-stone-800 placeholder:text-stone-400 outline-none text-sm min-w-0"
+              />
+              <button className="bg-gradient-to-r from-orange-500 via-fuchsia-500 to-violet-600 text-white px-7 py-3 rounded-xl font-bold text-sm hover:opacity-95 transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-violet-500/30 active:scale-95 whitespace-nowrap">
+                {t.searchBtn}
+              </button>
+            </div>
+
+            {/* Quick city chips */}
+            <div className="flex flex-wrap gap-2 mb-10">
+              {(selectedCountry && PRIORITY_CITIES[selectedCountry]
+                ? PRIORITY_CITIES[selectedCountry]
+                : selectedCountry && cities.length > 0
+                ? cities.slice(0, 6)
+                : ["Berlin", "Dubai", "Istanbul", "Barcelona", "Paris", "Rome"]
+              ).map((city) => (
                 <button
-                  key={tab}
-                  onClick={() => setSearchTabIdx(i)}
-                  className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 ${
-                    searchTabIdx === i
-                      ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/30"
-                      : "text-stone-500 hover:text-stone-900 hover:bg-white transition-all duration-200"
+                  key={city}
+                  onClick={() => setSelectedCity(city)}
+                  className={`px-4 py-1.5 text-xs font-medium rounded-full border transition-all duration-200 active:scale-95 hover:scale-105 ${
+                    selectedCity === city
+                      ? "bg-gradient-to-r from-orange-500 to-fuchsia-500 text-white border-transparent shadow-md shadow-orange-500/25"
+                      : "text-stone-600 bg-stone-100 border-stone-200 hover:border-stone-400 hover:text-stone-900 hover:bg-stone-200"
                   }`}
                 >
-                  {tab}
+                  {city}
                 </button>
               ))}
             </div>
-            <select
-              value={selectedCountry}
-              onChange={(e) => { setSelectedCountry(e.target.value); setSelectedCity(""); }}
-              className="bg-white border border-stone-200 rounded-xl px-3 py-2.5 text-sm text-stone-600 outline-none cursor-pointer flex-shrink-0 hover:border-stone-400 focus:border-orange-400 transition-colors duration-200"
-            >
-              <option value="">{t.countryPlaceholder}</option>
-              <optgroup label={t.priorityGroupLabel}>
-                {PRIORITY_COUNTRIES.map((c) => (
-                  <option key={`p-${c}`} value={c}>{c}</option>
+
+            {/* Social proof */}
+            <div className="flex items-center gap-4">
+              <div className="flex -space-x-3">
+                {[
+                  ["SK", "from-pink-500 to-rose-600"],
+                  ["AM", "from-blue-500 to-indigo-600"],
+                  ["YT", "from-violet-500 to-purple-600"],
+                  ["JW", "from-emerald-500 to-teal-600"],
+                  ["PS", "from-amber-500 to-orange-600"],
+                ].map(([init, grad], i) => (
+                  <div
+                    key={i}
+                    className={`w-10 h-10 rounded-full bg-gradient-to-br ${grad} border-2 border-stone-50 flex items-center justify-center text-xs font-bold shadow-lg`}
+                  >
+                    {init}
+                  </div>
                 ))}
-              </optgroup>
-              <optgroup label={t.allCountriesLabel}>
-                {countries
-                  .filter((c) => !PRIORITY_COUNTRIES.includes(c))
-                  .map((c) => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-              </optgroup>
-            </select>
-            <select
-              value={selectedCity}
-              onChange={(e) => setSelectedCity(e.target.value)}
-              disabled={!selectedCountry || loadingCities}
-              className="bg-white border border-stone-200 rounded-xl px-3 py-2.5 text-sm text-stone-600 outline-none cursor-pointer flex-shrink-0 disabled:opacity-40 disabled:cursor-not-allowed hover:border-stone-400 focus:border-orange-400 transition-colors duration-200"
-            >
-              <option value="">{loadingCities ? t.loadingText : t.cityPlaceholder}</option>
-              {cities.map((c) => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </select>
-            <input
-              type="text"
-              placeholder={t.searchPlaceholder}
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              className="flex-1 bg-transparent px-4 py-2.5 text-stone-800 placeholder:text-stone-400 outline-none text-sm min-w-0"
-            />
-            <button className="bg-gradient-to-r from-orange-500 to-amber-500 text-white px-7 py-3 rounded-xl font-bold text-sm hover:opacity-95 transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/40 active:scale-95 whitespace-nowrap">
-              {t.searchBtn}
-            </button>
-          </div>
-          <div className="flex flex-wrap justify-center gap-2 mb-14">
-            {(selectedCountry && PRIORITY_CITIES[selectedCountry]
-              ? PRIORITY_CITIES[selectedCountry]
-              : selectedCountry && cities.length > 0
-              ? cities.slice(0, 6)
-              : ["Berlin", "Dubai", "Istanbul", "Barcelona", "Paris", "Rome"]
-            ).map((city) => (
-              <button
-                key={city}
-                onClick={() => setSelectedCity(city)}
-                className={`px-4 py-1.5 text-xs font-medium rounded-full border transition-all duration-200 active:scale-95 hover:scale-105 ${
-                  selectedCity === city
-                    ? "bg-orange-500 text-white border-orange-500 shadow-md shadow-orange-500/25"
-                    : "text-stone-600 bg-stone-100 border-stone-200 hover:border-stone-400 hover:text-stone-900 hover:bg-stone-200"
-                }`}
-              >
-                {city}
-              </button>
-            ))}
-          </div>
-          <div className="flex items-center justify-center gap-4">
-            <div className="flex -space-x-3">
-              {[
-                ["SK", "from-pink-500 to-rose-600"],
-                ["AM", "from-blue-500 to-indigo-600"],
-                ["YT", "from-violet-500 to-purple-600"],
-                ["JW", "from-emerald-500 to-teal-600"],
-                ["PS", "from-amber-500 to-orange-600"],
-              ].map(([init, grad], i) => (
-                <div
-                  key={i}
-                  className={`w-10 h-10 rounded-full bg-gradient-to-br ${grad} border-2 border-stone-50 flex items-center justify-center text-xs font-bold shadow-lg`}
-                >
-                  {init}
-                </div>
-              ))}
+              </div>
+              <div className="text-left">
+                <div className="text-sm font-bold text-stone-900">{t.matchesThisWeek}</div>
+                <div className="text-xs text-stone-500">{t.reviewsLabel}</div>
+              </div>
             </div>
-            <div className="text-left">
-              <div className="text-sm font-bold text-stone-900">{t.matchesThisWeek}</div>
-              <div className="text-xs text-stone-500">{t.reviewsLabel}</div>
+          </div>
+
+          {/* ── RIGHT: hero-bg.png with floating effect ──────────────── */}
+          <div className="hidden lg:flex items-center justify-center relative py-12">
+
+            {/* Outer glow halo — Orange → Magenta → Deep Purple */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="w-[460px] h-[460px] rounded-full bg-gradient-to-br from-orange-400/20 via-fuchsia-500/15 to-violet-600/20 blur-3xl" />
+            </div>
+            {/* Subtle inner ring */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="w-[340px] h-[340px] rounded-full border border-fuchsia-300/20 bg-gradient-to-br from-orange-500/5 via-pink-500/5 to-violet-500/5" />
+            </div>
+
+            {/* Floating image wrapper */}
+            <div className="relative animate-float z-10">
+
+              {/* Colored drop-shadow beneath image */}
+              <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-3/4 h-10 bg-gradient-to-r from-orange-500/35 via-fuchsia-500/35 to-violet-600/35 blur-2xl rounded-full pointer-events-none" />
+
+              <Image
+                src="/images/hero-bg.png"
+                alt="Sefira — find your perfect home and roommate"
+                width={500}
+                height={520}
+                className="rounded-3xl object-contain drop-shadow-2xl ring-1 ring-white/40"
+                priority
+              />
+
+              {/* Floating badge — top-left: verified users */}
+              <div className="absolute -top-5 -left-10 bg-white/95 border border-stone-100 rounded-2xl px-4 py-3 shadow-2xl shadow-stone-900/10 backdrop-blur-md animate-fade-in-up stagger-2 z-20">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-black text-sm shadow-lg shadow-emerald-500/30">
+                    ✓
+                  </div>
+                  <div>
+                    <div className="text-xs font-black text-stone-900 leading-none mb-0.5">127K+</div>
+                    <div className="text-xs text-stone-400">Verified Users</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Floating badge — bottom-right: star rating */}
+              <div className="absolute -bottom-5 -right-10 bg-white/95 border border-stone-100 rounded-2xl px-4 py-3 shadow-2xl shadow-stone-900/10 backdrop-blur-md animate-fade-in-up stagger-4 z-20">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 via-fuchsia-500 to-violet-600 flex items-center justify-center text-white font-black text-sm shadow-lg shadow-orange-500/30">
+                    ★
+                  </div>
+                  <div>
+                    <div className="text-xs font-black text-stone-900 leading-none mb-0.5">4.9 Stars</div>
+                    <div className="text-xs text-stone-400">12K+ Reviews</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+
+        {/* Scroll indicator */}
         <div className="relative flex justify-center pb-10">
           <div className="w-6 h-10 border-2 border-stone-400/40 rounded-full flex justify-center pt-2 animate-bounce">
             <div className="w-1 h-2 bg-stone-400/40 rounded-full" />
