@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import RoommateCards from "@/app/components/RoommateCards";
 import InstagramCTA from "@/app/components/InstagramCTA";
 import PopularCities from "@/app/components/PopularCities";
 import PropertyFilters from "@/app/components/PropertyFilters";
@@ -1002,47 +1001,6 @@ export default function Home() {
               {s.city && <span className="text-xs text-stone-400">{s.city}</span>}
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* ── AI MATCH ──────────────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-5 py-20">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-600 bg-orange-500/10 border border-orange-400/30 rounded-full px-4 py-2 mb-7 shadow-lg shadow-orange-500/10">
-              {t.aiMatchBadge}
-            </div>
-            <h2 className="text-4xl sm:text-5xl font-black leading-tight text-stone-900 mb-6 tracking-tight">
-              {t.aiMatchLine1}
-              <br />
-              <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
-                {t.aiMatchLine2}
-              </span>
-            </h2>
-            <p className="text-lg text-stone-600 leading-relaxed mb-9">{t.aiMatchP}</p>
-            <div className="space-y-5 mb-9">
-              {t.compatBars.map((bar) => (
-                <div key={bar.label}>
-                  <div className="flex justify-between text-sm mb-2">
-                    <span className="text-stone-600 font-medium">{bar.label}</span>
-                    <span className="text-stone-900 font-bold">{bar.value}%</span>
-                  </div>
-                  <div className="h-2 bg-stone-100 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full bg-gradient-to-r ${bar.color} rounded-full transition-all duration-1000`}
-                      style={{ width: `${bar.value}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-            <button className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-7 py-3.5 rounded-xl font-bold hover:opacity-95 transition-all duration-200 shadow-xl shadow-orange-500/25 hover:shadow-2xl hover:shadow-orange-500/40 active:scale-95">
-              {t.findMatchesBtn}
-            </button>
-          </div>
-          <div className="flex justify-center lg:justify-end">
-            <RoommateCards lang={lang} currency={currency} currencySymbol={sym} />
-          </div>
         </div>
       </section>
 
