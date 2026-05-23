@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { type Currency, CURRENCY_SYMBOLS } from "@/app/lib/currency";
 
 type Lang = "tr" | "en";
 
@@ -206,10 +207,19 @@ function AmenityBadge({ icon, label, active, onToggle }: {
 
 /* ── Main component ─────────────────────────────────────────────────────────── */
 
-export default function PropertyFilters({ lang }: { lang: Lang }) {
+export default function PropertyFilters({
+  lang,
+  currency = "USD",
+  currencySymbol,
+}: {
+  lang: Lang;
+  currency?: Currency;
+  currencySymbol?: string;
+}) {
   const [open, setOpen] = useState(false);
   const [f, setF] = useState<FilterState>(INITIAL);
   const t = LABELS[lang];
+  const priceSym = currencySymbol ?? CURRENCY_SYMBOLS[currency];
 
   const set = <K extends keyof FilterState>(key: K, value: FilterState[K]) =>
     setF((prev) => ({ ...prev, [key]: value }));
@@ -329,9 +339,9 @@ export default function PropertyFilters({ lang }: { lang: Lang }) {
                     label={t.price}
                     minVal={f.priceMin} maxVal={f.priceMax}
                     onMin={(v) => set("priceMin", v)} onMax={(v) => set("priceMax", v)}
-                    prefix="€"
+                    prefix={priceSym}
                   />
-                  <SingleMaxInput label={t.deposit} value={f.depositMax} onChange={(v) => set("depositMax", v)} prefix="€" />
+                  <SingleMaxInput label={t.deposit} value={f.depositMax} onChange={(v) => set("depositMax", v)} prefix={priceSym} />
                   <TriToggle label={t.bills} value={f.billsIncluded} t={t} onChange={(v) => set("billsIncluded", v)} />
                 </div>
 

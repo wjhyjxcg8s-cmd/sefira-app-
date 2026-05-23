@@ -52,3 +52,41 @@ body {
 
 /* Branded text selection */
 ::selection { background: rgba(99, 102, 241, 0.35); color: white; }
+
+/* ─── Budget range slider ─────────────────────────────────────────────────── */
+.budget-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 99px;
+  outline: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.budget-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f97316, #d97706);
+  cursor: grab;
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.18), 0 2px 8px rgba(249, 115, 22, 0.45);
+  border: 3px solid white;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.budget-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+  box-shadow: 0 0 0 7px rgba(249, 115, 22, 0.22), 0 4px 14px rgba(249, 115, 22, 0.5);
+}
+.budget-slider:active::-webkit-slider-thumb { cursor: grabbing; transform: scale(1.1); }
+.budget-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f97316, #d97706);
+  cursor: grab;
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.18), 0 2px 8px rgba(249, 115, 22, 0.45);
+  border: 3px solid white;
+}
+.budget-slider:focus { outline: none; }

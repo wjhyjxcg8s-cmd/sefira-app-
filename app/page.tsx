@@ -6,6 +6,12 @@ import RoommateCards from "@/app/components/RoommateCards";
 import InstagramCTA from "@/app/components/InstagramCTA";
 import PopularCities from "@/app/components/PopularCities";
 import PropertyFilters from "@/app/components/PropertyFilters";
+import {
+  type Currency,
+  CURRENCY_SYMBOLS,
+  convertPrice,
+  displayPrice,
+} from "@/app/lib/currency";
 
 // ─── i18n ─────────────────────────────────────────────────────────────────────
 const translations = {
@@ -29,14 +35,32 @@ const translations = {
     heroLine2: "ve Ev Arkadaşınızı",
     heroLine3: "Bulun.",
     heroP: "Yapay zeka destekli ev arkadaşı eşleştirme ve premium kiralık ilan keşfi. Yurt dışında yaşayanlar, öğrenciler ve modern profesyoneller için tasarlandı.",
-    searchTabs: ["Oda", "Ev Arkadaşı", "Daire"],
+    // ── Wizard ──
+    wizardTitle: "Ne arıyorsunuz?",
+    optionSeekingTitle: "Oda / Ev Arkadaşı Arıyorum",
+    optionSeekingSubtitle: "به دنبال خانه یا هم‌خونه می‌گردم",
+    optionOfferingTitle: "Ev Arkadaşı Arıyorum",
+    optionOfferingSubtitle: "اتاق دارم و به دنبال هم‌خونه هستم",
+    genderStep: "Tercih Edilen Cinsiyet",
+    genderStepSub: "جنسیت هم‌خانه",
+    genderMale: "Erkek",
+    genderFemale: "Kadın",
+    genderAny: "Farketmez",
+    budgetStep: "Aylık Bütçe",
+    budgetStepSub: "بودجه ماهانه",
+    locationStep: "Nerede Arıyorsunuz?",
+    locationStepSub: "کجا دنبال می‌گردید؟",
+    backBtn: "Geri",
+    nextBtn: "İleri",
+    searchNowBtn: "Hemen Ara",
+    seekingChip: "Oda arıyor",
+    offeringChip: "Oda sunuyor",
     countryPlaceholder: "Ülke",
     cityPlaceholder: "Şehir",
     loadingText: "Yükleniyor…",
     priorityGroupLabel: "⭐ Popüler Ülkeler",
     allCountriesLabel: "Tüm Ülkeler",
     searchPlaceholder: "Şehir, mahalle veya anahtar kelime ara...",
-    searchBtn: "Ara",
     matchesThisWeek: "Bu hafta 2.847 eşleşme",
     reviewsLabel: "12.000'den fazla değerlendirmeden 4.9 yıldız",
     storiesTitle: "Topluluk Hikayeleri",
@@ -133,14 +157,32 @@ const translations = {
     heroLine2: "Perfect Home",
     heroLine3: "and Roommate.",
     heroP: "AI-powered roommate matching meets premium rental discovery. Built for expats, students, and modern professionals.",
-    searchTabs: ["Room", "Roommate", "Flat"],
+    // ── Wizard ──
+    wizardTitle: "What are you looking for?",
+    optionSeekingTitle: "I'm looking for a room / housemate",
+    optionSeekingSubtitle: "به دنبال خانه یا هم‌خونه می‌گردم",
+    optionOfferingTitle: "I have a room and need a housemate",
+    optionOfferingSubtitle: "اتاق دارم و به دنبال هم‌خونه هستم",
+    genderStep: "Preferred Housemate Gender",
+    genderStepSub: "جنسیت هم‌خانه",
+    genderMale: "Male",
+    genderFemale: "Female",
+    genderAny: "Any",
+    budgetStep: "Monthly Budget",
+    budgetStepSub: "بودجه ماهانه",
+    locationStep: "Where are you looking?",
+    locationStepSub: "کجا دنبال می‌گردید؟",
+    backBtn: "Back",
+    nextBtn: "Next",
+    searchNowBtn: "Search Now",
+    seekingChip: "Looking for a room",
+    offeringChip: "Offering a room",
     countryPlaceholder: "Country",
     cityPlaceholder: "City",
     loadingText: "Loading…",
     priorityGroupLabel: "⭐ Top Destinations",
     allCountriesLabel: "All Countries",
     searchPlaceholder: "Search city, neighborhood, or keyword...",
-    searchBtn: "Search",
     matchesThisWeek: "2,847 matches this week",
     reviewsLabel: "4.9 stars from 12,000+ reviews",
     storiesTitle: "Community Stories",
@@ -260,38 +302,34 @@ const matchProfiles = [
 const listings = [
   {
     id: 1, title: "Modern Studio near Alexanderplatz", city: "Berlin", country: "Germany",
-    price: 850, sym: "EUR", rating: 4.9, reviews: 127, type: "Private Room",
+    price: 850, sym: "EUR" as const, rating: 4.9, reviews: 127, type: "Private Room",
     available: "Jun 1", gradient: "from-blue-600 via-indigo-700 to-violet-800",
     verified: true, amenities: ["WiFi", "Gym", "Balcony"], tag: "Most Popular",
     tagColor: "from-blue-500 to-indigo-600", gender: "Any",
-    // Unsplash: bright modern apartment living room
     image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: 2, title: "Luxury Sea-View Apartment", city: "Dubai", country: "UAE",
-    price: 1200, sym: "USD", rating: 4.8, reviews: 89, type: "Entire Flat",
+    price: 1200, sym: "USD" as const, rating: 4.8, reviews: 89, type: "Entire Flat",
     available: "Now", gradient: "from-amber-500 via-orange-600 to-rose-700",
     verified: true, amenities: ["Pool", "Gym", "Concierge"], tag: "New",
     tagColor: "from-amber-500 to-orange-600", gender: "Male",
-    // Unsplash: luxury penthouse / high-rise interior
     image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: 3, title: "Charming Room near Bosphorus", city: "Istanbul", country: "Turkey",
-    price: 450, sym: "USD", rating: 4.7, reviews: 204, type: "Private Room",
+    price: 450, sym: "USD" as const, rating: 4.7, reviews: 204, type: "Private Room",
     available: "May 25", gradient: "from-emerald-500 via-teal-600 to-cyan-700",
     verified: false, amenities: ["WiFi", "Kitchen", "Sea View"], tag: "Best Value",
     tagColor: "from-emerald-500 to-teal-600", gender: "Any",
-    // Unsplash: cozy bright room with natural light
     image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: 4, title: "Designer Loft in Eixample", city: "Barcelona", country: "Spain",
-    price: 780, sym: "EUR", rating: 5.0, reviews: 56, type: "Private Room",
+    price: 780, sym: "EUR" as const, rating: 5.0, reviews: 56, type: "Private Room",
     available: "Jun 15", gradient: "from-rose-500 via-pink-600 to-fuchsia-700",
     verified: true, amenities: ["WiFi", "Rooftop", "A/C"], tag: "Top Rated",
     tagColor: "from-rose-500 to-pink-600", gender: "Female",
-    // Unsplash: designer loft with exposed brick and warm light
     image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
   },
 ];
@@ -334,18 +372,32 @@ const PRIORITY_CITIES: Record<string, string[]> = {
   "South Korea":          ["Seoul", "Busan", "Incheon", "Daegu", "Daejeon", "Gwangju"],
 };
 
+// ─── Wizard types ─────────────────────────────────────────────────────────────
+type WizardMode = "seeking" | "offering" | null;
+type GenderPref = "male" | "female" | "any";
+
 export default function Home() {
+  // ── Existing state ────────────────────────────────────────────────────────
   const [activeFilter, setActiveFilter] = useState("all");
   const [likedListings, setLikedListings] = useState<number[]>([]);
   const [likedProfiles, setLikedProfiles] = useState<number[]>([]);
   const [searchInput, setSearchInput] = useState("");
-  const [searchTabIdx, setSearchTabIdx] = useState(0);
   const [countries, setCountries] = useState<string[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [cities, setCities] = useState<string[]>([]);
   const [selectedCity, setSelectedCity] = useState("");
   const [loadingCities, setLoadingCities] = useState(false);
   const [lang, setLang] = useState<Lang>("tr");
+
+  // ── Currency ──────────────────────────────────────────────────────────────
+  const [currency, setCurrency] = useState<Currency>("USD");
+  const sym = CURRENCY_SYMBOLS[currency];
+
+  // ── Wizard ────────────────────────────────────────────────────────────────
+  const [wizardMode, setWizardMode] = useState<WizardMode>(null);
+  const [wizardStep, setWizardStep] = useState(1);
+  const [genderPref, setGenderPref] = useState<GenderPref>("any");
+  const [budgetUSD, setBudgetUSD] = useState(800);
 
   const t = translations[lang];
 
@@ -379,12 +431,16 @@ export default function Home() {
       .finally(() => setLoadingCities(false));
   }, [selectedCountry]);
 
+  const sliderPct = ((budgetUSD - 100) / 4900) * 100;
+
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900 overflow-x-hidden">
 
-      {/* NAVBAR */}
+      {/* ── NAVBAR ────────────────────────────────────────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-stone-200 shadow-sm shadow-stone-200/80">
-        <div className="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between gap-6">
+        <div className="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
+
+          {/* Logo */}
           <div className="flex items-center gap-2 flex-shrink-0 group cursor-pointer">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-sm shadow-lg shadow-orange-500/30 group-hover:scale-110 group-hover:shadow-orange-500/50 transition-all duration-300">
               S
@@ -393,6 +449,8 @@ export default function Home() {
               Sefira
             </span>
           </div>
+
+          {/* Nav links */}
           <div className="hidden lg:flex items-center gap-7">
             {t.navLinks.map((l) => (
               <a key={l.label} href={l.href} className="text-sm text-stone-500 hover:text-stone-900 transition-all duration-200 font-medium relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-orange-500 after:transition-all after:duration-300 hover:after:w-full">
@@ -400,7 +458,28 @@ export default function Home() {
               </a>
             ))}
           </div>
-          <div className="flex items-center gap-3 flex-shrink-0">
+
+          {/* Right controls */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+
+            {/* Currency switcher */}
+            <div className="flex bg-stone-100 border border-stone-200 rounded-lg p-0.5 gap-0.5">
+              {(["USD", "EUR", "TRY"] as const).map((cur) => (
+                <button
+                  key={cur}
+                  onClick={() => setCurrency(cur)}
+                  className={`px-2 py-1.5 rounded-md text-[11px] font-black transition-all duration-200 whitespace-nowrap ${
+                    currency === cur
+                      ? "bg-white text-stone-900 shadow-sm"
+                      : "text-stone-400 hover:text-stone-700"
+                  }`}
+                >
+                  {CURRENCY_SYMBOLS[cur]}&thinsp;{cur}
+                </button>
+              ))}
+            </div>
+
+            {/* Lang toggle */}
             <button
               onClick={() => setLang((l) => (l === "tr" ? "en" : "tr"))}
               className="flex items-center gap-1.5 text-xs font-bold bg-stone-100 border border-stone-200 rounded-lg px-3 py-2.5 sm:py-2 text-stone-600 hover:text-stone-900 hover:border-stone-400 hover:bg-stone-200 transition-all duration-200 active:scale-95"
@@ -410,9 +489,11 @@ export default function Home() {
               <span className="hidden sm:inline text-stone-400">·</span>
               <span className="hidden sm:inline text-stone-400">{lang === "tr" ? "EN" : "TR"}</span>
             </button>
+
             <button className="hidden sm:block text-sm text-stone-500 hover:text-stone-900 transition-all duration-200 font-medium px-3 py-2 rounded-lg hover:bg-stone-100">
               {t.signIn}
             </button>
+
             <a
               href="https://www.instagram.com/sefira.app"
               target="_blank"
@@ -424,6 +505,7 @@ export default function Home() {
                 <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
               </svg>
             </a>
+
             <button className="text-sm font-bold bg-gradient-to-r from-orange-500 to-amber-500 text-white px-5 py-2.5 rounded-xl hover:opacity-95 transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/40 active:scale-95">
               {t.getStarted}
             </button>
@@ -431,19 +513,18 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* HERO — split-screen */}
+      {/* ── HERO ──────────────────────────────────────────────────────────────── */}
       <section className="relative min-h-screen flex flex-col justify-center pt-16 overflow-hidden">
 
-        {/* Layered background: warm base + Orange → Magenta → Deep Purple glow blobs */}
+        {/* Layered background glows */}
         <div className="absolute inset-0 bg-gradient-to-br from-stone-50 via-orange-50/40 to-violet-50/20" />
         <div className="absolute -top-24 -left-16 w-[600px] h-[600px] bg-orange-400/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-fuchsia-500/10 rounded-full blur-3xl pointer-events-none -translate-x-1/2 -translate-y-1/2" />
         <div className="absolute -bottom-20 -right-16 w-[560px] h-[560px] bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
 
-        {/* Split-screen grid */}
         <div className="relative max-w-7xl mx-auto px-5 py-16 grid lg:grid-cols-[1.15fr_0.85fr] gap-12 xl:gap-20 items-center w-full">
 
-          {/* ── LEFT: Typography + Search ───────────────────────────── */}
+          {/* ── LEFT: Typography + Wizard ───────────────────────────────────── */}
           <div className="flex flex-col items-start">
 
             {/* Trust badge */}
@@ -468,90 +549,314 @@ export default function Home() {
               {t.heroP}
             </p>
 
-            {/* Search bar */}
-            <div className="w-full bg-white border border-stone-200 rounded-2xl p-2 flex flex-col sm:flex-row flex-wrap gap-2 mb-4 shadow-xl focus-within:border-orange-300 focus-within:shadow-orange-500/10 focus-within:shadow-2xl transition-all duration-300 animate-fade-in-up stagger-4">
-              <div className="flex bg-stone-100 rounded-xl p-1 gap-1 flex-shrink-0">
-                {t.searchTabs.map((tab, i) => (
-                  <button
-                    key={tab}
-                    onClick={() => setSearchTabIdx(i)}
-                    className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 ${
-                      searchTabIdx === i
-                        ? "bg-gradient-to-r from-orange-500 via-fuchsia-500 to-violet-600 text-white shadow-lg shadow-orange-500/30"
-                        : "text-stone-500 hover:text-stone-900 hover:bg-white transition-all duration-200"
-                    }`}
-                  >
-                    {tab}
-                  </button>
-                ))}
-              </div>
-              <select
-                value={selectedCountry}
-                onChange={(e) => { setSelectedCountry(e.target.value); setSelectedCity(""); }}
-                className="bg-white border border-stone-200 rounded-xl px-3 py-2.5 text-sm text-stone-600 outline-none cursor-pointer flex-shrink-0 hover:border-stone-400 focus:border-orange-400 transition-colors duration-200"
-              >
-                <option value="">{t.countryPlaceholder}</option>
-                <optgroup label={t.priorityGroupLabel}>
-                  {PRIORITY_COUNTRIES.map((c) => (
-                    <option key={`p-${c}`} value={c}>{c}</option>
-                  ))}
-                </optgroup>
-                <optgroup label={t.allCountriesLabel}>
-                  {countries
-                    .filter((c) => !PRIORITY_COUNTRIES.includes(c))
-                    .map((c) => (
-                      <option key={c} value={c}>{c}</option>
-                    ))}
-                </optgroup>
-              </select>
-              <select
-                value={selectedCity}
-                onChange={(e) => setSelectedCity(e.target.value)}
-                disabled={!selectedCountry || loadingCities}
-                className="bg-white border border-stone-200 rounded-xl px-3 py-2.5 text-sm text-stone-600 outline-none cursor-pointer flex-shrink-0 disabled:opacity-40 disabled:cursor-not-allowed hover:border-stone-400 focus:border-orange-400 transition-colors duration-200"
-              >
-                <option value="">{loadingCities ? t.loadingText : t.cityPlaceholder}</option>
-                {cities.map((c) => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
-              <input
-                type="text"
-                placeholder={t.searchPlaceholder}
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                className="flex-1 bg-transparent px-4 py-2.5 text-stone-800 placeholder:text-stone-400 outline-none text-sm min-w-0"
-              />
-              <button className="bg-gradient-to-r from-orange-500 via-fuchsia-500 to-violet-600 text-white px-7 py-3 rounded-xl font-bold text-sm hover:opacity-95 transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-violet-500/30 active:scale-95 whitespace-nowrap">
-                {t.searchBtn}
-              </button>
+            {/* ── SEARCH WIZARD ─────────────────────────────────────────────── */}
+            <div className="w-full mb-10 animate-fade-in-up stagger-4">
+
+              {wizardMode === null ? (
+                /* ── Mode selector ── */
+                <div>
+                  <p className="text-[11px] font-black text-stone-400 uppercase tracking-widest mb-3.5">
+                    {t.wizardTitle}
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                    {/* Option A: Seeking */}
+                    <button
+                      onClick={() => { setWizardMode("seeking"); setWizardStep(1); }}
+                      className="group relative text-left p-5 rounded-2xl border-2 border-stone-200 bg-white hover:border-orange-300 hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-0.5 transition-all duration-300 active:scale-[0.98] overflow-hidden"
+                    >
+                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-orange-500/0 via-amber-500/0 to-fuchsia-500/0 group-hover:from-orange-500/5 group-hover:via-amber-500/3 group-hover:to-fuchsia-500/5 transition-all duration-500" />
+                      <div className="relative z-10">
+                        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-xl mb-4 shadow-lg shadow-orange-500/30 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-orange-500/40 transition-all duration-300">
+                          🔍
+                        </div>
+                        <p className="font-black text-stone-900 text-sm leading-snug mb-1.5">
+                          {t.optionSeekingTitle}
+                        </p>
+                        <p className="text-xs text-stone-400 font-medium leading-relaxed" dir="rtl">
+                          {t.optionSeekingSubtitle}
+                        </p>
+                      </div>
+                      <div className="absolute top-4 right-4 w-5 h-5 rounded-full border-2 border-stone-200 group-hover:border-orange-400 group-hover:bg-orange-50 transition-all duration-300 flex items-center justify-center">
+                        <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                      </div>
+                    </button>
+
+                    {/* Option B: Offering */}
+                    <button
+                      onClick={() => { setWizardMode("offering"); setWizardStep(1); }}
+                      className="group relative text-left p-5 rounded-2xl border-2 border-stone-200 bg-white hover:border-violet-300 hover:shadow-2xl hover:shadow-violet-500/10 hover:-translate-y-0.5 transition-all duration-300 active:scale-[0.98] overflow-hidden"
+                    >
+                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-violet-500/0 via-fuchsia-500/0 to-pink-500/0 group-hover:from-violet-500/5 group-hover:via-fuchsia-500/3 group-hover:to-pink-500/5 transition-all duration-500" />
+                      <div className="relative z-10">
+                        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center text-xl mb-4 shadow-lg shadow-violet-500/30 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-violet-500/40 transition-all duration-300">
+                          🏠
+                        </div>
+                        <p className="font-black text-stone-900 text-sm leading-snug mb-1.5">
+                          {t.optionOfferingTitle}
+                        </p>
+                        <p className="text-xs text-stone-400 font-medium leading-relaxed" dir="rtl">
+                          {t.optionOfferingSubtitle}
+                        </p>
+                      </div>
+                      <div className="absolute top-4 right-4 w-5 h-5 rounded-full border-2 border-stone-200 group-hover:border-violet-400 group-hover:bg-violet-50 transition-all duration-300 flex items-center justify-center">
+                        <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="text-violet-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+              ) : (
+                /* ── Wizard container ── */
+                <div className="bg-white/97 backdrop-blur-2xl border border-stone-200/90 rounded-2xl shadow-2xl shadow-stone-900/8 overflow-hidden">
+
+                  {/* Wizard header */}
+                  <div className="flex items-center justify-between px-5 pt-4 pb-3.5 border-b border-stone-100 bg-gradient-to-r from-stone-50/60 to-transparent">
+                    <button
+                      onClick={() => {
+                        if (wizardStep === 1) { setWizardMode(null); }
+                        else setWizardStep((s) => s - 1);
+                      }}
+                      className="flex items-center gap-1.5 text-xs font-bold text-stone-500 hover:text-stone-900 transition-all duration-200 px-2 py-1.5 rounded-lg hover:bg-stone-100 active:scale-95 -ml-1"
+                    >
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                        <polyline points="15 18 9 12 15 6" />
+                      </svg>
+                      {t.backBtn}
+                    </button>
+
+                    {/* Step pills */}
+                    <div className="flex items-center gap-1.5">
+                      {[1, 2, 3].map((s) => (
+                        <div
+                          key={s}
+                          className={`rounded-full transition-all duration-400 ${
+                            wizardStep >= s
+                              ? "w-6 h-2 bg-gradient-to-r from-orange-500 to-amber-500 shadow-sm shadow-orange-500/40"
+                              : "w-2 h-2 bg-stone-200"
+                          }`}
+                        />
+                      ))}
+                    </div>
+
+                    {/* Mode chip */}
+                    <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black ${
+                      wizardMode === "seeking"
+                        ? "bg-orange-50 text-orange-600 border border-orange-200"
+                        : "bg-violet-50 text-violet-600 border border-violet-200"
+                    }`}>
+                      <span>{wizardMode === "seeking" ? "🔍" : "🏠"}</span>
+                      <span>{wizardMode === "seeking" ? t.seekingChip : t.offeringChip}</span>
+                    </div>
+                  </div>
+
+                  {/* Step body */}
+                  <div className="px-5 pt-5 pb-4">
+
+                    {/* Step 1: Gender preference */}
+                    {wizardStep === 1 && (
+                      <div className="animate-fade-in-up">
+                        <h3 className="font-black text-stone-900 text-base mb-0.5 leading-tight">
+                          {t.genderStep}
+                        </h3>
+                        <p className="text-xs text-stone-400 font-medium mb-5" dir="rtl">
+                          {t.genderStepSub}
+                        </p>
+                        <div className="grid grid-cols-3 gap-3">
+                          {(["male", "female", "any"] as const).map((g) => (
+                            <button
+                              key={g}
+                              onClick={() => setGenderPref(g)}
+                              className={`relative flex flex-col items-center gap-2.5 py-4 px-2 rounded-xl border-2 font-bold transition-all duration-200 active:scale-95 ${
+                                genderPref === g
+                                  ? g === "male"
+                                    ? "border-blue-400 bg-blue-50 text-blue-700 shadow-lg shadow-blue-500/15 scale-[1.02]"
+                                    : g === "female"
+                                    ? "border-rose-400 bg-rose-50 text-rose-700 shadow-lg shadow-rose-500/15 scale-[1.02]"
+                                    : "border-orange-400 bg-orange-50 text-orange-700 shadow-lg shadow-orange-500/15 scale-[1.02]"
+                                  : "border-stone-200 bg-stone-50/80 text-stone-500 hover:border-stone-300 hover:bg-white hover:text-stone-700"
+                              }`}
+                            >
+                              <span className="text-2xl leading-none">
+                                {g === "male" ? "👨" : g === "female" ? "👩" : "👥"}
+                              </span>
+                              <span className="text-xs font-black tracking-tight">
+                                {g === "male" ? t.genderMale : g === "female" ? t.genderFemale : t.genderAny}
+                              </span>
+                              {genderPref === g && (
+                                <span className="absolute top-2 right-2 w-4 h-4 rounded-full bg-current/20 flex items-center justify-center text-[9px]">✓</span>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Step 2: Budget */}
+                    {wizardStep === 2 && (
+                      <div className="animate-fade-in-up">
+                        <div className="flex items-center justify-between mb-0.5">
+                          <h3 className="font-black text-stone-900 text-base leading-tight">
+                            {t.budgetStep}
+                          </h3>
+                          {/* Inline currency switcher */}
+                          <div className="flex bg-stone-100 rounded-lg p-0.5 gap-0.5">
+                            {(["USD", "EUR", "TRY"] as const).map((cur) => (
+                              <button
+                                key={cur}
+                                onClick={() => setCurrency(cur)}
+                                className={`px-2 py-1 rounded-md text-[10px] font-black transition-all duration-200 ${
+                                  currency === cur
+                                    ? "bg-white text-stone-900 shadow-sm"
+                                    : "text-stone-400 hover:text-stone-700"
+                                }`}
+                              >
+                                {CURRENCY_SYMBOLS[cur]}&thinsp;{cur}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <p className="text-xs text-stone-400 font-medium mb-6" dir="rtl">
+                          {t.budgetStepSub}
+                        </p>
+
+                        {/* Live budget display */}
+                        <div className="text-center mb-6">
+                          <span className="text-5xl font-black bg-gradient-to-r from-orange-500 via-fuchsia-500 to-violet-600 bg-clip-text text-transparent tracking-tight">
+                            {displayPrice(budgetUSD, "USD", currency)}
+                          </span>
+                          <span className="text-stone-400 font-medium ml-2 text-sm">{t.perMonth}</span>
+                        </div>
+
+                        {/* Styled range slider */}
+                        <div className="px-1 pb-1">
+                          <input
+                            type="range"
+                            min={100}
+                            max={5000}
+                            step={50}
+                            value={budgetUSD}
+                            onChange={(e) => setBudgetUSD(Number(e.target.value))}
+                            className="budget-slider w-full"
+                            style={{
+                              background: `linear-gradient(to right, #f97316 ${sliderPct}%, #e7e5e4 ${sliderPct}%)`,
+                            }}
+                          />
+                          <div className="flex justify-between text-xs text-stone-400 font-medium mt-2.5">
+                            <span>{sym}100</span>
+                            <span>{sym}{convertPrice(5000, "USD", currency).toLocaleString()}+</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Step 3: Location */}
+                    {wizardStep === 3 && (
+                      <div className="animate-fade-in-up">
+                        <h3 className="font-black text-stone-900 text-base mb-0.5 leading-tight">
+                          {t.locationStep}
+                        </h3>
+                        <p className="text-xs text-stone-400 font-medium mb-5" dir="rtl">
+                          {t.locationStepSub}
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-2 mb-4">
+                          <select
+                            value={selectedCountry}
+                            onChange={(e) => { setSelectedCountry(e.target.value); setSelectedCity(""); }}
+                            className="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2.5 text-sm text-stone-600 outline-none cursor-pointer hover:border-stone-400 focus:border-orange-400 transition-colors duration-200"
+                          >
+                            <option value="">{t.countryPlaceholder}</option>
+                            <optgroup label={t.priorityGroupLabel}>
+                              {PRIORITY_COUNTRIES.map((c) => (
+                                <option key={`p-${c}`} value={c}>{c}</option>
+                              ))}
+                            </optgroup>
+                            <optgroup label={t.allCountriesLabel}>
+                              {countries
+                                .filter((c) => !PRIORITY_COUNTRIES.includes(c))
+                                .map((c) => (
+                                  <option key={c} value={c}>{c}</option>
+                                ))}
+                            </optgroup>
+                          </select>
+                          <select
+                            value={selectedCity}
+                            onChange={(e) => setSelectedCity(e.target.value)}
+                            disabled={!selectedCountry || loadingCities}
+                            className="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2.5 text-sm text-stone-600 outline-none cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed hover:border-stone-400 focus:border-orange-400 transition-colors duration-200"
+                          >
+                            <option value="">{loadingCities ? t.loadingText : t.cityPlaceholder}</option>
+                            {cities.map((c) => (
+                              <option key={c} value={c}>{c}</option>
+                            ))}
+                          </select>
+                          <input
+                            type="text"
+                            placeholder={t.searchPlaceholder}
+                            value={searchInput}
+                            onChange={(e) => setSearchInput(e.target.value)}
+                            className="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2.5 text-stone-800 placeholder:text-stone-400 outline-none text-sm focus:border-orange-400 transition-colors duration-200 min-w-0"
+                          />
+                        </div>
+                        {/* Quick city chips */}
+                        <div className="flex flex-wrap gap-2">
+                          {(selectedCountry && PRIORITY_CITIES[selectedCountry]
+                            ? PRIORITY_CITIES[selectedCountry]
+                            : selectedCountry && cities.length > 0
+                            ? cities.slice(0, 6)
+                            : ["Berlin", "Dubai", "Istanbul", "Barcelona", "Paris", "Rome"]
+                          ).map((city) => (
+                            <button
+                              key={city}
+                              onClick={() => setSelectedCity(city)}
+                              className={`px-3.5 py-1.5 text-xs font-medium rounded-full border transition-all duration-200 active:scale-95 hover:scale-105 ${
+                                selectedCity === city
+                                  ? "bg-gradient-to-r from-orange-500 to-fuchsia-500 text-white border-transparent shadow-md shadow-orange-500/25"
+                                  : "text-stone-600 bg-stone-100 border-stone-200 hover:border-stone-400 hover:text-stone-900 hover:bg-stone-200"
+                              }`}
+                            >
+                              {city}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Wizard CTA button */}
+                  <div className="px-5 pb-5">
+                    <button
+                      onClick={() => { if (wizardStep < 3) setWizardStep((s) => s + 1); }}
+                      className="w-full py-3.5 rounded-xl font-black text-sm bg-gradient-to-r from-orange-500 via-fuchsia-500 to-violet-600 text-white hover:opacity-95 transition-all duration-200 shadow-xl shadow-orange-500/25 hover:shadow-2xl hover:shadow-violet-500/30 active:scale-[0.98] flex items-center justify-center gap-2.5"
+                    >
+                      {wizardStep === 3 ? (
+                        <>
+                          {t.searchNowBtn}
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+                          </svg>
+                        </>
+                      ) : (
+                        <>
+                          {t.nextBtn}
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                            <polyline points="9 18 15 12 9 6" />
+                          </svg>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Property Filters */}
-            <div className="w-full mb-4">
-              <PropertyFilters lang={lang} />
-            </div>
-
-            {/* Quick city chips */}
-            <div className="flex flex-wrap gap-2 mb-10">
-              {(selectedCountry && PRIORITY_CITIES[selectedCountry]
-                ? PRIORITY_CITIES[selectedCountry]
-                : selectedCountry && cities.length > 0
-                ? cities.slice(0, 6)
-                : ["Berlin", "Dubai", "Istanbul", "Barcelona", "Paris", "Rome"]
-              ).map((city) => (
-                <button
-                  key={city}
-                  onClick={() => setSelectedCity(city)}
-                  className={`px-4 py-1.5 text-xs font-medium rounded-full border transition-all duration-200 active:scale-95 hover:scale-105 ${
-                    selectedCity === city
-                      ? "bg-gradient-to-r from-orange-500 to-fuchsia-500 text-white border-transparent shadow-md shadow-orange-500/25"
-                      : "text-stone-600 bg-stone-100 border-stone-200 hover:border-stone-400 hover:text-stone-900 hover:bg-stone-200"
-                  }`}
-                >
-                  {city}
-                </button>
-              ))}
+            {/* Advanced property filters */}
+            <div className="w-full mb-8">
+              <PropertyFilters lang={lang} currency={currency} currencySymbol={sym} />
             </div>
 
             {/* Social proof */}
@@ -579,24 +884,16 @@ export default function Home() {
             </div>
           </div>
 
-          {/* ── RIGHT: hero-bg.png with floating effect ──────────────── */}
+          {/* ── RIGHT: hero-bg.png with floating effect ──────────────────────── */}
           <div className="flex items-center justify-center relative py-8 lg:py-12">
-
-            {/* Outer glow halo — Orange → Magenta → Deep Purple */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="w-72 h-72 lg:w-[460px] lg:h-[460px] rounded-full bg-gradient-to-br from-orange-400/20 via-fuchsia-500/15 to-violet-600/20 blur-3xl" />
             </div>
-            {/* Subtle inner ring */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="w-52 h-52 lg:w-[340px] lg:h-[340px] rounded-full border border-fuchsia-300/20 bg-gradient-to-br from-orange-500/5 via-pink-500/5 to-violet-500/5" />
             </div>
-
-            {/* Floating image wrapper — responsive width */}
             <div className="relative animate-float z-10 w-64 sm:w-80 lg:w-[500px]">
-
-              {/* Colored drop-shadow beneath image */}
               <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-3/4 h-10 bg-gradient-to-r from-orange-500/35 via-fuchsia-500/35 to-violet-600/35 blur-2xl rounded-full pointer-events-none" />
-
               <Image
                 src="/images/hero-bg.png"
                 alt="Sefira — find your perfect home and roommate"
@@ -605,8 +902,6 @@ export default function Home() {
                 className="w-full h-auto rounded-3xl object-contain drop-shadow-2xl ring-1 ring-white/40"
                 priority
               />
-
-              {/* Floating badge — top-left: verified users */}
               <div className="absolute -top-5 -left-5 sm:-left-10 bg-white/95 border border-stone-100 rounded-2xl px-3 py-2.5 sm:px-4 sm:py-3 shadow-2xl shadow-stone-900/10 backdrop-blur-md animate-fade-in-up stagger-2 z-20">
                 <div className="flex items-center gap-2 sm:gap-2.5">
                   <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-black text-sm shadow-lg shadow-emerald-500/30">
@@ -618,8 +913,6 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-
-              {/* Floating badge — bottom-right: star rating */}
               <div className="absolute -bottom-5 -right-5 sm:-right-10 bg-white/95 border border-stone-100 rounded-2xl px-3 py-2.5 sm:px-4 sm:py-3 shadow-2xl shadow-stone-900/10 backdrop-blur-md animate-fade-in-up stagger-4 z-20">
                 <div className="flex items-center gap-2 sm:gap-2.5">
                   <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-orange-500 via-fuchsia-500 to-violet-600 flex items-center justify-center text-white font-black text-sm shadow-lg shadow-orange-500/30">
@@ -643,7 +936,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* STATS */}
+      {/* ── STATS ─────────────────────────────────────────────────────────────── */}
       <div className="border-y border-orange-100 bg-orange-50/60 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-5 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
           {t.stats.map((s) => (
@@ -657,7 +950,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* STORIES */}
+      {/* ── STORIES ───────────────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-5 py-12">
         <div className="flex items-center gap-3 mb-6">
           <h2 className="text-lg font-bold text-stone-900">{t.storiesTitle}</h2>
@@ -695,7 +988,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* AI MATCH */}
+      {/* ── AI MATCH ──────────────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-5 py-20">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div>
@@ -709,9 +1002,7 @@ export default function Home() {
                 {t.aiMatchLine2}
               </span>
             </h2>
-            <p className="text-lg text-stone-600 leading-relaxed mb-9">
-              {t.aiMatchP}
-            </p>
+            <p className="text-lg text-stone-600 leading-relaxed mb-9">{t.aiMatchP}</p>
             <div className="space-y-5 mb-9">
               {t.compatBars.map((bar) => (
                 <div key={bar.label}>
@@ -733,15 +1024,15 @@ export default function Home() {
             </button>
           </div>
           <div className="flex justify-center lg:justify-end">
-            <RoommateCards lang={lang} />
+            <RoommateCards lang={lang} currency={currency} currencySymbol={sym} />
           </div>
         </div>
       </section>
 
-      {/* INSTAGRAM CTA */}
+      {/* ── INSTAGRAM CTA ─────────────────────────────────────────────────────── */}
       <InstagramCTA lang={lang} />
 
-      {/* LISTINGS */}
+      {/* ── LISTINGS ──────────────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-5 py-20">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
           <div>
@@ -773,9 +1064,7 @@ export default function Home() {
               className="group bg-white border border-stone-200 rounded-2xl overflow-hidden hover:border-orange-200 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/5 hover:-translate-y-1 cursor-pointer hover:ring-1 hover:ring-orange-200"
             >
               <div className="relative h-52 overflow-hidden">
-                {/* Gradient fallback behind the photo */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${listing.gradient}`} />
-                {/* Real photo */}
                 <Image
                   src={listing.image}
                   alt={listing.title}
@@ -784,11 +1073,8 @@ export default function Home() {
                   className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   quality={80}
                 />
-                {/* Subtle top-to-bottom darkening so badges stay legible */}
                 <div className="absolute inset-0 bg-gradient-to-b from-stone-900/25 via-transparent to-stone-900/30" />
-                <div
-                  className={`absolute top-3 left-3 bg-gradient-to-r ${listing.tagColor} text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg`}
-                >
+                <div className={`absolute top-3 left-3 bg-gradient-to-r ${listing.tagColor} text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg`}>
                   {listing.tag}
                 </div>
                 <button
@@ -807,10 +1093,10 @@ export default function Home() {
                     <span className="text-xs text-white font-medium">{t.listingVerified}</span>
                   </div>
                 )}
+                {/* Dynamic currency price */}
                 <div className="absolute bottom-3 right-3 bg-stone-900/60 backdrop-blur-sm rounded-xl px-3 py-1.5">
                   <span className="text-white font-black text-sm">
-                    {listing.sym === "EUR" ? "€" : "$"}
-                    {listing.price}
+                    {displayPrice(listing.price, listing.sym, currency)}
                   </span>
                   <span className="text-white/50 text-xs">{t.perMonth}</span>
                 </div>
@@ -847,16 +1133,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
+      {/* ── HOW IT WORKS ──────────────────────────────────────────────────────── */}
       <section className="bg-amber-50/80 border-y border-amber-100 py-20">
         <div className="max-w-7xl mx-auto px-5">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-4 tracking-tight">
-              {t.howH2}
-            </h2>
-            <p className="text-stone-600 text-lg max-w-xl mx-auto">
-              {t.howP}
-            </p>
+            <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-4 tracking-tight">{t.howH2}</h2>
+            <p className="text-stone-600 text-lg max-w-xl mx-auto">{t.howP}</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
             {t.howItWorks.map((step, i) => (
@@ -864,14 +1146,10 @@ export default function Home() {
                 {i < t.howItWorks.length - 1 && (
                   <div className="hidden lg:block absolute top-8 left-full w-full h-px bg-gradient-to-r from-stone-300 to-transparent -translate-x-1/2 z-0" />
                 )}
-                <div
-                  className={`relative z-10 w-16 h-16 rounded-2xl bg-gradient-to-br ${step.gradient} flex items-center justify-center text-2xl mx-auto mb-5 shadow-xl group-hover:scale-110 group-hover:shadow-2xl group-hover:shadow-orange-500/20 transition-all duration-300`}
-                >
+                <div className={`relative z-10 w-16 h-16 rounded-2xl bg-gradient-to-br ${step.gradient} flex items-center justify-center text-2xl mx-auto mb-5 shadow-xl group-hover:scale-110 group-hover:shadow-2xl group-hover:shadow-orange-500/20 transition-all duration-300`}>
                   {step.icon}
                 </div>
-                <div className="text-xs font-black text-stone-400 mb-2 tracking-widest group-hover:text-stone-600 transition-colors duration-300">
-                  {step.step}
-                </div>
+                <div className="text-xs font-black text-stone-400 mb-2 tracking-widest group-hover:text-stone-600 transition-colors duration-300">{step.step}</div>
                 <h3 className="font-bold text-stone-900 mb-2 group-hover:text-orange-600 transition-colors duration-300">{step.title}</h3>
                 <p className="text-sm text-stone-500 leading-relaxed">{step.desc}</p>
               </div>
@@ -880,13 +1158,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ROOMMATES */}
+      {/* ── ROOMMATES ─────────────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-5 py-20">
         <div className="flex items-end justify-between mb-10">
           <div>
-            <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-2 tracking-tight">
-              {t.roommatesH2}
-            </h2>
+            <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-2 tracking-tight">{t.roommatesH2}</h2>
             <p className="text-stone-500">{t.roommatesP}</p>
           </div>
           <button className="text-sm text-orange-500 hover:text-orange-600 transition-all duration-200 hidden sm:block font-medium hover:underline underline-offset-2">
@@ -899,9 +1175,7 @@ export default function Home() {
               key={p.id}
               className="group bg-white border border-stone-200 rounded-2xl overflow-hidden hover:border-orange-200 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/5 hover:-translate-y-1 cursor-pointer hover:ring-1 hover:ring-orange-500/15"
             >
-              <div
-                className={`h-44 bg-gradient-to-br ${p.gradient} relative flex items-center justify-center`}
-              >
+              <div className={`h-44 bg-gradient-to-br ${p.gradient} relative flex items-center justify-center`}>
                 <div className="w-20 h-20 rounded-full bg-white/15 border-4 border-white/25 flex items-center justify-center text-2xl font-black shadow-xl">
                   {p.initials}
                 </div>
@@ -918,9 +1192,7 @@ export default function Home() {
               <div className="p-5">
                 <div className="flex items-start justify-between mb-2">
                   <div>
-                    <h3 className="font-bold text-stone-900">
-                      {p.name}, {p.age}
-                    </h3>
+                    <h3 className="font-bold text-stone-900">{p.name}, {p.age}</h3>
                     <p className="text-xs text-stone-500">{p.occupation}</p>
                   </div>
                   <span className="text-xs text-stone-400">{p.nationality}</span>
@@ -928,10 +1200,7 @@ export default function Home() {
                 <p className="text-xs text-stone-500 leading-relaxed mb-4">{p.bio}</p>
                 <div className="flex flex-wrap gap-1.5 mb-4">
                   {p.lifestyle.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-xs bg-stone-100 border border-stone-200 rounded-full px-2.5 py-0.5 text-stone-600"
-                    >
+                    <span key={tag} className="text-xs bg-stone-100 border border-stone-200 rounded-full px-2.5 py-0.5 text-stone-600">
                       {tag}
                     </span>
                   ))}
@@ -957,31 +1226,24 @@ export default function Home() {
         </div>
       </section>
 
-      {/* POPULAR CITIES */}
+      {/* ── POPULAR CITIES ────────────────────────────────────────────────────── */}
       <PopularCities lang={lang} />
 
-      {/* COMMUNITY FEED */}
+      {/* ── COMMUNITY FEED ────────────────────────────────────────────────────── */}
       <section className="bg-orange-50/60 border-y border-orange-100 py-20">
         <div className="max-w-7xl mx-auto px-5">
           <div className="text-center mb-14">
             <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-600 bg-orange-500/10 border border-orange-500/20 rounded-full px-4 py-2 mb-6">
               {t.communityBadge}
             </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-4 tracking-tight">
-              {t.communityH2}
-            </h2>
+            <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-4 tracking-tight">{t.communityH2}</h2>
             <p className="text-stone-600">{t.communityP}</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {communityPosts.map((post) => (
-              <div
-                key={post.id}
-                className="bg-white border border-stone-200 rounded-2xl p-6 hover:border-stone-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-orange-500/5 transition-all duration-200"
-              >
+              <div key={post.id} className="bg-white border border-stone-200 rounded-2xl p-6 hover:border-stone-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-orange-500/5 transition-all duration-200">
                 <div className="flex items-center gap-3 mb-4">
-                  <div
-                    className={`w-10 h-10 rounded-full bg-gradient-to-br ${post.gradient} flex items-center justify-center text-sm font-bold flex-shrink-0`}
-                  >
+                  <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${post.gradient} flex items-center justify-center text-sm font-bold flex-shrink-0`}>
                     {post.initials}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -1002,12 +1264,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
+      {/* ── TESTIMONIALS ──────────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-5 py-20">
         <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-4 tracking-tight">
-            {t.testiH2}
-          </h2>
+          <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-4 tracking-tight">{t.testiH2}</h2>
           <div className="flex items-center justify-center gap-2">
             <span className="text-amber-400 text-xl">★★★★★</span>
             <span className="text-stone-900 font-black text-xl">4.9</span>
@@ -1016,29 +1276,20 @@ export default function Home() {
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {testimonials.map((item) => (
-            <div
-              key={item.name}
-              className="bg-white border border-stone-200 rounded-2xl p-7 hover:border-orange-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-orange-500/5 hover:ring-1 hover:ring-stone-200 transition-all duration-200"
-            >
+            <div key={item.name} className="bg-white border border-stone-200 rounded-2xl p-7 hover:border-orange-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-orange-500/5 hover:ring-1 hover:ring-stone-200 transition-all duration-200">
               <div className="flex gap-1 mb-5">
                 {Array.from({ length: item.rating }).map((_, i) => (
                   <span key={i} className="text-amber-400 text-sm">★</span>
                 ))}
               </div>
-              <p className="text-stone-700 text-sm leading-relaxed mb-6 italic">
-                &ldquo;{item.quote}&rdquo;
-              </p>
+              <p className="text-stone-700 text-sm leading-relaxed mb-6 italic">&ldquo;{item.quote}&rdquo;</p>
               <div className="flex items-center gap-3">
-                <div
-                  className={`w-11 h-11 rounded-full bg-gradient-to-br ${item.gradient} flex items-center justify-center text-sm font-black flex-shrink-0 shadow-lg`}
-                >
+                <div className={`w-11 h-11 rounded-full bg-gradient-to-br ${item.gradient} flex items-center justify-center text-sm font-black flex-shrink-0 shadow-lg`}>
                   {item.initials}
                 </div>
                 <div>
                   <p className="text-sm font-bold text-stone-900">{item.name}</p>
-                  <p className="text-xs text-stone-500">
-                    {item.role} · {item.city}
-                  </p>
+                  <p className="text-xs text-stone-500">{item.role} · {item.city}</p>
                 </div>
               </div>
             </div>
@@ -1046,7 +1297,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* DOWNLOAD APP */}
+      {/* ── DOWNLOAD APP ──────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden border-y border-amber-200 py-20 bg-gradient-to-br from-amber-100 via-orange-50 to-stone-50">
         <div className="absolute top-0 left-1/4 w-72 h-72 bg-orange-400/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -1055,13 +1306,9 @@ export default function Home() {
             <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-5 tracking-tight leading-tight">
               {t.appH2a}
               <br />
-              <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
-                {t.appH2b}
-              </span>
+              <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">{t.appH2b}</span>
             </h2>
-            <p className="text-lg text-stone-600 leading-relaxed mb-9">
-              {t.appP}
-            </p>
+            <p className="text-lg text-stone-600 leading-relaxed mb-9">{t.appP}</p>
             <div className="flex flex-col sm:flex-row gap-4">
               <button className="flex items-center gap-4 bg-stone-900 text-white px-6 py-4 rounded-2xl font-bold hover:bg-stone-800 transition-all duration-200 shadow-2xl shadow-stone-900/25 hover:-translate-y-0.5 active:scale-95">
                 <span className="text-3xl leading-none">🍎</span>
@@ -1089,9 +1336,7 @@ export default function Home() {
                   </div>
                   <div className="px-3 py-2 space-y-3">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-black bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
-                        Sefira
-                      </span>
+                      <span className="text-sm font-black bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">Sefira</span>
                       <div className="w-6 h-6 bg-gradient-to-br from-orange-500 to-amber-500 rounded-full shadow-lg" />
                     </div>
                     <div className="bg-gradient-to-r from-orange-500/20 to-amber-500/20 border border-orange-400/20 rounded-xl p-3">
@@ -1106,18 +1351,14 @@ export default function Home() {
                       { init: "LM", name: "Lena M.",  match: 89, grad: "from-violet-500 to-purple-600" },
                     ].map((c) => (
                       <div key={c.init} className="flex items-center gap-2 bg-white/10 rounded-xl p-2">
-                        <div
-                          className={`w-8 h-8 rounded-full bg-gradient-to-br ${c.grad} flex items-center justify-center text-xs font-black flex-shrink-0`}
-                        >
+                        <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${c.grad} flex items-center justify-center text-xs font-black flex-shrink-0`}>
                           {c.init}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="text-xs text-white font-medium">{c.name}</div>
                           <div className="text-xs text-white/40">{c.match}% {t.matchLabel.toLowerCase()}</div>
                         </div>
-                        <div className="w-6 h-6 bg-gradient-to-br from-orange-500 to-amber-500 rounded-full flex items-center justify-center text-xs text-white flex-shrink-0">
-                          →
-                        </div>
+                        <div className="w-6 h-6 bg-gradient-to-br from-orange-500 to-amber-500 rounded-full flex items-center justify-center text-xs text-white flex-shrink-0">→</div>
                       </div>
                     ))}
                   </div>
@@ -1131,28 +1372,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FOOTER */}
+      {/* ── FOOTER ────────────────────────────────────────────────────────────── */}
       <footer className="bg-stone-900 border-t border-stone-700">
         <div className="max-w-7xl mx-auto px-5 py-16">
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-12 mb-14">
             <div className="lg:col-span-2">
               <div className="flex items-center gap-2 mb-5">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-sm shadow-lg shadow-orange-500/25">
-                  S
-                </div>
-                <span className="text-xl font-black tracking-tight bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
-                  Sefira
-                </span>
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-sm shadow-lg shadow-orange-500/25">S</div>
+                <span className="text-xl font-black tracking-tight bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">Sefira</span>
               </div>
-              <p className="text-sm text-stone-400 leading-relaxed max-w-xs mb-7">
-                {t.footerDesc}
-              </p>
+              <p className="text-sm text-stone-400 leading-relaxed max-w-xs mb-7">{t.footerDesc}</p>
               <div className="flex gap-2.5">
                 {["X", "in", "yt"].map((icon) => (
-                  <button
-                    key={icon}
-                    className="w-9 h-9 bg-white/5 border border-white/10 rounded-lg text-xs text-stone-400 hover:text-white hover:border-white/25 hover:bg-white/10 transition-all duration-200 font-bold hover:scale-110 active:scale-90"
-                  >
+                  <button key={icon} className="w-9 h-9 bg-white/5 border border-white/10 rounded-lg text-xs text-stone-400 hover:text-white hover:border-white/25 hover:bg-white/10 transition-all duration-200 font-bold hover:scale-110 active:scale-90">
                     {icon}
                   </button>
                 ))}
@@ -1186,12 +1418,7 @@ export default function Home() {
                 <ul className="space-y-3">
                   {col.links.map((link) => (
                     <li key={link}>
-                      <a
-                        href="#"
-                        className="text-sm text-stone-400 hover:text-white transition-colors duration-200"
-                      >
-                        {link}
-                      </a>
+                      <a href="#" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</a>
                     </li>
                   ))}
                 </ul>
@@ -1199,18 +1426,10 @@ export default function Home() {
             ))}
           </div>
           <div className="border-t border-stone-700 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-stone-500">
-              {t.footerCopy}
-            </p>
+            <p className="text-xs text-stone-500">{t.footerCopy}</p>
             <div className="flex items-center gap-6">
               {t.footerLegal.map((l) => (
-                <a
-                  key={l}
-                  href="#"
-                  className="text-xs text-stone-500 hover:text-stone-300 transition-colors duration-200"
-                >
-                  {l}
-                </a>
+                <a key={l} href="#" className="text-xs text-stone-500 hover:text-stone-300 transition-colors duration-200">{l}</a>
               ))}
             </div>
           </div>

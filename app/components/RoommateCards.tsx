@@ -8,6 +8,10 @@ import {
   useAnimation,
   type PanInfo,
 } from "framer-motion";
+import {
+  type Currency,
+  convertBudgetRange,
+} from "@/app/lib/currency";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Profile {
@@ -144,12 +148,14 @@ function SwipeCard({
   onSwipe,
   forcedDir,
   labels,
+  currency,
 }: {
   profile: Profile;
   stackIndex: number;
   onSwipe: (dir: "left" | "right") => void;
   forcedDir: "left" | "right" | null;
   labels: Labels;
+  currency: Currency;
 }) {
   const isTop   = stackIndex === 0;
   const controls = useAnimation();
@@ -285,7 +291,7 @@ function SwipeCard({
             </span>
             <div className="flex-1 h-px bg-stone-100" />
             <span className="text-sm font-black text-stone-800">
-              €{profile.budget}
+              {convertBudgetRange(profile.budget, currency)}
               <span className="text-xs font-medium text-stone-400">{labels.perMonth}</span>
             </span>
           </div>
@@ -346,7 +352,15 @@ function SwipeCard({
 }
 
 // ─── Main export ──────────────────────────────────────────────────────────────
-export default function RoommateCards({ lang = "en" }: { lang?: "tr" | "en" }) {
+export default function RoommateCards({
+  lang = "en",
+  currency = "USD",
+  currencySymbol,
+}: {
+  lang?: "tr" | "en";
+  currency?: Currency;
+  currencySymbol?: string;
+}) {
   const [topIndex,  setTopIndex]  = useState(0);
   const [likedCount, setLikedCount] = useState(0);
   const [forcedDir, setForcedDir] = useState<"left" | "right" | null>(null);
@@ -408,6 +422,7 @@ export default function RoommateCards({ lang = "en" }: { lang?: "tr" | "en" }) {
             onSwipe={handleSwipe}
             forcedDir={stackIndex === 0 ? forcedDir : null}
             labels={labels}
+            currency={currency}
           />
         ))}
       </div>
