@@ -5,6 +5,8 @@ import Image from "next/image";
 import InstagramCTA from "@/app/components/InstagramCTA";
 import PopularCities from "@/app/components/PopularCities";
 import PropertyFilters from "@/app/components/PropertyFilters";
+import AuthModal from "@/app/components/AuthModal";
+import { useAuth } from "@/app/lib/AuthContext";
 import {
   type Currency,
   CURRENCY_SYMBOLS,
@@ -29,6 +31,7 @@ const translations = {
       { value: "4.9★",  label: "Uygulama Puanı" },
     ],
     signIn: "Giriş Yap",
+    signOut: "Çıkış Yap",
     getStarted: "Başla",
     heroBadge: "52 şehirde 127.000'den fazla doğrulanmış kullanıcı tarafından güvenilir",
     heroLine1: "İdeal Evinizi",
@@ -151,6 +154,7 @@ const translations = {
       { value: "4.9★",  label: "App Rating" },
     ],
     signIn: "Sign In",
+    signOut: "Log Out",
     getStarted: "Get Started",
     heroBadge: "Trusted by 127,000+ verified users across 52 cities",
     heroLine1: "Find Your",
@@ -377,6 +381,10 @@ type WizardMode = "seeking" | "offering" | null;
 type GenderPref = "male" | "female" | "any";
 
 export default function Home() {
+  // ── Auth ──────────────────────────────────────────────────────────────────
+  const { user, signOut: handleSignOut } = useAuth();
+  const [showAuth, setShowAuth] = useState(false);
+
   // ── Existing state ────────────────────────────────────────────────────────
   const [activeFilter, setActiveFilter] = useState("all");
   const [likedListings, setLikedListings] = useState<number[]>([]);
@@ -506,9 +514,34 @@ export default function Home() {
               <span className="hidden sm:inline text-stone-400">{lang === "tr" ? "EN" : "TR"}</span>
             </button>
 
-            <button className="hidden sm:block text-sm text-stone-500 hover:text-stone-900 transition-all duration-200 font-medium px-3 py-2 rounded-lg hover:bg-stone-100">
-              {t.signIn}
-            </button>
+            {user ? (
+              <div className="hidden sm:flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-xs text-white shadow-md shadow-orange-500/30 flex-shrink-0">
+                  {(user.user_metadata?.full_name ?? user.email ?? "U")
+                    .split(" ")
+                    .map((w: string) => w[0])
+                    .slice(0, 2)
+                    .join("")
+                    .toUpperCase()}
+                </div>
+                <span className="text-sm font-medium text-stone-700 max-w-[110px] truncate hidden lg:block">
+                  {user.user_metadata?.full_name ?? user.email?.split("@")[0]}
+                </span>
+                <button
+                  onClick={() => handleSignOut()}
+                  className="text-xs font-bold text-stone-400 hover:text-rose-500 px-2 py-1.5 rounded-lg hover:bg-rose-50 transition-all duration-200"
+                >
+                  {t.signOut}
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowAuth(true)}
+                className="hidden sm:block text-sm text-stone-500 hover:text-stone-900 transition-all duration-200 font-medium px-3 py-2 rounded-lg hover:bg-stone-100"
+              >
+                {t.signIn}
+              </button>
+            )}
 
             <a
               href="https://www.instagram.com/sefira.app"
@@ -1442,6 +1475,10 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {showAuth && (
+        <AuthModal lang={lang} onClose={() => setShowAuth(false)} />
+      )}
     </div>
   );
 }
