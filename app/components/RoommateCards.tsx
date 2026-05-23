@@ -90,7 +90,7 @@ const PROFILES: Profile[] = [
   },
 ];
 
-// ─── Labels (Persian action labels used in both locales) ──────────────────────
+// ─── Labels ───────────────────────────────────────────────────────────────────
 const LABELS = {
   tr: {
     heading:      "Önerilen Ev Arkadaşları",
@@ -108,12 +108,12 @@ const LABELS = {
     verified:     "Doğrulandı",
     match:        "Eşleşme",
     perMonth:     "/ay",
-    rejectLabel:  "رد کردن",
-    messageLabel: "پیام",
-    saveLabel:    "ذخیره",
-    inspectBtn:   "مشاهده کامل آگهی",
-    closeModal:   "بستن",
-    sendMessage:  "ارسال پیام",
+    rejectLabel:  "Reddet",
+    messageLabel: "Mesaj",
+    saveLabel:    "Kaydet",
+    inspectBtn:   "İlanı İncele",
+    closeModal:   "Kapat",
+    sendMessage:  "Mesaj Gönder",
   },
   en: {
     heading:      "Suggested Roommates",
@@ -131,6 +131,29 @@ const LABELS = {
     verified:     "Verified",
     match:        "Match",
     perMonth:     "/mo",
+    rejectLabel:  "Reject",
+    messageLabel: "Message",
+    saveLabel:    "Save",
+    inspectBtn:   "View Listing",
+    closeModal:   "Close",
+    sendMessage:  "Send Message",
+  },
+  fa: {
+    heading:      "هم‌خانه‌های پیشنهادی",
+    subheading:   "برای کشف بکشید",
+    dragHint:     "← برای رد کردن بکشید  ·  برای لایک بکشید →",
+    liked:        "لایک شد",
+    of:           "/",
+    budget:       "بودجه",
+    languages:    "زبان‌ها",
+    lifestyle:    "سبک زندگی",
+    petsOk:       "🐾 حیوانات خانگی مجاز",
+    noPets:       "🚫 بدون حیوانات خانگی",
+    smoker:       "🚬 سیگاری",
+    nonSmoker:    "🚭 غیرسیگاری",
+    verified:     "تأیید شده",
+    match:        "تطابق",
+    perMonth:     "/ماه",
     rejectLabel:  "رد کردن",
     messageLabel: "پیام",
     saveLabel:    "ذخیره",
@@ -562,7 +585,7 @@ export default function RoommateCards({
   lang = "en",
   currency = "USD",
 }: {
-  lang?:           "tr" | "en";
+  lang?:           "tr" | "en" | "fa";
   currency?:       Currency;
   currencySymbol?: string;
 }) {
