@@ -22,7 +22,7 @@ const CITIES = [
     country: "Turkey",
     countryTr: "Türkiye",
     listings: "1,123",
-    image: "https://images.unsplash.com/photo-1558618047-f4e90e8a8c2b?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1604928141012-56f00b78dc5b?auto=format&fit=crop&w=800&q=80",
     accent: "from-blue-500 to-cyan-600",
   },
   {
@@ -32,7 +32,7 @@ const CITIES = [
     country: "Turkey",
     countryTr: "Türkiye",
     listings: "976",
-    image: "https://images.unsplash.com/photo-1596439759eba4f96a5d0c3a5d5e3f3?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=800&q=80",
     accent: "from-violet-500 to-indigo-600",
   },
   {

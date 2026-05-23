@@ -348,9 +348,12 @@ const trendingCities = [
 ];
 
 const testimonials = [
-  { name: "Alex Morrison", role: "Digital Nomad",     city: "Amsterdam", quote: "Found my perfect roommate in 48 hours. The AI matching is insanely accurate. Same sleep schedule, same cleaning habits.",                                              rating: 5, gradient: "from-blue-500 to-indigo-600",   initials: "AM" },
-  { name: "Layla Hassan",  role: "Medical Student",   city: "Berlin",    quote: "As an expat I was terrified about finding safe housing. Sefiras verification system and warm community made me feel at home.",                                          rating: 5, gradient: "from-emerald-500 to-teal-600", initials: "LH" },
-  { name: "Daniel Park",   role: "Tech Professional", city: "Dubai",     quote: "The UI is addictive. I kept swiping through profiles until I found a place that actually feels like home, not just a room.",                                            rating: 5, gradient: "from-rose-500 to-pink-600",    initials: "DP" },
+  { name: "Alex Morrison", role: "Digital Nomad",     city: "Amsterdam", quote: "Found my perfect roommate in 48 hours. The AI matching is insanely accurate. Same sleep schedule, same cleaning habits.",                                              rating: 5, gradient: "from-blue-500 to-indigo-600",   initials: "AM", avatar: "https://randomuser.me/api/portraits/men/32.jpg"   },
+  { name: "Layla Hassan",  role: "Medical Student",   city: "Berlin",    quote: "As an expat I was terrified about finding safe housing. Sefiras verification system and warm community made me feel at home.",                                          rating: 5, gradient: "from-emerald-500 to-teal-600", initials: "LH", avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
+  { name: "Daniel Park",   role: "Tech Professional", city: "Dubai",     quote: "The UI is addictive. I kept swiping through profiles until I found a place that actually feels like home, not just a room.",                                            rating: 5, gradient: "from-rose-500 to-pink-600",    initials: "DP", avatar: "https://randomuser.me/api/portraits/men/67.jpg"   },
+  { name: "Sofia Reyes",   role: "Graduate Student",  city: "Barcelona", quote: "I moved to Spain knowing nobody. Within a week Sefira connected me with flatmates who became my closest friends here.",                                               rating: 5, gradient: "from-yellow-500 to-orange-600", initials: "SR", avatar: "https://randomuser.me/api/portraits/women/68.jpg" },
+  { name: "Marcus Webb",   role: "Remote Designer",   city: "Lisbon",    quote: "The verified listings saved me from so many scams. Every place I toured was exactly as described. Finally moved in stress-free.",                                      rating: 5, gradient: "from-cyan-500 to-blue-600",    initials: "MW", avatar: "https://randomuser.me/api/portraits/men/75.jpg"   },
+  { name: "Nina Okafor",   role: "Exchange Student",  city: "London",    quote: "Never thought finding a room abroad would be this smooth. The community was welcoming and the app made everything transparent.",                                        rating: 5, gradient: "from-violet-500 to-purple-600", initials: "NO", avatar: "https://randomuser.me/api/portraits/women/90.jpg" },
 ];
 
 const communityPosts = [
@@ -484,7 +487,7 @@ export default function Home() {
           </div>
 
           {/* Right controls */}
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
 
             {/* Currency switcher */}
             <div className="flex bg-stone-100 border border-stone-200 rounded-lg p-0.5 gap-0.5">
@@ -492,13 +495,14 @@ export default function Home() {
                 <button
                   key={cur}
                   onClick={() => setCurrency(cur)}
-                  className={`px-2 py-1.5 rounded-md text-[11px] font-black transition-all duration-200 whitespace-nowrap ${
+                  className={`px-1.5 sm:px-2 py-1.5 rounded-md text-[11px] font-black transition-all duration-200 whitespace-nowrap ${
                     currency === cur
                       ? "bg-white text-stone-900 shadow-sm"
                       : "text-stone-400 hover:text-stone-700"
                   }`}
                 >
-                  {CURRENCY_SYMBOLS[cur]}&thinsp;{cur}
+                  <span className="sm:hidden">{CURRENCY_SYMBOLS[cur]}</span>
+                  <span className="hidden sm:inline">{CURRENCY_SYMBOLS[cur]}&thinsp;{cur}</span>
                 </button>
               ))}
             </div>
@@ -506,10 +510,10 @@ export default function Home() {
             {/* Lang toggle */}
             <button
               onClick={() => setLang((l) => (l === "tr" ? "en" : "tr"))}
-              className="flex items-center gap-1.5 text-xs font-bold bg-stone-100 border border-stone-200 rounded-lg px-3 py-2.5 sm:py-2 text-stone-600 hover:text-stone-900 hover:border-stone-400 hover:bg-stone-200 transition-all duration-200 active:scale-95"
+              className="flex items-center gap-1 sm:gap-1.5 text-xs font-bold bg-stone-100 border border-stone-200 rounded-lg px-2 sm:px-3 py-2 text-stone-600 hover:text-stone-900 hover:border-stone-400 hover:bg-stone-200 transition-all duration-200 active:scale-95"
             >
-              <span className="text-sm sm:text-xs leading-none">{lang === "tr" ? "🇹🇷" : "🇬🇧"}</span>
-              <span>{lang === "tr" ? "TR" : "EN"}</span>
+              <span className="text-sm leading-none">{lang === "tr" ? "🇹🇷" : "🇬🇧"}</span>
+              <span className="hidden sm:inline">{lang === "tr" ? "TR" : "EN"}</span>
               <span className="hidden sm:inline text-stone-400">·</span>
               <span className="hidden sm:inline text-stone-400">{lang === "tr" ? "EN" : "TR"}</span>
             </button>
@@ -587,7 +591,7 @@ export default function Home() {
               </svg>
             </a>
 
-            <button className="text-sm font-bold bg-gradient-to-r from-orange-500 to-amber-500 text-white px-5 py-2.5 rounded-xl hover:opacity-95 transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/40 active:scale-95">
+            <button className="hidden sm:block text-sm font-bold bg-gradient-to-r from-orange-500 to-amber-500 text-white px-5 py-2.5 rounded-xl hover:opacity-95 transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/40 active:scale-95">
               {t.getStarted}
             </button>
           </div>
@@ -1356,8 +1360,14 @@ export default function Home() {
               </div>
               <p className="text-stone-700 text-sm leading-relaxed mb-6 italic">&ldquo;{item.quote}&rdquo;</p>
               <div className="flex items-center gap-3">
-                <div className={`w-11 h-11 rounded-full bg-gradient-to-br ${item.gradient} flex items-center justify-center text-sm font-black flex-shrink-0 shadow-lg`}>
-                  {item.initials}
+                <div className="relative w-11 h-11 rounded-full overflow-hidden flex-shrink-0 shadow-lg">
+                  <Image
+                    src={item.avatar}
+                    alt={item.name}
+                    fill
+                    sizes="44px"
+                    className="object-cover"
+                  />
                 </div>
                 <div>
                   <p className="text-sm font-bold text-stone-900">{item.name}</p>
