@@ -35,13 +35,16 @@ export function displayPrice(
 /** Converts a "700–1 000" (EUR-based) range string to the target currency. */
 export function convertBudgetRange(range: string, to: Currency): string {
   const sym = CURRENCY_SYMBOLS[to];
+  // Split on any dash variant: en-dash, em-dash, or plain hyphen
   const parts = range
-    .split("–")
-    .map((s) => parseInt(s.replace(/[\s ,]/g, ""), 10));
+    .split(/[–—-]/)
+    .map((s) => parseInt(s.replace(/[\s  ,]/g, ""), 10));
   if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
     const min = convertPrice(parts[0], "EUR", to);
     const max = convertPrice(parts[1], "EUR", to);
-    return `${sym}${min.toLocaleString()}–${sym}${max.toLocaleString()}`;
+    const fmt = (n: number) =>
+      n >= 10000 ? `${sym}${Math.round(n / 1000)}K` : `${sym}${n.toLocaleString()}`;
+    return `${fmt(min)}–${fmt(max)}`;
   }
   return `€${range}`;
 }

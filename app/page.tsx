@@ -380,7 +380,6 @@ export default function Home() {
   // ── Existing state ────────────────────────────────────────────────────────
   const [activeFilter, setActiveFilter] = useState("all");
   const [likedListings, setLikedListings] = useState<number[]>([]);
-  const [likedProfiles, setLikedProfiles] = useState<number[]>([]);
   const [searchInput, setSearchInput] = useState("");
   const [countries, setCountries] = useState<string[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("");
@@ -401,10 +400,17 @@ export default function Home() {
 
   const t = translations[lang];
 
+  const [savedProfiles,  setSavedProfiles]  = useState<number[]>([]);
+  const [animatingIds,   setAnimatingIds]   = useState<number[]>([]);
+
   const toggleListing = (id: number) =>
     setLikedListings((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
-  const toggleProfile = (id: number) =>
-    setLikedProfiles((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+
+  const toggleSave = (id: number) => {
+    setSavedProfiles((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+    setAnimatingIds((p) => [...p, id]);
+    setTimeout(() => setAnimatingIds((p) => p.filter((x) => x !== id)), 420);
+  };
 
   useEffect(() => {
     fetch("https://countriesnow.space/api/v0.1/countries")
@@ -1210,16 +1216,48 @@ export default function Home() {
                   <span>{p.pets ? t.petsOkShort : t.noPetsShort}</span>
                   <span className="ml-auto text-stone-400">{p.city}</span>
                 </div>
-                <button
-                  onClick={() => toggleProfile(p.id)}
-                  className={`w-full py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
-                    likedProfiles.includes(p.id)
-                      ? "bg-rose-500/20 border border-rose-500/40 text-rose-500 shadow-sm shadow-rose-500/10"
-                      : "bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:opacity-95 shadow-lg shadow-orange-500/20 hover:shadow-xl hover:shadow-orange-500/35 active:scale-95 transition-all duration-200"
-                  }`}
-                >
-                  {likedProfiles.includes(p.id) ? t.matchedBtn : t.connectBtn}
-                </button>
+                {/* ── Three action buttons ── */}
+                <div className="flex items-center gap-2.5">
+
+                  {/* Reject / Skip */}
+                  <button
+                    onClick={(e) => e.stopPropagation()}
+                    aria-label="Skip"
+                    className="w-11 h-11 rounded-2xl border border-stone-200 bg-stone-50 flex items-center justify-center text-stone-300 hover:border-stone-300 hover:text-stone-500 hover:bg-white hover:shadow-sm transition-all duration-200 active:scale-90 flex-shrink-0"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </button>
+
+                  {/* Message — primary gradient CTA */}
+                  <button
+                    onClick={(e) => e.stopPropagation()}
+                    aria-label="Message"
+                    className="flex-1 h-11 rounded-2xl bg-gradient-to-r from-orange-500 via-fuchsia-500 to-violet-600 flex items-center justify-center shadow-lg shadow-fuchsia-500/20 hover:opacity-95 hover:shadow-xl hover:shadow-fuchsia-500/30 hover:-translate-y-px transition-all duration-200 active:scale-[0.97] active:translate-y-0 group"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 group-hover:scale-110 transition-transform duration-200">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                  </button>
+
+                  {/* Save / Heart toggle */}
+                  <button
+                    onClick={(e) => { e.stopPropagation(); toggleSave(p.id); }}
+                    aria-label="Save"
+                    className={`w-11 h-11 rounded-2xl border-2 flex items-center justify-center transition-all duration-200 active:scale-90 flex-shrink-0 ${
+                      savedProfiles.includes(p.id)
+                        ? "border-rose-400 bg-rose-50 text-rose-500 shadow-md shadow-rose-500/15"
+                        : "border-stone-200 bg-white text-stone-300 hover:border-rose-300 hover:text-rose-400 hover:bg-rose-50/60 hover:shadow-sm"
+                    } ${animatingIds.includes(p.id) ? "animate-heart-pop" : ""}`}
+                  >
+                    <svg viewBox="0 0 24 24" fill={savedProfiles.includes(p.id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                    </svg>
+                  </button>
+
+                </div>
               </div>
             </div>
           ))}
