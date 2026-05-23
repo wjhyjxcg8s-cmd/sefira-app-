@@ -1,12 +1,12 @@
 // Shared currency utilities — imported by page + components
 export type Currency = "TRY" | "USD" | "EUR";
 
-// Approximate fallback rates (how many TRY = 1 unit of each currency).
-// These are replaced in-place by fetchLiveRates() on first call.
+// TRY is the internal base: each rate = TRY per 1 unit of that currency.
+// Fallback values reflect approximate 2025-2026 market rates.
 const FALLBACK_RATES: Record<Currency, number> = {
   TRY: 1,
-  USD: 32,
-  EUR: 35,
+  USD: 36,  // 1 USD ≈ 36 TRY (2025-2026 approximate)
+  EUR: 39,  // 1 EUR ≈ 39 TRY (2025-2026 approximate)
 };
 
 export const CURRENCY_RATES: Record<Currency, number> = { ...FALLBACK_RATES };
@@ -20,29 +20,50 @@ export const CURRENCY_SYMBOLS: Record<Currency, string> = {
 let _ratesCached = false;
 
 /**
- * Pulls EUR-based rates from frankfurter.app and patches CURRENCY_RATES in-place.
- * Idempotent — skips the network call on subsequent invocations.
- * Silently keeps FALLBACK_RATES on any error.
+ * Pulls live rates from frankfurter.app (ECB data) using USD as base.
+ * Requesting USD→TRY directly avoids a cross-rate calculation and is
+ * more reliable than the previous EUR-base approach (ECB occasionally
+ * omits TRY from non-USD pairs).
+ * Patches CURRENCY_RATES in-place; idempotent after first success.
  */
 export async function fetchLiveRates(): Promise<void> {
   if (_ratesCached) return;
   try {
-    const res = await fetch("https://api.frankfurter.app/latest?from=EUR");
+    const res = await fetch(
+      "https://api.frankfurter.app/latest?from=USD&to=TRY,EUR",
+    );
     if (!res.ok) return;
     const json = await res.json();
-    const tryRate: unknown = json?.rates?.TRY;
-    const usdRate: unknown = json?.rates?.USD;
+
+    console.log("[Sefira currency] raw API response:", json);
+
+    const tryRate: unknown = json?.rates?.TRY; // TRY per 1 USD (direct)
+    const eurRate: unknown = json?.rates?.EUR; // EUR per 1 USD
+
     if (
       typeof tryRate !== "number" ||
-      typeof usdRate !== "number" ||
-      usdRate === 0
-    ) return;
+      typeof eurRate !== "number" ||
+      eurRate === 0
+    ) {
+      console.warn(
+        "[Sefira currency] unexpected rate shape — keeping fallback.",
+        { tryRate, eurRate },
+      );
+      return;
+    }
+
     CURRENCY_RATES.TRY = 1;
-    CURRENCY_RATES.EUR = tryRate;            // 1 EUR → X TRY
-    CURRENCY_RATES.USD = tryRate / usdRate;  // 1 USD → (EUR→TRY ÷ EUR→USD) TRY
+    CURRENCY_RATES.USD = tryRate;           // TRY per 1 USD (direct from API)
+    CURRENCY_RATES.EUR = tryRate / eurRate; // TRY per 1 EUR = (TRY/USD) ÷ (EUR/USD)
+
+    console.log("[Sefira currency] rates applied:", {
+      "1 USD →": `${CURRENCY_RATES.USD.toFixed(2)} TRY`,
+      "1 EUR →": `${CURRENCY_RATES.EUR.toFixed(2)} TRY`,
+    });
+
     _ratesCached = true;
-  } catch {
-    // network failure — keep fallback rates
+  } catch (err) {
+    console.error("[Sefira currency] fetch failed — using fallback.", err);
   }
 }
 
@@ -69,12 +90,14 @@ export function convertBudgetRange(range: string, to: Currency): string {
   const sym = CURRENCY_SYMBOLS[to];
   const parts = range
     .split(/[–—-]/)
-    .map((s) => parseInt(s.replace(/[\s  ,]/g, ""), 10));
+    .map((s) => parseInt(s.replace(/[\s ,]/g, ""), 10));
   if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
     const min = convertPrice(parts[0], "EUR", to);
     const max = convertPrice(parts[1], "EUR", to);
     const fmt = (n: number) =>
-      n >= 10000 ? `${sym}${Math.round(n / 1000)}K` : `${sym}${n.toLocaleString("en-US")}`;
+      n >= 10000
+        ? `${sym}${Math.round(n / 1000)}K`
+        : `${sym}${n.toLocaleString("en-US")}`;
     return `${fmt(min)}–${fmt(max)}`;
   }
   return `€${range}`;

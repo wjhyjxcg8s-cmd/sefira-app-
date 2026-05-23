@@ -9,7 +9,7 @@ import PropertyFilters from "@/app/components/PropertyFilters";
 import {
   type Currency,
   CURRENCY_SYMBOLS,
-  convertPrice,
+  convertBudgetRange,
   displayPrice,
   fetchLiveRates,
 } from "@/app/lib/currency";
@@ -764,8 +764,8 @@ export default function Home() {
                             }}
                           />
                           <div className="flex justify-between text-xs text-stone-400 font-medium mt-2.5">
-                            <span>{sym}100</span>
-                            <span>{sym}{convertPrice(5000, "USD", currency).toLocaleString()}+</span>
+                            <span>{displayPrice(100, "USD", currency)}</span>
+                            <span>{displayPrice(5000, "USD", currency)}+</span>
                           </div>
                         </div>
                       </div>
@@ -1223,7 +1223,7 @@ export default function Home() {
                   ))}
                 </div>
                 <div className="flex items-center gap-3 text-xs text-stone-500 mb-5">
-                  <span>{p.budget}/mo</span>
+                  <span>{convertBudgetRange(p.budget, currency)}{t.perMonth}</span>
                   <span>{p.pets ? t.petsOkShort : t.noPetsShort}</span>
                   <span className="ml-auto text-stone-400">{p.city}</span>
                 </div>
