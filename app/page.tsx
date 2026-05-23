@@ -515,32 +515,64 @@ export default function Home() {
             </button>
 
             {user ? (
-              <div className="hidden sm:flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-xs text-white shadow-md shadow-orange-500/30 flex-shrink-0">
+              <>
+                {/* Mobile: compact avatar — tap to sign out */}
+                <button
+                  onClick={() => handleSignOut()}
+                  title={t.signOut}
+                  className="sm:hidden w-9 h-9 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-xs text-white shadow-md shadow-orange-500/40 active:scale-90 transition-transform duration-150 flex-shrink-0"
+                >
                   {(user.user_metadata?.full_name ?? user.email ?? "U")
                     .split(" ")
                     .map((w: string) => w[0])
                     .slice(0, 2)
                     .join("")
                     .toUpperCase()}
-                </div>
-                <span className="text-sm font-medium text-stone-700 max-w-[110px] truncate hidden lg:block">
-                  {user.user_metadata?.full_name ?? user.email?.split("@")[0]}
-                </span>
-                <button
-                  onClick={() => handleSignOut()}
-                  className="text-xs font-bold text-stone-400 hover:text-rose-500 px-2 py-1.5 rounded-lg hover:bg-rose-50 transition-all duration-200"
-                >
-                  {t.signOut}
                 </button>
-              </div>
+                {/* Desktop: avatar + name + logout */}
+                <div className="hidden sm:flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-xs text-white shadow-md shadow-orange-500/30 flex-shrink-0">
+                    {(user.user_metadata?.full_name ?? user.email ?? "U")
+                      .split(" ")
+                      .map((w: string) => w[0])
+                      .slice(0, 2)
+                      .join("")
+                      .toUpperCase()}
+                  </div>
+                  <span className="text-sm font-medium text-stone-700 max-w-[110px] truncate hidden lg:block">
+                    {user.user_metadata?.full_name ?? user.email?.split("@")[0]}
+                  </span>
+                  <button
+                    onClick={() => handleSignOut()}
+                    className="text-xs font-bold text-stone-400 hover:text-rose-500 px-2 py-1.5 rounded-lg hover:bg-rose-50 transition-all duration-200"
+                  >
+                    {t.signOut}
+                  </button>
+                </div>
+              </>
             ) : (
-              <button
-                onClick={() => setShowAuth(true)}
-                className="hidden sm:block text-sm text-stone-500 hover:text-stone-900 transition-all duration-200 font-medium px-3 py-2 rounded-lg hover:bg-stone-100"
-              >
-                {t.signIn}
-              </button>
+              <>
+                {/* Mobile: glowing pulsing auth icon */}
+                <button
+                  onClick={() => setShowAuth(true)}
+                  aria-label={t.signIn}
+                  className="sm:hidden relative w-9 h-9 flex-shrink-0 flex items-center justify-center"
+                >
+                  <span className="absolute inset-0 rounded-xl bg-orange-400 animate-ping opacity-40" />
+                  <span className="relative w-full h-full rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/50 active:scale-90 transition-transform duration-150">
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-[18px] h-[18px] text-white">
+                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                    </svg>
+                  </span>
+                </button>
+                {/* Desktop: text button */}
+                <button
+                  onClick={() => setShowAuth(true)}
+                  className="hidden sm:block text-sm text-stone-500 hover:text-stone-900 transition-all duration-200 font-medium px-3 py-2 rounded-lg hover:bg-stone-100"
+                >
+                  {t.signIn}
+                </button>
+              </>
             )}
 
             <a

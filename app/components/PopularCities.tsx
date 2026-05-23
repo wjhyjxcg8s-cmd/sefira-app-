@@ -12,9 +12,7 @@ const CITIES = [
     country: "Turkey",
     countryTr: "Türkiye",
     listings: "2,847",
-    // Unsplash: Istanbul skyline with Bosphorus
-    image:
-      "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=1000&q=80",
+    image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=800&q=80",
     accent: "from-orange-500 to-red-600",
   },
   {
@@ -24,9 +22,7 @@ const CITIES = [
     country: "Turkey",
     countryTr: "Türkiye",
     listings: "1,123",
-    // Unsplash: Izmir bay promenade
-    image:
-      "https://images.unsplash.com/photo-1604928141012-56f00b78dc5b?auto=format&fit=crop&w=700&q=80",
+    image: "https://images.unsplash.com/photo-1558618047-f4e90e8a8c2b?auto=format&fit=crop&w=800&q=80",
     accent: "from-blue-500 to-cyan-600",
   },
   {
@@ -36,22 +32,38 @@ const CITIES = [
     country: "Turkey",
     countryTr: "Türkiye",
     listings: "976",
-    // Unsplash: Turkish city architecture
-    image:
-      "https://images.unsplash.com/photo-1598373182133-52452f7691ef?auto=format&fit=crop&w=700&q=80",
+    image: "https://images.unsplash.com/photo-1596439759eba4f96a5d0c3a5d5e3f3?auto=format&fit=crop&w=800&q=80",
     accent: "from-violet-500 to-indigo-600",
   },
   {
-    key: "antalya",
-    name: "Antalya",
-    nameTr: "Antalya",
-    country: "Turkey",
-    countryTr: "Türkiye",
-    listings: "654",
-    // Unsplash: Antalya old harbour / Mediterranean
-    image:
-      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=700&q=80",
-    accent: "from-emerald-500 to-teal-600",
+    key: "barcelona",
+    name: "Barcelona",
+    nameTr: "Barselona",
+    country: "Spain",
+    countryTr: "İspanya",
+    listings: "1,541",
+    image: "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&w=800&q=80",
+    accent: "from-yellow-500 to-orange-600",
+  },
+  {
+    key: "berlin",
+    name: "Berlin",
+    nameTr: "Berlin",
+    country: "Germany",
+    countryTr: "Almanya",
+    listings: "2,190",
+    image: "https://images.unsplash.com/photo-1560969184-10fe8719e047?auto=format&fit=crop&w=800&q=80",
+    accent: "from-slate-500 to-zinc-600",
+  },
+  {
+    key: "dubai",
+    name: "Dubai",
+    nameTr: "Dubai",
+    country: "UAE",
+    countryTr: "BAE",
+    listings: "3,012",
+    image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80",
+    accent: "from-amber-500 to-yellow-600",
   },
 ];
 
@@ -186,7 +198,7 @@ export default function PopularCities({ lang }: { lang: "tr" | "en" }) {
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const t = copy[lang];
 
-  const [istanbul, izmir, ankara, antalya] = CITIES;
+  const [istanbul, izmir, ankara, barcelona, berlin, dubai] = CITIES;
 
   return (
     <section ref={ref} className="max-w-7xl mx-auto px-5 py-20">
@@ -224,73 +236,49 @@ export default function PopularCities({ lang }: { lang: "tr" | "en" }) {
 
       {/* ── Bento grid ──────────────────────────────────────────────────────
           Mobile  : 1 column, all stacked
-          SM      : 2-column 2-row square grid
-          LG      : Istanbul (tall, 2/5 width) | 3 right cards (3/5)
+          SM      : 2-column 3-row grid
+          LG      : Istanbul (tall left) | top 2 (Izmir, Ankara) | bottom 3 (Barcelona, Berlin, Dubai)
       ──────────────────────────────────────────────────────────────────── */}
 
       {/* Mobile / SM layout */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:hidden">
-        <CityCard city={istanbul} lang={lang} inView={inView} delay={0.08} className="h-72 sm:h-80" imgSizes="(max-width: 640px) 100vw, 50vw" t={t} featured />
-        <CityCard city={izmir}    lang={lang} inView={inView} delay={0.16} className="h-64 sm:h-80" imgSizes="(max-width: 640px) 100vw, 50vw" t={t} />
-        <CityCard city={ankara}   lang={lang} inView={inView} delay={0.24} className="h-64 sm:h-72" imgSizes="(max-width: 640px) 100vw, 50vw" t={t} />
-        <CityCard city={antalya}  lang={lang} inView={inView} delay={0.32} className="h-64 sm:h-72" imgSizes="(max-width: 640px) 100vw, 50vw" t={t} />
+        <CityCard city={istanbul}  lang={lang} inView={inView} delay={0.06} className="h-72 sm:h-80 sm:col-span-2" imgSizes="(max-width: 640px) 100vw, 100vw" t={t} featured />
+        <CityCard city={izmir}     lang={lang} inView={inView} delay={0.12} className="h-56 sm:h-64" imgSizes="(max-width: 640px) 100vw, 50vw" t={t} />
+        <CityCard city={ankara}    lang={lang} inView={inView} delay={0.18} className="h-56 sm:h-64" imgSizes="(max-width: 640px) 100vw, 50vw" t={t} />
+        <CityCard city={barcelona} lang={lang} inView={inView} delay={0.24} className="h-56 sm:h-64" imgSizes="(max-width: 640px) 100vw, 50vw" t={t} />
+        <CityCard city={berlin}    lang={lang} inView={inView} delay={0.30} className="h-56 sm:h-64" imgSizes="(max-width: 640px) 100vw, 50vw" t={t} />
+        <CityCard city={dubai}     lang={lang} inView={inView} delay={0.36} className="h-56 sm:h-64 sm:col-span-2" imgSizes="(max-width: 640px) 100vw, 100vw" t={t} />
       </div>
 
       {/* LG+ bento layout */}
-      <div className="hidden lg:flex gap-4 h-[560px]">
-        {/* Istanbul — featured left column */}
+      <div className="hidden lg:flex gap-4 h-[580px]">
+        {/* Istanbul — featured tall left */}
         <div className="flex-[2] min-w-0">
-          <CityCard
-            city={istanbul}
-            lang={lang}
-            inView={inView}
-            delay={0.08}
-            className="h-full"
-            imgSizes="40vw"
-            t={t}
-            featured
-          />
+          <CityCard city={istanbul} lang={lang} inView={inView} delay={0.06} className="h-full" imgSizes="38vw" t={t} featured />
         </div>
 
-        {/* Right column — 3 stacked cards */}
+        {/* Right column — top 2 + bottom 3 */}
         <div className="flex-[3] min-w-0 flex flex-col gap-4">
-          {/* Top: Izmir + Ankara side by side */}
+          {/* Top row: Izmir + Ankara */}
           <div className="flex gap-4 flex-1">
             <div className="flex-1">
-              <CityCard
-                city={izmir}
-                lang={lang}
-                inView={inView}
-                delay={0.16}
-                className="h-full"
-                imgSizes="30vw"
-                t={t}
-              />
+              <CityCard city={izmir}  lang={lang} inView={inView} delay={0.14} className="h-full" imgSizes="20vw" t={t} />
             </div>
             <div className="flex-1">
-              <CityCard
-                city={ankara}
-                lang={lang}
-                inView={inView}
-                delay={0.24}
-                className="h-full"
-                imgSizes="30vw"
-                t={t}
-              />
+              <CityCard city={ankara} lang={lang} inView={inView} delay={0.20} className="h-full" imgSizes="20vw" t={t} />
             </div>
           </div>
-
-          {/* Bottom: Antalya full width */}
-          <div className="flex-1">
-            <CityCard
-              city={antalya}
-              lang={lang}
-              inView={inView}
-              delay={0.32}
-              className="h-full"
-              imgSizes="60vw"
-              t={t}
-            />
+          {/* Bottom row: Barcelona + Berlin + Dubai */}
+          <div className="flex gap-4 flex-1">
+            <div className="flex-1">
+              <CityCard city={barcelona} lang={lang} inView={inView} delay={0.26} className="h-full" imgSizes="15vw" t={t} />
+            </div>
+            <div className="flex-1">
+              <CityCard city={berlin}    lang={lang} inView={inView} delay={0.32} className="h-full" imgSizes="15vw" t={t} />
+            </div>
+            <div className="flex-1">
+              <CityCard city={dubai}     lang={lang} inView={inView} delay={0.38} className="h-full" imgSizes="15vw" t={t} />
+            </div>
           </div>
         </div>
       </div>

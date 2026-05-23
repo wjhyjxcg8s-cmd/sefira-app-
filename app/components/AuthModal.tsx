@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { useAuth } from "@/app/lib/AuthContext";
 
 const authT = {
@@ -100,7 +101,12 @@ export default function AuthModal({ lang, onClose }: AuthModalProps) {
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
 
       {/* Card */}
-      <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl shadow-black/20 overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.93, y: 24 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 380, damping: 26 }}
+        className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl shadow-black/20 overflow-hidden"
+      >
 
         {/* Top gradient bar */}
         <div className="h-1.5 bg-gradient-to-r from-orange-500 via-amber-400 to-orange-500" />
@@ -257,7 +263,7 @@ export default function AuthModal({ lang, onClose }: AuthModalProps) {
             </form>
           )}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
