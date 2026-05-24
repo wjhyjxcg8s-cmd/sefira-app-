@@ -43,6 +43,15 @@ const translations = {
 
 type Lang = keyof typeof translations;
 
+interface SavedListing {
+  id: number;
+  address: string | null;
+  rent: number | null;
+  currency: string | null;
+  rooms: number | null;
+  needed_roommates: number | null;
+}
+
 export default function SavedListingsPage() {
   const { user, loading } = useAuth();
   const [lang, setLang] = useState<Lang>("tr");
@@ -53,11 +62,8 @@ export default function SavedListingsPage() {
     if (saved === "tr" || saved === "en" || saved === "fa") setLang(saved);
   }, []);
 
-  // Saved listings are stored as an array of listing IDs in localStorage (client-side)
-  // and optionally in a `saved_listings` table in Supabase (future).
-  // For now we use localStorage to persist saved IDs, then fetch those listings.
   const [savedIds, setSavedIds] = useState<number[]>([]);
-  const [listings, setListings] = useState<Record<string, unknown>[]>([]);
+  const [listings, setListings] = useState<SavedListing[]>([]);
   const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
@@ -74,7 +80,7 @@ export default function SavedListingsPage() {
       .select("*")
       .in("id", savedIds)
       .then(({ data }) => {
-        setListings(data ?? []);
+        setListings((data as SavedListing[]) ?? []);
         setFetching(false);
       });
   }, [savedIds]);
@@ -162,21 +168,21 @@ export default function SavedListingsPage() {
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex flex-col gap-1 min-w-0">
                     <p className="font-bold text-stone-900 text-sm truncate">
-                      {String(l.address ?? "—")}
+                      {l.address ?? "—"}
                     </p>
                     <p className="text-xs text-stone-400">
-                      {t.rooms}: {String(l.rooms ?? "—")} · {t.roommates}: {String(l.needed_roommates ?? "—")}
+                      {t.rooms}: {l.rooms ?? "—"} · {t.roommates}: {l.needed_roommates ?? "—"}
                     </p>
                   </div>
-                  {l.rent && (
+                  {l.rent != null && (
                     <span className="flex-shrink-0 text-sm font-black text-orange-500">
-                      {String(l.currency ?? "$")}{String(l.rent)}<span className="text-stone-400 font-normal text-xs">/mo</span>
+                      {l.currency ?? "$"}{l.rent}<span className="text-stone-400 font-normal text-xs">/mo</span>
                     </span>
                   )}
                 </div>
                 <button
                   onClick={() => {
-                    const next = savedIds.filter((id) => id !== Number(l.id));
+                    const next = savedIds.filter((id) => id !== l.id);
                     setSavedIds(next);
                     setListings((prev) => prev.filter((item) => item.id !== l.id));
                     localStorage.setItem("sefira-saved-listings", JSON.stringify(next));
