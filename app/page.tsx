@@ -634,38 +634,53 @@ export default function Home() {
       </nav>
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex flex-col justify-center pt-16 overflow-hidden">
+      <section className="relative min-h-screen flex flex-col justify-center pt-16 overflow-hidden bg-[#1a0533]">
 
-        {/* Layered background glows */}
-        <div className="absolute inset-0 bg-gradient-to-br from-stone-50 via-orange-50/40 to-violet-50/20" />
-        <div className="absolute -top-24 -left-16 w-[600px] h-[600px] bg-orange-400/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-fuchsia-500/10 rounded-full blur-3xl pointer-events-none -translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute -bottom-20 -right-16 w-[560px] h-[560px] bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Animated dark gradient background */}
+        <div className="absolute inset-0 hero-dark-bg" />
 
-        <div className="relative max-w-7xl mx-auto px-5 py-16 grid lg:grid-cols-[1.15fr_0.85fr] gap-12 xl:gap-20 items-center w-full">
+        {/* Animated gradient orbs */}
+        <div className="hero-orb-1 absolute -top-24 -left-16 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-orange-500/35 via-amber-400/20 to-transparent blur-3xl pointer-events-none" />
+        <div className="hero-orb-2 absolute top-1/2 left-1/2 w-80 h-80 rounded-full bg-fuchsia-500/28 blur-3xl pointer-events-none -translate-x-1/2 -translate-y-1/2" />
+        <div className="hero-orb-3 absolute -bottom-20 -right-16 w-[560px] h-[560px] rounded-full bg-violet-600/28 blur-3xl pointer-events-none" />
+
+        {/* CSS particle system */}
+        {Array.from({ length: 25 }, (_, i) => (
+          <div
+            key={i}
+            className={`hero-particle hero-particle-${(i % 6) + 1}`}
+            style={{
+              left: `${((i * 37 + 5) % 89) + 3}%`,
+              top: `${((i * 29 + 8) % 82) + 5}%`,
+              animationDelay: `${((i * 35) % 800) / 100}s`,
+            }}
+          />
+        ))}
+
+        <div className="relative z-10 max-w-7xl mx-auto px-5 py-16 grid lg:grid-cols-[1.15fr_0.85fr] gap-12 xl:gap-20 items-center w-full">
 
           {/* ── LEFT: Typography + Wizard ───────────────────────────────────── */}
           <div className="flex flex-col items-start">
 
             {/* Trust badge */}
-            <div className="inline-flex items-center gap-2.5 bg-orange-50 border border-orange-200 rounded-full px-5 py-2 mb-8 text-sm text-orange-700 hover:bg-orange-100 hover:border-orange-300 transition-all duration-300 cursor-default shadow-lg shadow-orange-500/5 animate-fade-in-up backdrop-blur-sm">
+            <div className="inline-flex items-center gap-2.5 bg-white/10 border border-white/20 rounded-full px-5 py-2 mb-8 text-sm text-orange-300 hover:bg-white/15 hover:border-white/30 transition-all duration-300 cursor-default shadow-lg shadow-orange-500/15 animate-fade-in-up backdrop-blur-sm">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
               {t.heroBadge}
             </div>
 
             {/* Headline */}
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-[1.08] tracking-tighter mb-6 animate-fade-in-up stagger-2">
-              <span className="text-stone-900">{t.heroLine1}</span>
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-[1.08] tracking-tighter mb-6 animate-fade-in-up stagger-2 hero-title-glow">
+              <span className="text-white">{t.heroLine1}</span>
               <br />
-              <span className="bg-gradient-to-r from-orange-500 via-fuchsia-500 to-violet-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-orange-400 via-fuchsia-400 to-violet-400 bg-clip-text text-transparent">
                 {t.heroLine2}
               </span>
               <br />
-              <span className="text-stone-900">{t.heroLine3}</span>
+              <span className="text-white">{t.heroLine3}</span>
             </h1>
 
             {/* Subtitle */}
-            <p className="text-lg sm:text-xl text-stone-600 max-w-xl mb-8 leading-relaxed animate-fade-in-up stagger-3">
+            <p className="text-lg sm:text-xl text-white/75 max-w-xl mb-8 leading-relaxed animate-fade-in-up stagger-3">
               {t.heroP}
             </p>
 
@@ -675,7 +690,7 @@ export default function Home() {
               {wizardMode === null ? (
                 /* ── Mode selector ── */
                 <div>
-                  <p className="text-[11px] font-black text-stone-400 uppercase tracking-widest mb-3.5">
+                  <p className="text-[11px] font-black text-white/50 uppercase tracking-widest mb-3.5">
                     {t.wizardTitle}
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -991,37 +1006,53 @@ export default function Home() {
                 ].map(([init, grad], i) => (
                   <div
                     key={i}
-                    className={`w-10 h-10 rounded-full bg-gradient-to-br ${grad} border-2 border-stone-50 flex items-center justify-center text-xs font-bold shadow-lg`}
+                    className={`w-10 h-10 rounded-full bg-gradient-to-br ${grad} border-2 border-white/25 flex items-center justify-center text-xs font-bold shadow-lg`}
                   >
                     {init}
                   </div>
                 ))}
               </div>
               <div className="text-left">
-                <div className="text-sm font-bold text-stone-900">{t.matchesThisWeek}</div>
-                <div className="text-xs text-stone-500">{t.reviewsLabel}</div>
+                <div className="text-sm font-bold text-white">{t.matchesThisWeek}</div>
+                <div className="text-xs text-white/60">{t.reviewsLabel}</div>
               </div>
             </div>
           </div>
 
-          {/* ── RIGHT: hero-bg.png with floating effect ──────────────────────── */}
+          {/* ── RIGHT: Floating cat with glow & sparkles ──────────────────── */}
           <div className="flex items-center justify-center relative py-8 lg:py-12">
+            {/* Pulsing glow orb behind cat */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-72 h-72 lg:w-[460px] lg:h-[460px] rounded-full bg-gradient-to-br from-orange-400/20 via-fuchsia-500/15 to-violet-600/20 blur-3xl" />
+              <div className="hero-orb-glow w-72 h-72 lg:w-[460px] lg:h-[460px] rounded-full bg-gradient-to-br from-orange-500/40 via-fuchsia-500/25 to-violet-600/30 blur-3xl" />
             </div>
+            {/* Subtle ring */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-52 h-52 lg:w-[340px] lg:h-[340px] rounded-full border border-fuchsia-300/20 bg-gradient-to-br from-orange-500/5 via-pink-500/5 to-violet-500/5" />
+              <div className="w-52 h-52 lg:w-[340px] lg:h-[340px] rounded-full border border-orange-400/25 bg-gradient-to-br from-orange-500/10 via-pink-500/8 to-violet-500/10" />
             </div>
-            <div className="relative animate-float z-10 w-64 sm:w-80 lg:w-[500px]">
-              <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-3/4 h-10 bg-gradient-to-r from-orange-500/35 via-fuchsia-500/35 to-violet-600/35 blur-2xl rounded-full pointer-events-none" />
+            {/* Cat wrapper */}
+            <div className="relative animate-cat-float z-10 w-64 sm:w-80 lg:w-[440px]">
+              {/* Ground shadow glow */}
+              <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-3/4 h-12 bg-gradient-to-r from-orange-500/50 via-fuchsia-500/50 to-violet-600/50 blur-2xl rounded-full pointer-events-none" />
+              {/* Sparkles */}
+              <span className="hero-sparkle text-xl"  style={{ top: '6%',  right: '10%', animationDelay: '0s'    }}>✦</span>
+              <span className="hero-sparkle text-base" style={{ top: '22%', left:  '4%',  animationDelay: '0.65s' }}>✦</span>
+              <span className="hero-sparkle text-sm"  style={{ top: '52%', right: '4%',  animationDelay: '1.4s'  }}>✦</span>
+              <span className="hero-sparkle text-xs"  style={{ top: '72%', left:  '8%',  animationDelay: '2.1s'  }}>✦</span>
+              <span className="hero-sparkle text-lg"  style={{ top: '38%', right: '1%',  animationDelay: '0.35s' }}>✦</span>
+              <span className="hero-sparkle"           style={{ top: '14%', left:  '16%', animationDelay: '1.75s', fontSize: '10px' }}>✦</span>
+              <span className="hero-sparkle text-sm"  style={{ top: '62%', right: '14%', animationDelay: '1.05s' }}>✦</span>
+              <span className="hero-sparkle text-xs"  style={{ top: '44%', left:  '1%',  animationDelay: '2.45s' }}>✦</span>
+              {/* Cat image */}
               <Image
-                src="/images/hero-bg.png"
-                alt="Sefira — find your perfect home and roommate"
-                width={500}
-                height={520}
-                className="w-full h-auto rounded-3xl object-contain drop-shadow-2xl ring-1 ring-white/40"
+                src="/images/hero-cat.png"
+                alt="Sefira mascot"
+                width={440}
+                height={500}
+                className="w-full h-auto object-contain"
+                style={{ filter: 'drop-shadow(0 0 50px rgba(255,107,53,0.45)) drop-shadow(0 20px 60px rgba(155,89,255,0.3))' }}
                 priority
               />
+              {/* Floating badges */}
               <div className="absolute -top-5 -left-5 sm:-left-10 bg-white/95 border border-stone-100 rounded-2xl px-3 py-2.5 sm:px-4 sm:py-3 shadow-2xl shadow-stone-900/10 backdrop-blur-md animate-fade-in-up stagger-2 z-20">
                 <div className="flex items-center gap-2 sm:gap-2.5">
                   <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-black text-sm shadow-lg shadow-emerald-500/30">
@@ -1049,9 +1080,9 @@ export default function Home() {
         </div>
 
         {/* Scroll indicator */}
-        <div className="relative flex justify-center pb-10">
-          <div className="w-6 h-10 border-2 border-stone-400/40 rounded-full flex justify-center pt-2 animate-bounce">
-            <div className="w-1 h-2 bg-stone-400/40 rounded-full" />
+        <div className="relative z-10 flex justify-center pb-10">
+          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2 animate-bounce">
+            <div className="w-1 h-2 bg-white/30 rounded-full" />
           </div>
         </div>
       </section>
