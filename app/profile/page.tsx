@@ -25,6 +25,8 @@ const translations = {
     emailLabel: "E-posta",
     memberSince: "Üyelik",
     createListing: "İlan Ver",
+    myListings: "İlanlarım",
+    savedListings: "Kaydedilenler",
     signOut: "Çıkış Yap",
   },
   en: {
@@ -45,6 +47,8 @@ const translations = {
     emailLabel: "Email",
     memberSince: "Member since",
     createListing: "Create Listing",
+    myListings: "My Listings",
+    savedListings: "Saved Listings",
     signOut: "Sign Out",
   },
   fa: {
@@ -65,6 +69,8 @@ const translations = {
     emailLabel: "ایمیل",
     memberSince: "عضو از",
     createListing: "ثبت آگهی",
+    myListings: "آگهی‌های من",
+    savedListings: "آگهی‌های ذخیره شده",
     signOut: "خروج",
   },
 };
@@ -74,6 +80,24 @@ export default function ProfilePage() {
   const router = useRouter();
   const [lang, setLang] = useState<"tr" | "en" | "fa">("tr");
   const t = translations[lang];
+  const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const langMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("sefira-lang") as "tr" | "en" | "fa" | null;
+    if (saved === "tr" || saved === "en" || saved === "fa") setLang(saved);
+  }, []);
+  useEffect(() => { localStorage.setItem("sefira-lang", lang); }, [lang]);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (langMenuRef.current && !langMenuRef.current.contains(e.target as Node)) {
+        setLangMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
 
   const [displayName, setDisplayName] = useState("");
   const [birthDate, setBirthDate] = useState("");
@@ -228,21 +252,36 @@ export default function ProfilePage() {
             >
               {t.createListing}
             </Link>
-            <div className="flex bg-stone-100 border border-stone-200 rounded-lg p-0.5 gap-0.5">
-              {(["tr", "en", "fa"] as const).map((l) => (
-                <button
-                  key={l}
-                  onClick={() => setLang(l)}
-                  className={`flex items-center gap-1 px-1.5 py-1.5 rounded-md text-[11px] font-black transition-all duration-200 whitespace-nowrap ${
-                    lang === l ? "bg-white text-stone-900 shadow-sm" : "text-stone-400 hover:text-stone-700"
-                  }`}
-                >
-                  <span className="text-sm leading-none">
-                    {l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : "🇮🇷"}
-                  </span>
-                  <span>{l === "tr" ? "TR" : l === "en" ? "EN" : "FA"}</span>
-                </button>
-              ))}
+            {/* Lang switcher — single button + dropdown */}
+            <div className="relative" ref={langMenuRef}>
+              <button
+                onClick={() => setLangMenuOpen((o) => !o)}
+                className="flex items-center gap-1 bg-stone-100 border border-stone-200 rounded-lg px-2 py-1.5 text-[11px] font-black transition-all duration-200 hover:bg-stone-200 whitespace-nowrap"
+              >
+                <span className="text-sm leading-none">
+                  {lang === "tr" ? "🇹🇷" : lang === "en" ? "🇬🇧" : "🇮🇷"}
+                </span>
+                <span className="text-stone-700">
+                  {lang === "tr" ? "TR" : lang === "en" ? "EN" : "FA"}
+                </span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className={`w-3 h-3 text-stone-400 transition-transform duration-200 ${langMenuOpen ? "rotate-180" : ""}`}>
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+              {langMenuOpen && (
+                <div className="absolute top-full mt-1 right-0 z-[100] bg-white border border-stone-200 rounded-xl shadow-xl overflow-hidden min-w-[90px]">
+                  {(["tr", "en", "fa"] as const).map((l) => (
+                    <button
+                      key={l}
+                      onClick={() => { setLang(l); setLangMenuOpen(false); }}
+                      className={`flex items-center gap-2 w-full px-3 py-2.5 text-[12px] font-bold transition-colors hover:bg-stone-50 ${lang === l ? "text-orange-500" : "text-stone-700"}`}
+                    >
+                      <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : "🇮🇷"}</span>
+                      {l === "tr" ? "TR" : l === "en" ? "EN" : "FA"}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -395,6 +434,28 @@ export default function ProfilePage() {
               </svg>
               {t.createListing}
             </Link>
+
+            {/* My Listings + Saved Listings */}
+            <div className="grid grid-cols-2 gap-3">
+              <Link
+                href="/my-listings"
+                className="py-3.5 rounded-xl font-bold text-sm text-center border-2 border-stone-200 text-stone-700 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-700 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                  <rect x="3" y="3" width="18" height="18" rx="2" /><line x1="3" y1="9" x2="21" y2="9" /><line x1="9" y1="21" x2="9" y2="3" />
+                </svg>
+                {t.myListings}
+              </Link>
+              <Link
+                href="/saved-listings"
+                className="py-3.5 rounded-xl font-bold text-sm text-center border-2 border-stone-200 text-stone-700 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-700 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                </svg>
+                {t.savedListings}
+              </Link>
+            </div>
 
             {/* Logout button */}
             <button

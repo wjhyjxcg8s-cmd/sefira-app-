@@ -9,7 +9,10 @@
       "Bash(Select-Object Name)",
       "Bash(grep -E \"\\\\.\\(tsx|ts|jsx|js\\)$\")",
       "Bash(Get-ChildItem -Path \"e:\\\\sefıra-web\\\\sefira-app\" -Recurse -Directory)",
-      "Bash(Select-Object -ExpandProperty FullName)"
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(Get-ChildItem -Path \"e:\\\\sefıra-web\\\\sefira-app\" -Force)",
+      "Bash(Select-Object Name, PSIsContainer)",
+      "Bash(Sort-Object Name)"
     ]
   }
 }

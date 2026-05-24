@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Sefira — Find Your Perfect Roommate & Home",
-  description: "AI-powered roommate matching and premium rental discovery. Built for expats, students, and modern professionals across 52+ cities.",
+  description: "AI-powered roommate matching and premium sharing discovery. Built for expats, students, and modern professionals across 52+ cities.",
 };
 
 export default function RootLayout({
