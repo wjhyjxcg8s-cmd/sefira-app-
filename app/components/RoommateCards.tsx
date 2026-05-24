@@ -26,6 +26,7 @@ interface Profile {
   initials: string;
   lifestyle: string[];
   bio: string;
+  bioTr: string;
   verified: boolean;
   pets: boolean;
   smoking: boolean;
@@ -41,6 +42,7 @@ const PROFILES: Profile[] = [
     gradient: "from-violet-600 via-purple-700 to-indigo-800", initials: "EW",
     lifestyle: ["Night owl", "Minimalist", "Yoga"],
     bio: "Creative designer seeking a quiet, tidy flatmate who appreciates good aesthetics.",
+    bioTr: "Sessiz, düzenli ve estetiği önemseyen bir ev arkadaşı arayan yaratıcı tasarımcı.",
     verified: true,  pets: false, smoking: false, budget: "700-1000",
   },
   {
@@ -50,6 +52,7 @@ const PROFILES: Profile[] = [
     gradient: "from-cyan-600 via-blue-700 to-indigo-800",     initials: "KT",
     lifestyle: ["Early bird", "Gamer", "Coffee lover"],
     bio: "Remote dev who values clean spaces and good coffee. Let's build a calm, focused home.",
+    bioTr: "Temiz alanları ve güzel kahveyi önemseyen uzaktan geliştirici. Sakin, odaklı bir ev kuralım.",
     verified: true,  pets: true,  smoking: false, budget: "800-1100",
   },
   {
@@ -59,6 +62,7 @@ const PROFILES: Profile[] = [
     gradient: "from-rose-500 via-pink-600 to-fuchsia-700",    initials: "SR",
     lifestyle: ["Student", "Active", "Social"],
     bio: "Med student, tidy and friendly. Latin music on weekends, focused on weeknights.",
+    bioTr: "Tıp öğrencisi, düzenli ve arkadaş canlısı. Hafta sonları Latin müzik, hafta içi çalışma modu.",
     verified: false, pets: false, smoking: false, budget: "500-750",
   },
   {
@@ -68,6 +72,7 @@ const PROFILES: Profile[] = [
     gradient: "from-amber-500 via-orange-600 to-rose-700",    initials: "LM",
     lifestyle: ["Minimalist", "Cyclist", "Foodie"],
     bio: "Architect with a love for clean design and weekend hikes. Always keeps tidy spaces.",
+    bioTr: "Temiz tasarımı ve hafta sonu yürüyüşlerini seven mimar. Her zaman düzenli bir alan sağlar.",
     verified: true,  pets: false, smoking: false, budget: "900-1200",
   },
   {
@@ -77,6 +82,7 @@ const PROFILES: Profile[] = [
     gradient: "from-emerald-600 via-teal-700 to-cyan-800",    initials: "MY",
     lifestyle: ["Early bird", "Foodie", "Calm"],
     bio: "Professional chef who cooks for two and keeps the kitchen spotless. Early riser.",
+    bioTr: "İkisi için pişiren ve mutfağı pırıl pırıl tutan profesyonel aşçı. Erken kalkar.",
     verified: true,  pets: true,  smoking: false, budget: "400-700",
   },
   {
@@ -86,6 +92,7 @@ const PROFILES: Profile[] = [
     gradient: "from-purple-500 via-violet-600 to-indigo-700", initials: "PS",
     lifestyle: ["Night owl", "Reader", "Introvert"],
     bio: "Data scientist, quiet and focused. Love a good book and strong chai. Very tidy.",
+    bioTr: "Veri bilimcisi, sessiz ve odaklı. İyi kitap ve güçlü çayı sever. Çok düzenli.",
     verified: false, pets: false, smoking: false, budget: "1000-1500",
   },
 ];
@@ -201,6 +208,7 @@ function SwipeCard({
   labels,
   currency,
   onInspect,
+  lang,
 }: {
   profile:    Profile;
   stackIndex: number;
@@ -209,6 +217,7 @@ function SwipeCard({
   labels:     Labels;
   currency:   Currency;
   onInspect:  () => void;
+  lang:       "tr" | "en" | "fa";
 }) {
   const isTop    = stackIndex === 0;
   const controls = useAnimation();
@@ -396,7 +405,7 @@ function SwipeCard({
 
           {/* Bio */}
           <p className="text-xs text-stone-500 leading-relaxed line-clamp-2 italic">
-            &ldquo;{profile.bio}&rdquo;
+            &ldquo;{lang === "tr" ? profile.bioTr : profile.bio}&rdquo;
           </p>
 
           {/* Pets / Smoking */}
@@ -434,11 +443,13 @@ function InspectModal({
   labels,
   currency,
   onClose,
+  lang,
 }: {
   profile:  Profile;
   labels:   Labels;
   currency: Currency;
   onClose:  () => void;
+  lang:     "tr" | "en" | "fa";
 }) {
   return (
     <motion.div
@@ -554,7 +565,7 @@ function InspectModal({
 
           <div className="rounded-2xl p-4" style={{ background: "rgba(248,247,246,0.9)" }}>
             <p className="text-sm text-stone-600 leading-relaxed italic">
-              &ldquo;{profile.bio}&rdquo;
+              &ldquo;{lang === "tr" ? profile.bioTr : profile.bio}&rdquo;
             </p>
           </div>
 
@@ -670,6 +681,7 @@ export default function RoommateCards({
               labels={labels}
               currency={currency}
               onInspect={() => setInspectedProfile(profile)}
+              lang={lang}
             />
           ))}
         </div>
@@ -763,6 +775,7 @@ export default function RoommateCards({
             labels={labels}
             currency={currency}
             onClose={() => setInspectedProfile(null)}
+            lang={lang}
           />
         )}
       </AnimatePresence>

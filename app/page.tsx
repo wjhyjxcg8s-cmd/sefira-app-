@@ -285,6 +285,7 @@ const matchProfiles = [
     match: 97, city: "Berlin", gradient: "from-violet-600 via-purple-700 to-indigo-800",
     initials: "EW", lifestyle: ["Night owl", "Minimalist", "Yoga"],
     bio: "Creative designer looking for a quiet, tidy flatmate who appreciates good aesthetics.",
+    bioTr: "Sessiz, düzenli ve estetiği önemseyen bir ev arkadaşı arayan yaratıcı tasarımcı.",
     verified: true, pets: false, smoking: false, budget: "700-1000",
   },
   {
@@ -292,6 +293,7 @@ const matchProfiles = [
     match: 94, city: "Berlin", gradient: "from-cyan-600 via-blue-700 to-indigo-800",
     initials: "KT", lifestyle: ["Early bird", "Gamer", "Coffee lover"],
     bio: "Remote dev who values clean spaces and good coffee. Lets build a calm, focused home.",
+    bioTr: "Temiz alanları ve güzel kahveyi önemseyen uzaktan geliştirici. Sakin, odaklı bir ev kuralım.",
     verified: true, pets: true, smoking: false, budget: "800-1100",
   },
   {
@@ -299,6 +301,7 @@ const matchProfiles = [
     match: 91, city: "Berlin", gradient: "from-rose-500 via-pink-600 to-fuchsia-700",
     initials: "SR", lifestyle: ["Student", "Active", "Social"],
     bio: "Med student, tidy and friendly. Latin music on weekends, focused on weeknights.",
+    bioTr: "Tıp öğrencisi, düzenli ve arkadaş canlısı. Hafta sonları Latin müzik, hafta içi çalışma modu.",
     verified: false, pets: false, smoking: false, budget: "500-750",
   },
 ];
@@ -347,20 +350,37 @@ const trendingCities = [
   { name: "London",    country: "UK",          listings: "3,201", growth: "+8%",  glow: "bg-indigo-500/10", border: "border-indigo-500/20", emoji: "🎡" },
 ];
 
-const testimonials = [
-  { name: "Alex Morrison", role: "Digital Nomad",     city: "Amsterdam", quote: "Found my perfect roommate in 48 hours. The AI matching is insanely accurate. Same sleep schedule, same cleaning habits.",                                              rating: 5, gradient: "from-blue-500 to-indigo-600",   initials: "AM", avatar: "https://randomuser.me/api/portraits/men/32.jpg"   },
-  { name: "Layla Hassan",  role: "Medical Student",   city: "Berlin",    quote: "As an expat I was terrified about finding safe housing. Sefiras verification system and warm community made me feel at home.",                                          rating: 5, gradient: "from-emerald-500 to-teal-600", initials: "LH", avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
-  { name: "Daniel Park",   role: "Tech Professional", city: "Dubai",     quote: "The UI is addictive. I kept swiping through profiles until I found a place that actually feels like home, not just a room.",                                            rating: 5, gradient: "from-rose-500 to-pink-600",    initials: "DP", avatar: "https://randomuser.me/api/portraits/men/67.jpg"   },
-  { name: "Sofia Reyes",   role: "Graduate Student",  city: "Barcelona", quote: "I moved to Spain knowing nobody. Within a week Sefira connected me with flatmates who became my closest friends here.",                                               rating: 5, gradient: "from-yellow-500 to-orange-600", initials: "SR", avatar: "https://randomuser.me/api/portraits/women/68.jpg" },
-  { name: "Marcus Webb",   role: "Remote Designer",   city: "Lisbon",    quote: "The verified listings saved me from so many scams. Every place I toured was exactly as described. Finally moved in stress-free.",                                      rating: 5, gradient: "from-cyan-500 to-blue-600",    initials: "MW", avatar: "https://randomuser.me/api/portraits/men/75.jpg"   },
-  { name: "Nina Okafor",   role: "Exchange Student",  city: "London",    quote: "Never thought finding a room abroad would be this smooth. The community was welcoming and the app made everything transparent.",                                        rating: 5, gradient: "from-violet-500 to-purple-600", initials: "NO", avatar: "https://randomuser.me/api/portraits/women/90.jpg" },
-];
+const testimonialsByLang = {
+  tr: [
+    { name: "Ayşe Kaya",    role: "Öğrenci",             city: "İstanbul",  quote: "Sefira sayesinde 48 saatte mükemmel ev arkadaşımı buldum. Yapay zeka eşleştirmesi inanılmaz derecede doğru; aynı uyku düzeni, aynı temizlik anlayışı.",      rating: 5, gradient: "from-blue-500 to-indigo-600",    initials: "AK", avatar: "https://randomuser.me/api/portraits/women/32.jpg" },
+    { name: "Mehmet Demir", role: "Yazılım Mühendisi",   city: "Ankara",    quote: "Yurt dışından döndüğümde güvenli konut bulmak en büyük korkumdu. Sefira'nın doğrulama sistemi ve sıcak topluluğu beni hemen evimde hissettirdi.",            rating: 5, gradient: "from-emerald-500 to-teal-600",   initials: "MD", avatar: "https://randomuser.me/api/portraits/men/44.jpg"   },
+    { name: "Fatma Yıldız", role: "Tıp Öğrencisi",       city: "İzmir",     quote: "Uygulama çok bağımlılık yapıcı. Gerçekten evim gibi hissettiren bir yer bulana kadar profillere bakmaya devam ettim. Harika bir eşleşme!",                   rating: 5, gradient: "from-rose-500 to-pink-600",      initials: "FY", avatar: "https://randomuser.me/api/portraits/women/67.jpg" },
+    { name: "Emre Çelik",   role: "Yüksek Lisans Öğ.", city: "Bursa",     quote: "İzmir'e taşındığımda kimseyi tanımıyordum. Bir hafta içinde Sefira beni en yakın arkadaşlarım olacak ev arkadaşlarımla buluşturdu.",                         rating: 5, gradient: "from-yellow-500 to-orange-600",  initials: "EÇ", avatar: "https://randomuser.me/api/portraits/men/68.jpg"   },
+    { name: "Zeynep Arslan","role": "Uzaktan Tasarımcı", city: "Antalya",   quote: "Doğrulanmış ilanlar beni pek çok dolandırıcılıktan kurtardı. Gezdiğim her yer tam olarak anlatıldığı gibiydi. Hiç stressiz taşındım.",                      rating: 5, gradient: "from-cyan-500 to-blue-600",      initials: "ZA", avatar: "https://randomuser.me/api/portraits/women/75.jpg" },
+    { name: "Can Özdemir",  role: "Değişim Öğrencisi",  city: "İstanbul",  quote: "Yurt dışında oda bulmak bu kadar kolay olacağını hiç düşünmemiştim. Topluluk çok sıcakkanlıydı ve uygulama her şeyi şeffaf hale getirdi.",                   rating: 5, gradient: "from-violet-500 to-purple-600", initials: "CÖ", avatar: "https://randomuser.me/api/portraits/men/90.jpg"   },
+  ],
+  en: [
+    { name: "Alex Morrison", role: "Digital Nomad",     city: "Amsterdam", quote: "Found my perfect roommate in 48 hours. The AI matching is insanely accurate. Same sleep schedule, same cleaning habits.",                                              rating: 5, gradient: "from-blue-500 to-indigo-600",   initials: "AM", avatar: "https://randomuser.me/api/portraits/men/32.jpg"   },
+    { name: "Layla Hassan",  role: "Medical Student",   city: "Berlin",    quote: "As an expat I was terrified about finding safe housing. Sefiras verification system and warm community made me feel at home.",                                          rating: 5, gradient: "from-emerald-500 to-teal-600", initials: "LH", avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
+    { name: "Daniel Park",   role: "Tech Professional", city: "Dubai",     quote: "The UI is addictive. I kept swiping through profiles until I found a place that actually feels like home, not just a room.",                                            rating: 5, gradient: "from-rose-500 to-pink-600",    initials: "DP", avatar: "https://randomuser.me/api/portraits/men/67.jpg"   },
+    { name: "Sofia Reyes",   role: "Graduate Student",  city: "Barcelona", quote: "I moved to Spain knowing nobody. Within a week Sefira connected me with flatmates who became my closest friends here.",                                               rating: 5, gradient: "from-yellow-500 to-orange-600", initials: "SR", avatar: "https://randomuser.me/api/portraits/women/68.jpg" },
+    { name: "Marcus Webb",   role: "Remote Designer",   city: "Lisbon",    quote: "The verified listings saved me from so many scams. Every place I toured was exactly as described. Finally moved in stress-free.",                                      rating: 5, gradient: "from-cyan-500 to-blue-600",    initials: "MW", avatar: "https://randomuser.me/api/portraits/men/75.jpg"   },
+    { name: "Nina Okafor",   role: "Exchange Student",  city: "London",    quote: "Never thought finding a room abroad would be this smooth. The community was welcoming and the app made everything transparent.",                                        rating: 5, gradient: "from-violet-500 to-purple-600", initials: "NO", avatar: "https://randomuser.me/api/portraits/women/90.jpg" },
+  ],
+};
 
-const communityPosts = [
-  { id: 1, user: "Sarah K.", location: "Berlin, Germany", content: "Just found the most amazing flatmates through Sefira! Moving in next weekend. This city finally feels like home.",                               likes: 342, comments: 28, gradient: "from-pink-500 to-rose-600",    initials: "SK", time: "2h ago" },
-  { id: 2, user: "Ahmed M.", location: "Dubai, UAE",      content: "Roommate tip: be honest about your sleep schedule! Mine is a night owl and we matched perfectly. 6 months in, zero issues.",                    likes: 218, comments: 45, gradient: "from-blue-500 to-indigo-600",  initials: "AM", time: "5h ago" },
-  { id: 3, user: "Yuki T.",  location: "Amsterdam, NL",   content: "First week in my new flat. Sefira matched me with 3 others who love minimalist design and early mornings. Dream team.",                          likes: 456, comments: 67, gradient: "from-violet-500 to-purple-600",initials: "YT", time: "1d ago" },
-];
+const communityPostsByLang = {
+  tr: [
+    { id: 1, user: "Ahmet Y.", location: "İstanbul, Türkiye", content: "Sefira aracılığıyla en harika ev arkadaşlarımı buldum! Gelecek hafta taşınıyorum. Bu şehir artık gerçekten ev gibi geliyor.",                                       likes: 312, comments: 24, gradient: "from-pink-500 to-rose-600",    initials: "AY", time: "2 saat önce" },
+    { id: 2, user: "Selin K.", location: "Ankara, Türkiye",   content: "Ev arkadaşı tavsiyesi: uyku düzeniniz konusunda dürüst olun! Benimki gece kuşu; mükemmel eşleştik. 6 aydır sıfır sorun.",                                         likes: 198, comments: 38, gradient: "from-blue-500 to-indigo-600",  initials: "SK", time: "5 saat önce" },
+    { id: 3, user: "Berk M.",  location: "İzmir, Türkiye",    content: "Yeni dairemde ilk haftam. Sefira beni minimalist tasarımı ve sabah rutinlerini seven 3 kişiyle eşleştirdi. Rüya takım.",                                          likes: 421, comments: 59, gradient: "from-violet-500 to-purple-600",initials: "BM", time: "1 gün önce" },
+  ],
+  en: [
+    { id: 1, user: "Sarah K.", location: "Berlin, Germany", content: "Just found the most amazing flatmates through Sefira! Moving in next weekend. This city finally feels like home.",                               likes: 342, comments: 28, gradient: "from-pink-500 to-rose-600",    initials: "SK", time: "2h ago" },
+    { id: 2, user: "Ahmed M.", location: "Dubai, UAE",      content: "Roommate tip: be honest about your sleep schedule! Mine is a night owl and we matched perfectly. 6 months in, zero issues.",                    likes: 218, comments: 45, gradient: "from-blue-500 to-indigo-600",  initials: "AM", time: "5h ago" },
+    { id: 3, user: "Yuki T.",  location: "Amsterdam, NL",   content: "First week in my new flat. Sefira matched me with 3 others who love minimalist design and early mornings. Dream team.",                          likes: 456, comments: 67, gradient: "from-violet-500 to-purple-600",initials: "YT", time: "1d ago" },
+  ],
+};
 
 const PRIORITY_COUNTRIES = [
   "Turkey", "Germany", "United States", "Spain", "Brazil",
@@ -420,6 +440,8 @@ export default function Home() {
   const [budgetUSD, setBudgetUSD] = useState(800);
 
   const t = translations[lang];
+  const testimonials   = testimonialsByLang[lang];
+  const communityPosts = communityPostsByLang[lang];
 
   const [savedProfiles,  setSavedProfiles]  = useState<number[]>([]);
   const [animatingIds,   setAnimatingIds]   = useState<number[]>([]);
@@ -1241,7 +1263,7 @@ export default function Home() {
                   </div>
                   <span className="text-xs text-stone-400">{p.nationality}</span>
                 </div>
-                <p className="text-xs text-stone-500 leading-relaxed mb-4">{p.bio}</p>
+                <p className="text-xs text-stone-500 leading-relaxed mb-4">{lang === "tr" ? p.bioTr : p.bio}</p>
                 <div className="flex flex-wrap gap-1.5 mb-4">
                   {p.lifestyle.map((tag) => (
                     <span key={tag} className="text-xs bg-stone-100 border border-stone-200 rounded-full px-2.5 py-0.5 text-stone-600">
