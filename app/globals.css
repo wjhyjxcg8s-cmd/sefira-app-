@@ -228,3 +228,19 @@ body {
 .animate-dropdown-slide {
   animation: dropdown-slide-down 0.16s ease-out forwards;
 }
+
+/* ─── Profile side panel ─────────────────────────────────────────────────── */
+@keyframes slide-panel-in {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0);    }
+}
+.animate-slide-panel-in {
+  animation: slide-panel-in 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes panel-backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.animate-panel-backdrop {
+  animation: panel-backdrop-in 0.2s ease-out forwards;
+}

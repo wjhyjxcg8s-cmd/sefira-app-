@@ -776,87 +776,22 @@ export default function Home() {
             </div>
 
             {user ? (
-              /* Unified avatar + dropdown — works on both mobile and desktop */
-              <div className="relative" ref={profileMenuRef}>
-                <button
-                  onClick={() => setProfileMenuOpen((o) => !o)}
-                  className="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-[10px] sm:text-xs text-white shadow-md shadow-orange-500/40 flex-shrink-0 hover:scale-105 active:scale-90 transition-transform duration-200 overflow-hidden ring-2 ring-orange-300 ring-offset-1"
-                >
-                  {profileAvatarUrl ? (
-                    <img src={profileAvatarUrl} alt="avatar" className="w-full h-full object-cover" />
-                  ) : (
-                    (user.user_metadata?.full_name ?? user.email ?? "U")
-                      .split(" ")
-                      .map((w: string) => w[0])
-                      .slice(0, 2)
-                      .join("")
-                      .toUpperCase()
-                  )}
-                </button>
-
-                {profileMenuOpen && (
-                  <div className="absolute top-full mt-2 right-0 z-[100] bg-white border border-stone-200 rounded-2xl shadow-2xl shadow-stone-900/10 overflow-hidden min-w-[220px] animate-dropdown-slide">
-                    {/* Header: name + email (non-clickable) */}
-                    <div className="px-4 py-3.5 border-b border-stone-100">
-                      <p className="text-sm font-black text-stone-900 truncate leading-tight">
-                        {user.user_metadata?.full_name ?? user.email?.split("@")[0] ?? "User"}
-                      </p>
-                      <p className="text-xs text-stone-400 truncate mt-0.5">{user.email}</p>
-                    </div>
-
-                    {/* Saved Listings */}
-                    <Link
-                      href="/saved-listings"
-                      onClick={() => setProfileMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 text-sm text-stone-700 hover:bg-stone-50 transition-colors font-semibold"
-                    >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-stone-400 flex-shrink-0">
-                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                      </svg>
-                      {lang === "tr" ? "Kaydedilenler" : lang === "fa" ? "ذخیره‌ها" : "Saved"}
-                    </Link>
-
-                    {/* New Listing */}
-                    <button
-                      onClick={() => { handleCreateListing(); setProfileMenuOpen(false); }}
-                      className="flex items-center gap-3 w-full px-4 py-3 text-sm text-stone-700 hover:bg-stone-50 transition-colors font-semibold"
-                    >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 text-stone-400 flex-shrink-0">
-                        <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
-                      </svg>
-                      {lang === "tr" ? "İlan Ver" : lang === "fa" ? "ثبت آگهی" : "Post Listing"}
-                    </button>
-
-                    {/* My Listings */}
-                    <Link
-                      href="/my-listings"
-                      onClick={() => setProfileMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 text-sm text-stone-700 hover:bg-stone-50 transition-colors font-semibold"
-                    >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-stone-400 flex-shrink-0">
-                        <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
-                        <rect x="9" y="3" width="6" height="4" rx="1" />
-                        <line x1="9" y1="12" x2="15" y2="12" />
-                        <line x1="9" y1="16" x2="13" y2="16" />
-                      </svg>
-                      {lang === "tr" ? "İlanlarım" : lang === "fa" ? "آگهی‌های من" : "My Listings"}
-                    </Link>
-
-                    <div className="h-px bg-stone-100 mx-3 my-1" />
-
-                    {/* Sign Out */}
-                    <button
-                      onClick={() => { handleSignOut(); setProfileMenuOpen(false); }}
-                      className="flex items-center gap-3 w-full px-4 py-3 text-sm text-rose-500 hover:bg-rose-50 transition-colors font-semibold"
-                    >
-                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 flex-shrink-0">
-                        <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
-                      </svg>
-                      {t.signOut}
-                    </button>
-                  </div>
+              /* Avatar button — opens profile side panel */
+              <button
+                onClick={() => setProfileMenuOpen((o) => !o)}
+                className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-[10px] sm:text-xs text-white shadow-md shadow-orange-500/40 flex-shrink-0 hover:scale-105 active:scale-90 transition-all duration-200 overflow-hidden ring-2 ${profileMenuOpen ? "ring-orange-500 ring-offset-2 scale-95" : "ring-orange-300 ring-offset-1"}`}
+              >
+                {profileAvatarUrl ? (
+                  <img src={profileAvatarUrl} alt="avatar" className="w-full h-full object-cover" />
+                ) : (
+                  (user.user_metadata?.full_name ?? user.email ?? "U")
+                    .split(" ")
+                    .map((w: string) => w[0])
+                    .slice(0, 2)
+                    .join("")
+                    .toUpperCase()
                 )}
-              </div>
+              </button>
             ) : (
               <>
                 {/* Mobile: glowing pulsing auth icon */}
@@ -900,6 +835,124 @@ export default function Home() {
           </div>
         </div>
       </nav>
+
+      {/* ── PROFILE SIDE PANEL ────────────────────────────────────────────────── */}
+      {user && profileMenuOpen && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 z-40 bg-black/30 backdrop-blur-[2px] animate-panel-backdrop"
+            onClick={() => setProfileMenuOpen(false)}
+          />
+          {/* Panel */}
+          <div className="fixed top-16 right-0 z-50 h-[calc(100vh-4rem)] w-72 sm:w-80 bg-white shadow-2xl flex flex-col overflow-hidden animate-slide-panel-in" dir="ltr">
+            {/* Header */}
+            <div className="relative p-6 pb-5 bg-gradient-to-br from-orange-50 via-amber-50/60 to-white border-b border-orange-100">
+              <button
+                onClick={() => setProfileMenuOpen(false)}
+                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 hover:bg-stone-100 text-stone-400 hover:text-stone-700 transition-colors shadow-sm"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4">
+                  <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+              <div className="flex flex-col items-center gap-3 pt-2">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-xl text-white shadow-lg shadow-orange-500/30 overflow-hidden ring-4 ring-white">
+                  {profileAvatarUrl ? (
+                    <img src={profileAvatarUrl} alt="avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    (user.user_metadata?.full_name ?? user.email ?? "U")
+                      .split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
+                  )}
+                </div>
+                <div className="text-center">
+                  <p className="font-black text-stone-900 text-base leading-tight truncate max-w-[200px]">
+                    {user.user_metadata?.full_name ?? user.email?.split("@")[0] ?? "User"}
+                  </p>
+                  <p className="text-xs text-stone-400 mt-0.5 truncate max-w-[200px]">{user.email}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Menu items */}
+            <div className="flex-1 p-3 flex flex-col gap-0.5 overflow-y-auto">
+              {/* Edit Profile */}
+              <Link
+                href="/profile"
+                onClick={() => setProfileMenuOpen(false)}
+                className="flex items-center gap-3.5 px-3 py-3.5 rounded-xl text-stone-700 hover:bg-orange-50 hover:text-orange-700 transition-all duration-150 font-semibold group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0 group-hover:bg-orange-200 transition-colors">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-orange-600">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                  </svg>
+                </div>
+                <span className="text-sm">{lang === "tr" ? "Profilimi Düzenle" : lang === "fa" ? "ویرایش پروفایل" : "Edit Profile"}</span>
+              </Link>
+
+              {/* Saved Listings */}
+              <Link
+                href="/saved-listings"
+                onClick={() => setProfileMenuOpen(false)}
+                className="flex items-center gap-3.5 px-3 py-3.5 rounded-xl text-stone-700 hover:bg-orange-50 hover:text-orange-700 transition-all duration-150 font-semibold group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0 group-hover:bg-orange-200 transition-colors">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-orange-600">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                  </svg>
+                </div>
+                <span className="text-sm">{lang === "tr" ? "Kaydedilenler" : lang === "fa" ? "ذخیره‌ها" : "Saved"}</span>
+              </Link>
+
+              {/* Post Listing */}
+              <button
+                onClick={() => { handleCreateListing(); setProfileMenuOpen(false); }}
+                className="flex items-center gap-3.5 px-3 py-3.5 rounded-xl text-stone-700 hover:bg-orange-50 hover:text-orange-700 transition-all duration-150 font-semibold group w-full text-left"
+              >
+                <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0 group-hover:bg-orange-200 transition-colors">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-5 h-5 text-orange-600">
+                    <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </div>
+                <span className="text-sm">{lang === "tr" ? "İlan Ver" : lang === "fa" ? "ثبت آگهی" : "Post Listing"}</span>
+              </button>
+
+              {/* My Listings */}
+              <Link
+                href="/my-listings"
+                onClick={() => setProfileMenuOpen(false)}
+                className="flex items-center gap-3.5 px-3 py-3.5 rounded-xl text-stone-700 hover:bg-orange-50 hover:text-orange-700 transition-all duration-150 font-semibold group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0 group-hover:bg-orange-200 transition-colors">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-orange-600">
+                    <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
+                    <rect x="9" y="3" width="6" height="4" rx="1" />
+                    <line x1="9" y1="12" x2="15" y2="12" />
+                    <line x1="9" y1="16" x2="13" y2="16" />
+                  </svg>
+                </div>
+                <span className="text-sm">{lang === "tr" ? "İlanlarım" : lang === "fa" ? "آگهی‌های من" : "My Listings"}</span>
+              </Link>
+
+              <div className="h-px bg-stone-100 my-2 mx-1" />
+
+              {/* Sign Out */}
+              <button
+                onClick={() => { handleSignOut(); setProfileMenuOpen(false); }}
+                className="flex items-center gap-3.5 px-3 py-3.5 rounded-xl text-rose-500 hover:bg-rose-50 transition-all duration-150 font-semibold group w-full text-left"
+              >
+                <div className="w-10 h-10 rounded-xl bg-rose-100 flex items-center justify-center flex-shrink-0 group-hover:bg-rose-200 transition-colors">
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-rose-500">
+                    <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
+                  </svg>
+                </div>
+                <span className="text-sm">{t.signOut}</span>
+              </button>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
       <section className="relative min-h-screen flex flex-col justify-center pt-16 overflow-hidden bg-[#0f1729]">

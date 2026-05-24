@@ -12,6 +12,10 @@ const translations = {
     displayName: "Görünen Ad",
     displayNamePlaceholder: "Diğer kullanıcıların göreceği isim",
     birthDate: "Doğum Tarihi",
+    gender: "Cinsiyet",
+    genderMale: "Erkek",
+    genderFemale: "Kadın",
+    genderOther: "Diğer",
     profilePhoto: "Profil Fotoğrafı",
     uploadPhoto: "Fotoğraf Yükle",
     changePhoto: "Fotoğrafı Değiştir",
@@ -34,6 +38,10 @@ const translations = {
     displayName: "Display Name",
     displayNamePlaceholder: "Name shown to other users",
     birthDate: "Date of Birth",
+    gender: "Gender",
+    genderMale: "Male",
+    genderFemale: "Female",
+    genderOther: "Other",
     profilePhoto: "Profile Photo",
     uploadPhoto: "Upload Photo",
     changePhoto: "Change Photo",
@@ -56,6 +64,10 @@ const translations = {
     displayName: "نام نمایشی",
     displayNamePlaceholder: "نامی که کاربران دیگر می‌بینند",
     birthDate: "تاریخ تولد",
+    gender: "جنسیت",
+    genderMale: "مرد",
+    genderFemale: "زن",
+    genderOther: "سایر",
     profilePhoto: "عکس پروفایل",
     uploadPhoto: "آپلود عکس",
     changePhoto: "تغییر عکس",
@@ -101,6 +113,7 @@ export default function ProfilePage() {
 
   const [displayName, setDisplayName] = useState("");
   const [birthDate, setBirthDate] = useState("");
+  const [gender, setGender] = useState<"male" | "female" | "other" | "">("");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -124,6 +137,7 @@ export default function ProfilePage() {
           setDisplayName(data.display_name ?? "");
           setBirthDate(data.birth_date ?? "");
           setAvatarUrl(data.avatar_url ?? null);
+          setGender((data.gender ?? "") as "male" | "female" | "other" | "");
         } else {
           setDisplayName(user.user_metadata?.full_name ?? "");
         }
@@ -173,6 +187,7 @@ export default function ProfilePage() {
           display_name: displayName,
           birth_date: birthDate ? new Date(birthDate).toISOString().split("T")[0] : null,
           avatar_url: finalAvatarUrl,
+          gender: gender || null,
         },
         { onConflict: "user_id" }
       );
@@ -385,6 +400,38 @@ export default function ProfilePage() {
                 max={new Date().toISOString().split("T")[0]}
                 className="w-full border border-stone-200 rounded-xl px-4 py-3 text-stone-900 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
               />
+            </div>
+
+            {/* Gender */}
+            <div>
+              <label className="block text-sm font-semibold text-stone-700 mb-2">
+                {t.gender}
+              </label>
+              <div className="grid grid-cols-3 gap-2.5">
+                {(["male", "female", "other"] as const).map((g) => {
+                  const icon = g === "male" ? "👨" : g === "female" ? "👩" : "🧑";
+                  const label = g === "male" ? t.genderMale : g === "female" ? t.genderFemale : t.genderOther;
+                  const selected = gender === g;
+                  return (
+                    <button
+                      key={g}
+                      type="button"
+                      onClick={() => setGender(selected ? "" : g)}
+                      className={`relative flex flex-col items-center gap-2 py-3.5 px-2 rounded-xl border-2 font-bold text-xs transition-all duration-200 active:scale-95 ${
+                        selected
+                          ? "border-orange-400 bg-orange-50 text-orange-700 shadow-md shadow-orange-500/15 scale-[1.02]"
+                          : "border-stone-200 bg-stone-50 text-stone-500 hover:border-stone-300 hover:bg-white hover:text-stone-700"
+                      }`}
+                    >
+                      <span className="text-2xl leading-none">{icon}</span>
+                      <span className="font-black tracking-tight">{label}</span>
+                      {selected && (
+                        <span className="absolute top-2 right-2 w-4 h-4 rounded-full bg-orange-500/20 flex items-center justify-center text-[9px] text-orange-600">✓</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Error */}
