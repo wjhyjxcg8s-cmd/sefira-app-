@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import InstagramCTA from "@/app/components/InstagramCTA";
 import PopularCities from "@/app/components/PopularCities";
@@ -407,6 +407,20 @@ export default function Home() {
   // ── Auth ──────────────────────────────────────────────────────────────────
   const { user, signOut: handleSignOut } = useAuth();
   const [showAuth, setShowAuth] = useState(false);
+
+  // ── Welcome toast ─────────────────────────────────────────────────────────
+  const [showWelcomeToast, setShowWelcomeToast] = useState(false);
+  const prevUserRef = useRef<typeof user | undefined>(undefined);
+  useEffect(() => {
+    if (prevUserRef.current === undefined) { prevUserRef.current = user; return; }
+    if (!prevUserRef.current && user) {
+      setShowWelcomeToast(true);
+      const timer = setTimeout(() => setShowWelcomeToast(false), 4000);
+      prevUserRef.current = user;
+      return () => clearTimeout(timer);
+    }
+    prevUserRef.current = user;
+  }, [user]);
 
   // ── Existing state ────────────────────────────────────────────────────────
   const [activeFilter, setActiveFilter] = useState("all");
@@ -1542,6 +1556,63 @@ export default function Home() {
 
       {showAuth && (
         <AuthModal lang={lang} onClose={() => setShowAuth(false)} />
+      )}
+
+      {/* ── WELCOME TOAST ─────────────────────────────────────────────────────── */}
+      <style>{`
+        @keyframes sefira-toast-in {
+          from { opacity: 0; transform: translateY(-18px) scale(0.95); }
+          to   { opacity: 1; transform: translateY(0)     scale(1);    }
+        }
+        @keyframes sefira-toast-progress {
+          from { transform: scaleX(1); }
+          to   { transform: scaleX(0); }
+        }
+      `}</style>
+
+      {showWelcomeToast && (
+        <div
+          className="fixed top-20 right-4 z-[200] w-[calc(100vw-2rem)] sm:w-auto sm:max-w-sm"
+          style={{ animation: "sefira-toast-in 0.4s cubic-bezier(0.21,1.02,0.73,1) forwards" }}
+          role="status"
+          aria-live="polite"
+        >
+          <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-orange-500/35"
+            style={{ background: "linear-gradient(135deg, #f97316 0%, #f59e0b 55%, #ea580c 100%)" }}
+          >
+            {/* Decorative glow orb */}
+            <div className="absolute -top-6 -right-6 w-28 h-28 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+
+            <div className="relative p-4 pr-11">
+              {/* Close button */}
+              <button
+                onClick={() => setShowWelcomeToast(false)}
+                aria-label="Close"
+                className="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-all duration-150 active:scale-90"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-3.5 h-3.5">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+
+              {/* Message */}
+              <p className="text-white font-bold text-sm leading-relaxed">
+                {lang === "tr"
+                  ? "Hoş geldiniz! 🏠✨ Sizi aramızda görmekten mutluluk duyuyoruz. Harika bir gün geçirmenizi diliyoruz! 🌟💫"
+                  : "Welcome! 🏠✨ We're so happy to have you here. Wishing you a wonderful day! 🌟💫"}
+              </p>
+            </div>
+
+            {/* 4-second progress bar */}
+            <div className="h-0.5 bg-white/20">
+              <div
+                className="h-full bg-white/55 origin-left"
+                style={{ animation: "sefira-toast-progress 4s linear forwards" }}
+              />
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
