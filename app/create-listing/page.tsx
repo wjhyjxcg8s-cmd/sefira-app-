@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
@@ -132,6 +132,68 @@ const translations = {
     selectType: "Please select a listing type.",
     fillRequired: "Please fill in all required fields.",
   },
+  fa: {
+    pageTitle: "ثبت آگهی",
+    stepOf: (current: number, total: number) => `مرحله ${current} از ${total}`,
+    // Step 1
+    step1Title: "چه نوع آگهی می‌خواهید ثبت کنید؟",
+    hasPlace: "خانه دارم و دنبال هم‌خانه می‌گردم",
+    hasPlaceSub: "اتاقی در خانه‌تان اجاره دهید",
+    needsPlace: "خانه ندارم و دنبال هم‌خانه می‌گردم",
+    needsPlaceSub: "با دیگران برای پیدا کردن خانه همکاری کنید",
+    next: "بعدی",
+    back: "برگشت",
+    submit: "ثبت آگهی",
+    submitting: "در حال ثبت...",
+    edit: "ویرایش",
+    // Step 2
+    step2Title: "جزئیات خانه شما",
+    smoking: "سیگار مجاز است؟",
+    smokingYes: "بله",
+    smokingNo: "خیر",
+    parking: "پارکینگ دارد؟",
+    parkingYes: "بله",
+    parkingNo: "خیر",
+    currentResidents: "تعداد ساکنان فعلی",
+    neededRoommates: "تعداد هم‌خانه مورد نیاز",
+    rooms: "تعداد اتاق‌ها",
+    rent: "مبلغ اجاره",
+    currency: "واحد پول",
+    photos: "عکس‌های خانه (حداکثر ۳)",
+    uploadPhotos: "آپلود عکس",
+    addMorePhotos: "افزودن بیشتر",
+    address: "آدرس",
+    addressPlaceholder: "خیابان، محله، شهر، کشور",
+    // Step 3
+    step3Title: "تأیید نهایی",
+    typeLabel: "نوع آگهی",
+    hasPlaceLabel: "خانه دارد — دنبال هم‌خانه",
+    needsPlaceLabel: "خانه ندارد — دنبال هم‌خانه",
+    smokingLabel: "سیگار",
+    parkingLabel: "پارکینگ",
+    residentsLabel: "ساکنان فعلی",
+    roommatesLabel: "هم‌خانه مورد نیاز",
+    roomsLabel: "تعداد اتاق‌ها",
+    rentLabel: "اجاره ماهانه",
+    addressLabel: "آدرس",
+    photosLabel: "عکس‌ها",
+    yes: "بله",
+    no: "خیر",
+    person: "نفر",
+    // Auth
+    notLoggedIn: "برای ثبت آگهی لطفاً وارد شوید.",
+    goHome: "برو به صفحه اصلی",
+    // Errors
+    errorSubmit: "خطا در ثبت آگهی. لطفاً دوباره امتحان کنید.",
+    errorPhoto: "خطا در آپلود عکس.",
+    successTitle: "آگهی ثبت شد!",
+    successSub: "آگهی شما با موفقیت ایجاد شد.",
+    viewListings: "مرور آگهی‌ها",
+    createAnother: "ثبت آگهی جدید",
+    requiredField: "این فیلد الزامی است.",
+    selectType: "لطفاً نوع آگهی را انتخاب کنید.",
+    fillRequired: "لطفاً همه فیلدهای الزامی را پر کنید.",
+  },
 };
 
 type ListingType = "has_place" | "needs_place";
@@ -247,7 +309,12 @@ function NumberStepper({
 export default function CreateListingPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const [lang, setLang] = useState<"tr" | "en">("tr");
+  const [lang, setLang] = useState<"tr" | "en" | "fa">("tr");
+  useEffect(() => {
+    const saved = localStorage.getItem("sefira-lang");
+    if (saved === "tr" || saved === "en" || saved === "fa") setLang(saved);
+  }, []);
+  useEffect(() => { localStorage.setItem("sefira-lang", lang); }, [lang]);
   const t = translations[lang];
 
   const [step, setStep] = useState(1);
@@ -359,10 +426,12 @@ export default function CreateListingPage() {
     setSubmitting(false);
   };
 
+  const dir = lang === "fa" ? "rtl" : "ltr";
+
   // ── Not logged in ─────────────────────────────────────────────────────────
   if (!loading && !user) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-stone-50 gap-5 p-6">
+      <div dir={dir} className="min-h-screen flex flex-col items-center justify-center bg-stone-50 gap-5 p-6">
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/30">
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-white">
             <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
@@ -391,7 +460,7 @@ export default function CreateListingPage() {
   // ── Success ───────────────────────────────────────────────────────────────
   if (submitted) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-stone-50 gap-6 p-6">
+      <div dir={dir} className="min-h-screen flex flex-col items-center justify-center bg-stone-50 gap-6 p-6">
         <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-xl shadow-emerald-500/30">
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10 text-white">
             <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
@@ -421,7 +490,7 @@ export default function CreateListingPage() {
 
   // ── Shared mini-navbar ────────────────────────────────────────────────────
   const Navbar = () => (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-stone-200 shadow-sm shadow-stone-200/80">
+    <nav dir="ltr" className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-stone-200 shadow-sm shadow-stone-200/80">
       <div className="max-w-2xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
           <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-sm text-white shadow-lg shadow-orange-500/30 group-hover:scale-110 transition-all duration-300">
@@ -431,13 +500,24 @@ export default function CreateListingPage() {
             Sefira
           </span>
         </Link>
-        <button
-          onClick={() => setLang((l) => (l === "tr" ? "en" : "tr"))}
-          className="flex items-center gap-1.5 text-xs font-bold bg-stone-100 border border-stone-200 rounded-lg px-3 py-2 text-stone-600 hover:text-stone-900 hover:bg-stone-200 transition-all duration-200"
-        >
-          <span className="text-sm leading-none">{lang === "tr" ? "🇹🇷" : "🇬🇧"}</span>
-          <span>{lang === "tr" ? "TR" : "EN"}</span>
-        </button>
+        <div className="flex bg-stone-100 border border-stone-200 rounded-lg p-0.5 gap-0.5">
+          {(["tr", "en", "fa"] as const).map((l) => (
+            <button
+              key={l}
+              onClick={() => setLang(l)}
+              className={`flex items-center gap-1 px-2 py-1.5 rounded-md text-[11px] font-black transition-all duration-200 whitespace-nowrap ${
+                lang === l
+                  ? "bg-white text-stone-900 shadow-sm"
+                  : "text-stone-400 hover:text-stone-700"
+              }`}
+            >
+              <span className="text-sm leading-none">
+                {l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : "🇮🇷"}
+              </span>
+              <span>{l === "tr" ? "TR" : l === "en" ? "EN" : "FA"}</span>
+            </button>
+          ))}
+        </div>
       </div>
     </nav>
   );
@@ -465,7 +545,7 @@ export default function CreateListingPage() {
   // ── STEP 1: Type selection ────────────────────────────────────────────────
   if (step === 1) {
     return (
-      <div className="min-h-screen bg-stone-50">
+      <div dir={dir} className="min-h-screen bg-stone-50">
         <Navbar />
         <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
           <ProgressBar />
@@ -547,7 +627,7 @@ export default function CreateListingPage() {
   // ── STEP 2: Place details (only for has_place) ────────────────────────────
   if (step === 2 && form.type === "has_place") {
     return (
-      <div className="min-h-screen bg-stone-50">
+      <div dir={dir} className="min-h-screen bg-stone-50">
         <Navbar />
         <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
           <ProgressBar />
@@ -745,7 +825,7 @@ export default function CreateListingPage() {
             {
               label: t.rentLabel,
               value: form.rent
-                ? `${CURRENCY_SYMBOLS[form.currency]}${form.rent} / ${lang === "tr" ? "ay" : "mo"}`
+                ? `${CURRENCY_SYMBOLS[form.currency]}${form.rent} / ${lang === "tr" ? "ay" : lang === "fa" ? "ماه" : "mo"}`
                 : "—",
             },
             { label: t.addressLabel, value: form.address || "—" },
@@ -754,7 +834,7 @@ export default function CreateListingPage() {
     ];
 
     return (
-      <div className="min-h-screen bg-stone-50">
+      <div dir={dir} className="min-h-screen bg-stone-50">
         <Navbar />
         <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
           <ProgressBar />

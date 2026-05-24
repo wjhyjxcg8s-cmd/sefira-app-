@@ -599,6 +599,11 @@ export default function Home() {
   const [selectedCity, setSelectedCity] = useState("");
   const [loadingCities, setLoadingCities] = useState(false);
   const [lang, setLang] = useState<Lang>("tr");
+  useEffect(() => {
+    const saved = localStorage.getItem("sefira-lang") as Lang | null;
+    if (saved === "tr" || saved === "en" || saved === "fa") setLang(saved);
+  }, []);
+  useEffect(() => { localStorage.setItem("sefira-lang", lang); }, [lang]);
 
   // ── Currency ──────────────────────────────────────────────────────────────
   const [currency, setCurrency] = useState<Currency>("USD");
