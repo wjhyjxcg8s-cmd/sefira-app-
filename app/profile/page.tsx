@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
 
@@ -24,6 +25,7 @@ const translations = {
     emailLabel: "E-posta",
     memberSince: "Üyelik",
     createListing: "İlan Ver",
+    signOut: "Çıkış Yap",
   },
   en: {
     title: "My Profile",
@@ -43,11 +45,13 @@ const translations = {
     emailLabel: "Email",
     memberSince: "Member since",
     createListing: "Create Listing",
+    signOut: "Sign Out",
   },
 };
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
+  const router = useRouter();
   const [lang, setLang] = useState<"tr" | "en">("tr");
   const t = translations[lang];
 
@@ -127,7 +131,7 @@ export default function ProfilePage() {
     const payload = {
       user_id: user.id,
       display_name: displayName,
-      birth_date: birthDate || null,
+      birth_date: birthDate ? new Date(birthDate).toISOString().split("T")[0] : null,
       avatar_url: finalAvatarUrl,
     };
 
@@ -355,6 +359,31 @@ export default function ProfilePage() {
               ) : (
                 t.save
               )}
+            </button>
+
+            {/* Create listing button */}
+            <Link
+              href="/create-listing"
+              className="w-full py-3.5 rounded-xl font-bold text-white text-sm text-center bg-gradient-to-r from-amber-500 to-orange-500 shadow-lg shadow-orange-500/20 hover:opacity-90 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+              </svg>
+              {t.createListing}
+            </Link>
+
+            {/* Logout button */}
+            <button
+              onClick={async () => {
+                await supabase.auth.signOut();
+                router.push("/");
+              }}
+              className="w-full py-3.5 rounded-xl font-bold text-sm border-2 border-rose-200 text-rose-500 hover:bg-rose-50 hover:border-rose-400 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
+              </svg>
+              {t.signOut}
             </button>
           </div>
         </div>
