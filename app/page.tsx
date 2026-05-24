@@ -1613,13 +1613,11 @@ export default function Home() {
 
             {/* Brand image */}
             <div className="relative w-full h-[140px] sm:h-[180px] overflow-hidden rounded-t-3xl flex-shrink-0">
-              <Image
-                src="/images/sefira-welcom.jpg"
-                alt="Sefira"
-                fill
-                sizes="(max-width: 640px) calc(100vw - 2rem), 480px"
-                className="object-cover"
-                priority
+              <img
+                src="/images/sefira-welcome.jpg"
+                alt="Sefira Welcome"
+                className="w-full h-full object-cover"
+                onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
               />
               {/* Gradient fade into card background */}
               <div
