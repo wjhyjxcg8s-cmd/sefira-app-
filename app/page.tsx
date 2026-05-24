@@ -1589,7 +1589,7 @@ export default function Home() {
         >
           {/* Card — stop backdrop click propagating through */}
           <div
-            className="relative w-full max-w-sm overflow-hidden rounded-3xl select-none"
+            className="relative w-full max-w-[480px] overflow-hidden rounded-3xl select-none"
             style={{
               animation: "sefira-welcome-in 0.55s cubic-bezier(0.34,1.56,0.64,1) forwards",
               background: "linear-gradient(145deg, #ff6b35 0%, #f59e0b 30%, #ec4899 65%, #8b5cf6 100%)",
@@ -1612,11 +1612,14 @@ export default function Home() {
             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl pointer-events-none" />
 
             {/* Brand image */}
-            <div className="relative w-full h-[180px] overflow-hidden rounded-t-3xl flex-shrink-0">
-              <img
-                src="/images/sefira-welcome.jpg"
+            <div className="relative w-full h-[140px] sm:h-[180px] overflow-hidden rounded-t-3xl flex-shrink-0">
+              <Image
+                src="/images/sefira-welcom.jpg"
                 alt="Sefira"
-                className="w-full h-full object-cover"
+                fill
+                sizes="(max-width: 640px) calc(100vw - 2rem), 480px"
+                className="object-cover"
+                priority
               />
               {/* Gradient fade into card background */}
               <div
@@ -1626,23 +1629,23 @@ export default function Home() {
             </div>
 
             {/* Content */}
-            <div className="relative px-8 pt-6 pb-8 flex flex-col items-center text-center">
+            <div className="relative px-5 sm:px-8 pt-5 sm:pt-6 pb-6 sm:pb-8 flex flex-col items-center text-center">
 
               {/* Floating emoji */}
               <div
-                className="text-6xl mb-5 leading-none"
+                className="text-5xl sm:text-6xl mb-4 sm:mb-5 leading-none"
                 style={{ animation: "sefira-float 3s ease-in-out infinite" }}
               >
                 🏠✨
               </div>
 
               {/* Title */}
-              <h2 className="text-2xl font-black text-white mb-3 drop-shadow-sm tracking-tight">
+              <h2 className="text-xl sm:text-2xl font-black text-white mb-3 drop-shadow-sm tracking-tight">
                 {lang === "tr" ? "Hoş Geldiniz!" : "Welcome Home!"}
               </h2>
 
               {/* Body */}
-              <p className="text-white/90 text-sm leading-relaxed font-medium max-w-[260px]">
+              <p className="text-white/90 text-sm leading-relaxed font-medium max-w-[240px] sm:max-w-[260px]">
                 {lang === "tr"
                   ? "Sizi aramızda görmekten çok mutluyuz. Harika bir gün geçirmenizi diliyoruz! 🌟"
                   : "We are so happy to have you here. Wishing you a wonderful day! 🌟"}
@@ -1652,7 +1655,7 @@ export default function Home() {
               <button
                 onClick={() => setShowWelcomeToast(false)}
                 aria-label="Close"
-                className="mt-8 group flex items-center gap-2 bg-white/15 hover:bg-white/25 border border-white/25 hover:border-white/50 text-white text-sm font-bold px-6 py-3 rounded-2xl transition-all duration-200 active:scale-95 shadow-lg shadow-black/10 hover:shadow-white/10"
+                className="mt-6 sm:mt-8 group flex items-center gap-2 bg-white/15 hover:bg-white/25 border border-white/25 hover:border-white/50 text-white text-sm font-bold px-6 py-3 rounded-2xl transition-all duration-200 active:scale-95 shadow-lg shadow-black/10 hover:shadow-white/10"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 group-hover:rotate-90 transition-transform duration-200">
                   <line x1="18" y1="6" x2="6" y2="18" />
