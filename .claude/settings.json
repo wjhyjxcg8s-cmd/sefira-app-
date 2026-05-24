@@ -4,7 +4,10 @@
       "PowerShell(head -20)",
       "PowerShell(New-Item -ItemType Directory -Path \"e:\\\\sefıra-web\\\\sefira-app\\\\app\\\\components\" -Force)",
       "Bash(dir \"public\\\\images\" /b)",
-      "Bash(npx next *)"
+      "Bash(npx next *)",
+      "Bash(Get-ChildItem -Path \"e:\\\\sefıra-web\\\\sefira-app\" -Directory)",
+      "Bash(Select-Object Name)",
+      "Bash(grep -E \"\\\\.\\(tsx|ts|jsx|js\\)$\")"
     ]
   }
 }

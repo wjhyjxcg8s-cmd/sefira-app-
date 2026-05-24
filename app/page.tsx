@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import InstagramCTA from "@/app/components/InstagramCTA";
@@ -8,6 +9,7 @@ import PopularCities from "@/app/components/PopularCities";
 import PropertyFilters from "@/app/components/PropertyFilters";
 import AuthModal from "@/app/components/AuthModal";
 import { useAuth } from "@/app/lib/AuthContext";
+import { supabase } from "@/app/lib/supabase";
 import {
   type Currency,
   CURRENCY_SYMBOLS,
@@ -140,6 +142,10 @@ const translations = {
     ],
     footerCopy: "2025 Sefira Technologies, Inc. Tüm hakları saklıdır.",
     footerLegal: ["Kullanım Koşulları", "Gizlilik", "Çerezler"],
+    ilanVer: "İlan Ver",
+    ilanVerModal: "İlan vermek için lütfen giriş yapın veya kayıt olun.",
+    girisYap: "Giriş Yap",
+    kayitOl: "Kayıt Ol",
   },
   en: {
     navLinks: [
@@ -263,6 +269,10 @@ const translations = {
     ],
     footerCopy: "2025 Sefira Technologies, Inc. All rights reserved.",
     footerLegal: ["Terms", "Privacy", "Cookies"],
+    ilanVer: "Create Listing",
+    ilanVerModal: "Please sign in or register to create a listing.",
+    girisYap: "Sign In",
+    kayitOl: "Register",
   },
 };
 type Lang = keyof typeof translations;
@@ -407,7 +417,10 @@ type GenderPref = "male" | "female" | "any";
 export default function Home() {
   // ── Auth ──────────────────────────────────────────────────────────────────
   const { user, signOut: handleSignOut } = useAuth();
+  const router = useRouter();
   const [showAuth, setShowAuth] = useState(false);
+  const [showListingModal, setShowListingModal] = useState(false);
+  const [profileAvatarUrl, setProfileAvatarUrl] = useState<string | null>(null);
 
   // ── Welcome modal ─────────────────────────────────────────────────────────
   const [showWelcomeToast, setShowWelcomeToast] = useState(false);
@@ -420,6 +433,17 @@ export default function Home() {
       return;
     }
     prevUserRef.current = user;
+  }, [user]);
+
+  // ── Profile avatar fetch ──────────────────────────────────────────────────
+  useEffect(() => {
+    if (!user) { setProfileAvatarUrl(null); return; }
+    supabase
+      .from("profiles")
+      .select("avatar_url")
+      .eq("user_id", user.id)
+      .single()
+      .then(({ data }) => setProfileAvatarUrl(data?.avatar_url ?? null));
   }, [user]);
 
   // ── Existing state ────────────────────────────────────────────────────────
@@ -467,6 +491,11 @@ export default function Home() {
     setSavedProfiles((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
     setAnimatingIds((p) => [...p, id]);
     setTimeout(() => setAnimatingIds((p) => p.filter((x) => x !== id)), 420);
+  };
+
+  const handleCreateListing = () => {
+    if (user) router.push("/create-listing");
+    else setShowListingModal(true);
   };
 
   useEffect(() => {
@@ -560,27 +589,35 @@ export default function Home() {
                 <Link
                   href="/profile"
                   title={t.signOut}
-                  className="sm:hidden w-9 h-9 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-xs text-white shadow-md shadow-orange-500/40 active:scale-90 transition-transform duration-150 flex-shrink-0"
+                  className="sm:hidden w-9 h-9 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-xs text-white shadow-md shadow-orange-500/40 active:scale-90 transition-transform duration-150 flex-shrink-0 overflow-hidden"
                 >
-                  {(user.user_metadata?.full_name ?? user.email ?? "U")
-                    .split(" ")
-                    .map((w: string) => w[0])
-                    .slice(0, 2)
-                    .join("")
-                    .toUpperCase()}
+                  {profileAvatarUrl ? (
+                    <img src={profileAvatarUrl} alt="avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    (user.user_metadata?.full_name ?? user.email ?? "U")
+                      .split(" ")
+                      .map((w: string) => w[0])
+                      .slice(0, 2)
+                      .join("")
+                      .toUpperCase()
+                  )}
                 </Link>
                 {/* Desktop: avatar + name + logout */}
                 <div className="hidden sm:flex items-center gap-2">
                   <Link
                     href="/profile"
-                    className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-xs text-white shadow-md shadow-orange-500/30 flex-shrink-0 hover:scale-110 transition-transform duration-200"
+                    className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-xs text-white shadow-md shadow-orange-500/30 flex-shrink-0 hover:scale-110 transition-transform duration-200 overflow-hidden"
                   >
-                    {(user.user_metadata?.full_name ?? user.email ?? "U")
-                      .split(" ")
-                      .map((w: string) => w[0])
-                      .slice(0, 2)
-                      .join("")
-                      .toUpperCase()}
+                    {profileAvatarUrl ? (
+                      <img src={profileAvatarUrl} alt="avatar" className="w-full h-full object-cover" />
+                    ) : (
+                      (user.user_metadata?.full_name ?? user.email ?? "U")
+                        .split(" ")
+                        .map((w: string) => w[0])
+                        .slice(0, 2)
+                        .join("")
+                        .toUpperCase()
+                    )}
                   </Link>
                   <Link
                     href="/profile"
@@ -1024,6 +1061,18 @@ export default function Home() {
                 <div className="text-xs text-white/60">{t.reviewsLabel}</div>
               </div>
             </div>
+
+            {/* İlan Ver — desktop hero button */}
+            <button
+              onClick={handleCreateListing}
+              className="hidden sm:flex mt-8 items-center gap-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black text-sm px-7 py-3.5 rounded-2xl shadow-xl shadow-orange-500/30 hover:shadow-2xl hover:shadow-orange-500/50 hover:-translate-y-0.5 active:scale-95 transition-all duration-200"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              {t.ilanVer}
+            </button>
           </div>
 
           {/* ── RIGHT: Floating cat with glow & sparkles ──────────────────── */}
@@ -1698,6 +1747,59 @@ export default function Home() {
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
                 {lang === "tr" ? "Kapat" : "Close"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Mobile: fixed bottom İlan Ver bar ─────────────────────────────── */}
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 px-4 py-3 bg-white/95 backdrop-blur-xl border-t border-stone-200 shadow-2xl shadow-stone-900/10">
+        <button
+          onClick={handleCreateListing}
+          className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black text-sm px-6 py-4 rounded-2xl shadow-lg shadow-orange-500/30 active:scale-95 transition-all duration-200"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          {t.ilanVer}
+        </button>
+      </div>
+
+      {/* ── İlan Ver — auth required modal ────────────────────────────────── */}
+      {showListingModal && (
+        <div
+          className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center sm:p-4 bg-black/50 backdrop-blur-sm"
+          onClick={() => setShowListingModal(false)}
+        >
+          <div
+            className="bg-white w-full sm:max-w-sm rounded-t-3xl sm:rounded-2xl shadow-2xl p-6 sm:p-7"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Drag handle (mobile) */}
+            <div className="w-10 h-1 rounded-full bg-stone-200 mx-auto mb-5 sm:hidden" />
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-orange-500/30 mb-4">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-5 h-5">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            </div>
+            <h3 className="font-black text-stone-900 text-base leading-snug mb-5">
+              {t.ilanVerModal}
+            </h3>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={() => { setShowListingModal(false); setShowAuth(true); }}
+                className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black text-sm py-3 rounded-xl shadow-lg shadow-orange-500/25 hover:opacity-95 active:scale-95 transition-all duration-200"
+              >
+                {t.girisYap}
+              </button>
+              <button
+                onClick={() => { setShowListingModal(false); setShowAuth(true); }}
+                className="flex-1 border-2 border-stone-200 text-stone-700 font-black text-sm py-3 rounded-xl hover:border-orange-300 hover:bg-orange-50 hover:text-orange-700 active:scale-95 transition-all duration-200"
+              >
+                {t.kayitOl}
               </button>
             </div>
           </div>
