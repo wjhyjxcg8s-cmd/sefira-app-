@@ -206,3 +206,25 @@ body {
 .hero-title-glow {
   text-shadow: 0 0 60px rgba(255,255,255,0.12), 0 2px 8px rgba(0,0,0,0.45);
 }
+
+/* ─── Scroll robot bounce ────────────────────────────────────────────────── */
+@keyframes robot-bounce {
+  0%, 100% { transform: translateY(0px) rotate(-4deg); }
+  20%       { transform: translateY(-14px) rotate(4deg); }
+  40%       { transform: translateY(-8px) rotate(-2deg); }
+  60%       { transform: translateY(-16px) rotate(5deg); }
+  80%       { transform: translateY(-4px) rotate(-3deg); }
+}
+.animate-robot-bounce {
+  animation: robot-bounce 1.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* ─── Profile dropdown slide ─────────────────────────────────────────────── */
+@keyframes dropdown-slide-down {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+.animate-dropdown-slide {
+  animation: dropdown-slide-down 0.16s ease-out forwards;
+}

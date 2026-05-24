@@ -776,12 +776,11 @@ export default function Home() {
             </div>
 
             {user ? (
-              <>
-                {/* Mobile: compact avatar — tap to open profile */}
-                <Link
-                  href="/profile"
-                  title={t.signOut}
-                  className="sm:hidden w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-xs text-white shadow-md shadow-orange-500/40 active:scale-90 transition-transform duration-150 flex-shrink-0 overflow-hidden ring-2 ring-orange-300 ring-offset-1"
+              /* Unified avatar + dropdown — works on both mobile and desktop */
+              <div className="relative" ref={profileMenuRef}>
+                <button
+                  onClick={() => setProfileMenuOpen((o) => !o)}
+                  className="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-[10px] sm:text-xs text-white shadow-md shadow-orange-500/40 flex-shrink-0 hover:scale-105 active:scale-90 transition-transform duration-200 overflow-hidden ring-2 ring-orange-300 ring-offset-1"
                 >
                   {profileAvatarUrl ? (
                     <img src={profileAvatarUrl} alt="avatar" className="w-full h-full object-cover" />
@@ -793,84 +792,71 @@ export default function Home() {
                       .join("")
                       .toUpperCase()
                   )}
-                </Link>
-                {/* Mobile: bookmark shortcut */}
-                <Link
-                  href="/saved-listings"
-                  aria-label="Saved listings"
-                  className="sm:hidden w-9 h-9 flex items-center justify-center rounded-xl text-stone-500 hover:text-orange-500 transition-colors"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                  </svg>
-                </Link>
-                {/* Desktop: avatar with profile dropdown */}
-                <div className="relative hidden sm:block" ref={profileMenuRef}>
-                  <button
-                    onClick={() => setProfileMenuOpen((o) => !o)}
-                    className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-xs text-white shadow-md shadow-orange-500/30 flex-shrink-0 hover:scale-105 transition-transform duration-200 overflow-hidden ring-2 ring-orange-300 ring-offset-1"
-                  >
-                    {profileAvatarUrl ? (
-                      <img src={profileAvatarUrl} alt="avatar" className="w-full h-full object-cover" />
-                    ) : (
-                      (user.user_metadata?.full_name ?? user.email ?? "U")
-                        .split(" ")
-                        .map((w: string) => w[0])
-                        .slice(0, 2)
-                        .join("")
-                        .toUpperCase()
-                    )}
-                  </button>
-                  {profileMenuOpen && (
-                    <div className="absolute top-full mt-2 right-0 z-[100] bg-white border border-stone-200 rounded-2xl shadow-xl overflow-hidden min-w-[190px]">
-                      {/* My Profile */}
-                      <Link
-                        href="/profile"
-                        onClick={() => setProfileMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 text-sm text-stone-700 hover:bg-stone-50 transition-colors font-semibold"
-                      >
-                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-stone-400 flex-shrink-0">
-                          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                        </svg>
-                        {lang === "tr" ? "Profilim" : lang === "fa" ? "پروفایل من" : "My Profile"}
-                      </Link>
-                      {/* My Listings */}
-                      <Link
-                        href="/my-listings"
-                        onClick={() => setProfileMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 text-sm text-stone-700 hover:bg-stone-50 transition-colors font-semibold"
-                      >
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-stone-400 flex-shrink-0">
-                          <rect x="3" y="3" width="18" height="18" rx="2" /><line x1="3" y1="9" x2="21" y2="9" /><line x1="9" y1="21" x2="9" y2="3" />
-                        </svg>
-                        {lang === "tr" ? "İlanlarım" : lang === "fa" ? "آگهی‌های من" : "My Listings"}
-                      </Link>
-                      {/* Saved Listings */}
-                      <Link
-                        href="/saved-listings"
-                        onClick={() => setProfileMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 text-sm text-stone-700 hover:bg-stone-50 transition-colors font-semibold"
-                      >
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-stone-400 flex-shrink-0">
-                          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                        </svg>
-                        {lang === "tr" ? "Kaydedilenler" : lang === "fa" ? "ذخیره‌شده‌ها" : "Saved"}
-                      </Link>
-                      <div className="h-px bg-stone-100 mx-3 my-1" />
-                      {/* Sign out */}
-                      <button
-                        onClick={() => { handleSignOut(); setProfileMenuOpen(false); }}
-                        className="flex items-center gap-3 w-full px-4 py-3 text-sm text-rose-500 hover:bg-rose-50 transition-colors font-semibold"
-                      >
-                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 flex-shrink-0">
-                          <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
-                        </svg>
-                        {t.signOut}
-                      </button>
+                </button>
+
+                {profileMenuOpen && (
+                  <div className="absolute top-full mt-2 right-0 z-[100] bg-white border border-stone-200 rounded-2xl shadow-2xl shadow-stone-900/10 overflow-hidden min-w-[220px] animate-dropdown-slide">
+                    {/* Header: name + email (non-clickable) */}
+                    <div className="px-4 py-3.5 border-b border-stone-100">
+                      <p className="text-sm font-black text-stone-900 truncate leading-tight">
+                        {user.user_metadata?.full_name ?? user.email?.split("@")[0] ?? "User"}
+                      </p>
+                      <p className="text-xs text-stone-400 truncate mt-0.5">{user.email}</p>
                     </div>
-                  )}
-                </div>
-              </>
+
+                    {/* Saved Listings */}
+                    <Link
+                      href="/saved-listings"
+                      onClick={() => setProfileMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 text-sm text-stone-700 hover:bg-stone-50 transition-colors font-semibold"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-stone-400 flex-shrink-0">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                      </svg>
+                      {lang === "tr" ? "Kaydedilenler" : lang === "fa" ? "ذخیره‌ها" : "Saved"}
+                    </Link>
+
+                    {/* New Listing */}
+                    <button
+                      onClick={() => { handleCreateListing(); setProfileMenuOpen(false); }}
+                      className="flex items-center gap-3 w-full px-4 py-3 text-sm text-stone-700 hover:bg-stone-50 transition-colors font-semibold"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 text-stone-400 flex-shrink-0">
+                        <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+                      </svg>
+                      {lang === "tr" ? "İlan Ver" : lang === "fa" ? "ثبت آگهی" : "Post Listing"}
+                    </button>
+
+                    {/* My Listings */}
+                    <Link
+                      href="/my-listings"
+                      onClick={() => setProfileMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 text-sm text-stone-700 hover:bg-stone-50 transition-colors font-semibold"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-stone-400 flex-shrink-0">
+                        <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
+                        <rect x="9" y="3" width="6" height="4" rx="1" />
+                        <line x1="9" y1="12" x2="15" y2="12" />
+                        <line x1="9" y1="16" x2="13" y2="16" />
+                      </svg>
+                      {lang === "tr" ? "İlanlarım" : lang === "fa" ? "آگهی‌های من" : "My Listings"}
+                    </Link>
+
+                    <div className="h-px bg-stone-100 mx-3 my-1" />
+
+                    {/* Sign Out */}
+                    <button
+                      onClick={() => { handleSignOut(); setProfileMenuOpen(false); }}
+                      className="flex items-center gap-3 w-full px-4 py-3 text-sm text-rose-500 hover:bg-rose-50 transition-colors font-semibold"
+                    >
+                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 flex-shrink-0">
+                        <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
+                      </svg>
+                      {t.signOut}
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               <>
                 {/* Mobile: glowing pulsing auth icon */}
@@ -1374,10 +1360,11 @@ export default function Home() {
         </div>
 
         {/* Scroll indicator */}
-        <div className="relative z-10 flex justify-center pb-10">
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2 animate-bounce">
-            <div className="w-1 h-2 bg-white/30 rounded-full" />
-          </div>
+        <div className="relative z-10 flex flex-col items-center gap-2 pb-10 select-none">
+          <span className="text-5xl leading-none animate-robot-bounce" aria-hidden="true">🤖</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-4 h-4 text-white/40 animate-bounce" style={{ animationDelay: "0.3s" }}>
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
         </div>
       </section>
 
