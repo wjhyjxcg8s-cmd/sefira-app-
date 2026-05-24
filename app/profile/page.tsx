@@ -111,6 +111,7 @@ export default function ProfilePage() {
         .upload(path, avatarFile, { upsert: true });
 
       if (uploadError) {
+        console.error('Avatar upload error:', JSON.stringify(uploadError));
         setError(t.photoError);
         setSaving(false);
         return;
@@ -120,27 +121,49 @@ export default function ProfilePage() {
       finalAvatarUrl = publicUrl;
     }
 
-    // Check whether a row already exists so we can INSERT vs UPDATE explicitly.
-    // Plain upsert can be blocked by RLS when the INSERT policy is absent.
-    const { data: existing } = await supabase
+    // Get reliable user_id from the live auth session
+    const { data: { session } } = await supabase.auth.getSession();
+    const userId = session?.user?.id ?? user.id;
+
+    // Check if profiles table is reachable
+    const { data: tableCheck, error: tableError } = await supabase
       .from("profiles")
-      .select("id")
-      .eq("user_id", user.id)
-      .single();
+      .select("count")
+      .limit(1);
+    console.log('Profiles table check:', JSON.stringify({ tableCheck, tableError }));
 
     const payload = {
-      user_id: user.id,
+      user_id: userId,
       display_name: displayName,
       birth_date: birthDate ? new Date(birthDate).toISOString().split("T")[0] : null,
       avatar_url: finalAvatarUrl,
     };
+    console.log('Profile save payload:', JSON.stringify(payload));
 
-    const { error: dbError } = existing
-      ? await supabase.from("profiles").update(payload).eq("user_id", user.id)
-      : await supabase.from("profiles").insert(payload);
+    // Try UPDATE first; if no rows were affected, INSERT (avoids RLS conflicts)
+    const { data: updated, error: updateError } = await supabase
+      .from("profiles")
+      .update(payload)
+      .eq("user_id", userId)
+      .select();
+    console.log('Update result:', JSON.stringify({ updated, updateError }));
 
-    if (dbError) {
+    if (updateError) {
+      console.error('Profile save error:', JSON.stringify(updateError));
       setError(t.error);
+    } else if (!updated || updated.length === 0) {
+      const { error: insertError } = await supabase
+        .from("profiles")
+        .insert(payload);
+      if (insertError) {
+        console.error('Profile save error:', JSON.stringify(insertError));
+        setError(t.error);
+      } else {
+        setSaved(true);
+        setAvatarUrl(finalAvatarUrl);
+        setAvatarFile(null);
+        setTimeout(() => setSaved(false), 3000);
+      }
     } else {
       setSaved(true);
       setAvatarUrl(finalAvatarUrl);
