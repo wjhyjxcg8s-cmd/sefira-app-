@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import InstagramCTA from "@/app/components/InstagramCTA";
 import PopularCities from "@/app/components/PopularCities";
 import PropertyFilters from "@/app/components/PropertyFilters";
@@ -21,7 +22,7 @@ const translations = {
     navLinks: [
       { label: "Oda Bul", href: "#" },
       { label: "Ev Arkadaşı Bul", href: "#" },
-      { label: "İlan Ver", href: "#" },
+      { label: "İlan Ver", href: "/create-listing" },
       { label: "Topluluk", href: "#" },
     ],
     stats: [
@@ -144,7 +145,7 @@ const translations = {
     navLinks: [
       { label: "Find Rooms", href: "#" },
       { label: "Find Roommates", href: "#" },
-      { label: "List Property", href: "#" },
+      { label: "List Property", href: "/create-listing" },
       { label: "Community", href: "#" },
     ],
     stats: [
@@ -555,9 +556,9 @@ export default function Home() {
 
             {user ? (
               <>
-                {/* Mobile: compact avatar — tap to sign out */}
-                <button
-                  onClick={() => handleSignOut()}
+                {/* Mobile: compact avatar — tap to open profile */}
+                <Link
+                  href="/profile"
                   title={t.signOut}
                   className="sm:hidden w-9 h-9 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-xs text-white shadow-md shadow-orange-500/40 active:scale-90 transition-transform duration-150 flex-shrink-0"
                 >
@@ -567,20 +568,26 @@ export default function Home() {
                     .slice(0, 2)
                     .join("")
                     .toUpperCase()}
-                </button>
+                </Link>
                 {/* Desktop: avatar + name + logout */}
                 <div className="hidden sm:flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-xs text-white shadow-md shadow-orange-500/30 flex-shrink-0">
+                  <Link
+                    href="/profile"
+                    className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-xs text-white shadow-md shadow-orange-500/30 flex-shrink-0 hover:scale-110 transition-transform duration-200"
+                  >
                     {(user.user_metadata?.full_name ?? user.email ?? "U")
                       .split(" ")
                       .map((w: string) => w[0])
                       .slice(0, 2)
                       .join("")
                       .toUpperCase()}
-                  </div>
-                  <span className="text-sm font-medium text-stone-700 max-w-[110px] truncate hidden lg:block">
+                  </Link>
+                  <Link
+                    href="/profile"
+                    className="text-sm font-medium text-stone-700 max-w-[110px] truncate hidden lg:block hover:text-orange-500 transition-colors duration-200"
+                  >
                     {user.user_metadata?.full_name ?? user.email?.split("@")[0]}
-                  </span>
+                  </Link>
                   <button
                     onClick={() => handleSignOut()}
                     className="text-xs font-bold text-stone-400 hover:text-rose-500 px-2 py-1.5 rounded-lg hover:bg-rose-50 transition-all duration-200"
