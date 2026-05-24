@@ -47,12 +47,32 @@ const translations = {
     createListing: "Create Listing",
     signOut: "Sign Out",
   },
+  fa: {
+    title: "پروفایل من",
+    displayName: "نام نمایشی",
+    displayNamePlaceholder: "نامی که کاربران دیگر می‌بینند",
+    birthDate: "تاریخ تولد",
+    profilePhoto: "عکس پروفایل",
+    uploadPhoto: "آپلود عکس",
+    changePhoto: "تغییر عکس",
+    save: "ذخیره",
+    saving: "در حال ذخیره...",
+    saved: "ذخیره شد!",
+    notLoggedIn: "برای مشاهده پروفایل خود لطفاً وارد شوید.",
+    goHome: "رفتن به صفحه اصلی",
+    error: "خطایی رخ داد. لطفاً دوباره امتحان کنید.",
+    photoError: "خطا در آپلود عکس.",
+    emailLabel: "ایمیل",
+    memberSince: "عضو از",
+    createListing: "ثبت آگهی",
+    signOut: "خروج",
+  },
 };
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const [lang, setLang] = useState<"tr" | "en">("tr");
+  const [lang, setLang] = useState<"tr" | "en" | "fa">("tr");
   const t = translations[lang];
 
   const [displayName, setDisplayName] = useState("");
@@ -154,7 +174,7 @@ export default function ProfilePage() {
     .toUpperCase();
 
   const joinDate = user?.created_at
-    ? new Date(user.created_at).toLocaleDateString(lang === "tr" ? "tr-TR" : "en-US", {
+    ? new Date(user.created_at).toLocaleDateString(lang === "tr" ? "tr-TR" : lang === "fa" ? "fa-IR" : "en-US", {
         year: "numeric",
         month: "long",
       })
@@ -188,9 +208,9 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="min-h-screen bg-stone-50" dir={lang === "fa" ? "rtl" : "ltr"}>
       {/* Navbar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-stone-200 shadow-sm shadow-stone-200/80">
+      <nav dir="ltr" className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-stone-200 shadow-sm shadow-stone-200/80">
         <div className="max-w-2xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-sm text-white shadow-lg shadow-orange-500/30 group-hover:scale-110 transition-all duration-300">
@@ -208,13 +228,22 @@ export default function ProfilePage() {
             >
               {t.createListing}
             </Link>
-            <button
-              onClick={() => setLang((l) => (l === "tr" ? "en" : "tr"))}
-              className="flex items-center gap-1.5 text-xs font-bold bg-stone-100 border border-stone-200 rounded-lg px-3 py-2 text-stone-600 hover:text-stone-900 hover:bg-stone-200 transition-all duration-200"
-            >
-              <span className="text-sm leading-none">{lang === "tr" ? "🇹🇷" : "🇬🇧"}</span>
-              <span>{lang === "tr" ? "TR" : "EN"}</span>
-            </button>
+            <div className="flex bg-stone-100 border border-stone-200 rounded-lg p-0.5 gap-0.5">
+              {(["tr", "en", "fa"] as const).map((l) => (
+                <button
+                  key={l}
+                  onClick={() => setLang(l)}
+                  className={`flex items-center gap-1 px-1.5 py-1.5 rounded-md text-[11px] font-black transition-all duration-200 whitespace-nowrap ${
+                    lang === l ? "bg-white text-stone-900 shadow-sm" : "text-stone-400 hover:text-stone-700"
+                  }`}
+                >
+                  <span className="text-sm leading-none">
+                    {l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : "🇮🇷"}
+                  </span>
+                  <span>{l === "tr" ? "TR" : l === "en" ? "EN" : "FA"}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </nav>

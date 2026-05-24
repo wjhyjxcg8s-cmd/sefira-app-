@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { type Currency, CURRENCY_SYMBOLS } from "@/app/lib/currency";
 
-type Lang = "tr" | "en";
+type Lang = "tr" | "en" | "fa";
 
 interface FilterState {
   priceMin: string;
@@ -62,6 +62,19 @@ const LABELS = {
     remote: "Remote Friendly",
     any: "Any", yes: "Yes", no: "No", min: "Min", max: "Max",
     activeFilters: (n: number) => `${n} active`,
+  },
+  fa: {
+    btn: "فیلترها", clear: "پاک کردن", apply: "اعمال", title: "فیلترهای پیشرفته",
+    sec1: "مالی", sec2: "فضا و چیدمان", sec3: "امکانات", sec4: "قوانین خانه",
+    price: "قیمت (€/$)", deposit: "حداکثر ودیعه", bills: "قبوض شامل؟",
+    size: "متراژ (m²)", rooms: "تعداد اتاق", housemates: "هم‌خانه",
+    bathrooms: "تعداد حمام", floor: "بازه طبقه",
+    elevator: "آسانسور", balcony: "بالکن", furnished: "مبله",
+    unfurnished: "بدون مبل", internet: "Wi-Fi", parking: "پارکینگ",
+    pets: "حیوانات خانگی مجاز", smoking: "سیگار مجاز", student: "مناسب دانشجو",
+    remote: "مناسب دورکاری",
+    any: "فرقی نمی‌کند", yes: "بله", no: "خیر", min: "حداقل", max: "حداکثر",
+    activeFilters: (n: number) => `${n} فیلتر`,
   },
 } as const;
 

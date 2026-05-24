@@ -7,7 +7,9 @@
       "Bash(npx next *)",
       "Bash(Get-ChildItem -Path \"e:\\\\sefıra-web\\\\sefira-app\" -Directory)",
       "Bash(Select-Object Name)",
-      "Bash(grep -E \"\\\\.\\(tsx|ts|jsx|js\\)$\")"
+      "Bash(grep -E \"\\\\.\\(tsx|ts|jsx|js\\)$\")",
+      "Bash(Get-ChildItem -Path \"e:\\\\sefıra-web\\\\sefira-app\" -Recurse -Directory)",
+      "Bash(Select-Object -ExpandProperty FullName)"
     ]
   }
 }

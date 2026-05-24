@@ -274,6 +274,133 @@ const translations = {
     girisYap: "Sign In",
     kayitOl: "Register",
   },
+  fa: {
+    navLinks: [
+      { label: "پیدا کردن اتاق", href: "#" },
+      { label: "پیدا کردن هم‌خانه", href: "#" },
+      { label: "ثبت آگهی", href: "/create-listing" },
+      { label: "جامعه", href: "#" },
+    ],
+    stats: [
+      { value: "127K+", label: "کاربر تأیید شده" },
+      { value: "52",    label: "شهر در سراسر جهان" },
+      { value: "98%",   label: "رضایت از تطابق" },
+      { value: "4.9★",  label: "امتیاز اپلیکیشن" },
+    ],
+    signIn: "ورود",
+    signOut: "خروج",
+    getStarted: "شروع کن",
+    heroBadge: "مورد اعتماد بیش از ۱۲۷,۰۰۰ کاربر تأیید شده در ۵۲ شهر",
+    heroLine1: "خانه ایده‌آل",
+    heroLine2: "و هم‌خانه خود را",
+    heroLine3: "پیدا کنید.",
+    heroP: "اتصال هوشمند هم‌خانه و کشف آگهی‌های اجاره ممتاز. طراحی شده برای مهاجران، دانشجویان و متخصصان مدرن.",
+    // ── Wizard ──
+    wizardTitle: "دنبال چه می‌گردید؟",
+    optionSeekingTitle: "دنبال اتاق یا هم‌خانه می‌گردم",
+    optionSeekingSubtitle: "دنبال اتاق یا هم‌خانه می‌گردم",
+    optionOfferingTitle: "اتاق دارم و دنبال هم‌خانه می‌گردم",
+    optionOfferingSubtitle: "اتاق دارم و دنبال هم‌خانه می‌گردم",
+    genderStep: "جنسیت مورد نظر هم‌خانه",
+    genderStepSub: "جنسیت مورد نظر",
+    genderMale: "مرد",
+    genderFemale: "زن",
+    genderAny: "فرقی نمی‌کند",
+    budgetStep: "بودجه ماهانه",
+    budgetStepSub: "بودجه ماهانه شما",
+    locationStep: "کجا دنبال می‌گردید؟",
+    locationStepSub: "کجا دنبال می‌گردید؟",
+    backBtn: "بازگشت",
+    nextBtn: "بعدی",
+    searchNowBtn: "جستجو کن",
+    seekingChip: "دنبال اتاق",
+    offeringChip: "اتاق دارم",
+    countryPlaceholder: "کشور",
+    cityPlaceholder: "شهر",
+    loadingText: "در حال بارگذاری…",
+    priorityGroupLabel: "⭐ مقاصد محبوب",
+    allCountriesLabel: "همه کشورها",
+    searchPlaceholder: "جستجوی شهر، محله یا کلمه کلیدی...",
+    matchesThisWeek: "۲,۸۴۷ تطابق این هفته",
+    reviewsLabel: "۴.۹ ستاره از بیش از ۱۲,۰۰۰ نظر",
+    storiesTitle: "داستان‌های جامعه",
+    storiesLive: "زنده",
+    addStory: "افزودن داستان",
+    aiMatchBadge: "تطابق با هوش مصنوعی",
+    aiMatchLine1: "همتای کامل شما",
+    aiMatchLine2: "شما را پیدا می‌کند.",
+    aiMatchP: "هوش مصنوعی ما بیش از ۴۰ عامل سازگاری را از برنامه خواب تا عادات اجتماعی تحلیل می‌کند و افرادی را معرفی می‌کند که واقعاً دوست دارید با آن‌ها زندگی کنید.",
+    compatBars: [
+      { label: "تطابق سبک زندگی", value: 97,  color: "from-blue-500 to-violet-600" },
+      { label: "برنامه خواب",      value: 94,  color: "from-emerald-500 to-teal-600" },
+      { label: "نظافت",            value: 100, color: "from-amber-500 to-orange-600" },
+      { label: "محدوده بودجه",     value: 88,  color: "from-rose-500 to-pink-600" },
+    ],
+    findMatchesBtn: "پیدا کردن تطابق‌هایم",
+    matchLabel: "تطابق",
+    verifiedLabel: "تأیید شده",
+    petsOk: "حیوانات خانگی مجاز",
+    noPets: "بدون حیوانات خانگی",
+    smoker: "سیگاری",
+    nonSmoker: "غیرسیگاری",
+    skipBtn: "رد کن",
+    likeBtn: "لایک",
+    featuredH2: "آگهی‌های ویژه",
+    featuredP: "اتاق‌ها و آپارتمان‌های ممتاز تأیید شده",
+    listingFilterAll: "همه",
+    listingVerified: "تأیید شده",
+    perMonth: "/ماه",
+    viewAllBtn: "مشاهده همه آگهی‌ها",
+    howH2: "سفیرا چگونه کار می‌کند؟",
+    howP: "از پروفایل تا خانه کامل در کمتر از ۴۸ ساعت.",
+    howItWorks: [
+      { step: "۰۱", title: "پروفایل بسازید",          desc: "سبک زندگی، بودجه و شخصیت خود را به ما بگویید. هوش مصنوعی ما یاد می‌گیرد چه چیزی شما را منحصربه‌فرد می‌کند.",                icon: "✦", gradient: "from-blue-500 to-indigo-600" },
+      { step: "۰۲", title: "تطابق هوش مصنوعی",        desc: "بیش از ۴۰ عامل سازگاری به صورت فوری تحلیل شد. هم‌خانه کامل شما نزدیک‌تر از آن چیزی است که فکر می‌کنید.",                icon: "◈", gradient: "from-violet-500 to-purple-600" },
+      { step: "۰۳", title: "بکشید و ارتباط بگیرید",    desc: "لایک کنید، تطابق بگیرید و پیام بدهید. قبل از هر تعهدی تأیید ویدیویی کنید.",                                                icon: "◎", gradient: "from-pink-500 to-rose-600" },
+      { step: "۰۴", title: "اسباب‌کشی کنید",           desc: "دیجیتالی امضا کنید، پشتیبانی جامعه بگیرید و در خانه کامل خود مستقر شوید.",                                               icon: "⌂", gradient: "from-emerald-500 to-teal-600" },
+    ],
+    roommatesH2: "بهترین تطابق‌های نزدیک شما",
+    roommatesP: "افرادی که اکنون در برلین دنبال هم‌خانه می‌گردند",
+    viewAll: "مشاهده همه",
+    matchedBtn: "تطابق شد!",
+    connectBtn: "ارتباط",
+    petsOkShort: "حیوانات خانگی مجاز",
+    noPetsShort: "بدون حیوان",
+    trendingH2: "شهرهای محبوب",
+    trendingP: "جایی که مردم مدرن در ۲۰۲۵ نقل مکان می‌کنند",
+    activeListings: "آگهی فعال",
+    communityBadge: "فید جامعه",
+    communityH2: "داستان‌های واقعی. مردم واقعی.",
+    communityP: "به جامعه‌ای با بیش از ۱۲۷,۰۰۰ عضو بپیوندید که سفر خود را به اشتراک می‌گذارند",
+    likesLabel: "لایک",
+    commentsLabel: "نظر",
+    shareLabel: "اشتراک‌گذاری",
+    testiH2: "محبوب هزاران نفر",
+    testiReviews: "از بیش از ۱۲,۰۰۰ نظر",
+    appH2a: "سفیرا در جیب شما.",
+    appH2b: "هر جا. هر زمان.",
+    appP: "اعلان‌های تطابق فوری، پیام‌رسانی در لحظه، و مرور آگهی‌ها در هر کجا.",
+    appStoreLabel: "دانلود از:",
+    appStoreName: "App Store",
+    googlePlayLabel: "دریافت از:",
+    googlePlayName: "Google Play",
+    newMatch: "تطابق جدید!",
+    likedProfile: "Emma W. پروفایل شما را لایک کرد",
+    compatibility: "۹۷٪ سازگاری · ۲ دقیقه پیش",
+    suggested: "پیشنهادی",
+    footerDesc: "معتمدترین پلتفرم برای پیدا کردن هم‌خانه و اتاق. طراحی شده برای زندگی مدرن و بدون مرز.",
+    footerLinks: [
+      { title: "محصول",    links: ["پیدا کردن اتاق", "پیدا کردن هم‌خانه", "ثبت آگهی", "تطابق هوش مصنوعی", "پریمیوم"] },
+      { title: "شرکت",     links: ["درباره ما", "وبلاگ", "مشاغل", "مطبوعات", "تماس"] },
+      { title: "پشتیبانی", links: ["مرکز کمک", "امنیت", "شرایط استفاده", "حریم خصوصی", "کوکی‌ها"] },
+    ],
+    footerCopy: "۲۰۲۵ Sefira Technologies, Inc. تمامی حقوق محفوظ است.",
+    footerLegal: ["شرایط استفاده", "حریم خصوصی", "کوکی‌ها"],
+    ilanVer: "ثبت آگهی",
+    ilanVerModal: "برای ثبت آگهی لطفاً وارد شوید یا ثبت نام کنید.",
+    girisYap: "ورود",
+    kayitOl: "ثبت نام",
+  },
 };
 type Lang = keyof typeof translations;
 
@@ -297,6 +424,7 @@ const matchProfiles = [
     initials: "EW", lifestyle: ["Night owl", "Minimalist", "Yoga"],
     bio: "Creative designer looking for a quiet, tidy flatmate who appreciates good aesthetics.",
     bioTr: "Sessiz, düzenli ve estetiği önemseyen bir ev arkadaşı arayan yaratıcı tasarımcı.",
+    bioFa: "طراح خلاق به دنبال هم‌خانه‌ای آرام و مرتب که زیبایی‌شناسی خوب را ارزشمند بداند.",
     verified: true, pets: false, smoking: false, budget: "700-1000",
   },
   {
@@ -305,6 +433,7 @@ const matchProfiles = [
     initials: "KT", lifestyle: ["Early bird", "Gamer", "Coffee lover"],
     bio: "Remote dev who values clean spaces and good coffee. Lets build a calm, focused home.",
     bioTr: "Temiz alanları ve güzel kahveyi önemseyen uzaktan geliştirici. Sakin, odaklı bir ev kuralım.",
+    bioFa: "توسعه‌دهنده از راه دور که فضاهای تمیز و قهوه خوب را می‌پسندد. بیایید خانه‌ای آرام و متمرکز بسازیم.",
     verified: true, pets: true, smoking: false, budget: "800-1100",
   },
   {
@@ -313,6 +442,7 @@ const matchProfiles = [
     initials: "SR", lifestyle: ["Student", "Active", "Social"],
     bio: "Med student, tidy and friendly. Latin music on weekends, focused on weeknights.",
     bioTr: "Tıp öğrencisi, düzenli ve arkadaş canlısı. Hafta sonları Latin müzik, hafta içi çalışma modu.",
+    bioFa: "دانشجوی پزشکی، مرتب و دوستانه. آخر هفته‌ها موسیقی لاتین، شب‌های هفته مطالعه.",
     verified: false, pets: false, smoking: false, budget: "500-750",
   },
 ];
@@ -378,6 +508,14 @@ const testimonialsByLang = {
     { name: "Marcus Webb",   role: "Remote Designer",   city: "Lisbon",    quote: "The verified listings saved me from so many scams. Every place I toured was exactly as described. Finally moved in stress-free.",                                      rating: 5, gradient: "from-cyan-500 to-blue-600",    initials: "MW", avatar: "https://randomuser.me/api/portraits/men/75.jpg"   },
     { name: "Nina Okafor",   role: "Exchange Student",  city: "London",    quote: "Never thought finding a room abroad would be this smooth. The community was welcoming and the app made everything transparent.",                                        rating: 5, gradient: "from-violet-500 to-purple-600", initials: "NO", avatar: "https://randomuser.me/api/portraits/women/90.jpg" },
   ],
+  fa: [
+    { name: "سارا محمدی",    role: "دانشجو",              city: "تهران",    quote: "بهترین هم‌خانه زندگیم رو از طریق سفیرا پیدا کردم!",                                                                                                rating: 5, gradient: "from-blue-500 to-indigo-600",    initials: "سم", avatar: "https://randomuser.me/api/portraits/women/32.jpg" },
+    { name: "علی رضایی",     role: "مهندس نرم‌افزار",    city: "مشهد",     quote: "سیستم هوش مصنوعی سفیرا واقعاً دقیقه. برنامه خواب و عادات تمیزکاری یکسانیم!",                                                                    rating: 5, gradient: "from-emerald-500 to-teal-600",   initials: "عر", avatar: "https://randomuser.me/api/portraits/men/44.jpg"   },
+    { name: "نیلوفر احمدی",  role: "دانشجو",              city: "اصفهان",   quote: "به عنوان دانشجو نگران بودم. سفیرا کمکم کرد خانه امنی پیدا کنم.",                                                                                 rating: 5, gradient: "from-rose-500 to-pink-600",      initials: "نا", avatar: "https://randomuser.me/api/portraits/women/67.jpg" },
+    { name: "محمد کریمی",    role: "فریلنسر",             city: "شیراز",    quote: "با سفیرا در ۴۸ ساعت هم‌خانه ایده‌آلم را پیدا کردم. سیستم تأیید هویت خیلی مطمئنه.",                                                              rating: 5, gradient: "from-yellow-500 to-orange-600",  initials: "مک", avatar: "https://randomuser.me/api/portraits/men/68.jpg"   },
+    { name: "زهرا حسینی",    role: "طراح گرافیک",         city: "تبریز",    quote: "آگهی‌های تأیید شده سفیرا مانع از بسیاری کلاهبرداری‌ها شد. هر خانه‌ای که بازدید کردم دقیقاً همانطور بود که توضیح داده شده بود.",               rating: 5, gradient: "from-cyan-500 to-blue-600",      initials: "زح", avatar: "https://randomuser.me/api/portraits/women/75.jpg" },
+    { name: "امیر صادقی",    role: "دانشجوی تبادلی",      city: "تهران",    quote: "هیچ‌وقت فکر نمی‌کردم پیدا کردن اتاق در خارج از کشور این‌قدر آسان باشد. جامعه سفیرا خیلی صمیمی بود.",                                         rating: 5, gradient: "from-violet-500 to-purple-600", initials: "اص", avatar: "https://randomuser.me/api/portraits/men/90.jpg"   },
+  ],
 };
 
 const communityPostsByLang = {
@@ -390,6 +528,11 @@ const communityPostsByLang = {
     { id: 1, user: "Sarah K.", location: "Berlin, Germany", content: "Just found the most amazing flatmates through Sefira! Moving in next weekend. This city finally feels like home.",                               likes: 342, comments: 28, gradient: "from-pink-500 to-rose-600",    initials: "SK", time: "2h ago" },
     { id: 2, user: "Ahmed M.", location: "Dubai, UAE",      content: "Roommate tip: be honest about your sleep schedule! Mine is a night owl and we matched perfectly. 6 months in, zero issues.",                    likes: 218, comments: 45, gradient: "from-blue-500 to-indigo-600",  initials: "AM", time: "5h ago" },
     { id: 3, user: "Yuki T.",  location: "Amsterdam, NL",   content: "First week in my new flat. Sefira matched me with 3 others who love minimalist design and early mornings. Dream team.",                          likes: 456, comments: 67, gradient: "from-violet-500 to-purple-600",initials: "YT", time: "1d ago" },
+  ],
+  fa: [
+    { id: 1, user: "سارا م.",   location: "تهران، ایران",   content: "هفته اول تو خونه جدیدم. سفیرا منو با ۳ نفر که عاشق سکوت و صبح‌های زود هستن متصل کرد!",                      likes: 342, comments: 28, gradient: "from-pink-500 to-rose-600",    initials: "سم", time: "۲ ساعت پیش" },
+    { id: 2, user: "علی ر.",    location: "مشهد، ایران",    content: "نکته هم‌خانه‌یابی: در مورد برنامه خوابت صادق باش! هم‌خانه‌ام شب‌زنده‌دار و ما کاملاً مچ شدیم.",              likes: 218, comments: 45, gradient: "from-blue-500 to-indigo-600",  initials: "عر", time: "۵ ساعت پیش" },
+    { id: 3, user: "نیلوفر ا.", location: "اصفهان، ایران",  content: "اولین هفتم تو آپارتمان جدیدم. سفیرا منو با ۳ نفر که طراحی مینیمالیستی و صبح‌های زود رو دوست دارن آشنا کرد.", likes: 456, comments: 67, gradient: "from-violet-500 to-purple-600",initials: "نا", time: "۱ روز پیش" },
   ],
 };
 
@@ -526,10 +669,10 @@ export default function Home() {
   const sliderPct = ((budgetUSD - 100) / 4900) * 100;
 
   return (
-    <div className="min-h-screen bg-stone-50 text-stone-900 overflow-x-hidden">
+    <div className="min-h-screen bg-stone-50 text-stone-900 overflow-x-hidden" dir={lang === "fa" ? "rtl" : "ltr"}>
 
       {/* ── NAVBAR ────────────────────────────────────────────────────────────── */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-stone-200 shadow-sm shadow-stone-200/80">
+      <nav dir="ltr" className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-stone-200 shadow-sm shadow-stone-200/80">
         <div className="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
 
           {/* Logo */}
@@ -572,16 +715,27 @@ export default function Home() {
               ))}
             </div>
 
-            {/* Lang toggle */}
-            <button
-              onClick={() => setLang((l) => (l === "tr" ? "en" : "tr"))}
-              className="flex items-center gap-1 sm:gap-1.5 text-xs font-bold bg-stone-100 border border-stone-200 rounded-lg px-2 sm:px-3 py-2 text-stone-600 hover:text-stone-900 hover:border-stone-400 hover:bg-stone-200 transition-all duration-200 active:scale-95"
-            >
-              <span className="text-sm leading-none">{lang === "tr" ? "🇹🇷" : "🇬🇧"}</span>
-              <span className="hidden sm:inline">{lang === "tr" ? "TR" : "EN"}</span>
-              <span className="hidden sm:inline text-stone-400">·</span>
-              <span className="hidden sm:inline text-stone-400">{lang === "tr" ? "EN" : "TR"}</span>
-            </button>
+            {/* Lang switcher */}
+            <div className="flex bg-stone-100 border border-stone-200 rounded-lg p-0.5 gap-0.5">
+              {(["tr", "en", "fa"] as const).map((l) => (
+                <button
+                  key={l}
+                  onClick={() => setLang(l)}
+                  className={`flex items-center gap-1 px-1.5 sm:px-2 py-1.5 rounded-md text-[11px] font-black transition-all duration-200 whitespace-nowrap ${
+                    lang === l
+                      ? "bg-white text-stone-900 shadow-sm"
+                      : "text-stone-400 hover:text-stone-700"
+                  }`}
+                >
+                  <span className="text-sm leading-none">
+                    {l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : "🇮🇷"}
+                  </span>
+                  <span className="hidden sm:inline">
+                    {l === "tr" ? "TR" : l === "en" ? "EN" : "FA"}
+                  </span>
+                </button>
+              ))}
+            </div>
 
             {user ? (
               <>
@@ -1363,7 +1517,7 @@ export default function Home() {
                   </div>
                   <span className="text-xs text-stone-400">{p.nationality}</span>
                 </div>
-                <p className="text-xs text-stone-500 leading-relaxed mb-4">{lang === "tr" ? p.bioTr : p.bio}</p>
+                <p className="text-xs text-stone-500 leading-relaxed mb-4">{lang === "tr" ? p.bioTr : lang === "fa" ? p.bioFa : p.bio}</p>
                 <div className="flex flex-wrap gap-1.5 mb-4">
                   {p.lifestyle.map((tag) => (
                     <span key={tag} className="text-xs bg-stone-100 border border-stone-200 rounded-full px-2.5 py-0.5 text-stone-600">
@@ -1726,13 +1880,15 @@ export default function Home() {
 
               {/* Title */}
               <h2 className="text-xl sm:text-2xl font-black text-white mb-3 drop-shadow-sm tracking-tight">
-                {lang === "tr" ? "Hoş Geldiniz!" : "Welcome Home!"}
+                {lang === "tr" ? "Hoş Geldiniz!" : lang === "fa" ? "خوش آمدید! 🏠✨" : "Welcome Home!"}
               </h2>
 
               {/* Body */}
               <p className="text-white/90 text-sm leading-relaxed font-medium max-w-[240px] sm:max-w-[260px]">
                 {lang === "tr"
                   ? "Sizi aramızda görmekten çok mutluyuz. Harika bir gün geçirmenizi diliyoruz! 🌟"
+                  : lang === "fa"
+                  ? "از اینکه به ما پیوستید خوشحالیم. روز خوبی داشته باشید! 🌟"
                   : "We are so happy to have you here. Wishing you a wonderful day! 🌟"}
               </p>
 
@@ -1746,7 +1902,7 @@ export default function Home() {
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
-                {lang === "tr" ? "Kapat" : "Close"}
+                {lang === "tr" ? "Kapat" : lang === "fa" ? "بستن" : "Close"}
               </button>
             </div>
           </div>

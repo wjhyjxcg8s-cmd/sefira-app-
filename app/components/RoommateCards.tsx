@@ -27,6 +27,7 @@ interface Profile {
   lifestyle: string[];
   bio: string;
   bioTr: string;
+  bioFa: string;
   verified: boolean;
   pets: boolean;
   smoking: boolean;
@@ -43,6 +44,7 @@ const PROFILES: Profile[] = [
     lifestyle: ["Night owl", "Minimalist", "Yoga"],
     bio: "Creative designer seeking a quiet, tidy flatmate who appreciates good aesthetics.",
     bioTr: "Sessiz, düzenli ve estetiği önemseyen bir ev arkadaşı arayan yaratıcı tasarımcı.",
+    bioFa: "طراح خلاق به دنبال هم‌خانه‌ای آرام و مرتب که زیبایی‌شناسی خوب را ارزشمند بداند.",
     verified: true,  pets: false, smoking: false, budget: "700-1000",
   },
   {
@@ -53,6 +55,7 @@ const PROFILES: Profile[] = [
     lifestyle: ["Early bird", "Gamer", "Coffee lover"],
     bio: "Remote dev who values clean spaces and good coffee. Let's build a calm, focused home.",
     bioTr: "Temiz alanları ve güzel kahveyi önemseyen uzaktan geliştirici. Sakin, odaklı bir ev kuralım.",
+    bioFa: "توسعه‌دهنده از راه دور که فضاهای تمیز و قهوه خوب را می‌پسندد. خانه‌ای آرام و متمرکز بسازیم.",
     verified: true,  pets: true,  smoking: false, budget: "800-1100",
   },
   {
@@ -63,6 +66,7 @@ const PROFILES: Profile[] = [
     lifestyle: ["Student", "Active", "Social"],
     bio: "Med student, tidy and friendly. Latin music on weekends, focused on weeknights.",
     bioTr: "Tıp öğrencisi, düzenli ve arkadaş canlısı. Hafta sonları Latin müzik, hafta içi çalışma modu.",
+    bioFa: "دانشجوی پزشکی، مرتب و دوستانه. آخر هفته‌ها موسیقی لاتین، شب‌های هفته مطالعه.",
     verified: false, pets: false, smoking: false, budget: "500-750",
   },
   {
@@ -73,6 +77,7 @@ const PROFILES: Profile[] = [
     lifestyle: ["Minimalist", "Cyclist", "Foodie"],
     bio: "Architect with a love for clean design and weekend hikes. Always keeps tidy spaces.",
     bioTr: "Temiz tasarımı ve hafta sonu yürüyüşlerini seven mimar. Her zaman düzenli bir alan sağlar.",
+    bioFa: "معمار با عشق به طراحی تمیز و پیاده‌روی آخر هفته. همیشه فضاهای مرتبی دارد.",
     verified: true,  pets: false, smoking: false, budget: "900-1200",
   },
   {
@@ -83,6 +88,7 @@ const PROFILES: Profile[] = [
     lifestyle: ["Early bird", "Foodie", "Calm"],
     bio: "Professional chef who cooks for two and keeps the kitchen spotless. Early riser.",
     bioTr: "İkisi için pişiren ve mutfağı pırıl pırıl tutan profesyonel aşçı. Erken kalkar.",
+    bioFa: "آشپز حرفه‌ای که برای دو نفر می‌پزد و آشپزخانه را پاکیزه نگه می‌دارد. صبح‌زود بیدار می‌شود.",
     verified: true,  pets: true,  smoking: false, budget: "400-700",
   },
   {
@@ -93,6 +99,7 @@ const PROFILES: Profile[] = [
     lifestyle: ["Night owl", "Reader", "Introvert"],
     bio: "Data scientist, quiet and focused. Love a good book and strong chai. Very tidy.",
     bioTr: "Veri bilimcisi, sessiz ve odaklı. İyi kitap ve güçlü çayı sever. Çok düzenli.",
+    bioFa: "دانشمند داده، آرام و متمرکز. کتاب خوب و چای قوی را دوست دارد. بسیار مرتب.",
     verified: false, pets: false, smoking: false, budget: "1000-1500",
   },
 ];
@@ -405,7 +412,7 @@ function SwipeCard({
 
           {/* Bio */}
           <p className="text-xs text-stone-500 leading-relaxed line-clamp-2 italic">
-            &ldquo;{lang === "tr" ? profile.bioTr : profile.bio}&rdquo;
+            &ldquo;{lang === "tr" ? profile.bioTr : lang === "fa" ? profile.bioFa : profile.bio}&rdquo;
           </p>
 
           {/* Pets / Smoking */}
@@ -565,7 +572,7 @@ function InspectModal({
 
           <div className="rounded-2xl p-4" style={{ background: "rgba(248,247,246,0.9)" }}>
             <p className="text-sm text-stone-600 leading-relaxed italic">
-              &ldquo;{lang === "tr" ? profile.bioTr : profile.bio}&rdquo;
+              &ldquo;{lang === "tr" ? profile.bioTr : lang === "fa" ? profile.bioFa : profile.bio}&rdquo;
             </p>
           </div>
 

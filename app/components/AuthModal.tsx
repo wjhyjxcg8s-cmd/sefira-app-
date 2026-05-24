@@ -43,10 +43,29 @@ const authT = {
     subtitle: "Welcome back to Sefira",
     subtitleRegister: "Start for free today",
   },
+  fa: {
+    loginTab: "ورود",
+    registerTab: "ثبت نام",
+    nameLabel: "نام نمایشی",
+    namePlaceholder: "نام شما",
+    emailLabel: "ایمیل",
+    emailPlaceholder: "example@email.com",
+    passwordLabel: "رمز عبور",
+    passwordPlaceholder: "حداقل ۶ کاراکتر",
+    loginBtn: "ورود",
+    registerBtn: "ثبت نام",
+    successRegister: "ثبت نام موفق! لطفاً ایمیل خود را تأیید کنید.",
+    switchToRegister: "حساب کاربری ندارید؟",
+    switchToLogin: "قبلاً ثبت نام کرده‌اید؟",
+    switchRegisterLink: "ثبت نام",
+    switchLoginLink: "ورود",
+    subtitle: "خوش آمدید به سفیرا",
+    subtitleRegister: "همین امروز رایگان شروع کنید",
+  },
 };
 
 interface AuthModalProps {
-  lang: "tr" | "en";
+  lang: "tr" | "en" | "fa";
   onClose: () => void;
 }
 

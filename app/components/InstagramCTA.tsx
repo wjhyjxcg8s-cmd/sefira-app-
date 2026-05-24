@@ -28,6 +28,17 @@ const copy = {
     followerLabel: "followers",
     handle: "@sefira.app",
   },
+  fa: {
+    badge: "جامعه اینستاگرام",
+    heading: "به جامعه سفیرا بپیوندید",
+    subtext:
+      "ما را دنبال کنید برای نکات اختصاصی هم‌خانه‌یابی، داستان‌های واقعی تطابق و راهنمای شهری از ۵۲ شهر جهان.",
+    cta: "دنبال کنید",
+    ctaDone: "دنبال می‌کنید ✓",
+    followerCount: "12.4K",
+    followerLabel: "دنبال‌کننده",
+    handle: "@sefira.app",
+  },
 };
 
 const postGradients = [
@@ -44,7 +55,7 @@ function InstagramIcon({ className }: { className?: string }) {
   );
 }
 
-export default function InstagramCTA({ lang }: { lang: "tr" | "en" }) {
+export default function InstagramCTA({ lang }: { lang: "tr" | "en" | "fa" }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const [followed, setFollowed] = useState(false);
