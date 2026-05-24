@@ -634,15 +634,15 @@ export default function Home() {
       </nav>
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex flex-col justify-center pt-16 overflow-hidden bg-[#1a0533]">
+      <section className="relative min-h-screen flex flex-col justify-center pt-16 overflow-hidden bg-[#0f1729]">
 
         {/* Animated dark gradient background */}
         <div className="absolute inset-0 hero-dark-bg" />
 
         {/* Animated gradient orbs */}
-        <div className="hero-orb-1 absolute -top-24 -left-16 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-orange-500/35 via-amber-400/20 to-transparent blur-3xl pointer-events-none" />
-        <div className="hero-orb-2 absolute top-1/2 left-1/2 w-80 h-80 rounded-full bg-fuchsia-500/28 blur-3xl pointer-events-none -translate-x-1/2 -translate-y-1/2" />
-        <div className="hero-orb-3 absolute -bottom-20 -right-16 w-[560px] h-[560px] rounded-full bg-violet-600/28 blur-3xl pointer-events-none" />
+        <div className="hero-orb-1 absolute -top-24 -left-16 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-orange-500/30 via-amber-400/15 to-transparent blur-3xl pointer-events-none" />
+        <div className="hero-orb-2 absolute top-1/2 left-1/2 w-80 h-80 rounded-full bg-purple-700/20 blur-3xl pointer-events-none -translate-x-1/2 -translate-y-1/2" />
+        <div className="hero-orb-3 absolute -bottom-20 -right-16 w-[560px] h-[560px] rounded-full bg-indigo-700/22 blur-3xl pointer-events-none" />
 
         {/* CSS particle system */}
         {Array.from({ length: 25 }, (_, i) => (
@@ -657,10 +657,10 @@ export default function Home() {
           />
         ))}
 
-        <div className="relative z-10 max-w-7xl mx-auto px-5 py-16 grid lg:grid-cols-[1.15fr_0.85fr] gap-12 xl:gap-20 items-center w-full">
+        <div className="relative z-10 max-w-7xl mx-auto px-5 py-16 grid lg:grid-cols-[1.1fr_1fr] gap-12 xl:gap-16 items-center w-full">
 
           {/* ── LEFT: Typography + Wizard ───────────────────────────────────── */}
-          <div className="flex flex-col items-start">
+          <div className="flex flex-col items-start order-last lg:order-first lg:col-start-1">
 
             {/* Trust badge */}
             <div className="inline-flex items-center gap-2.5 bg-white/10 border border-white/20 rounded-full px-5 py-2 mb-8 text-sm text-orange-300 hover:bg-white/15 hover:border-white/30 transition-all duration-300 cursor-default shadow-lg shadow-orange-500/15 animate-fade-in-up backdrop-blur-sm">
@@ -1020,19 +1020,19 @@ export default function Home() {
           </div>
 
           {/* ── RIGHT: Floating cat with glow & sparkles ──────────────────── */}
-          <div className="flex items-center justify-center relative py-8 lg:py-12">
+          <div className="flex items-center justify-center relative py-4 lg:py-12 order-first lg:order-last lg:col-start-2">
             {/* Pulsing glow orb behind cat */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="hero-orb-glow w-72 h-72 lg:w-[460px] lg:h-[460px] rounded-full bg-gradient-to-br from-orange-500/40 via-fuchsia-500/25 to-violet-600/30 blur-3xl" />
+              <div className="hero-orb-glow w-80 h-80 lg:w-[520px] lg:h-[520px] rounded-full bg-gradient-to-br from-orange-500/35 via-purple-600/22 to-indigo-700/28 blur-3xl" />
             </div>
             {/* Subtle ring */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-52 h-52 lg:w-[340px] lg:h-[340px] rounded-full border border-orange-400/25 bg-gradient-to-br from-orange-500/10 via-pink-500/8 to-violet-500/10" />
+              <div className="w-60 h-60 lg:w-[380px] lg:h-[380px] rounded-full border border-orange-400/20 bg-gradient-to-br from-orange-500/8 via-purple-600/6 to-indigo-700/8" />
             </div>
             {/* Cat wrapper */}
-            <div className="relative animate-cat-float z-10 w-64 sm:w-80 lg:w-[440px]">
+            <div className="relative animate-cat-float z-10 w-[85vw] max-w-[360px] sm:max-w-[420px] lg:w-full lg:max-w-none">
               {/* Ground shadow glow */}
-              <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-3/4 h-12 bg-gradient-to-r from-orange-500/50 via-fuchsia-500/50 to-violet-600/50 blur-2xl rounded-full pointer-events-none" />
+              <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-3/4 h-12 bg-gradient-to-r from-orange-500/50 via-purple-600/40 to-indigo-700/40 blur-2xl rounded-full pointer-events-none" />
               {/* Sparkles */}
               <span className="hero-sparkle text-xl"  style={{ top: '6%',  right: '10%', animationDelay: '0s'    }}>✦</span>
               <span className="hero-sparkle text-base" style={{ top: '22%', left:  '4%',  animationDelay: '0.65s' }}>✦</span>
@@ -1046,10 +1046,10 @@ export default function Home() {
               <Image
                 src="/images/hero-cat.png"
                 alt="Sefira mascot"
-                width={440}
-                height={500}
+                width={560}
+                height={620}
                 className="w-full h-auto object-contain"
-                style={{ filter: 'drop-shadow(0 0 50px rgba(255,107,53,0.45)) drop-shadow(0 20px 60px rgba(155,89,255,0.3))' }}
+                style={{ filter: 'drop-shadow(0 0 55px rgba(255,140,66,0.5)) drop-shadow(0 24px 64px rgba(80,60,180,0.35))' }}
                 priority
               />
               {/* Floating badges */}
