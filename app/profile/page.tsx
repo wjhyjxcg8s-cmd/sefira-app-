@@ -104,8 +104,8 @@ export default function ProfilePage() {
 
     if (avatarFile) {
       const ext = avatarFile.name.split(".").pop();
-      // Flat path avoids folder-level RLS issues on the avatars bucket
-      const path = `${user.id}_avatar.${ext}`;
+      const fileName = `avatar.${ext}`;
+      const path = `${user.id}/${fileName}`;
       const { error: uploadError } = await supabase.storage
         .from("avatars")
         .upload(path, avatarFile, { upsert: true });
