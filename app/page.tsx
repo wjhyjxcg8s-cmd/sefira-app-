@@ -408,16 +408,15 @@ export default function Home() {
   const { user, signOut: handleSignOut } = useAuth();
   const [showAuth, setShowAuth] = useState(false);
 
-  // ── Welcome toast ─────────────────────────────────────────────────────────
+  // ── Welcome modal ─────────────────────────────────────────────────────────
   const [showWelcomeToast, setShowWelcomeToast] = useState(false);
   const prevUserRef = useRef<typeof user | undefined>(undefined);
   useEffect(() => {
     if (prevUserRef.current === undefined) { prevUserRef.current = user; return; }
     if (!prevUserRef.current && user) {
       setShowWelcomeToast(true);
-      const timer = setTimeout(() => setShowWelcomeToast(false), 4000);
       prevUserRef.current = user;
-      return () => clearTimeout(timer);
+      return;
     }
     prevUserRef.current = user;
   }, [user]);
@@ -1558,58 +1557,100 @@ export default function Home() {
         <AuthModal lang={lang} onClose={() => setShowAuth(false)} />
       )}
 
-      {/* ── WELCOME TOAST ─────────────────────────────────────────────────────── */}
+      {/* ── WELCOME MODAL ─────────────────────────────────────────────────────── */}
       <style>{`
-        @keyframes sefira-toast-in {
-          from { opacity: 0; transform: translateY(-18px) scale(0.95); }
-          to   { opacity: 1; transform: translateY(0)     scale(1);    }
+        @keyframes sefira-welcome-in {
+          0%   { opacity: 0; transform: scale(0.88) translateY(24px); }
+          60%  { opacity: 1; transform: scale(1.03) translateY(-4px);  }
+          100% { opacity: 1; transform: scale(1)    translateY(0);     }
         }
-        @keyframes sefira-toast-progress {
-          from { transform: scaleX(1); }
-          to   { transform: scaleX(0); }
+        @keyframes sefira-shimmer {
+          0%   { background-position: 200% center; }
+          100% { background-position: -200% center; }
+        }
+        @keyframes sefira-float {
+          0%, 100% { transform: translateY(0px);   }
+          50%       { transform: translateY(-6px);  }
+        }
+        @keyframes sefira-backdrop-in {
+          from { opacity: 0; }
+          to   { opacity: 1; }
         }
       `}</style>
 
       {showWelcomeToast && (
         <div
-          className="fixed top-20 right-4 z-[200] w-[calc(100vw-2rem)] sm:w-auto sm:max-w-sm"
-          style={{ animation: "sefira-toast-in 0.4s cubic-bezier(0.21,1.02,0.73,1) forwards" }}
-          role="status"
-          aria-live="polite"
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+          style={{ background: "rgba(15,10,30,0.72)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", animation: "sefira-backdrop-in 0.3s ease forwards" }}
+          onClick={() => setShowWelcomeToast(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={lang === "tr" ? "Hoş Geldiniz" : "Welcome"}
         >
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-orange-500/35"
-            style={{ background: "linear-gradient(135deg, #f97316 0%, #f59e0b 55%, #ea580c 100%)" }}
+          {/* Card — stop backdrop click propagating through */}
+          <div
+            className="relative w-full max-w-sm overflow-hidden rounded-3xl select-none"
+            style={{
+              animation: "sefira-welcome-in 0.55s cubic-bezier(0.34,1.56,0.64,1) forwards",
+              background: "linear-gradient(145deg, #ff6b35 0%, #f59e0b 30%, #ec4899 65%, #8b5cf6 100%)",
+              boxShadow: "0 32px 80px -12px rgba(236,72,153,0.55), 0 16px 40px -8px rgba(139,92,246,0.45), 0 4px 16px rgba(0,0,0,0.3)",
+            }}
+            onClick={(e) => e.stopPropagation()}
           >
-            {/* Decorative glow orb */}
-            <div className="absolute -top-6 -right-6 w-28 h-28 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+            {/* Shimmer overlay */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.18) 50%, transparent 60%)",
+                backgroundSize: "200% auto",
+                animation: "sefira-shimmer 3.5s linear infinite",
+              }}
+            />
 
-            <div className="relative p-4 pr-11">
+            {/* Soft inner glow blobs */}
+            <div className="absolute -top-10 -left-10 w-40 h-40 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+
+            {/* Content */}
+            <div className="relative px-8 pt-10 pb-8 flex flex-col items-center text-center">
+
+              {/* Sefira logo mark */}
+              <div className="mb-6 w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-lg">
+                <span className="text-xl font-black text-white drop-shadow">S</span>
+              </div>
+
+              {/* Floating emoji */}
+              <div
+                className="text-6xl mb-5 leading-none"
+                style={{ animation: "sefira-float 3s ease-in-out infinite" }}
+              >
+                🏠✨
+              </div>
+
+              {/* Title */}
+              <h2 className="text-2xl font-black text-white mb-3 drop-shadow-sm tracking-tight">
+                {lang === "tr" ? "Hoş Geldiniz!" : "Welcome Home!"}
+              </h2>
+
+              {/* Body */}
+              <p className="text-white/90 text-sm leading-relaxed font-medium max-w-[260px]">
+                {lang === "tr"
+                  ? "Sizi aramızda görmekten çok mutluyuz. Harika bir gün geçirmenizi diliyoruz! 🌟"
+                  : "We are so happy to have you here. Wishing you a wonderful day! 🌟"}
+              </p>
+
               {/* Close button */}
               <button
                 onClick={() => setShowWelcomeToast(false)}
                 aria-label="Close"
-                className="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-all duration-150 active:scale-90"
+                className="mt-8 group flex items-center gap-2 bg-white/15 hover:bg-white/25 border border-white/25 hover:border-white/50 text-white text-sm font-bold px-6 py-3 rounded-2xl transition-all duration-200 active:scale-95 shadow-lg shadow-black/10 hover:shadow-white/10"
               >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-3.5 h-3.5">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 group-hover:rotate-90 transition-transform duration-200">
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
+                {lang === "tr" ? "Kapat" : "Close"}
               </button>
-
-              {/* Message */}
-              <p className="text-white font-bold text-sm leading-relaxed">
-                {lang === "tr"
-                  ? "Hoş geldiniz! 🏠✨ Sizi aramızda görmekten mutluluk duyuyoruz. Harika bir gün geçirmenizi diliyoruz! 🌟💫"
-                  : "Welcome! 🏠✨ We're so happy to have you here. Wishing you a wonderful day! 🌟💫"}
-              </p>
-            </div>
-
-            {/* 4-second progress bar */}
-            <div className="h-0.5 bg-white/20">
-              <div
-                className="h-full bg-white/55 origin-left"
-                style={{ animation: "sefira-toast-progress 4s linear forwards" }}
-              />
             </div>
           </div>
         </div>
