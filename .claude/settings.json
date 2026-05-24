@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "PowerShell(head -20)",
-      "PowerShell(New-Item -ItemType Directory -Path \"e:\\\\sefıra-web\\\\sefira-app\\\\app\\\\components\" -Force)"
+      "PowerShell(New-Item -ItemType Directory -Path \"e:\\\\sefıra-web\\\\sefira-app\\\\app\\\\components\" -Force)",
+      "Bash(dir \"public\\\\images\" /b)"
     ]
   }
 }
