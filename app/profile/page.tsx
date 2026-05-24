@@ -100,7 +100,8 @@ export default function ProfilePage() {
 
     if (avatarFile) {
       const ext = avatarFile.name.split(".").pop();
-      const path = `${user.id}/avatar.${ext}`;
+      // Flat path avoids folder-level RLS issues on the avatars bucket
+      const path = `${user.id}_avatar.${ext}`;
       const { error: uploadError } = await supabase.storage
         .from("avatars")
         .upload(path, avatarFile, { upsert: true });
@@ -115,15 +116,24 @@ export default function ProfilePage() {
       finalAvatarUrl = publicUrl;
     }
 
-    const { error: dbError } = await supabase.from("profiles").upsert(
-      {
-        user_id: user.id,
-        display_name: displayName,
-        birth_date: birthDate || null,
-        avatar_url: finalAvatarUrl,
-      },
-      { onConflict: "user_id" }
-    );
+    // Check whether a row already exists so we can INSERT vs UPDATE explicitly.
+    // Plain upsert can be blocked by RLS when the INSERT policy is absent.
+    const { data: existing } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("user_id", user.id)
+      .single();
+
+    const payload = {
+      user_id: user.id,
+      display_name: displayName,
+      birth_date: birthDate || null,
+      avatar_url: finalAvatarUrl,
+    };
+
+    const { error: dbError } = existing
+      ? await supabase.from("profiles").update(payload).eq("user_id", user.id)
+      : await supabase.from("profiles").insert(payload);
 
     if (dbError) {
       setError(t.error);
