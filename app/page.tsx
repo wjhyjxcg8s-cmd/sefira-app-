@@ -1611,13 +1611,22 @@ export default function Home() {
             <div className="absolute -top-10 -left-10 w-40 h-40 bg-white/10 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl pointer-events-none" />
 
-            {/* Content */}
-            <div className="relative px-8 pt-10 pb-8 flex flex-col items-center text-center">
+            {/* Brand image */}
+            <div className="relative w-full h-[180px] overflow-hidden rounded-t-3xl flex-shrink-0">
+              <img
+                src="/images/sefira-welcome.jpg"
+                alt="Sefira"
+                className="w-full h-full object-cover"
+              />
+              {/* Gradient fade into card background */}
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{ background: "linear-gradient(to bottom, transparent 40%, rgba(255,107,53,0.55) 75%, rgba(139,92,246,0.85) 100%)" }}
+              />
+            </div>
 
-              {/* Sefira logo mark */}
-              <div className="mb-6 w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-lg">
-                <span className="text-xl font-black text-white drop-shadow">S</span>
-              </div>
+            {/* Content */}
+            <div className="relative px-8 pt-6 pb-8 flex flex-col items-center text-center">
 
               {/* Floating emoji */}
               <div
