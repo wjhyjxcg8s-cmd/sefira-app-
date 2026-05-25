@@ -8,10 +8,11 @@ const supabaseAdmin = createClient(
   { auth: { autoRefreshToken: false, persistSession: false } }
 );
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend('re_VhSzhamq_Ad1H8jJVqVmncdQsyWUYSydj');
 
 export async function POST(req: NextRequest) {
   try {
+    console.log("RESEND KEY:", process.env.RESEND_API_KEY?.substring(0, 10));
     const { email } = await req.json();
 
     if (!email || typeof email !== "string") {
