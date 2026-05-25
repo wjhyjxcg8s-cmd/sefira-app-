@@ -8,7 +8,7 @@ const supabaseAdmin = createClient(
   { auth: { autoRefreshToken: false, persistSession: false } }
 );
 
-const resend = new Resend('re_VhSzhamq_Ad1H8jJVqVmncdQsyWUYSydj');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
   try {
