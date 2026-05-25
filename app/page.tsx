@@ -720,7 +720,11 @@ export default function Home() {
     <div className="min-h-screen bg-stone-50 text-stone-900 overflow-x-hidden" dir={lang === "fa" ? "rtl" : "ltr"}>
 
       {/* ── NAVBAR ────────────────────────────────────────────────────────────── */}
-      <nav dir="ltr" className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-white/97 backdrop-blur-xl border-b border-stone-200/80 shadow-md shadow-stone-900/6" : "bg-white/75 backdrop-blur-md border-b border-transparent"}`}>
+      <nav
+        dir="ltr"
+        style={{ transform: "translateZ(0)", WebkitTransform: "translateZ(0)", willChange: "transform" }}
+        className={`fixed top-0 left-0 right-0 w-full z-[9999] transition-all duration-300 ${scrolled ? "bg-white border-b border-stone-200 shadow-md shadow-stone-900/6" : "bg-white border-b border-stone-100 shadow-none"}`}
+      >
         <div className="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
 
           {/* Logo */}
