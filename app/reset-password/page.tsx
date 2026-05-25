@@ -69,21 +69,28 @@ export default function ResetPasswordPage() {
   }, []);
 
   useEffect(() => {
-    const hash = window.location.hash.substring(1);
-    const params = new URLSearchParams(hash);
-    const accessToken = params.get("access_token");
-    const type = params.get("type");
-    const hashError = params.get("error");
-
-    if (hashError || !accessToken || type !== "recovery") {
+    // Abort early if there's an explicit error in the hash (e.g. expired link)
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    if (hashParams.get("error")) {
       setTokenValid(false);
       return;
     }
 
-    // Let Supabase pick up the session from the hash
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setTokenValid(!!session);
+    // PASSWORD_RECOVERY fires for both implicit (#access_token) and PKCE (?code) flows
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY" || (event === "SIGNED_IN" && session)) {
+        setTokenValid(true);
+      }
     });
+
+    // Fallback: if a session already exists (e.g. page refreshed after exchange)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setTokenValid(true);
+      // If neither event nor session resolves in time, mark invalid after a short grace period
+      else setTimeout(() => setTokenValid((v) => v ?? false), 3000);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   useEffect(() => {

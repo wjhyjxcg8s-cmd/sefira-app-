@@ -89,7 +89,7 @@ interface AuthModalProps {
 
 export default function AuthModal({ lang, onClose }: AuthModalProps) {
   const t = authT[lang];
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, resetPassword } = useAuth();
 
   const [tab, setTab] = useState<"login" | "register">("login");
   const [name, setName] = useState("");
@@ -134,20 +134,12 @@ export default function AuthModal({ lang, onClose }: AuthModalProps) {
     setForgotError(null);
     setForgotLoading(true);
 
-    try {
-      const res = await fetch("/api/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: forgotEmail }),
-      });
-      const json = await res.json();
-      if (!res.ok) {
-        setForgotError(json.error ?? "Error");
-      } else {
-        setForgotSuccess(true);
-      }
-    } catch {
-      setForgotError("Network error");
+    const redirectTo = `${window.location.origin}/reset-password`;
+    const { error } = await resetPassword(forgotEmail, redirectTo);
+    if (error) {
+      setForgotError(error);
+    } else {
+      setForgotSuccess(true);
     }
 
     setForgotLoading(false);

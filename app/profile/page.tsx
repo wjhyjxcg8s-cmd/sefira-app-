@@ -47,6 +47,24 @@ const translations = {
     passwordMinLength: "Şifre en az 6 karakter olmalıdır.",
     passwordUpdated: "Şifre başarıyla güncellendi.",
     wrongPassword: "Mevcut şifre hatalı.",
+    deleteAccount: "Hesabı Sil",
+    deleteWarningTitle: "Hesabınızı silmek istediğinizden emin misiniz?",
+    deleteContinue: "Devam Et",
+    deleteCancel: "İptal",
+    deleteReasonTitle: "Neden ayrılıyorsunuz?",
+    deleteReason1: "Uygulamayı beğenmedim, tasarımı zayıf",
+    deleteReason2: "Uygun bir şey bulamadım",
+    deleteReason3: "Artık ihtiyacım yok",
+    deleteRatingTitle: "Bize 1-10 arası puan verir misiniz?",
+    deleteFeedbackTitle: "Eklemek istediğiniz bir şey var mı? (İsteğe bağlı)",
+    deleteFeedbackPlaceholder: "Görüşlerinizi buraya yazın...",
+    deleteOtpTitle: "E-posta adresinize doğrulama kodu gönderildi.",
+    deleteOtpPlaceholder: "6 haneli kodu girin",
+    deleteConfirmBtn: "Hesabı Sil",
+    deleteOtpInvalid: "Geçersiz kod. Lütfen tekrar deneyin.",
+    deleteOtpExpired: "Kod süresi doldu. Lütfen tekrar gönderin.",
+    deleteSending: "Gönderiliyor...",
+    deleteDeleting: "Siliniyor...",
   },
   en: {
     title: "My Profile",
@@ -88,6 +106,24 @@ const translations = {
     passwordMinLength: "Password must be at least 6 characters.",
     passwordUpdated: "Password updated successfully.",
     wrongPassword: "Current password is incorrect.",
+    deleteAccount: "Delete Account",
+    deleteWarningTitle: "Are you sure you want to delete your account?",
+    deleteContinue: "Continue",
+    deleteCancel: "Cancel",
+    deleteReasonTitle: "Why are you leaving?",
+    deleteReason1: "I didn't like the app, design is weak",
+    deleteReason2: "I couldn't find anything suitable",
+    deleteReason3: "I no longer need it",
+    deleteRatingTitle: "How would you rate us from 1 to 10?",
+    deleteFeedbackTitle: "Any additional feedback? (Optional)",
+    deleteFeedbackPlaceholder: "Write your thoughts here...",
+    deleteOtpTitle: "A verification code has been sent to your email.",
+    deleteOtpPlaceholder: "Enter 6-digit code",
+    deleteConfirmBtn: "Delete Account",
+    deleteOtpInvalid: "Invalid code. Please try again.",
+    deleteOtpExpired: "Code expired. Please send again.",
+    deleteSending: "Sending...",
+    deleteDeleting: "Deleting...",
   },
   fa: {
     title: "پروفایل من",
@@ -129,6 +165,24 @@ const translations = {
     passwordMinLength: "رمز عبور باید حداقل ۶ کاراکتر باشد.",
     passwordUpdated: "رمز عبور با موفقیت بروزرسانی شد.",
     wrongPassword: "رمز عبور فعلی اشتباه است.",
+    deleteAccount: "حذف حساب",
+    deleteWarningTitle: "آیا مطمئن هستید که می‌خواهید حساب خود را حذف کنید؟",
+    deleteContinue: "ادامه",
+    deleteCancel: "لغو",
+    deleteReasonTitle: "چرا می‌روید؟",
+    deleteReason1: "برنامه را دوست نداشتم، طراحیش ضعیفه",
+    deleteReason2: "در برنامه نتوانستم مورد مناسبی پیدا کنم",
+    deleteReason3: "دیگر لازم ندارم",
+    deleteRatingTitle: "از ۱ تا ۱۰ به ما چند امتیاز می‌دهید؟",
+    deleteFeedbackTitle: "نکته‌ای دارید؟ (اختیاری)",
+    deleteFeedbackPlaceholder: "نظر خود را اینجا بنویسید...",
+    deleteOtpTitle: "کد تأیید به ایمیل شما ارسال شد.",
+    deleteOtpPlaceholder: "کد ۶ رقمی را وارد کنید",
+    deleteConfirmBtn: "حذف حساب",
+    deleteOtpInvalid: "کد نادرست است. لطفاً دوباره امتحان کنید.",
+    deleteOtpExpired: "کد منقضی شده. لطفاً مجدداً ارسال کنید.",
+    deleteSending: "در حال ارسال...",
+    deleteDeleting: "در حال حذف...",
   },
 };
 
@@ -181,6 +235,15 @@ export default function ProfilePage() {
   const [editNewPassword, setEditNewPassword] = useState("");
   const [editConfirmPassword, setEditConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState<string | null>(null);
+
+  // Delete account state
+  const [deleteStep, setDeleteStep] = useState(0);
+  const [deleteReasons, setDeleteReasons] = useState<string[]>([]);
+  const [deleteRating, setDeleteRating] = useState<number | null>(null);
+  const [deleteExtraFeedback, setDeleteExtraFeedback] = useState("");
+  const [deleteOtp, setDeleteOtp] = useState("");
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   useEffect(() => {
     if (loading) return;
@@ -314,6 +377,62 @@ export default function ProfilePage() {
     setEditingField(null);
     setTimeout(() => setSaved(false), 2000);
     setSaving(false);
+  };
+
+  const handleSendOtp = async () => {
+    setDeleteLoading(true);
+    setDeleteError(null);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch("/api/delete-account/send-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+      });
+      const json = await res.json();
+      if (!res.ok) { setDeleteError(json.error ?? "Error"); setDeleteLoading(false); return; }
+      setDeleteStep(5);
+    } catch (e) {
+      setDeleteError(String(e));
+    }
+    setDeleteLoading(false);
+  };
+
+  const handleVerifyAndDelete = async () => {
+    if (deleteOtp.length !== 6) return;
+    setDeleteLoading(true);
+    setDeleteError(null);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch("/api/delete-account/confirm", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+        body: JSON.stringify({
+          otp: deleteOtp,
+          reasons: deleteReasons,
+          rating: deleteRating,
+          feedback: deleteExtraFeedback,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        if (json.error === "invalid_otp") setDeleteError(t.deleteOtpInvalid);
+        else if (json.error === "otp_expired") setDeleteError(t.deleteOtpExpired);
+        else setDeleteError(json.error ?? "Error");
+        setDeleteLoading(false);
+        return;
+      }
+      await supabase.auth.signOut();
+      router.push("/");
+    } catch (e) {
+      setDeleteError(String(e));
+      setDeleteLoading(false);
+    }
   };
 
   const cancelFieldEdit = (field: string) => {
@@ -466,6 +585,159 @@ export default function ProfilePage() {
                 {t.cancelEditBtn}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Account multi-step modal */}
+      {deleteStep > 0 && (
+        <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
+
+            {/* Step 1 — Warning */}
+            {deleteStep === 1 && (
+              <div className="p-6 flex flex-col items-center gap-5 text-center">
+                <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
+                  <span className="text-4xl">⚠️</span>
+                </div>
+                <p className="text-stone-800 font-semibold text-sm leading-relaxed">
+                  {t.deleteWarningTitle}
+                </p>
+                <div className="flex gap-3 w-full">
+                  <button
+                    onClick={() => setDeleteStep(2)}
+                    className="flex-1 py-3 rounded-xl bg-red-500 text-white text-sm font-bold hover:bg-red-600 active:scale-95 transition-all"
+                  >
+                    {t.deleteContinue}
+                  </button>
+                  <button
+                    onClick={() => setDeleteStep(0)}
+                    className="flex-1 py-3 rounded-xl border-2 border-stone-200 text-stone-600 text-sm font-bold hover:bg-stone-50 active:scale-95 transition-all"
+                  >
+                    {t.deleteCancel}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 2 — Reasons */}
+            {deleteStep === 2 && (
+              <div className="p-6 flex flex-col gap-4">
+                <p className="text-stone-800 font-bold text-base">{t.deleteReasonTitle}</p>
+                <div className="flex flex-col gap-3">
+                  {([t.deleteReason1, t.deleteReason2, t.deleteReason3] as const).map((label, i) => {
+                    const key = String(i + 1);
+                    const checked = deleteReasons.includes(key);
+                    return (
+                      <label key={key} className="flex items-start gap-3 cursor-pointer group">
+                        <div className={`mt-0.5 w-5 h-5 flex-shrink-0 rounded border-2 flex items-center justify-center transition-all ${checked ? "bg-orange-500 border-orange-500" : "border-stone-300 group-hover:border-orange-300"}`}>
+                          {checked && (
+                            <svg viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-white">
+                              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                            </svg>
+                          )}
+                        </div>
+                        <input
+                          type="checkbox"
+                          className="sr-only"
+                          checked={checked}
+                          onChange={() => setDeleteReasons(prev => checked ? prev.filter(r => r !== key) : [...prev, key])}
+                        />
+                        <span className="text-sm text-stone-700 leading-snug">{label}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+                <button
+                  disabled={deleteReasons.length === 0}
+                  onClick={() => setDeleteStep(3)}
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-bold shadow-md shadow-orange-500/25 hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {t.deleteContinue}
+                </button>
+              </div>
+            )}
+
+            {/* Step 3 — Rating */}
+            {deleteStep === 3 && (
+              <div className="p-6 flex flex-col gap-5">
+                <p className="text-stone-800 font-bold text-base">{t.deleteRatingTitle}</p>
+                <div className="grid grid-cols-5 gap-2">
+                  {Array.from({ length: 10 }, (_, i) => i + 1).map(n => (
+                    <button
+                      key={n}
+                      onClick={() => setDeleteRating(n)}
+                      className={`py-2.5 rounded-xl text-sm font-bold border-2 transition-all active:scale-95 ${deleteRating === n ? "bg-orange-500 border-orange-500 text-white shadow-md shadow-orange-500/25" : "border-stone-200 text-stone-600 hover:border-orange-300 hover:text-orange-600"}`}
+                    >
+                      {n}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  disabled={deleteRating === null}
+                  onClick={() => setDeleteStep(4)}
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-bold shadow-md shadow-orange-500/25 hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {t.deleteContinue}
+                </button>
+              </div>
+            )}
+
+            {/* Step 4 — Optional feedback */}
+            {deleteStep === 4 && (
+              <div className="p-6 flex flex-col gap-4">
+                <p className="text-stone-800 font-bold text-base">{t.deleteFeedbackTitle}</p>
+                <textarea
+                  value={deleteExtraFeedback}
+                  onChange={e => setDeleteExtraFeedback(e.target.value)}
+                  placeholder={t.deleteFeedbackPlaceholder}
+                  rows={4}
+                  className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all resize-none"
+                />
+                <button
+                  disabled={deleteLoading}
+                  onClick={handleSendOtp}
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-bold shadow-md shadow-orange-500/25 hover:opacity-90 active:scale-95 transition-all disabled:opacity-60"
+                >
+                  {deleteLoading ? t.deleteSending : t.deleteContinue}
+                </button>
+                {deleteError && (
+                  <p className="text-xs text-rose-600 text-center">{deleteError}</p>
+                )}
+              </div>
+            )}
+
+            {/* Step 5 — OTP verification */}
+            {deleteStep === 5 && (
+              <div className="p-6 flex flex-col gap-4">
+                <p className="text-stone-700 text-sm leading-relaxed">{t.deleteOtpTitle}</p>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={6}
+                  value={deleteOtp}
+                  onChange={e => { setDeleteOtp(e.target.value.replace(/\D/g, "")); setDeleteError(null); }}
+                  placeholder={t.deleteOtpPlaceholder}
+                  className="w-full border-2 border-stone-200 rounded-xl px-4 py-3 text-center text-2xl font-black tracking-[0.4em] text-stone-900 placeholder-stone-300 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all"
+                />
+                {deleteError && (
+                  <p className="text-xs text-rose-600 text-center">{deleteError}</p>
+                )}
+                <button
+                  disabled={deleteOtp.length !== 6 || deleteLoading}
+                  onClick={handleVerifyAndDelete}
+                  className="w-full py-3 rounded-xl bg-red-500 text-white text-sm font-bold hover:bg-red-600 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {deleteLoading ? t.deleteDeleting : t.deleteConfirmBtn}
+                </button>
+                <button
+                  onClick={() => { setDeleteStep(0); setDeleteOtp(""); setDeleteError(null); }}
+                  className="w-full py-2 text-xs text-stone-400 hover:text-stone-600 transition-colors"
+                >
+                  {t.deleteCancel}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -873,6 +1145,16 @@ export default function ProfilePage() {
               </svg>
               {t.signOut}
             </button>
+
+            {/* Delete account — intentionally small and unattractive */}
+            <div className="flex justify-center pt-2">
+              <button
+                onClick={() => { setDeleteStep(1); setDeleteError(null); setDeleteReasons([]); setDeleteRating(null); setDeleteExtraFeedback(""); setDeleteOtp(""); }}
+                className="text-[11px] text-stone-400 hover:text-stone-500 transition-colors"
+              >
+                {t.deleteAccount}
+              </button>
+            </div>
           </div>
         </div>
       </div>
