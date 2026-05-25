@@ -4,15 +4,14 @@ import { Resend } from "resend";
 
 const SUPABASE_URL = "https://ceetzophaybywfuhezhv.supabase.co";
 
-const supabaseAdmin = createClient(
-  SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { autoRefreshToken: false, persistSession: false } }
-);
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(req: NextRequest) {
+  const supabaseAdmin = createClient(
+    SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  );
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
   try {
     const authHeader = req.headers.get("Authorization");
     const token = authHeader?.replace("Bearer ", "");
