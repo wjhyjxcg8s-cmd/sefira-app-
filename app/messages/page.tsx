@@ -10,7 +10,7 @@ const translations = {
     noConversation: "Sohbet etmeye başlamak için bir konuşma seçin.",
     typeMessage: "Mesaj yazın...",
     senderName: "Sefira Destek",
-    supportMessage: "Uygulamamızı ve sitemizi kullandığınız için teşekkür ederiz. Sizinle birlikte büyüyoruz! 🙏",
+    supportMessage: "Sefira'yı seçtiğiniz için size içtenlikle teşekkür ederiz.\nBizi bir dostunuz olarak bilin; tıpkı bizim sizi dostumuz olarak gördüğümüz gibi. 🙏\n\nBu bölümde, başkalarına gönderdiğiniz mesajlar görüntülenir ve sohbetlerinize devam edebilirsiniz. Teşekkürler.",
     send: "Gönder",
     goHome: "Ana Sayfa",
   },
@@ -20,7 +20,7 @@ const translations = {
     noConversation: "Select a conversation to start chatting.",
     typeMessage: "Type a message...",
     senderName: "Sefira Support",
-    supportMessage: "Thank you for using our app and website. We grow together with you! 🙏",
+    supportMessage: "We sincerely thank you for choosing Sefira.\nConsider us your friend, just as we consider you ours. 🙏\n\nIn this section, you can see the messages you have sent to others and continue your conversations. Thank you.",
     send: "Send",
     goHome: "Home",
   },
@@ -30,7 +30,7 @@ const translations = {
     noConversation: "برای شروع گفتگو یک مکالمه را انتخاب کنید.",
     typeMessage: "پیام بنویسید...",
     senderName: "پشتیبانی سفیرا",
-    supportMessage: "از اینکه از برنامه و سایت ما استفاده می‌کنید تشکر می‌کنیم، با ما با شما بزرگیم 🙏",
+    supportMessage: "از اینکه سفیرا را انتخاب کرده‌اید، از شما صمیمانه تشکر می‌کنیم.\nما را دوست خودتان بدانید، همان‌طور که ما نیز شما را دوست خود می‌دانیم. 🙏\n\nدر این بخش، پیام‌هایی که برای دیگران ارسال کرده‌اید نمایش داده می‌شود و می‌توانید به گفت‌وگوها و چت‌های خود ادامه دهید.\nبا تشکر",
     send: "ارسال",
     goHome: "خانه",
   },
@@ -170,7 +170,7 @@ export default function MessagesPage() {
                   </div>
                   <div className="flex flex-col gap-1">
                     <div className="bg-white rounded-2xl rounded-bl-sm px-4 py-2.5 shadow-sm">
-                      <p className="text-sm text-stone-800 leading-relaxed">{t.supportMessage}</p>
+                      <p className="text-sm text-stone-800 leading-relaxed whitespace-pre-line">{t.supportMessage}</p>
                     </div>
                     <span className="text-[11px] text-stone-400 px-1">Sefira</span>
                   </div>
