@@ -136,7 +136,7 @@ export default function AuthModal({ lang, onClose }: AuthModalProps) {
     setForgotLoading(true);
 
     const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
-      redirectTo: "http://178.105.209.146/reset-password",
+      redirectTo: "http://178.105.209.146:3000/reset-password",
     });
 
     if (error) {

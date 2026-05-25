@@ -18,6 +18,7 @@ const t = {
     success: "Şifreniz güncellendi! Ana sayfaya yönlendiriliyorsunuz...",
     error: "Bir hata oluştu. Lütfen tekrar deneyin.",
     goHome: "Ana Sayfaya Git",
+    invalidLink: "Geçersiz veya süresi dolmuş bağlantı. Lütfen tekrar deneyin.",
   },
   en: {
     title: "Update Password",
@@ -31,6 +32,7 @@ const t = {
     success: "Your password has been updated! Redirecting to home...",
     error: "An error occurred. Please try again.",
     goHome: "Go to Home",
+    invalidLink: "Invalid or expired link. Please try again.",
   },
   fa: {
     title: "بروزرسانی رمز عبور",
@@ -44,6 +46,7 @@ const t = {
     success: "رمز عبور شما بروزرسانی شد! در حال انتقال به صفحه اصلی...",
     error: "خطایی رخ داد. لطفاً دوباره امتحان کنید.",
     goHome: "رفتن به صفحه اصلی",
+    invalidLink: "لینک نامعتبر یا منقضی شده. لطفاً دوباره تلاش کنید.",
   },
 };
 
@@ -52,6 +55,8 @@ export default function ResetPasswordPage() {
   const [lang, setLang] = useState<"tr" | "en" | "fa">("tr");
   const tr = t[lang];
 
+  // null = still checking, true = valid token, false = invalid/missing
+  const [tokenValid, setTokenValid] = useState<boolean | null>(null);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -61,6 +66,24 @@ export default function ResetPasswordPage() {
   useEffect(() => {
     const saved = localStorage.getItem("sefira-lang") as "tr" | "en" | "fa" | null;
     if (saved === "tr" || saved === "en" || saved === "fa") setLang(saved);
+  }, []);
+
+  useEffect(() => {
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+    const accessToken = params.get("access_token");
+    const type = params.get("type");
+    const hashError = params.get("error");
+
+    if (hashError || !accessToken || type !== "recovery") {
+      setTokenValid(false);
+      return;
+    }
+
+    // Let Supabase pick up the session from the hash
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setTokenValid(!!session);
+    });
   }, []);
 
   useEffect(() => {
@@ -114,6 +137,30 @@ export default function ResetPasswordPage() {
               </Link>
             </div>
 
+            {tokenValid === false ? (
+              <div className="py-6 text-center">
+                <div className="w-16 h-16 rounded-full bg-rose-100 flex items-center justify-center mx-auto mb-4">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-8 h-8 text-rose-500">
+                    <circle cx="12" cy="12" r="10" /><path strokeLinecap="round" d="M12 8v4m0 4h.01" />
+                  </svg>
+                </div>
+                <p className="text-stone-700 font-medium text-sm mb-5">{tr.invalidLink}</p>
+                <Link
+                  href="/"
+                  className="inline-block px-6 py-2.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg shadow-orange-500/25 hover:opacity-90 transition-all active:scale-95"
+                >
+                  {tr.goHome}
+                </Link>
+              </div>
+            ) : tokenValid === null ? (
+              <div className="py-12 flex justify-center">
+                <svg className="animate-spin w-8 h-8 text-orange-500" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.25" />
+                  <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                </svg>
+              </div>
+            ) : (
+              <>
             <h1 className="text-2xl font-black text-stone-900 mb-6">{tr.title}</h1>
 
             {success ? (
@@ -188,6 +235,8 @@ export default function ResetPasswordPage() {
                   </Link>
                 </p>
               </form>
+            )}
+              </>
             )}
           </div>
         </div>
