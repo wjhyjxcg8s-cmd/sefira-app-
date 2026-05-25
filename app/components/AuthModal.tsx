@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/app/lib/AuthContext";
-import { supabase } from "@/app/lib/supabase";
 
 const authT = {
   tr: {
@@ -135,14 +134,20 @@ export default function AuthModal({ lang, onClose }: AuthModalProps) {
     setForgotError(null);
     setForgotLoading(true);
 
-    const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
-      redirectTo: "http://178.105.209.146:3000/reset-password",
-    });
-
-    if (error) {
-      setForgotError(error.message);
-    } else {
-      setForgotSuccess(true);
+    try {
+      const res = await fetch("/api/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: forgotEmail }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setForgotError(json.error ?? "Error");
+      } else {
+        setForgotSuccess(true);
+      }
+    } catch {
+      setForgotError("Network error");
     }
 
     setForgotLoading(false);
