@@ -641,6 +641,13 @@ export default function Home() {
   }, []);
   useEffect(() => { localStorage.setItem("sefira-lang", lang); }, [lang]);
 
+  // ── Unread messages badge ─────────────────────────────────────────────────
+  const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
+  useEffect(() => {
+    const read = localStorage.getItem("sefira_msg_support_read") === "true";
+    setHasUnreadMessages(!read);
+  }, [profileMenuOpen]);
+
   // ── Currency ──────────────────────────────────────────────────────────────
   const [currency, setCurrency] = useState<Currency>("USD");
   const sym = CURRENCY_SYMBOLS[currency];
@@ -974,6 +981,23 @@ export default function Home() {
                   </svg>
                 </div>
                 <span className="text-sm">{lang === "tr" ? "İlanlarım" : lang === "fa" ? "آگهی‌های من" : "My Listings"}</span>
+              </Link>
+
+              {/* My Messages */}
+              <Link
+                href="/messages"
+                onClick={() => setProfileMenuOpen(false)}
+                className="flex items-center gap-3.5 px-3 py-3.5 rounded-xl text-stone-700 hover:bg-orange-50 hover:text-orange-700 transition-all duration-150 font-semibold group"
+              >
+                <div className="relative w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0 group-hover:bg-orange-200 transition-colors">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-orange-600">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                  {hasUnreadMessages && (
+                    <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-orange-500 border-2 border-white" />
+                  )}
+                </div>
+                <span className="text-sm">{lang === "tr" ? "Mesajlarım" : lang === "fa" ? "پیام‌های من" : "My Messages"}</span>
               </Link>
 
               <div className="h-px bg-stone-100 my-2 mx-1" />
