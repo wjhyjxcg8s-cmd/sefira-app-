@@ -1000,6 +1000,20 @@ export default function Home() {
                 <span className="text-sm">{lang === "tr" ? "Mesajlarım" : lang === "fa" ? "پیام‌های من" : "My Messages"}</span>
               </Link>
 
+              {/* My Comments & Ratings */}
+              <Link
+                href="/my-reviews"
+                onClick={() => setProfileMenuOpen(false)}
+                className="flex items-center gap-3.5 px-3 py-3.5 rounded-xl text-stone-700 hover:bg-orange-50 hover:text-orange-700 transition-all duration-150 font-semibold group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0 group-hover:bg-orange-200 transition-colors">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-orange-600">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                  </svg>
+                </div>
+                <span className="text-sm">{lang === "tr" ? "Yorumlarım ve Puanlarım" : lang === "fa" ? "کامنت‌ها و امتیازهای من" : "My Comments & Ratings"}</span>
+              </Link>
+
               <div className="h-px bg-stone-100 my-2 mx-1" />
 
               {/* Sign Out */}
