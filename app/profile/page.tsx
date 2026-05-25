@@ -19,19 +19,25 @@ const translations = {
     profilePhoto: "Profil Fotoğrafı",
     uploadPhoto: "Fotoğraf Yükle",
     changePhoto: "Fotoğrafı Değiştir",
+    choosePhoto: "Fotoğraf Seç",
     save: "Kaydet",
     saving: "Kaydediliyor...",
     saved: "Kaydedildi!",
+    cancel: "İptal",
     notLoggedIn: "Profilinizi görüntülemek için giriş yapınız.",
     goHome: "Ana Sayfaya Git",
     error: "Bir hata oluştu. Lütfen tekrar deneyin.",
     photoError: "Fotoğraf yüklenirken hata oluştu.",
-    emailLabel: "E-posta",
+    emailLabel: "E-posta (değiştirilemez)",
     memberSince: "Üyelik",
     createListing: "İlan Ver",
     myListings: "İlanlarım",
     savedListings: "Kaydedilenler",
     signOut: "Çıkış Yap",
+    confirmEditTitle: "Bu bilgiyi düzenlemek istediğinizden emin misiniz?",
+    confirmEditBtn: "Evet, Düzenle",
+    cancelEditBtn: "İptal",
+    notSet: "Belirtilmemiş",
   },
   en: {
     title: "My Profile",
@@ -45,19 +51,25 @@ const translations = {
     profilePhoto: "Profile Photo",
     uploadPhoto: "Upload Photo",
     changePhoto: "Change Photo",
+    choosePhoto: "Choose Photo",
     save: "Save",
     saving: "Saving...",
     saved: "Saved!",
+    cancel: "Cancel",
     notLoggedIn: "Please sign in to view your profile.",
     goHome: "Go to Home",
     error: "An error occurred. Please try again.",
     photoError: "Error uploading photo.",
-    emailLabel: "Email",
+    emailLabel: "Email (cannot be changed)",
     memberSince: "Member since",
     createListing: "Create Listing",
     myListings: "My Listings",
     savedListings: "Saved Listings",
     signOut: "Sign Out",
+    confirmEditTitle: "Are you sure you want to edit this information?",
+    confirmEditBtn: "Yes, Edit",
+    cancelEditBtn: "Cancel",
+    notSet: "Not set",
   },
   fa: {
     title: "پروفایل من",
@@ -71,19 +83,25 @@ const translations = {
     profilePhoto: "عکس پروفایل",
     uploadPhoto: "آپلود عکس",
     changePhoto: "تغییر عکس",
+    choosePhoto: "انتخاب عکس",
     save: "ذخیره",
     saving: "در حال ذخیره...",
     saved: "ذخیره شد!",
+    cancel: "انصراف",
     notLoggedIn: "برای مشاهده پروفایل خود لطفاً وارد شوید.",
     goHome: "رفتن به صفحه اصلی",
     error: "خطایی رخ داد. لطفاً دوباره امتحان کنید.",
     photoError: "خطا در آپلود عکس.",
-    emailLabel: "ایمیل",
+    emailLabel: "ایمیل (قابل تغییر نیست)",
     memberSince: "عضو از",
     createListing: "ثبت آگهی",
     myListings: "آگهی‌های من",
     savedListings: "آگهی‌های ذخیره شده",
     signOut: "خروج",
+    confirmEditTitle: "آیا مطمئن هستید که می‌خواهید این اطلاعات را ویرایش کنید؟",
+    confirmEditBtn: "بله، ویرایش",
+    cancelEditBtn: "انصراف",
+    notSet: "تنظیم نشده",
   },
 };
 
@@ -111,6 +129,7 @@ export default function ProfilePage() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  // Profile data state
   const [displayName, setDisplayName] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [gender, setGender] = useState<"male" | "female" | "other" | "">("");
@@ -122,6 +141,13 @@ export default function ProfilePage() {
   const [error, setError] = useState<string | null>(null);
   const [profileLoading, setProfileLoading] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Edit-on-confirm state
+  const [editingField, setEditingField] = useState<string | null>(null);
+  const [confirmField, setConfirmField] = useState<string | null>(null);
+  const [editDisplayName, setEditDisplayName] = useState("");
+  const [editBirthDate, setEditBirthDate] = useState("");
+  const [editGender, setEditGender] = useState<"male" | "female" | "other" | "">("");
 
   useEffect(() => {
     if (loading) return;
@@ -152,57 +178,69 @@ export default function ProfilePage() {
     setAvatarPreview(URL.createObjectURL(file));
   };
 
-  const handleSave = async () => {
+  const handleConfirmEdit = () => {
+    if (!confirmField) return;
+    if (confirmField === "displayName") setEditDisplayName(displayName);
+    if (confirmField === "birthDate") setEditBirthDate(birthDate);
+    if (confirmField === "gender") setEditGender(gender);
+    setEditingField(confirmField);
+    setConfirmField(null);
+  };
+
+  const handleSaveField = async (field: string) => {
     setSaving(true);
     setError(null);
-    setSaved(false);
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setSaving(false); return; }
+    const { data: { user: currentUser } } = await supabase.auth.getUser();
+    if (!currentUser) { setSaving(false); return; }
 
-    let finalAvatarUrl = avatarUrl;
-
-    if (avatarFile) {
-      const filePath = `${user.id}/${avatarFile.name}`;
+    if (field === "avatar") {
+      if (!avatarFile) { setEditingField(null); setSaving(false); return; }
+      const filePath = `${currentUser.id}/${avatarFile.name}`;
       const { error: uploadError } = await supabase.storage
         .from("avatars")
         .upload(filePath, avatarFile, { upsert: true });
-
       if (uploadError) {
-        console.error('Avatar upload error:', JSON.stringify(uploadError));
         setError(t.photoError);
         setSaving(false);
         return;
       }
-
       const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(filePath);
-      finalAvatarUrl = publicUrl;
-    }
-
-    const { error } = await supabase
-      .from("profiles")
-      .upsert(
-        {
-          user_id: user.id,
-          display_name: displayName,
-          birth_date: birthDate ? new Date(birthDate).toISOString().split("T")[0] : null,
-          avatar_url: finalAvatarUrl,
-          gender: gender || null,
-        },
-        { onConflict: "user_id" }
-      );
-
-    if (error) {
-      console.error("SUPABASE ERROR:", error.message, error.details, error.hint);
-      setError(error.message);
-    } else {
-      setSaved(true);
-      setAvatarUrl(finalAvatarUrl);
+      const { error: dbError } = await supabase
+        .from("profiles")
+        .upsert({ user_id: currentUser.id, avatar_url: publicUrl }, { onConflict: "user_id" });
+      if (dbError) { setError(dbError.message); setSaving(false); return; }
+      setAvatarUrl(publicUrl);
       setAvatarFile(null);
-      setTimeout(() => setSaved(false), 3000);
+      setAvatarPreview(null);
+    } else {
+      const updates: Record<string, unknown> = { user_id: currentUser.id };
+      if (field === "displayName") updates.display_name = editDisplayName;
+      if (field === "birthDate") updates.birth_date = editBirthDate ? new Date(editBirthDate).toISOString().split("T")[0] : null;
+      if (field === "gender") updates.gender = editGender || null;
+
+      const { error: dbError } = await supabase
+        .from("profiles")
+        .upsert(updates, { onConflict: "user_id" });
+      if (dbError) { setError(dbError.message); setSaving(false); return; }
+
+      if (field === "displayName") setDisplayName(editDisplayName);
+      if (field === "birthDate") setBirthDate(editBirthDate);
+      if (field === "gender") setGender(editGender);
     }
 
+    setSaved(true);
+    setEditingField(null);
+    setTimeout(() => setSaved(false), 2000);
     setSaving(false);
+  };
+
+  const cancelFieldEdit = (field: string) => {
+    if (field === "avatar") {
+      setAvatarFile(null);
+      setAvatarPreview(null);
+    }
+    setEditingField(null);
   };
 
   const initials = (user?.user_metadata?.full_name ?? user?.email ?? "U")
@@ -218,6 +256,25 @@ export default function ProfilePage() {
         month: "long",
       })
     : null;
+
+  const formatBirthDate = (raw: string) => {
+    if (!raw) return "";
+    try {
+      return new Date(raw + "T00:00:00").toLocaleDateString(
+        lang === "tr" ? "tr-TR" : lang === "fa" ? "fa-IR" : "en-US",
+        { year: "numeric", month: "long", day: "numeric" }
+      );
+    } catch {
+      return raw;
+    }
+  };
+
+  const EditIcon = () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </svg>
+  );
 
   if (loading || profileLoading) {
     return (
@@ -267,7 +324,6 @@ export default function ProfilePage() {
             >
               {t.createListing}
             </Link>
-            {/* Lang switcher — single button + dropdown */}
             <div className="relative" ref={langMenuRef}>
               <button
                 onClick={() => setLangMenuOpen((o) => !o)}
@@ -302,6 +358,31 @@ export default function ProfilePage() {
         </div>
       </nav>
 
+      {/* Confirmation modal */}
+      {confirmField && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 flex flex-col gap-5">
+            <p className="text-stone-800 font-semibold text-sm text-center leading-relaxed">
+              {t.confirmEditTitle}
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={handleConfirmEdit}
+                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-bold shadow-md shadow-orange-500/25 hover:opacity-90 transition-all active:scale-95"
+              >
+                {t.confirmEditBtn}
+              </button>
+              <button
+                onClick={() => setConfirmField(null)}
+                className="flex-1 py-3 rounded-xl border-2 border-stone-200 text-stone-600 text-sm font-bold hover:bg-stone-50 transition-all active:scale-95"
+              >
+                {t.cancelEditBtn}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Page content */}
       <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
         {/* Back to home */}
@@ -315,27 +396,27 @@ export default function ProfilePage() {
         <h1 className="text-2xl font-black text-stone-900 mb-6">{t.title}</h1>
 
         <div className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
-          {/* Avatar + identity strip */}
-          <div className="p-6 sm:p-8 border-b border-stone-100 flex items-center gap-5">
+          {/* Avatar section */}
+          <div className="p-6 sm:p-8 border-b border-stone-100 flex flex-col items-center gap-3">
             <div className="relative flex-shrink-0">
               {avatarPreview || avatarUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={avatarPreview ?? avatarUrl!}
                   alt="Avatar"
-                  className="w-20 h-20 rounded-full object-cover shadow-md"
+                  className="w-24 h-24 rounded-full object-cover shadow-md"
                 />
               ) : (
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-2xl text-white shadow-md shadow-orange-500/30">
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-2xl text-white shadow-md shadow-orange-500/30">
                   {initials}
                 </div>
               )}
               <button
-                onClick={() => fileInputRef.current?.click()}
-                className="absolute -bottom-1 -right-1 w-7 h-7 bg-white border-2 border-stone-200 rounded-full flex items-center justify-center shadow-sm hover:border-orange-400 transition-all"
+                onClick={() => setConfirmField("avatar")}
+                className="absolute -bottom-1 -right-1 w-8 h-8 bg-white border-2 border-stone-200 rounded-full flex items-center justify-center shadow-sm hover:border-orange-400 hover:bg-orange-50 transition-all"
                 title={avatarPreview || avatarUrl ? t.changePhoto : t.uploadPhoto}
               >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-3 h-3 text-stone-600">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-3.5 h-3.5 text-stone-600">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828A2 2 0 019 16H7v-2a2 2 0 01.586-1.414z" />
                 </svg>
               </button>
@@ -348,141 +429,256 @@ export default function ProfilePage() {
               />
             </div>
 
-            <div className="min-w-0">
-              <p className="font-bold text-stone-900 truncate">
+            <div className="text-center">
+              <p className="font-bold text-stone-900">
                 {displayName || user.email?.split("@")[0]}
               </p>
-              <p className="text-sm text-stone-500 truncate mt-0.5">{user.email}</p>
+              <p className="text-sm text-stone-400 mt-0.5">{user.email}</p>
               {joinDate && (
                 <p className="text-xs text-stone-400 mt-1">
                   {t.memberSince} {joinDate}
                 </p>
               )}
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                className="text-xs text-orange-500 hover:text-orange-600 font-semibold mt-1.5 transition-colors"
-              >
-                {avatarPreview || avatarUrl ? t.changePhoto : t.uploadPhoto}
-              </button>
             </div>
+
+            {/* Avatar edit controls */}
+            {editingField === "avatar" && (
+              <div className="flex flex-col items-center gap-2 w-full">
+                {!avatarFile ? (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-bold shadow-sm hover:opacity-90 transition-all active:scale-95"
+                    >
+                      {t.choosePhoto}
+                    </button>
+                    <button
+                      onClick={() => cancelFieldEdit("avatar")}
+                      className="px-4 py-2 rounded-xl border-2 border-stone-200 text-stone-500 text-sm font-bold hover:bg-stone-50 transition-all active:scale-95"
+                    >
+                      {t.cancel}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleSaveField("avatar")}
+                      disabled={saving}
+                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-bold shadow-sm hover:opacity-90 transition-all active:scale-95 disabled:opacity-60"
+                    >
+                      {saving ? t.saving : t.save}
+                    </button>
+                    <button
+                      onClick={() => cancelFieldEdit("avatar")}
+                      className="px-4 py-2 rounded-xl border-2 border-stone-200 text-stone-500 text-sm font-bold hover:bg-stone-50 transition-all active:scale-95"
+                    >
+                      {t.cancel}
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
-          {/* Form fields */}
-          <div className="p-6 sm:p-8 flex flex-col gap-5">
-            {/* Display name */}
-            <div>
-              <label className="block text-sm font-semibold text-stone-700 mb-1.5">
-                {t.displayName}
-              </label>
-              <input
-                type="text"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                placeholder={t.displayNamePlaceholder}
-                className="w-full border border-stone-200 rounded-xl px-4 py-3 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
-              />
+          {/* Fields */}
+          <div className="divide-y divide-stone-100">
+            {/* Display Name */}
+            <div className="px-6 sm:px-8 py-4 flex items-start gap-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-stone-400 uppercase tracking-wide mb-1.5">{t.displayName}</p>
+                {editingField === "displayName" ? (
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="text"
+                      value={editDisplayName}
+                      onChange={(e) => setEditDisplayName(e.target.value)}
+                      placeholder={t.displayNamePlaceholder}
+                      autoFocus
+                      className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleSaveField("displayName")}
+                        disabled={saving}
+                        className="flex-1 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold shadow-sm hover:opacity-90 transition-all active:scale-95 disabled:opacity-60"
+                      >
+                        {saving ? t.saving : t.save}
+                      </button>
+                      <button
+                        onClick={() => cancelFieldEdit("displayName")}
+                        className="flex-1 py-2 rounded-lg border-2 border-stone-200 text-stone-500 text-xs font-bold hover:bg-stone-50 transition-all active:scale-95"
+                      >
+                        {t.cancel}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-sm font-semibold text-stone-900">
+                    {displayName || <span className="text-stone-400 italic font-normal">{t.notSet}</span>}
+                  </p>
+                )}
+              </div>
+              {editingField !== "displayName" && (
+                <button
+                  onClick={() => setConfirmField("displayName")}
+                  className="mt-5 w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:text-orange-500 hover:bg-orange-50 transition-all flex-shrink-0"
+                >
+                  <EditIcon />
+                </button>
+              )}
             </div>
 
-            {/* Email (read-only) */}
-            <div>
-              <label className="block text-sm font-semibold text-stone-700 mb-1.5">
-                {t.emailLabel}
-              </label>
-              <input
-                type="email"
-                value={user.email ?? ""}
-                readOnly
-                className="w-full border border-stone-100 bg-stone-50 rounded-xl px-4 py-3 text-stone-400 text-sm cursor-not-allowed"
-              />
+            {/* Email — read-only, no edit icon */}
+            <div className="px-6 sm:px-8 py-4">
+              <p className="text-xs font-semibold text-stone-400 uppercase tracking-wide mb-1.5">{t.emailLabel}</p>
+              <p className="text-sm text-stone-400">{user.email}</p>
             </div>
 
-            {/* Date of birth */}
-            <div>
-              <label className="block text-sm font-semibold text-stone-700 mb-1.5">
-                {t.birthDate}
-              </label>
-              <input
-                type="date"
-                value={birthDate}
-                onChange={(e) => setBirthDate(e.target.value)}
-                max={new Date().toISOString().split("T")[0]}
-                className="w-full border border-stone-200 rounded-xl px-4 py-3 text-stone-900 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
-              />
+            {/* Birth Date */}
+            <div className="px-6 sm:px-8 py-4 flex items-start gap-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-stone-400 uppercase tracking-wide mb-1.5">{t.birthDate}</p>
+                {editingField === "birthDate" ? (
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="date"
+                      value={editBirthDate}
+                      onChange={(e) => setEditBirthDate(e.target.value)}
+                      max={new Date().toISOString().split("T")[0]}
+                      autoFocus
+                      className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleSaveField("birthDate")}
+                        disabled={saving}
+                        className="flex-1 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold shadow-sm hover:opacity-90 transition-all active:scale-95 disabled:opacity-60"
+                      >
+                        {saving ? t.saving : t.save}
+                      </button>
+                      <button
+                        onClick={() => cancelFieldEdit("birthDate")}
+                        className="flex-1 py-2 rounded-lg border-2 border-stone-200 text-stone-500 text-xs font-bold hover:bg-stone-50 transition-all active:scale-95"
+                      >
+                        {t.cancel}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-sm font-semibold text-stone-900">
+                    {birthDate ? formatBirthDate(birthDate) : <span className="text-stone-400 italic font-normal">{t.notSet}</span>}
+                  </p>
+                )}
+              </div>
+              {editingField !== "birthDate" && (
+                <button
+                  onClick={() => setConfirmField("birthDate")}
+                  className="mt-5 w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:text-orange-500 hover:bg-orange-50 transition-all flex-shrink-0"
+                >
+                  <EditIcon />
+                </button>
+              )}
             </div>
 
             {/* Gender */}
-            <div>
-              <label className="block text-sm font-semibold text-stone-700 mb-2">
-                {t.gender}
-              </label>
-              <div className="grid grid-cols-3 gap-2.5">
-                {(["male", "female", "other"] as const).map((g) => {
-                  const icon = g === "male" ? "👨" : g === "female" ? "👩" : "🧑";
-                  const label = g === "male" ? t.genderMale : g === "female" ? t.genderFemale : t.genderOther;
-                  const selected = gender === g;
-                  return (
-                    <button
-                      key={g}
-                      type="button"
-                      onClick={() => setGender(selected ? "" : g)}
-                      className={`relative flex flex-col items-center gap-2 py-3.5 px-2 rounded-xl border-2 font-bold text-xs transition-all duration-200 active:scale-95 ${
-                        selected
-                          ? "border-orange-400 bg-orange-50 text-orange-700 shadow-md shadow-orange-500/15 scale-[1.02]"
-                          : "border-stone-200 bg-stone-50 text-stone-500 hover:border-stone-300 hover:bg-white hover:text-stone-700"
-                      }`}
-                    >
-                      <span className="text-2xl leading-none">{icon}</span>
-                      <span className="font-black tracking-tight">{label}</span>
-                      {selected && (
-                        <span className="absolute top-2 right-2 w-4 h-4 rounded-full bg-orange-500/20 flex items-center justify-center text-[9px] text-orange-600">✓</span>
-                      )}
-                    </button>
-                  );
-                })}
+            <div className="px-6 sm:px-8 py-4 flex items-start gap-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-stone-400 uppercase tracking-wide mb-1.5">{t.gender}</p>
+                {editingField === "gender" ? (
+                  <div className="flex flex-col gap-2">
+                    <div className="grid grid-cols-3 gap-2">
+                      {(["male", "female", "other"] as const).map((g) => {
+                        const icon = g === "male" ? "👨" : g === "female" ? "👩" : "🧑";
+                        const label = g === "male" ? t.genderMale : g === "female" ? t.genderFemale : t.genderOther;
+                        const selected = editGender === g;
+                        return (
+                          <button
+                            key={g}
+                            type="button"
+                            onClick={() => setEditGender(selected ? "" : g)}
+                            className={`relative flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl border-2 font-bold text-xs transition-all duration-200 active:scale-95 ${
+                              selected
+                                ? "border-orange-400 bg-orange-50 text-orange-700 shadow-md shadow-orange-500/15"
+                                : "border-stone-200 bg-stone-50 text-stone-500 hover:border-stone-300 hover:bg-white hover:text-stone-700"
+                            }`}
+                          >
+                            <span className="text-xl leading-none">{icon}</span>
+                            <span className="font-black tracking-tight text-[11px]">{label}</span>
+                            {selected && (
+                              <span className="absolute top-1.5 right-1.5 w-3.5 h-3.5 rounded-full bg-orange-500/20 flex items-center justify-center text-[8px] text-orange-600">✓</span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleSaveField("gender")}
+                        disabled={saving}
+                        className="flex-1 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold shadow-sm hover:opacity-90 transition-all active:scale-95 disabled:opacity-60"
+                      >
+                        {saving ? t.saving : t.save}
+                      </button>
+                      <button
+                        onClick={() => cancelFieldEdit("gender")}
+                        className="flex-1 py-2 rounded-lg border-2 border-stone-200 text-stone-500 text-xs font-bold hover:bg-stone-50 transition-all active:scale-95"
+                      >
+                        {t.cancel}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    {gender ? (
+                      <>
+                        <span className="text-xl">{gender === "male" ? "👨" : gender === "female" ? "👩" : "🧑"}</span>
+                        <span className="text-sm font-semibold text-stone-900">
+                          {gender === "male" ? t.genderMale : gender === "female" ? t.genderFemale : t.genderOther}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-sm text-stone-400 italic font-normal">{t.notSet}</span>
+                    )}
+                  </div>
+                )}
               </div>
-            </div>
-
-            {/* Error */}
-            {error && (
-              <div className="flex items-center gap-2 text-sm text-rose-600 bg-rose-50 border border-rose-100 rounded-xl px-4 py-3">
-                <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 flex-shrink-0">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
-                </svg>
-                {error}
-              </div>
-            )}
-
-            {/* Save button */}
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className={`w-full py-3.5 rounded-xl font-bold text-white transition-all duration-200 shadow-lg text-sm ${
-                saved
-                  ? "bg-emerald-500 shadow-emerald-500/25"
-                  : "bg-gradient-to-r from-orange-500 to-amber-500 shadow-orange-500/25 hover:opacity-90 active:scale-95"
-              } disabled:opacity-60 disabled:cursor-not-allowed`}
-            >
-              {saving ? (
-                <span className="flex items-center justify-center gap-2">
-                  <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                  {t.saving}
-                </span>
-              ) : saved ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                  </svg>
-                  {t.saved}
-                </span>
-              ) : (
-                t.save
+              {editingField !== "gender" && (
+                <button
+                  onClick={() => setConfirmField("gender")}
+                  className="mt-5 w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:text-orange-500 hover:bg-orange-50 transition-all flex-shrink-0"
+                >
+                  <EditIcon />
+                </button>
               )}
-            </button>
+            </div>
+          </div>
 
+          {/* Error */}
+          {error && (
+            <div className="mx-6 sm:mx-8 mb-4 flex items-center gap-2 text-sm text-rose-600 bg-rose-50 border border-rose-100 rounded-xl px-4 py-3">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 flex-shrink-0">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+              </svg>
+              {error}
+            </div>
+          )}
+
+          {/* Saved toast */}
+          {saved && (
+            <div className="mx-6 sm:mx-8 mb-4 flex items-center gap-2 text-sm text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-3">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 flex-shrink-0">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+              </svg>
+              {t.saved}
+            </div>
+          )}
+
+          {/* Action buttons */}
+          <div className="p-6 sm:p-8 flex flex-col gap-3 border-t border-stone-100">
             {/* Create listing button */}
             <Link
               href="/create-listing"
-              className="w-full py-3.5 rounded-xl font-bold text-white text-sm text-center bg-gradient-to-r from-amber-500 to-orange-500 shadow-lg shadow-orange-500/20 hover:opacity-90 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-xl font-bold text-white text-sm text-center bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg shadow-orange-500/20 hover:opacity-90 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2"
             >
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
                 <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
