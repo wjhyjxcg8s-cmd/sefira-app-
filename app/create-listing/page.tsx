@@ -548,6 +548,14 @@ export default function CreateListingPage() {
       <div dir={dir} className="min-h-screen bg-stone-50">
         <Navbar />
         <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
+          {/* Back to home */}
+          <Link href="/" dir="ltr" className="inline-flex items-center gap-1.5 mb-5 text-sm font-semibold text-stone-500 hover:text-stone-800 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-lg transition-colors">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 flex-shrink-0">
+              <polyline points={lang === "fa" ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
+            </svg>
+            <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : "Home"}</span>
+          </Link>
+
           <ProgressBar />
           <h1 className="text-2xl font-black text-stone-900 mb-2">{t.pageTitle}</h1>
           <p className="text-stone-500 mb-8 text-sm">{t.step1Title}</p>
@@ -630,6 +638,14 @@ export default function CreateListingPage() {
       <div dir={dir} className="min-h-screen bg-stone-50">
         <Navbar />
         <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
+          {/* Back to home */}
+          <Link href="/" dir="ltr" className="inline-flex items-center gap-1.5 mb-5 text-sm font-semibold text-stone-500 hover:text-stone-800 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-lg transition-colors">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 flex-shrink-0">
+              <polyline points={lang === "fa" ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
+            </svg>
+            <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : "Home"}</span>
+          </Link>
+
           <ProgressBar />
           <h1 className="text-2xl font-black text-stone-900 mb-2">{t.pageTitle}</h1>
           <p className="text-stone-500 mb-8 text-sm">{t.step2Title}</p>
@@ -837,6 +853,14 @@ export default function CreateListingPage() {
       <div dir={dir} className="min-h-screen bg-stone-50">
         <Navbar />
         <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
+          {/* Back to home */}
+          <Link href="/" dir="ltr" className="inline-flex items-center gap-1.5 mb-5 text-sm font-semibold text-stone-500 hover:text-stone-800 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-lg transition-colors">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 flex-shrink-0">
+              <polyline points={lang === "fa" ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
+            </svg>
+            <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : "Home"}</span>
+          </Link>
+
           <ProgressBar />
           <h1 className="text-2xl font-black text-stone-900 mb-2">{t.pageTitle}</h1>
           <p className="text-stone-500 mb-8 text-sm">{t.step3Title}</p>

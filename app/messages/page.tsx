@@ -82,6 +82,16 @@ export default function MessagesPage() {
         <h1 className="font-black text-stone-900 text-lg">{t.title}</h1>
       </header>
 
+      {/* Back to home */}
+      <div className="px-4 py-2.5 border-b border-stone-100 bg-white flex-shrink-0">
+        <Link href="/" dir="ltr" className="inline-flex items-center gap-1.5 text-sm font-semibold text-stone-500 hover:text-stone-800 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-lg transition-colors">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 flex-shrink-0">
+            <polyline points={lang === "fa" ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
+          </svg>
+          <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : "Home"}</span>
+        </Link>
+      </div>
+
       {/* Main layout */}
       <div className="flex flex-1 overflow-hidden">
 
