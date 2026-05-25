@@ -38,6 +38,15 @@ const translations = {
     confirmEditBtn: "Evet, Düzenle",
     cancelEditBtn: "İptal",
     notSet: "Belirtilmemiş",
+    changePassword: "Şifre Değiştir",
+    currentPassword: "Mevcut Şifre",
+    newPassword: "Yeni Şifre",
+    confirmNewPassword: "Yeni Şifreyi Onayla",
+    passwordPlaceholder: "En az 6 karakter",
+    passwordMismatch: "Şifreler eşleşmiyor.",
+    passwordMinLength: "Şifre en az 6 karakter olmalıdır.",
+    passwordUpdated: "Şifre başarıyla güncellendi.",
+    wrongPassword: "Mevcut şifre hatalı.",
   },
   en: {
     title: "My Profile",
@@ -70,6 +79,15 @@ const translations = {
     confirmEditBtn: "Yes, Edit",
     cancelEditBtn: "Cancel",
     notSet: "Not set",
+    changePassword: "Change Password",
+    currentPassword: "Current Password",
+    newPassword: "New Password",
+    confirmNewPassword: "Confirm New Password",
+    passwordPlaceholder: "At least 6 characters",
+    passwordMismatch: "Passwords do not match.",
+    passwordMinLength: "Password must be at least 6 characters.",
+    passwordUpdated: "Password updated successfully.",
+    wrongPassword: "Current password is incorrect.",
   },
   fa: {
     title: "پروفایل من",
@@ -102,6 +120,15 @@ const translations = {
     confirmEditBtn: "بله، ویرایش",
     cancelEditBtn: "انصراف",
     notSet: "تنظیم نشده",
+    changePassword: "تغییر رمز عبور",
+    currentPassword: "رمز عبور فعلی",
+    newPassword: "رمز عبور جدید",
+    confirmNewPassword: "تأیید رمز عبور جدید",
+    passwordPlaceholder: "حداقل ۶ کاراکتر",
+    passwordMismatch: "رمزهای عبور مطابقت ندارند.",
+    passwordMinLength: "رمز عبور باید حداقل ۶ کاراکتر باشد.",
+    passwordUpdated: "رمز عبور با موفقیت بروزرسانی شد.",
+    wrongPassword: "رمز عبور فعلی اشتباه است.",
   },
 };
 
@@ -149,6 +176,12 @@ export default function ProfilePage() {
   const [editBirthDate, setEditBirthDate] = useState("");
   const [editGender, setEditGender] = useState<"male" | "female" | "other" | "">("");
 
+  // Change password state
+  const [editCurrentPassword, setEditCurrentPassword] = useState("");
+  const [editNewPassword, setEditNewPassword] = useState("");
+  const [editConfirmPassword, setEditConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+
   useEffect(() => {
     if (loading) return;
     if (!user) { setProfileLoading(false); return; }
@@ -183,6 +216,12 @@ export default function ProfilePage() {
     if (confirmField === "displayName") setEditDisplayName(displayName);
     if (confirmField === "birthDate") setEditBirthDate(birthDate);
     if (confirmField === "gender") setEditGender(gender);
+    if (confirmField === "changePassword") {
+      setEditCurrentPassword("");
+      setEditNewPassword("");
+      setEditConfirmPassword("");
+      setPasswordError(null);
+    }
     setEditingField(confirmField);
     setConfirmField(null);
   };
@@ -190,6 +229,48 @@ export default function ProfilePage() {
   const handleSaveField = async (field: string) => {
     setSaving(true);
     setError(null);
+
+    if (field === "changePassword") {
+      setPasswordError(null);
+      if (editNewPassword.length < 6) {
+        setPasswordError(t.passwordMinLength);
+        setSaving(false);
+        return;
+      }
+      if (editNewPassword !== editConfirmPassword) {
+        setPasswordError(t.passwordMismatch);
+        setSaving(false);
+        return;
+      }
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      if (!currentUser?.email) { setSaving(false); return; }
+
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: currentUser.email,
+        password: editCurrentPassword,
+      });
+      if (signInError) {
+        setPasswordError(t.wrongPassword);
+        setSaving(false);
+        return;
+      }
+
+      const { error: updateError } = await supabase.auth.updateUser({ password: editNewPassword });
+      if (updateError) {
+        setPasswordError(updateError.message);
+        setSaving(false);
+        return;
+      }
+
+      setSaved(true);
+      setEditingField(null);
+      setEditCurrentPassword("");
+      setEditNewPassword("");
+      setEditConfirmPassword("");
+      setTimeout(() => setSaved(false), 2000);
+      setSaving(false);
+      return;
+    }
 
     const { data: { user: currentUser } } = await supabase.auth.getUser();
     if (!currentUser) { setSaving(false); return; }
@@ -239,6 +320,12 @@ export default function ProfilePage() {
     if (field === "avatar") {
       setAvatarFile(null);
       setAvatarPreview(null);
+    }
+    if (field === "changePassword") {
+      setEditCurrentPassword("");
+      setEditNewPassword("");
+      setEditConfirmPassword("");
+      setPasswordError(null);
     }
     setEditingField(null);
   };
@@ -645,6 +732,71 @@ export default function ProfilePage() {
               {editingField !== "gender" && (
                 <button
                   onClick={() => setConfirmField("gender")}
+                  className="mt-5 w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:text-orange-500 hover:bg-orange-50 transition-all flex-shrink-0"
+                >
+                  <EditIcon />
+                </button>
+              )}
+            </div>
+            {/* Change Password */}
+            <div className="px-6 sm:px-8 py-4 flex items-start gap-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-stone-400 uppercase tracking-wide mb-1.5">{t.changePassword}</p>
+                {editingField === "changePassword" ? (
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="password"
+                      value={editCurrentPassword}
+                      onChange={(e) => setEditCurrentPassword(e.target.value)}
+                      placeholder={t.currentPassword}
+                      autoFocus
+                      className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+                    />
+                    <input
+                      type="password"
+                      value={editNewPassword}
+                      onChange={(e) => setEditNewPassword(e.target.value)}
+                      placeholder={t.newPassword}
+                      className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+                    />
+                    <input
+                      type="password"
+                      value={editConfirmPassword}
+                      onChange={(e) => setEditConfirmPassword(e.target.value)}
+                      placeholder={t.confirmNewPassword}
+                      className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+                    />
+                    {passwordError && (
+                      <div className="flex items-start gap-2 text-xs text-rose-600 bg-rose-50 border border-rose-100 rounded-xl px-3 py-2">
+                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 flex-shrink-0 mt-0.5">
+                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+                        </svg>
+                        {passwordError}
+                      </div>
+                    )}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleSaveField("changePassword")}
+                        disabled={saving}
+                        className="flex-1 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold shadow-sm hover:opacity-90 transition-all active:scale-95 disabled:opacity-60"
+                      >
+                        {saving ? t.saving : t.save}
+                      </button>
+                      <button
+                        onClick={() => cancelFieldEdit("changePassword")}
+                        className="flex-1 py-2 rounded-lg border-2 border-stone-200 text-stone-500 text-xs font-bold hover:bg-stone-50 transition-all active:scale-95"
+                      >
+                        {t.cancel}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-sm text-stone-400">••••••••</p>
+                )}
+              </div>
+              {editingField !== "changePassword" && (
+                <button
+                  onClick={() => setConfirmField("changePassword")}
                   className="mt-5 w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:text-orange-500 hover:bg-orange-50 transition-all flex-shrink-0"
                 >
                   <EditIcon />
