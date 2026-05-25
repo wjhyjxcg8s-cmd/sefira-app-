@@ -19,7 +19,7 @@ const translations = {
     confirmYes: "Evet, Sil",
     confirmNo: "İptal",
     editPlaceholder: "Yorumunuzu yazın...",
-    sampleReviewText: "Çok temiz ve düzenli bir ev arkadaşıydı. Birlikte yaşamak çok güzeldi. Tavsiye ederim!",
+    sampleReviewText: "İyi bir insandı, hiç gürültü yapmazdı.\n6 ay boyunca orada kaldım.",
     sampleReviewDate: "15 Mayıs 2026",
     ratingLabel: "Puanınız",
   },
@@ -37,7 +37,7 @@ const translations = {
     confirmYes: "Yes, Delete",
     confirmNo: "Cancel",
     editPlaceholder: "Write your review...",
-    sampleReviewText: "He was a very clean and organized housemate. Living together was wonderful. Highly recommend!",
+    sampleReviewText: "He was a good person, never made noise.\nI stayed there for 6 months.",
     sampleReviewDate: "May 15, 2026",
     ratingLabel: "Your rating",
   },
@@ -55,7 +55,7 @@ const translations = {
     confirmYes: "بله، حذف کن",
     confirmNo: "انصراف",
     editPlaceholder: "نظر خود را بنویسید...",
-    sampleReviewText: "هم‌خانه‌ای بسیار تمیز و منظم بود. زندگی مشترک با او بسیار خوشایند بود. پیشنهاد می‌کنم!",
+    sampleReviewText: "انسان خوبی بود، سر و صدا نمی‌کرد.\n۶ ماه اونجا بودم.",
     sampleReviewDate: "۱۵ اردیبهشت ۱۴۰۵",
     ratingLabel: "امتیاز شما",
   },
@@ -247,10 +247,10 @@ export default function MyReviewsPage() {
               {/* Card header: avatar + name + stars */}
               <div className="flex items-start gap-3 p-5 pb-4">
                 <div className="w-11 h-11 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white font-black text-base flex-shrink-0 shadow-sm">
-                  M
+                  K
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-bold text-stone-900 text-sm leading-tight">Mehmet Yılmaz</p>
+                  <p className="font-bold text-stone-900 text-sm leading-tight">Kullanıcı Test</p>
                   <div className="mt-1">
                     <StarRow rating={displayRating} />
                   </div>
@@ -305,7 +305,7 @@ export default function MyReviewsPage() {
                 </div>
               ) : (
                 <div className="px-5 pb-5">
-                  <p className="text-sm text-stone-700 leading-relaxed mb-4">&ldquo;{displayText}&rdquo;</p>
+                  <p className="text-sm text-stone-700 leading-relaxed mb-4 whitespace-pre-line">&ldquo;{displayText}&rdquo;</p>
 
                   {/* Delete confirmation inline */}
                   {confirmDelete ? (
