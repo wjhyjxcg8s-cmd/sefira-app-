@@ -176,6 +176,29 @@ const LABELS = {
     closeModal:   "بستن",
     sendMessage:  "ارسال پیام",
   },
+  de: {
+    heading:      "Vorgeschlagene Mitbewohner",
+    subheading:   "Wischen zum Entdecken",
+    dragHint:     "← nach links ziehen zum Überspringen  ·  nach rechts ziehen zum Mögen →",
+    liked:        "gefällt mir",
+    of:           "/",
+    budget:       "Budget",
+    languages:    "Sprachen",
+    lifestyle:    "Lebensstil",
+    petsOk:       "🐾 Haustiere erlaubt",
+    noPets:       "🚫 Keine Haustiere",
+    smoker:       "🚬 Raucher",
+    nonSmoker:    "🚭 Nichtraucher",
+    verified:     "Verifiziert",
+    match:        "Match",
+    perMonth:     "/Mo.",
+    rejectLabel:  "Überspringen",
+    messageLabel: "Nachricht",
+    saveLabel:    "Speichern",
+    inspectBtn:   "Inserat ansehen",
+    closeModal:   "Schließen",
+    sendMessage:  "Nachricht senden",
+  },
   // Always add "ar" key when adding new translations
   ar: {
     heading:      "شركاء السكن المقترحون",
@@ -249,7 +272,7 @@ function SwipeCard({
   labels:     Labels;
   currency:   Currency;
   onInspect:  () => void;
-  lang:       "tr" | "en" | "fa" | "ar";
+  lang:       "tr" | "en" | "fa" | "ar" | "de";
 }) {
   const isTop    = stackIndex === 0;
   const controls = useAnimation();
@@ -481,7 +504,7 @@ function InspectModal({
   labels:   Labels;
   currency: Currency;
   onClose:  () => void;
-  lang:     "tr" | "en" | "fa" | "ar";
+  lang:     "tr" | "en" | "fa" | "ar" | "de";
 }) {
   return (
     <motion.div
@@ -631,7 +654,7 @@ export default function RoommateCards({
   lang = "en",
   currency = "USD",
 }: {
-  lang?:           "tr" | "en" | "fa" | "ar";
+  lang?:           "tr" | "en" | "fa" | "ar" | "de";
   currency?:       Currency;
   currencySymbol?: string;
 }) {

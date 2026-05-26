@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { type Currency, CURRENCY_SYMBOLS } from "@/app/lib/currency";
 
-type Lang = "tr" | "en" | "fa" | "ar";
+type Lang = "tr" | "en" | "fa" | "ar" | "de";
 
 interface FilterState {
   priceMin: string;
@@ -75,6 +75,19 @@ const LABELS = {
     remote: "مناسب دورکاری",
     any: "فرقی نمی‌کند", yes: "بله", no: "خیر", min: "حداقل", max: "حداکثر",
     activeFilters: (n: number) => `${n} فیلتر`,
+  },
+  de: {
+    btn: "Filter", clear: "Alle löschen", apply: "Anwenden", title: "Erweiterte Filter",
+    sec1: "Finanzen", sec2: "Fläche & Aufteilung", sec3: "Ausstattung", sec4: "Hausregeln",
+    price: "Preis (€/$)", deposit: "Max. Kaution", bills: "Nebenkosten inklusive?",
+    size: "Größe (m²)", rooms: "Zimmeranzahl", housemates: "Mitbewohner",
+    bathrooms: "Badezimmer", floor: "Etagenbereich",
+    elevator: "Aufzug", balcony: "Balkon", furnished: "Möbliert",
+    unfurnished: "Unmöbliert", internet: "Wi-Fi", parking: "Parkplatz",
+    pets: "Haustiere erlaubt", smoking: "Rauchen erlaubt", student: "Studentenfreundlich",
+    remote: "Remote-freundlich",
+    any: "Egal", yes: "Ja", no: "Nein", min: "Min", max: "Max",
+    activeFilters: (n: number) => `${n} aktiv`,
   },
   // Always add "ar" key when adding new translations
   ar: {

@@ -80,6 +80,31 @@ const authT = {
     backToLogin: "بازگشت به ورود",
     resetSuccess: "لینک بازنشانی رمز به ایمیل شما ارسال شد.",
   },
+  de: {
+    loginTab: "Anmelden",
+    registerTab: "Konto erstellen",
+    nameLabel: "Vollständiger Name",
+    namePlaceholder: "Ihr vollständiger Name",
+    emailLabel: "E-Mail",
+    emailPlaceholder: "beispiel@email.com",
+    passwordLabel: "Passwort",
+    passwordPlaceholder: "Mindestens 6 Zeichen",
+    loginBtn: "Anmelden",
+    registerBtn: "Konto erstellen",
+    successRegister: "Registrierung erfolgreich! Bitte bestätigen Sie Ihre E-Mail-Adresse.",
+    switchToRegister: "Noch kein Konto?",
+    switchToLogin: "Bereits ein Konto?",
+    switchRegisterLink: "Konto erstellen",
+    switchLoginLink: "Anmelden",
+    subtitle: "Willkommen bei Sefira",
+    subtitleRegister: "Heute kostenlos starten",
+    forgotPassword: "Passwort vergessen",
+    forgotTitle: "Passwort zurücksetzen",
+    resetEmailLabel: "E-Mail-Adresse eingeben",
+    sendResetLink: "Reset-Link senden",
+    backToLogin: "Zurück zur Anmeldung",
+    resetSuccess: "Der Passwort-Reset-Link wurde an Ihre E-Mail-Adresse gesendet.",
+  },
   // Always add "ar" key when adding new translations
   ar: {
     loginTab: "تسجيل الدخول",
@@ -109,7 +134,7 @@ const authT = {
 };
 
 interface AuthModalProps {
-  lang: "tr" | "en" | "fa" | "ar";
+  lang: "tr" | "en" | "fa" | "ar" | "de";
   onClose: () => void;
 }
 

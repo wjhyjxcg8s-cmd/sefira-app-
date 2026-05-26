@@ -401,6 +401,132 @@ const translations = {
     girisYap: "ورود",
     kayitOl: "ثبت نام",
   },
+  de: {
+    navLinks: [
+      { label: "Zimmer finden", href: "#" },
+      { label: "Mitbewohner finden", href: "#" },
+      { label: "Inserat aufgeben", href: "/create-listing" },
+      { label: "Community", href: "#" },
+    ],
+    stats: [
+      { value: "127K+", label: "Verifizierte Nutzer" },
+      { value: "52",    label: "Städte weltweit" },
+      { value: "98%",   label: "Matching-Zufriedenheit" },
+      { value: "4.9★",  label: "App-Bewertung" },
+    ],
+    signIn: "Anmelden",
+    signOut: "Abmelden",
+    getStarted: "Loslegen",
+    heroBadge: "Von über 127.000 verifizierten Nutzern in 52 Städten vertraut",
+    heroLine1: "Finde dein ideales",
+    heroLine2: "Zuhause und deinen",
+    heroLine3: "perfekten Mitbewohner.",
+    heroP: "KI-gestütztes Mitbewohner-Matching trifft auf erstklassige WG-Suche. Entwickelt für Expats, Studierende und moderne Berufstätige.",
+    wizardTitle: "Was suchen Sie?",
+    optionSeekingTitle: "Ich suche ein Zimmer / einen Mitbewohner",
+    optionSeekingSubtitle: "Ich suche ein Zimmer oder einen Mitbewohner",
+    optionOfferingTitle: "Ich habe ein Zimmer und suche einen Mitbewohner",
+    optionOfferingSubtitle: "Ich habe ein Zimmer und suche einen Mitbewohner",
+    genderStep: "Bevorzugtes Geschlecht des Mitbewohners",
+    genderStepSub: "Bevorzugtes Geschlecht",
+    genderMale: "Männlich",
+    genderFemale: "Weiblich",
+    genderAny: "Egal",
+    budgetStep: "Monatliches Budget",
+    budgetStepSub: "Ihr monatliches Budget",
+    locationStep: "Wo suchen Sie?",
+    locationStepSub: "Wo suchen Sie?",
+    backBtn: "Zurück",
+    nextBtn: "Weiter",
+    searchNowBtn: "Jetzt suchen",
+    seekingChip: "Suche Zimmer",
+    offeringChip: "Biete Zimmer an",
+    countryPlaceholder: "Land",
+    cityPlaceholder: "Stadt",
+    loadingText: "Wird geladen…",
+    priorityGroupLabel: "⭐ Beliebte Ziele",
+    allCountriesLabel: "Alle Länder",
+    searchPlaceholder: "Stadt, Stadtteil oder Stichwort suchen...",
+    matchesThisWeek: "2.847 Matches diese Woche",
+    reviewsLabel: "4,9 Sterne aus über 12.000 Bewertungen",
+    storiesTitle: "Community-Geschichten",
+    storiesLive: "Live",
+    addStory: "Geschichte hinzufügen",
+    aiMatchBadge: "KI-gestütztes Matching",
+    aiMatchLine1: "Ihr perfekter Match",
+    aiMatchLine2: "findet Sie.",
+    aiMatchP: "Unsere KI analysiert über 40 Kompatibilitätsfaktoren – vom Schlafrhythmus bis hin zu sozialen Gewohnheiten – und findet Menschen, mit denen Sie wirklich zusammenleben möchten.",
+    compatBars: [
+      { label: "Lebensstil-Kompatibilität", value: 97,  color: "from-blue-500 to-violet-600" },
+      { label: "Schlafrhythmus",             value: 94,  color: "from-emerald-500 to-teal-600" },
+      { label: "Sauberkeit",                 value: 100, color: "from-amber-500 to-orange-600" },
+      { label: "Budgetrahmen",               value: 88,  color: "from-rose-500 to-pink-600" },
+    ],
+    findMatchesBtn: "Meine Matches finden",
+    matchLabel: "Match",
+    verifiedLabel: "Verifiziert",
+    petsOk: "Haustiere erlaubt",
+    noPets: "Keine Haustiere",
+    smoker: "Raucher",
+    nonSmoker: "Nichtraucher",
+    skipBtn: "Überspringen",
+    likeBtn: "Gefällt mir",
+    featuredH2: "Empfohlene Inserate",
+    featuredP: "Premium-verifizierte Zimmer und Wohnungen",
+    listingFilterAll: "Alle",
+    listingVerified: "Verifiziert",
+    perMonth: "/Mo.",
+    viewAllBtn: "Alle Inserate anzeigen",
+    howH2: "Wie funktioniert Sefira?",
+    howP: "Vom Profil zur Traumwohnung in unter 48 Stunden.",
+    howItWorks: [
+      { step: "01", title: "Profil erstellen",      desc: "Erzählen Sie uns von Ihrem Lebensstil, Budget und Ihrer Persönlichkeit. Unsere KI lernt, was Sie einzigartig macht.",                       icon: "✦", gradient: "from-blue-500 to-indigo-600" },
+      { step: "02", title: "KI-Matches erhalten",   desc: "Über 40 Kompatibilitätsfaktoren sofort analysiert. Ihr perfekter Mitbewohner ist näher als Sie denken.",                                  icon: "◈", gradient: "from-violet-500 to-purple-600" },
+      { step: "03", title: "Wischen und verbinden", desc: "Gefällt mir, matchen und schreiben. Per Video verifizieren, bevor Sie sich festlegen.",                                                     icon: "◎", gradient: "from-pink-500 to-rose-600" },
+      { step: "04", title: "Einziehen",             desc: "Digital unterzeichnen, Community-Support erhalten und in Ihr Traumzuhause einziehen.",                                                     icon: "⌂", gradient: "from-emerald-500 to-teal-600" },
+    ],
+    roommatesH2: "Top-Matches in Ihrer Nähe",
+    roommatesP: "Menschen, die jetzt in Berlin einen Mitbewohner suchen",
+    viewAll: "Alle anzeigen",
+    matchedBtn: "Gematcht!",
+    connectBtn: "Verbinden",
+    petsOkShort: "Haustiere erlaubt",
+    noPetsShort: "Keine Haustiere",
+    trendingH2: "Angesagte Städte",
+    trendingP: "Wohin moderne Menschen 2025 ziehen",
+    activeListings: "aktive Inserate",
+    communityBadge: "Community-Feed",
+    communityH2: "Echte Geschichten. Echte Menschen.",
+    communityP: "Schließen Sie sich über 127.000 Mitgliedern an, die ihre Reise teilen",
+    likesLabel: "Gefällt mir",
+    commentsLabel: "Kommentare",
+    shareLabel: "Teilen",
+    testiH2: "Von Tausenden geliebt",
+    testiReviews: "aus über 12.000 Bewertungen",
+    appH2a: "Sefira in Ihrer Tasche.",
+    appH2b: "Überall. Jederzeit.",
+    appP: "Sofortige Match-Benachrichtigungen, Echtzeit-Messaging und Inserate durchscrollen – immer und überall.",
+    appStoreLabel: "Herunterladen im",
+    appStoreName: "App Store",
+    googlePlayLabel: "Jetzt bei",
+    googlePlayName: "Google Play",
+    newMatch: "Neuer Match!",
+    likedProfile: "Emma W. hat Ihr Profil geliked",
+    compatibility: "97 % Kompatibilität · vor 2 Minuten",
+    suggested: "Vorgeschlagen",
+    footerDesc: "Die vertrauenswürdigste Plattform für die Suche nach Mitbewohnern und Zimmern. Für modernes, grenzenloses Wohnen entwickelt.",
+    footerLinks: [
+      { title: "Produkt",    links: ["Zimmer finden", "Mitbewohner finden", "Inserat aufgeben", "KI-Matching", "Premium"] },
+      { title: "Unternehmen", links: ["Über uns", "Blog", "Karriere", "Presse", "Kontakt"] },
+      { title: "Support",    links: ["Hilfe-Center", "Sicherheit", "Nutzungsbedingungen", "Datenschutz", "Cookies"] },
+    ],
+    footerCopy: "2025 Sefira Technologies, Inc. Alle Rechte vorbehalten.",
+    footerLegal: ["Nutzungsbedingungen", "Datenschutz", "Cookies"],
+    ilanVer: "Inserat aufgeben",
+    ilanVerModal: "Bitte melden Sie sich an oder registrieren Sie sich, um ein Inserat aufzugeben.",
+    girisYap: "Anmelden",
+    kayitOl: "Registrieren",
+  },
   // Always add "ar" key when adding new translations
   ar: {
     navLinks: [
@@ -655,6 +781,14 @@ const testimonialsByLang = {
     { name: "ريم السعيد",    role: "مصمّمة مستقلة",       city: "أبوظبي",    quote: "الإعلانات الموثَّقة أنقذتني من كثير من عمليات الاحتيال. كل مكان زرتُه كان مطابقاً تماماً لما هو موصوف. انتقلتُ دون أي توتر.",             rating: 5, gradient: "from-cyan-500 to-blue-600",      initials: "رس", avatar: "https://randomuser.me/api/portraits/women/75.jpg" },
     { name: "فيصل الغامدي",  role: "طالب تبادل",          city: "عمّان",     quote: "لم أتخيّل قط أن إيجاد غرفة في الخارج سيكون بهذه السهولة. المجتمع كان مرحّباً جداً والتطبيق جعل كل شيء شفافاً.",                           rating: 5, gradient: "from-violet-500 to-purple-600", initials: "فغ", avatar: "https://randomuser.me/api/portraits/men/90.jpg"   },
   ],
+  de: [
+    { name: "Lukas Bauer",    role: "Student",              city: "Berlin",    quote: "In 48 Stunden meinen perfekten Mitbewohner gefunden. Das KI-Matching ist unglaublich präzise – gleicher Schlafrhythmus, gleiche Sauberkeitsansprüche.",  rating: 5, gradient: "from-blue-500 to-indigo-600",    initials: "LB", avatar: "https://randomuser.me/api/portraits/men/32.jpg"   },
+    { name: "Lena Hoffmann",  role: "Softwareentwicklerin", city: "München",   quote: "Als Neuankömmling hatte ich Angst, sichere Wohnsituation zu finden. Sefiras Verifizierungssystem und die herzliche Community haben mich sofort willkommen geheißen.", rating: 5, gradient: "from-emerald-500 to-teal-600",   initials: "LH", avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
+    { name: "Tim Schreiber",  role: "Tech-Profi",           city: "Hamburg",   quote: "Die App macht süchtig. Ich habe so lange Profile durchgescrollt, bis ich einen Ort gefunden habe, der sich wirklich wie Zuhause anfühlt.",                    rating: 5, gradient: "from-rose-500 to-pink-600",      initials: "TS", avatar: "https://randomuser.me/api/portraits/men/67.jpg"   },
+    { name: "Julia Mayer",    role: "Masterstudentin",      city: "Frankfurt", quote: "Ich bin nach Deutschland gezogen und kannte niemanden. Innerhalb einer Woche verband mich Sefira mit Mitbewohnern, die meine engsten Freunde wurden.",          rating: 5, gradient: "from-yellow-500 to-orange-600",  initials: "JM", avatar: "https://randomuser.me/api/portraits/women/68.jpg" },
+    { name: "Max Müller",     role: "Remote-Designer",      city: "Köln",      quote: "Die verifizierten Inserate haben mich vor so vielen Betrügereien bewahrt. Jede besichtigte Wohnung war genau so wie beschrieben. Stressfreier Umzug.",         rating: 5, gradient: "from-cyan-500 to-blue-600",      initials: "MM", avatar: "https://randomuser.me/api/portraits/men/75.jpg"   },
+    { name: "Sarah König",    role: "Austauschstudentin",   city: "Stuttgart", quote: "Ich hätte nie gedacht, dass Zimmersuche im Ausland so reibungslos funktioniert. Die Community war so herzlich und die App sehr transparent.",                 rating: 5, gradient: "from-violet-500 to-purple-600", initials: "SK", avatar: "https://randomuser.me/api/portraits/women/90.jpg" },
+  ],
 };
 
 const communityPostsByLang = {
@@ -677,6 +811,11 @@ const communityPostsByLang = {
     { id: 1, user: "سارة ع.",  location: "دبي، الإمارات",  content: "وجدتُ للتو أروع شركاء السكن عبر سفيرا! سأنتقل إليهم الأسبوع القادم. بدأت هذه المدينة تشعرني بأنها بيتي الحقيقي.",          likes: 342, comments: 28, gradient: "from-pink-500 to-rose-600",    initials: "سع", time: "منذ ساعتين" },
     { id: 2, user: "خالد م.",  location: "الرياض، السعودية", content: "نصيحة لشريك السكن: كن صادقاً بشأن جدول نومك! شريكي سهراني وتطابقنا بشكل مثالي. ٦ أشهر مضت ولا مشاكل أبداً.",             likes: 218, comments: 45, gradient: "from-blue-500 to-indigo-600",  initials: "خم", time: "منذ ٥ ساعات" },
     { id: 3, user: "نورا ح.",  location: "القاهرة، مصر",    content: "أسبوعي الأول في شقتي الجديدة. وصلتني سفيرا بثلاثة أشخاص يحبون التصميم البسيط والصباح الباكر. فريق الأحلام!",              likes: 456, comments: 67, gradient: "from-violet-500 to-purple-600",initials: "نح", time: "منذ يوم" },
+  ],
+  de: [
+    { id: 1, user: "Lena B.", location: "Berlin, Deutschland", content: "Habe gerade die tollsten Mitbewohner über Sefira gefunden! Ziehe nächstes Wochenende ein. Diese Stadt fühlt sich endlich wie Zuhause an.",      likes: 342, comments: 28, gradient: "from-pink-500 to-rose-600",    initials: "LB", time: "vor 2 Std." },
+    { id: 2, user: "Max M.",  location: "München, Deutschland", content: "Tipp für die WG-Suche: Seid ehrlich bei eurem Schlafrhythmus! Meiner ist ein Nachtmensch und wir passen perfekt zusammen. 6 Monate, null Probleme.", likes: 218, comments: 45, gradient: "from-blue-500 to-indigo-600",  initials: "MM", time: "vor 5 Std." },
+    { id: 3, user: "Julia K.", location: "Hamburg, Deutschland", content: "Erste Woche in meiner neuen Wohnung. Sefira hat mich mit 3 Leuten zusammengebracht, die minimalistisches Design und frühe Morgen lieben. Traumteam!", likes: 456, comments: 67, gradient: "from-violet-500 to-purple-600",initials: "JK", time: "vor 1 Tag" },
   ],
 };
 
@@ -792,7 +931,7 @@ export default function Home() {
   const [lang, setLang] = useState<Lang>("tr");
   useEffect(() => {
     const saved = localStorage.getItem("sefira-lang") as Lang | null;
-    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar") setLang(saved);
+    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de") setLang(saved);
   }, []);
   useEffect(() => { localStorage.setItem("sefira-lang", lang); }, [lang]);
 
@@ -920,14 +1059,14 @@ export default function Home() {
                 <div className="absolute top-full mt-1 right-0 z-[100] bg-white border border-stone-200 rounded-xl shadow-xl overflow-hidden min-w-[190px] animate-dropdown-slide">
                   <div className="px-3 py-2 border-b border-stone-100">
                     <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">
-                      {lang === "tr" ? "Para Birimini Seçin" : lang === "fa" ? "انتخاب واحد پولی" : lang === "ar" ? "اختر العملة" : "Select Currency"}
+                      {lang === "tr" ? "Para Birimini Seçin" : lang === "fa" ? "انتخاب واحد پولی" : lang === "ar" ? "اختر العملة" : lang === "de" ? "Währung wählen" : "Select Currency"}
                     </p>
                   </div>
                   {(["USD", "EUR", "TRY"] as const).map((cur) => {
                     const meta = {
-                      USD: { icon: "💵", name: lang === "tr" ? "ABD Doları" : lang === "fa" ? "دلار آمریکا" : lang === "ar" ? "دولار أمريكي" : "US Dollar" },
-                      EUR: { icon: "💶", name: lang === "tr" ? "Euro" : lang === "fa" ? "یورو" : lang === "ar" ? "يورو" : "Euro" },
-                      TRY: { icon: "💴", name: lang === "tr" ? "Türk Lirası" : lang === "fa" ? "لیر ترکیه" : lang === "ar" ? "ليرة تركية" : "Turkish Lira" },
+                      USD: { icon: "💵", name: lang === "tr" ? "ABD Doları" : lang === "fa" ? "دلار آمریکا" : lang === "ar" ? "دولار أمريكي" : lang === "de" ? "US-Dollar" : "US Dollar" },
+                      EUR: { icon: "💶", name: lang === "tr" ? "Euro" : lang === "fa" ? "یورو" : lang === "ar" ? "يورو" : lang === "de" ? "Euro" : "Euro" },
+                      TRY: { icon: "💴", name: lang === "tr" ? "Türk Lirası" : lang === "fa" ? "لیر ترکیه" : lang === "ar" ? "ليرة تركية" : lang === "de" ? "Türkische Lira" : "Turkish Lira" },
                     }[cur];
                     return (
                       <button
@@ -957,10 +1096,10 @@ export default function Home() {
                 className="flex items-center gap-1 bg-stone-100 border border-stone-200 rounded-lg px-2 py-1.5 text-[11px] font-black transition-all duration-200 hover:bg-stone-200 whitespace-nowrap"
               >
                 <span className="text-sm leading-none">
-                  {lang === "tr" ? "🇹🇷" : lang === "en" ? "🇬🇧" : lang === "fa" ? "🇮🇷" : "🇸🇦"}
+                  {lang === "tr" ? "🇹🇷" : lang === "en" ? "🇬🇧" : lang === "fa" ? "🇮🇷" : lang === "ar" ? "🇸🇦" : "🇩🇪"}
                 </span>
                 <span className="hidden sm:inline text-stone-700">
-                  {lang === "tr" ? "TR" : lang === "en" ? "EN" : lang === "fa" ? "FA" : "AR"}
+                  {lang === "tr" ? "TR" : lang === "en" ? "EN" : lang === "fa" ? "FA" : lang === "ar" ? "AR" : "DE"}
                 </span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className={`w-3 h-3 text-stone-400 transition-transform duration-200 ${langMenuOpen ? "rotate-180" : ""}`}>
                   <polyline points="6 9 12 15 18 9" />
@@ -968,14 +1107,14 @@ export default function Home() {
               </button>
               {langMenuOpen && (
                 <div className="absolute top-full mt-1 right-0 z-[100] bg-white border border-stone-200 rounded-xl shadow-xl overflow-hidden min-w-[90px]">
-                  {(["tr", "en", "fa", "ar"] as const).map((l) => (
+                  {(["tr", "en", "fa", "ar", "de"] as const).map((l) => (
                     <button
                       key={l}
                       onClick={() => { setLang(l); setLangMenuOpen(false); }}
                       className={`flex items-center gap-2 w-full px-3 py-2.5 text-[12px] font-bold transition-colors hover:bg-stone-50 ${lang === l ? "text-orange-500" : "text-stone-700"}`}
                     >
-                      <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : l === "fa" ? "🇮🇷" : "🇸🇦"}</span>
-                      {l === "tr" ? "TR" : l === "en" ? "EN" : l === "fa" ? "FA" : "AR"}
+                      <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : l === "fa" ? "🇮🇷" : l === "ar" ? "🇸🇦" : "🇩🇪"}</span>
+                      {l === "tr" ? "TR" : l === "en" ? "EN" : l === "fa" ? "FA" : l === "ar" ? "AR" : "DE"}
                     </button>
                   ))}
                 </div>
@@ -1083,7 +1222,7 @@ export default function Home() {
                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                   <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                 </svg>
-                <span className="text-xs">{lang === "tr" ? "Profilimi Düzenle" : lang === "fa" ? "ویرایش پروفایل" : lang === "ar" ? "تعديل الملف الشخصي" : "Edit Profile"}</span>
+                <span className="text-xs">{lang === "tr" ? "Profilimi Düzenle" : lang === "fa" ? "ویرایش پروفایل" : lang === "ar" ? "تعديل الملف الشخصي" : lang === "de" ? "Profil bearbeiten" : "Edit Profile"}</span>
               </Link>
 
               {/* Saved Listings */}
@@ -1095,7 +1234,7 @@ export default function Home() {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-orange-500 flex-shrink-0">
                   <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
                 </svg>
-                <span className="text-xs">{lang === "tr" ? "Kaydedilenler" : lang === "fa" ? "ذخیره‌ها" : lang === "ar" ? "المحفوظات" : "Saved"}</span>
+                <span className="text-xs">{lang === "tr" ? "Kaydedilenler" : lang === "fa" ? "ذخیره‌ها" : lang === "ar" ? "المحفوظات" : lang === "de" ? "Gespeichert" : "Saved"}</span>
               </Link>
 
               {/* Post Listing */}
@@ -1106,7 +1245,7 @@ export default function Home() {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 text-orange-500 flex-shrink-0">
                   <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
-                <span className="text-xs">{lang === "tr" ? "İlan Ver" : lang === "fa" ? "ثبت آگهی" : lang === "ar" ? "نشر إعلان" : "Post Listing"}</span>
+                <span className="text-xs">{lang === "tr" ? "İlan Ver" : lang === "fa" ? "ثبت آگهی" : lang === "ar" ? "نشر إعلان" : lang === "de" ? "Inserat aufgeben" : "Post Listing"}</span>
               </button>
 
               {/* My Listings */}
@@ -1121,7 +1260,7 @@ export default function Home() {
                   <line x1="9" y1="12" x2="15" y2="12" />
                   <line x1="9" y1="16" x2="13" y2="16" />
                 </svg>
-                <span className="text-xs">{lang === "tr" ? "İlanlarım" : lang === "fa" ? "آگهی‌های من" : lang === "ar" ? "إعلاناتي" : "My Listings"}</span>
+                <span className="text-xs">{lang === "tr" ? "İlanlarım" : lang === "fa" ? "آگهی‌های من" : lang === "ar" ? "إعلاناتي" : lang === "de" ? "Meine Inserate" : "My Listings"}</span>
               </Link>
 
               {/* My Messages */}
@@ -1138,7 +1277,7 @@ export default function Home() {
                     <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-orange-500 border border-white" />
                   )}
                 </div>
-                <span className="text-xs">{lang === "tr" ? "Mesajlarım" : lang === "fa" ? "پیام‌های من" : lang === "ar" ? "رسائلي" : "My Messages"}</span>
+                <span className="text-xs">{lang === "tr" ? "Mesajlarım" : lang === "fa" ? "پیام‌های من" : lang === "ar" ? "رسائلي" : lang === "de" ? "Meine Nachrichten" : "My Messages"}</span>
               </Link>
 
               {/* My Comments & Ratings */}
@@ -1150,7 +1289,7 @@ export default function Home() {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-orange-500 flex-shrink-0">
                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                 </svg>
-                <span className="text-xs">{lang === "tr" ? "Yorumlarım ve Puanlarım" : lang === "fa" ? "کامنت‌ها و امتیازهای من" : lang === "ar" ? "تعليقاتي وتقييماتي" : "My Comments & Ratings"}</span>
+                <span className="text-xs">{lang === "tr" ? "Yorumlarım ve Puanlarım" : lang === "fa" ? "کامنت‌ها و امتیازهای من" : lang === "ar" ? "تعليقاتي وتقييماتي" : lang === "de" ? "Meine Bewertungen" : "My Comments & Ratings"}</span>
               </Link>
 
               <div className="h-px bg-stone-100 my-1 mx-2" />

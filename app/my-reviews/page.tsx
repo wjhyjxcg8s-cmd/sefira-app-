@@ -59,6 +59,24 @@ const translations = {
     sampleReviewDate: "۱۵ اردیبهشت ۱۴۰۵",
     ratingLabel: "امتیاز شما",
   },
+  de: {
+    title: "Meine Bewertungen",
+    banner: "In diesem Bereich können Sie die Bewertungen und Kommentare, die Sie anderen gegeben haben, ansehen, bearbeiten oder löschen.",
+    empty: "Sie haben noch keine Bewertungen geschrieben.",
+    notLoggedIn: "Bitte melden Sie sich an, um Ihre Bewertungen anzuzeigen.",
+    goHome: "Zur Startseite",
+    edit: "Bearbeiten",
+    delete: "Löschen",
+    save: "Speichern",
+    cancel: "Abbrechen",
+    confirmDelete: "Möchten Sie diese Bewertung wirklich löschen?",
+    confirmYes: "Ja, löschen",
+    confirmNo: "Abbrechen",
+    editPlaceholder: "Schreiben Sie Ihre Bewertung...",
+    sampleReviewText: "Er war ein netter Mensch, sehr ruhig.\nIch habe dort 6 Monate gewohnt.",
+    sampleReviewDate: "15. Mai 2026",
+    ratingLabel: "Ihre Bewertung",
+  },
   // Always add "ar" key when adding new translations
   ar: {
     title: "تعليقاتي وتقييماتي",
@@ -148,7 +166,7 @@ export default function MyReviewsPage() {
 
   useEffect(() => {
     const saved = localStorage.getItem("sefira-lang") as Lang | null;
-    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar") setLang(saved);
+    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de") setLang(saved);
   }, []);
 
   const t = translations[lang];

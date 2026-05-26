@@ -194,6 +194,63 @@ const translations = {
     selectType: "لطفاً نوع آگهی را انتخاب کنید.",
     fillRequired: "لطفاً همه فیلدهای الزامی را پر کنید.",
   },
+  de: {
+    pageTitle: "Inserat aufgeben",
+    stepOf: (current: number, total: number) => `Schritt ${current} von ${total}`,
+    step1Title: "Welche Art von Inserat möchten Sie aufgeben?",
+    hasPlace: "Ich habe eine Wohnung und suche Mitbewohner",
+    hasPlaceSub: "Teilen Sie Ihr Zuhause mit jemandem",
+    needsPlace: "Ich habe keine Wohnung und suche jemanden zum Miteinanderwohnen",
+    needsPlaceSub: "Gemeinsam mit anderen eine Wohnung finden",
+    next: "Weiter",
+    back: "Zurück",
+    submit: "Inserat veröffentlichen",
+    submitting: "Wird veröffentlicht...",
+    edit: "Bearbeiten",
+    step2Title: "Details zu Ihrer Wohnung",
+    smoking: "Rauchen erlaubt?",
+    smokingYes: "Erlaubt",
+    smokingNo: "Nicht erlaubt",
+    parking: "Parkplatz vorhanden?",
+    parkingYes: "Vorhanden",
+    parkingNo: "Nicht vorhanden",
+    currentResidents: "Aktuelle Anzahl der Bewohner",
+    neededRoommates: "Benötigte Anzahl Mitbewohner",
+    rooms: "Anzahl der Zimmer",
+    rent: "Monatliche Mietkosten",
+    currency: "Währung",
+    photos: "Fotos der Wohnung (max. 3)",
+    uploadPhotos: "Fotos hochladen",
+    addMorePhotos: "Weitere hinzufügen",
+    address: "Adresse",
+    addressPlaceholder: "Straße, Stadtteil, Stadt, Land",
+    step3Title: "Inserat bestätigen",
+    typeLabel: "Inseratstyp",
+    hasPlaceLabel: "Hat Wohnung — sucht Mitbewohner",
+    needsPlaceLabel: "Keine Wohnung — sucht Mitbewohner",
+    smokingLabel: "Rauchen",
+    parkingLabel: "Parkplatz",
+    residentsLabel: "Aktuelle Bewohner",
+    roommatesLabel: "Benötigte Mitbewohner",
+    roomsLabel: "Anzahl der Zimmer",
+    rentLabel: "Monatliche Mietkosten",
+    addressLabel: "Adresse",
+    photosLabel: "Fotos",
+    yes: "Ja",
+    no: "Nein",
+    person: "Person",
+    notLoggedIn: "Bitte melden Sie sich an, um ein Inserat aufzugeben.",
+    goHome: "Zur Startseite",
+    errorSubmit: "Fehler beim Veröffentlichen des Inserats. Bitte versuchen Sie es erneut.",
+    errorPhoto: "Fehler beim Hochladen des Fotos.",
+    successTitle: "Inserat veröffentlicht!",
+    successSub: "Ihr Inserat wurde erfolgreich erstellt.",
+    viewListings: "Inserate durchsuchen",
+    createAnother: "Weiteres Inserat aufgeben",
+    requiredField: "Dieses Feld ist erforderlich.",
+    selectType: "Bitte wählen Sie einen Inseratstyp.",
+    fillRequired: "Bitte füllen Sie alle Pflichtfelder aus.",
+  },
   // Always add "ar" key when adding new translations
   ar: {
     pageTitle: "نشر إعلان",
@@ -372,12 +429,12 @@ function NumberStepper({
 export default function CreateListingPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const [lang, setLang] = useState<"tr" | "en" | "fa" | "ar">("tr");
+  const [lang, setLang] = useState<"tr" | "en" | "fa" | "ar" | "de">("tr");
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const langMenuRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const saved = localStorage.getItem("sefira-lang");
-    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar") setLang(saved);
+    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de") setLang(saved);
   }, []);
   useEffect(() => { localStorage.setItem("sefira-lang", lang); }, [lang]);
   useEffect(() => {
@@ -580,10 +637,10 @@ export default function CreateListingPage() {
             className="flex items-center gap-1 bg-stone-100 border border-stone-200 rounded-lg px-2 py-1.5 text-[11px] font-black transition-all duration-200 hover:bg-stone-200 whitespace-nowrap"
           >
             <span className="text-sm leading-none">
-              {lang === "tr" ? "🇹🇷" : lang === "en" ? "🇬🇧" : lang === "fa" ? "🇮🇷" : "🇸🇦"}
+              {lang === "tr" ? "🇹🇷" : lang === "en" ? "🇬🇧" : lang === "fa" ? "🇮🇷" : lang === "ar" ? "🇸🇦" : "🇩🇪"}
             </span>
             <span className="text-stone-700">
-              {lang === "tr" ? "TR" : lang === "en" ? "EN" : lang === "fa" ? "FA" : "AR"}
+              {lang === "tr" ? "TR" : lang === "en" ? "EN" : lang === "fa" ? "FA" : lang === "ar" ? "AR" : "DE"}
             </span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className={`w-3 h-3 text-stone-400 transition-transform duration-200 ${langMenuOpen ? "rotate-180" : ""}`}>
               <polyline points="6 9 12 15 18 9" />
@@ -591,14 +648,14 @@ export default function CreateListingPage() {
           </button>
           {langMenuOpen && (
             <div className="absolute top-full mt-1 right-0 z-[100] bg-white border border-stone-200 rounded-xl shadow-xl overflow-hidden min-w-[90px]">
-              {(["tr", "en", "fa", "ar"] as const).map((l) => (
+              {(["tr", "en", "fa", "ar", "de"] as const).map((l) => (
                 <button
                   key={l}
                   onClick={() => { setLang(l); setLangMenuOpen(false); }}
                   className={`flex items-center gap-2 w-full px-3 py-2.5 text-[12px] font-bold transition-colors hover:bg-stone-50 ${lang === l ? "text-orange-500" : "text-stone-700"}`}
                 >
-                  <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : l === "fa" ? "🇮🇷" : "🇸🇦"}</span>
-                  {l === "tr" ? "TR" : l === "en" ? "EN" : l === "fa" ? "FA" : "AR"}
+                  <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : l === "fa" ? "🇮🇷" : l === "ar" ? "🇸🇦" : "🇩🇪"}</span>
+                  {l === "tr" ? "TR" : l === "en" ? "EN" : l === "fa" ? "FA" : l === "ar" ? "AR" : "DE"}
                 </button>
               ))}
             </div>

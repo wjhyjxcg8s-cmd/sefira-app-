@@ -127,6 +127,13 @@ const copy = {
     listings: "آگهی",
     explore: "کشف کن ←",
   },
+  de: {
+    badge: "Beliebte Reiseziele",
+    h2: "Beliebte Städte",
+    sub: "Die begehrtesten Städte für Einheimische und Expats auf der Suche nach ihrem perfekten Zuhause",
+    listings: "Inserate",
+    explore: "Entdecken →",
+  },
   // Always add "ar" key when adding new translations
   ar: {
     badge: "الوجهات المميزة",
@@ -139,7 +146,7 @@ const copy = {
 
 interface CityCardProps {
   city: (typeof CITIES)[number];
-  lang: "tr" | "en" | "fa" | "ar";
+  lang: "tr" | "en" | "fa" | "ar" | "de";
   inView: boolean;
   delay: number;
   className?: string;
@@ -246,7 +253,7 @@ function CityCard({ city, lang, inView, delay, className = "", imgSizes, t, feat
   );
 }
 
-export default function PopularCities({ lang }: { lang: "tr" | "en" | "fa" | "ar" }) {
+export default function PopularCities({ lang }: { lang: "tr" | "en" | "fa" | "ar" | "de" }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const t = copy[lang];

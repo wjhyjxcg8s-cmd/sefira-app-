@@ -39,6 +39,17 @@ const translations = {
     roommates: "هم‌خانه",
     rooms: "اتاق",
   },
+  de: {
+    title: "Gespeicherte Inserate",
+    empty: "Sie haben noch keine Inserate gespeichert.",
+    emptyAction: "Inserate durchsuchen",
+    notLoggedIn: "Bitte melden Sie sich an, um gespeicherte Inserate anzuzeigen.",
+    goHome: "Zur Startseite",
+    address: "Adresse",
+    sharingCost: "Monatliche Mietkosten",
+    roommates: "Mitbewohner",
+    rooms: "Zimmer",
+  },
   // Always add "ar" key when adding new translations
   ar: {
     title: "الإعلانات المحفوظة",
@@ -71,7 +82,7 @@ export default function SavedListingsPage() {
 
   useEffect(() => {
     const saved = localStorage.getItem("sefira-lang") as Lang | null;
-    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar") setLang(saved);
+    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de") setLang(saved);
   }, []);
 
   const [savedIds, setSavedIds] = useState<number[]>([]);

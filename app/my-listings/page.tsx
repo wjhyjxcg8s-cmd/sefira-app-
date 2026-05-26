@@ -49,6 +49,20 @@ const translations = {
     type_has_place: "خانه دارم — دنبال هم‌خانه",
     type_needs_place: "خانه ندارم — دنبال زندگی مشترک",
   },
+  de: {
+    title: "Meine Inserate",
+    empty: "Sie haben noch keine Inserate aufgegeben. Geben Sie jetzt Ihr erstes auf!",
+    createBtn: "Inserat aufgeben",
+    notLoggedIn: "Bitte melden Sie sich an, um Ihre Inserate anzuzeigen.",
+    goHome: "Zur Startseite",
+    address: "Adresse",
+    sharingCost: "Monatliche Mietkosten",
+    roommates: "Gesuchte Mitbewohner",
+    rooms: "Zimmer",
+    active: "Aktiv",
+    type_has_place: "Hat Wohnung — sucht Mitbewohner",
+    type_needs_place: "Keine Wohnung — sucht Mitbewohner",
+  },
   // Always add "ar" key when adding new translations
   ar: {
     title: "إعلاناتي",
@@ -90,7 +104,7 @@ export default function MyListingsPage() {
 
   useEffect(() => {
     const saved = localStorage.getItem("sefira-lang") as Lang | null;
-    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar") setLang(saved);
+    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de") setLang(saved);
   }, []);
 
   useEffect(() => {

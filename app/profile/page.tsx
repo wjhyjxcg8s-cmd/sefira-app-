@@ -190,6 +190,67 @@ const translations = {
     cancelAndGoHome: "پشیمون شدم! برگردونم خونه 🏠",
     cancelSubtitle: "خیلی دوستت داریم 🧡",
   },
+  de: {
+    title: "Mein Profil",
+    displayName: "Anzeigename",
+    displayNamePlaceholder: "Name, der anderen Nutzern angezeigt wird",
+    birthDate: "Geburtsdatum",
+    gender: "Geschlecht",
+    genderMale: "Männlich",
+    genderFemale: "Weiblich",
+    genderOther: "Sonstiges",
+    profilePhoto: "Profilfoto",
+    uploadPhoto: "Foto hochladen",
+    changePhoto: "Foto ändern",
+    choosePhoto: "Foto auswählen",
+    save: "Speichern",
+    saving: "Wird gespeichert...",
+    saved: "Gespeichert!",
+    cancel: "Abbrechen",
+    notLoggedIn: "Bitte melden Sie sich an, um Ihr Profil anzuzeigen.",
+    goHome: "Zur Startseite",
+    error: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    photoError: "Fehler beim Hochladen des Fotos.",
+    emailLabel: "E-Mail (kann nicht geändert werden)",
+    memberSince: "Mitglied seit",
+    createListing: "Inserat aufgeben",
+    myListings: "Meine Inserate",
+    savedListings: "Gespeicherte Inserate",
+    signOut: "Abmelden",
+    confirmEditTitle: "Möchten Sie diese Information wirklich bearbeiten?",
+    confirmEditBtn: "Ja, bearbeiten",
+    cancelEditBtn: "Abbrechen",
+    notSet: "Nicht angegeben",
+    changePassword: "Passwort ändern",
+    currentPassword: "Aktuelles Passwort",
+    newPassword: "Neues Passwort",
+    confirmNewPassword: "Neues Passwort bestätigen",
+    passwordPlaceholder: "Mindestens 6 Zeichen",
+    passwordMismatch: "Passwörter stimmen nicht überein.",
+    passwordMinLength: "Das Passwort muss mindestens 6 Zeichen lang sein.",
+    passwordUpdated: "Passwort erfolgreich aktualisiert.",
+    wrongPassword: "Das aktuelle Passwort ist falsch.",
+    deleteAccount: "Konto löschen",
+    deleteWarningTitle: "Möchten Sie Ihr Konto wirklich löschen?",
+    deleteContinue: "Weiter",
+    deleteCancel: "Abbrechen",
+    deleteReasonTitle: "Warum verlassen Sie uns?",
+    deleteReason1: "Die App hat mir nicht gefallen, das Design ist schwach",
+    deleteReason2: "Ich konnte nichts Passendes finden",
+    deleteReason3: "Ich brauche es nicht mehr",
+    deleteRatingTitle: "Bewerten Sie uns von 1 bis 10",
+    deleteFeedbackTitle: "Haben Sie Anmerkungen? (Optional)",
+    deleteFeedbackPlaceholder: "Schreiben Sie Ihre Gedanken hier...",
+    deleteOtpTitle: "Ein Bestätigungscode wurde an Ihre E-Mail gesendet.",
+    deleteOtpPlaceholder: "6-stelligen Code eingeben",
+    deleteConfirmBtn: "Konto löschen",
+    deleteOtpInvalid: "Ungültiger Code. Bitte versuchen Sie es erneut.",
+    deleteOtpExpired: "Code abgelaufen. Bitte erneut senden.",
+    deleteSending: "Wird gesendet...",
+    deleteDeleting: "Wird gelöscht...",
+    cancelAndGoHome: "🐱 Ich habe es mir anders überlegt",
+    cancelSubtitle: "Wir lieben dich so sehr 🧡",
+  },
   // Always add "ar" key when adding new translations
   ar: {
     title: "ملفي الشخصي",
@@ -257,14 +318,14 @@ const translations = {
 export default function ProfilePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const [lang, setLang] = useState<"tr" | "en" | "fa" | "ar">("tr");
+  const [lang, setLang] = useState<"tr" | "en" | "fa" | "ar" | "de">("tr");
   const t = translations[lang];
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const langMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem("sefira-lang") as "tr" | "en" | "fa" | "ar" | null;
-    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar") setLang(saved);
+    const saved = localStorage.getItem("sefira-lang") as "tr" | "en" | "fa" | "ar" | "de" | null;
+    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de") setLang(saved);
   }, []);
   useEffect(() => { localStorage.setItem("sefira-lang", lang); }, [lang]);
 
@@ -626,10 +687,10 @@ export default function ProfilePage() {
                 className="flex items-center gap-1 bg-stone-100 border border-stone-200 rounded-lg px-2 py-1.5 text-[11px] font-black transition-all duration-200 hover:bg-stone-200 whitespace-nowrap"
               >
                 <span className="text-sm leading-none">
-                  {lang === "tr" ? "🇹🇷" : lang === "en" ? "🇬🇧" : lang === "fa" ? "🇮🇷" : "🇸🇦"}
+                  {lang === "tr" ? "🇹🇷" : lang === "en" ? "🇬🇧" : lang === "fa" ? "🇮🇷" : lang === "ar" ? "🇸🇦" : "🇩🇪"}
                 </span>
                 <span className="text-stone-700">
-                  {lang === "tr" ? "TR" : lang === "en" ? "EN" : lang === "fa" ? "FA" : "AR"}
+                  {lang === "tr" ? "TR" : lang === "en" ? "EN" : lang === "fa" ? "FA" : lang === "ar" ? "AR" : "DE"}
                 </span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className={`w-3 h-3 text-stone-400 transition-transform duration-200 ${langMenuOpen ? "rotate-180" : ""}`}>
                   <polyline points="6 9 12 15 18 9" />
@@ -637,14 +698,14 @@ export default function ProfilePage() {
               </button>
               {langMenuOpen && (
                 <div className="absolute top-full mt-1 right-0 z-[100] bg-white border border-stone-200 rounded-xl shadow-xl overflow-hidden min-w-[90px]">
-                  {(["tr", "en", "fa", "ar"] as const).map((l) => (
+                  {(["tr", "en", "fa", "ar", "de"] as const).map((l) => (
                     <button
                       key={l}
                       onClick={() => { setLang(l); setLangMenuOpen(false); }}
                       className={`flex items-center gap-2 w-full px-3 py-2.5 text-[12px] font-bold transition-colors hover:bg-stone-50 ${lang === l ? "text-orange-500" : "text-stone-700"}`}
                     >
-                      <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : l === "fa" ? "🇮🇷" : "🇸🇦"}</span>
-                      {l === "tr" ? "TR" : l === "en" ? "EN" : l === "fa" ? "FA" : "AR"}
+                      <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : l === "fa" ? "🇮🇷" : l === "ar" ? "🇸🇦" : "🇩🇪"}</span>
+                      {l === "tr" ? "TR" : l === "en" ? "EN" : l === "fa" ? "FA" : l === "ar" ? "AR" : "DE"}
                     </button>
                   ))}
                 </div>

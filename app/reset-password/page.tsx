@@ -48,6 +48,20 @@ const t = {
     goHome: "رفتن به صفحه اصلی",
     invalidLink: "لینک نامعتبر یا منقضی شده. لطفاً دوباره تلاش کنید.",
   },
+  de: {
+    title: "Passwort aktualisieren",
+    newPassword: "Neues Passwort",
+    confirmPassword: "Neues Passwort bestätigen",
+    placeholder: "Mindestens 6 Zeichen",
+    updateBtn: "Passwort aktualisieren",
+    updating: "Wird aktualisiert...",
+    passwordMismatch: "Passwörter stimmen nicht überein.",
+    minLength: "Das Passwort muss mindestens 6 Zeichen lang sein.",
+    success: "Ihr Passwort wurde aktualisiert! Sie werden zur Startseite weitergeleitet...",
+    error: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    goHome: "Zur Startseite",
+    invalidLink: "Ungültiger oder abgelaufener Link. Bitte versuchen Sie es erneut.",
+  },
   // Always add "ar" key when adding new translations
   ar: {
     title: "تحديث كلمة المرور",
@@ -67,7 +81,7 @@ const t = {
 
 export default function ResetPasswordPage() {
   const router = useRouter();
-  const [lang, setLang] = useState<"tr" | "en" | "fa" | "ar">("tr");
+  const [lang, setLang] = useState<"tr" | "en" | "fa" | "ar" | "de">("tr");
   const tr = t[lang];
 
   // null = still checking, true = valid token, false = invalid/missing
@@ -79,8 +93,8 @@ export default function ResetPasswordPage() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem("sefira-lang") as "tr" | "en" | "fa" | "ar" | null;
-    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar") setLang(saved);
+    const saved = localStorage.getItem("sefira-lang") as "tr" | "en" | "fa" | "ar" | "de" | null;
+    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de") setLang(saved);
   }, []);
 
   useEffect(() => {

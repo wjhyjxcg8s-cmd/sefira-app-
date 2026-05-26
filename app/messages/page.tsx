@@ -34,6 +34,16 @@ const translations = {
     send: "ارسال",
     goHome: "خانه",
   },
+  de: {
+    title: "Meine Nachrichten",
+    messages: "Nachrichten",
+    noConversation: "Wählen Sie eine Unterhaltung aus, um zu chatten.",
+    typeMessage: "Nachricht eingeben...",
+    senderName: "Sefira Support",
+    supportMessage: "Vielen Dank, dass Sie Sefira gewählt haben.\nBetrachten Sie uns als Ihren Freund, genau wie wir Sie als unseren betrachten. 🙏\n\nIn diesem Bereich können Sie Ihre gesendeten Nachrichten sehen und Gespräche fortführen.",
+    send: "Senden",
+    goHome: "Startseite",
+  },
   // Always add "ar" key when adding new translations
   ar: {
     title: "رسائلي",
@@ -61,7 +71,7 @@ export default function MessagesPage() {
 
   useEffect(() => {
     const savedLang = localStorage.getItem("sefira-lang") as Lang | null;
-    if (savedLang === "tr" || savedLang === "en" || savedLang === "fa" || savedLang === "ar") setLang(savedLang);
+    if (savedLang === "tr" || savedLang === "en" || savedLang === "fa" || savedLang === "ar" || savedLang === "de") setLang(savedLang);
     const read = localStorage.getItem(SUPPORT_READ_KEY) === "true";
     setIsRead(read);
     setMounted(true);
@@ -99,7 +109,7 @@ export default function MessagesPage() {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 flex-shrink-0">
             <polyline points={isFa ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
           </svg>
-          <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : lang === "ar" ? "الرئيسية" : "Home"}</span>
+          <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : lang === "ar" ? "الرئيسية" : lang === "de" ? "Startseite" : "Home"}</span>
         </Link>
       </div>
 
