@@ -1,74 +1,50 @@
-/*
-  SQL to create deletion_feedback table (run once in Supabase SQL editor):
-
-  CREATE TABLE IF NOT EXISTS deletion_feedback (
-    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-    user_id uuid,
-    email text,
-    reasons text[],
-    rating integer,
-    feedback text,
-    deleted_at timestamptz DEFAULT now()
-  );
-*/
-
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 const SUPABASE_URL = "https://ceetzophaybywfuhezhv.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlZXR6b3BoYXlieXdmdWhlemh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTc4NTUsImV4cCI6MjA5NDkzMzg1NX0.DARDlw_AL8WX6yfgYDgb6nSgCo84jMV05aNbfT-zHpI";
-const SUPABASE_SERVICE_ROLE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlZXR6b3BoYXlieXdmdWhlemh2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTM1Nzg1NSwiZXhwIjoyMDk0OTMzODU1fQ.Jw1bDN7wqxdqj-OinqK4ll7mV5ka7fT6T-9jORs4x_4";
 
 export async function POST(req: NextRequest) {
   const authHeader = req.headers.get("Authorization");
   if (!authHeader) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  // Authenticated client — uses the user's own JWT, no service role needed.
   const supabaseUser = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     global: { headers: { Authorization: authHeader } },
     auth: { autoRefreshToken: false, persistSession: false },
   });
+
   const { data: { user }, error: userError } = await supabaseUser.auth.getUser();
   if (userError || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    // supabaseAdmin initialised inside try so process.env is read at request time.
-    const supabaseAdmin = createClient(
-      SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY ?? SUPABASE_SERVICE_ROLE_KEY,
-      { auth: { autoRefreshToken: false, persistSession: false } }
-    );
+    const { reasons, rating, feedback } = await req.json();
 
-    const { otp, reasons, rating, feedback } = await req.json();
-
-    // auth.getUser() fetches live data from the Supabase Auth server (not JWT claims),
-    // so user.user_metadata contains the OTP written by send-otp.
-    const storedCode = user.user_metadata?._delete_otp;
-    const expiresAt = user.user_metadata?._delete_otp_expires;
-
-    if (!storedCode || storedCode !== otp) {
-      return NextResponse.json({ error: "invalid_otp" }, { status: 400 });
-    }
-    if (!expiresAt || Date.now() > expiresAt) {
-      return NextResponse.json({ error: "otp_expired" }, { status: 400 });
+    // Save feedback BEFORE deletion while the JWT is still valid.
+    const { error: feedbackError } = await supabaseUser
+      .from("deletion_feedback")
+      .insert([{
+        email: user.email,
+        reasons: reasons ?? [],
+        rating: rating ?? null,
+        feedback: feedback || null,
+        deleted_at: new Date().toISOString(),
+      }]);
+    if (feedbackError) {
+      console.error("[confirm] feedback insert failed:", JSON.stringify(feedbackError));
     }
 
-    // Save deletion feedback (best-effort — don't block deletion if table missing)
-    await supabaseAdmin.from("deletion_feedback").insert({
-      user_id: user.id,
-      email: user.email,
-      reasons: reasons ?? [],
-      rating: rating ?? null,
-      feedback: feedback || null,
-      deleted_at: new Date().toISOString(),
-    });
-
-    const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(user.id);
-    if (deleteError) return NextResponse.json({ error: deleteError.message }, { status: 500 });
+    // Delete the user via the same authenticated client — no service role needed.
+    const { error: deleteError } = await supabaseUser.rpc("delete_user");
+    if (deleteError) {
+      console.error("[confirm] delete_user rpc failed:", deleteError.message);
+      return NextResponse.json({ error: deleteError.message }, { status: 500 });
+    }
 
     return NextResponse.json({ ok: true });
   } catch (err) {
+    console.error("[confirm] unhandled:", err);
     return NextResponse.json({ error: String(err) }, { status: 500 });
   }
 }

@@ -424,23 +424,23 @@ export default function ProfilePage() {
       if (Date.now() > expiry) { setDeleteError(t.deleteOtpExpired); setDeleteLoading(false); return; }
 
       const { data: { session } } = await supabase.auth.getSession();
-      const userEmail = session?.user?.email || savedEmailRef.current || "unknown";
 
-      const res = await fetch("/api/save-feedback", {
+      // Single request: saves feedback AND deletes the account server-side
+      // before the session is destroyed.
+      const confirmRes = await fetch("/api/delete-account/confirm", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token}`,
+        },
         body: JSON.stringify({
-          email: userEmail,
           reasons: deleteReasons,
           rating: deleteRating,
           feedback: deleteExtraFeedback || "",
         }),
       });
-      const { error: fbError } = await res.json();
-      console.log("FB Error:", JSON.stringify(fbError));
-
-      const { error: rpcError } = await supabase.rpc("delete_user");
-      if (rpcError) { setDeleteError(rpcError.message); setDeleteLoading(false); return; }
+      const confirmJson = await confirmRes.json();
+      if (!confirmRes.ok) { setDeleteError(confirmJson.error ?? "Error"); setDeleteLoading(false); return; }
 
       localStorage.removeItem("delete_code");
       try { await supabase.auth.signOut(); } catch { /* user already deleted */ }
