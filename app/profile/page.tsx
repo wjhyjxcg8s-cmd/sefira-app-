@@ -190,19 +190,81 @@ const translations = {
     cancelAndGoHome: "پشیمون شدم! برگردونم خونه 🏠",
     cancelSubtitle: "خیلی دوستت داریم 🧡",
   },
+  // Always add "ar" key when adding new translations
+  ar: {
+    title: "ملفي الشخصي",
+    displayName: "الاسم المعروض",
+    displayNamePlaceholder: "الاسم الذي يراه المستخدمون الآخرون",
+    birthDate: "تاريخ الميلاد",
+    gender: "الجنس",
+    genderMale: "ذكر",
+    genderFemale: "أنثى",
+    genderOther: "آخر",
+    profilePhoto: "صورة الملف الشخصي",
+    uploadPhoto: "رفع صورة",
+    changePhoto: "تغيير الصورة",
+    choosePhoto: "اختر صورة",
+    save: "حفظ",
+    saving: "جارٍ الحفظ...",
+    saved: "تم الحفظ!",
+    cancel: "إلغاء",
+    notLoggedIn: "يرجى تسجيل الدخول لعرض ملفك الشخصي.",
+    goHome: "الذهاب إلى الرئيسية",
+    error: "حدث خطأ. يرجى المحاولة مرة أخرى.",
+    photoError: "خطأ في رفع الصورة.",
+    emailLabel: "البريد الإلكتروني (لا يمكن تغييره)",
+    memberSince: "عضو منذ",
+    createListing: "نشر إعلان",
+    myListings: "إعلاناتي",
+    savedListings: "الإعلانات المحفوظة",
+    signOut: "تسجيل الخروج",
+    confirmEditTitle: "هل أنت متأكد من رغبتك في تعديل هذه المعلومات؟",
+    confirmEditBtn: "نعم، عدِّل",
+    cancelEditBtn: "إلغاء",
+    notSet: "غير محدد",
+    changePassword: "تغيير كلمة المرور",
+    currentPassword: "كلمة المرور الحالية",
+    newPassword: "كلمة المرور الجديدة",
+    confirmNewPassword: "تأكيد كلمة المرور الجديدة",
+    passwordPlaceholder: "٦ أحرف على الأقل",
+    passwordMismatch: "كلمتا المرور غير متطابقتين.",
+    passwordMinLength: "يجب أن تكون كلمة المرور ٦ أحرف على الأقل.",
+    passwordUpdated: "تم تحديث كلمة المرور بنجاح.",
+    wrongPassword: "كلمة المرور الحالية غير صحيحة.",
+    deleteAccount: "حذف الحساب",
+    deleteWarningTitle: "هل أنت متأكد من رغبتك في حذف حسابك؟",
+    deleteContinue: "متابعة",
+    deleteCancel: "إلغاء",
+    deleteReasonTitle: "لماذا تغادر؟",
+    deleteReason1: "لم تعجبني التطبيق، التصميم ضعيف",
+    deleteReason2: "لم أجد ما يناسبني",
+    deleteReason3: "لم أعد بحاجة إليه",
+    deleteRatingTitle: "قيّمنا من ١ إلى ١٠",
+    deleteFeedbackTitle: "هل لديك ملاحظات؟ (اختياري)",
+    deleteFeedbackPlaceholder: "اكتب ملاحظاتك هنا...",
+    deleteOtpTitle: "تم إرسال رمز التحقق إلى بريدك الإلكتروني.",
+    deleteOtpPlaceholder: "أدخل الرمز المكوّن من ٦ أرقام",
+    deleteConfirmBtn: "حذف الحساب",
+    deleteOtpInvalid: "رمز غير صحيح. يرجى المحاولة مرة أخرى.",
+    deleteOtpExpired: "انتهت صلاحية الرمز. يرجى إعادة الإرسال.",
+    deleteSending: "جارٍ الإرسال...",
+    deleteDeleting: "جارٍ الحذف...",
+    cancelAndGoHome: "🐱 تراجعت، أعدني للرئيسية",
+    cancelSubtitle: "نحبك كثيراً 🧡",
+  },
 };
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const [lang, setLang] = useState<"tr" | "en" | "fa">("tr");
+  const [lang, setLang] = useState<"tr" | "en" | "fa" | "ar">("tr");
   const t = translations[lang];
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const langMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem("sefira-lang") as "tr" | "en" | "fa" | null;
-    if (saved === "tr" || saved === "en" || saved === "fa") setLang(saved);
+    const saved = localStorage.getItem("sefira-lang") as "tr" | "en" | "fa" | "ar" | null;
+    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar") setLang(saved);
   }, []);
   useEffect(() => { localStorage.setItem("sefira-lang", lang); }, [lang]);
 
@@ -485,7 +547,7 @@ export default function ProfilePage() {
     .toUpperCase();
 
   const joinDate = user?.created_at
-    ? new Date(user.created_at).toLocaleDateString(lang === "tr" ? "tr-TR" : lang === "fa" ? "fa-IR" : "en-US", {
+    ? new Date(user.created_at).toLocaleDateString(lang === "tr" ? "tr-TR" : lang === "fa" ? "fa-IR" : lang === "ar" ? "ar-SA" : "en-US", {
         year: "numeric",
         month: "long",
       })
@@ -495,7 +557,7 @@ export default function ProfilePage() {
     if (!raw) return "";
     try {
       return new Date(raw + "T00:00:00").toLocaleDateString(
-        lang === "tr" ? "tr-TR" : lang === "fa" ? "fa-IR" : "en-US",
+        lang === "tr" ? "tr-TR" : lang === "fa" ? "fa-IR" : lang === "ar" ? "ar-SA" : "en-US",
         { year: "numeric", month: "long", day: "numeric" }
       );
     } catch {
@@ -538,7 +600,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50" dir={lang === "fa" ? "rtl" : "ltr"}>
+    <div className="min-h-screen bg-stone-50" dir={lang === "fa" || lang === "ar" ? "rtl" : "ltr"}>
       {/* Navbar */}
       <nav dir="ltr" style={{ transform: "translateZ(0)", WebkitTransform: "translateZ(0)", willChange: "transform" }} className="fixed top-0 left-0 right-0 w-full z-[9999] bg-white border-b border-stone-200 shadow-sm">
         <div className="max-w-2xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
@@ -564,10 +626,10 @@ export default function ProfilePage() {
                 className="flex items-center gap-1 bg-stone-100 border border-stone-200 rounded-lg px-2 py-1.5 text-[11px] font-black transition-all duration-200 hover:bg-stone-200 whitespace-nowrap"
               >
                 <span className="text-sm leading-none">
-                  {lang === "tr" ? "🇹🇷" : lang === "en" ? "🇬🇧" : "🇮🇷"}
+                  {lang === "tr" ? "🇹🇷" : lang === "en" ? "🇬🇧" : lang === "fa" ? "🇮🇷" : "🇸🇦"}
                 </span>
                 <span className="text-stone-700">
-                  {lang === "tr" ? "TR" : lang === "en" ? "EN" : "FA"}
+                  {lang === "tr" ? "TR" : lang === "en" ? "EN" : lang === "fa" ? "FA" : "AR"}
                 </span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className={`w-3 h-3 text-stone-400 transition-transform duration-200 ${langMenuOpen ? "rotate-180" : ""}`}>
                   <polyline points="6 9 12 15 18 9" />
@@ -575,14 +637,14 @@ export default function ProfilePage() {
               </button>
               {langMenuOpen && (
                 <div className="absolute top-full mt-1 right-0 z-[100] bg-white border border-stone-200 rounded-xl shadow-xl overflow-hidden min-w-[90px]">
-                  {(["tr", "en", "fa"] as const).map((l) => (
+                  {(["tr", "en", "fa", "ar"] as const).map((l) => (
                     <button
                       key={l}
                       onClick={() => { setLang(l); setLangMenuOpen(false); }}
                       className={`flex items-center gap-2 w-full px-3 py-2.5 text-[12px] font-bold transition-colors hover:bg-stone-50 ${lang === l ? "text-orange-500" : "text-stone-700"}`}
                     >
-                      <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : "🇮🇷"}</span>
-                      {l === "tr" ? "TR" : l === "en" ? "EN" : "FA"}
+                      <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : l === "fa" ? "🇮🇷" : "🇸🇦"}</span>
+                      {l === "tr" ? "TR" : l === "en" ? "EN" : l === "fa" ? "FA" : "AR"}
                     </button>
                   ))}
                 </div>
@@ -809,9 +871,9 @@ export default function ProfilePage() {
         {/* Back to home */}
         <Link href="/" dir="ltr" className="inline-flex items-center gap-1.5 mb-5 text-sm font-semibold text-stone-500 hover:text-stone-800 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-lg transition-colors">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 flex-shrink-0">
-            <polyline points={lang === "fa" ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
+            <polyline points={lang === "fa" || lang === "ar" ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
           </svg>
-          <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : "Home"}</span>
+          <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : lang === "ar" ? "الرئيسية" : "Home"}</span>
         </Link>
 
         <h1 className="text-2xl font-black text-stone-900 mb-6">{t.title}</h1>

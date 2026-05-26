@@ -39,6 +39,18 @@ const translations = {
     roommates: "هم‌خانه",
     rooms: "اتاق",
   },
+  // Always add "ar" key when adding new translations
+  ar: {
+    title: "الإعلانات المحفوظة",
+    empty: "لم تحفظ أي إعلانات بعد.",
+    emptyAction: "تصفّح الإعلانات",
+    notLoggedIn: "يرجى تسجيل الدخول لعرض الإعلانات المحفوظة.",
+    goHome: "الذهاب إلى الرئيسية",
+    address: "العنوان",
+    sharingCost: "تكلفة المشاركة الشهرية",
+    roommates: "شريك السكن",
+    rooms: "الغرف",
+  },
 };
 
 type Lang = keyof typeof translations;
@@ -59,7 +71,7 @@ export default function SavedListingsPage() {
 
   useEffect(() => {
     const saved = localStorage.getItem("sefira-lang") as Lang | null;
-    if (saved === "tr" || saved === "en" || saved === "fa") setLang(saved);
+    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar") setLang(saved);
   }, []);
 
   const [savedIds, setSavedIds] = useState<number[]>([]);
@@ -113,7 +125,7 @@ export default function SavedListingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50" dir={lang === "fa" ? "rtl" : "ltr"}>
+    <div className="min-h-screen bg-stone-50" dir={lang === "fa" || lang === "ar" ? "rtl" : "ltr"}>
       {/* Navbar */}
       <nav dir="ltr" style={{ transform: "translateZ(0)", WebkitTransform: "translateZ(0)", willChange: "transform" }} className="fixed top-0 left-0 right-0 w-full z-[9999] bg-white border-b border-stone-200 shadow-sm">
         <div className="max-w-2xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
@@ -135,9 +147,9 @@ export default function SavedListingsPage() {
         {/* Back to home */}
         <Link href="/" dir="ltr" className="inline-flex items-center gap-1.5 mb-5 text-sm font-semibold text-stone-500 hover:text-stone-800 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-lg transition-colors">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 flex-shrink-0">
-            <polyline points={lang === "fa" ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
+            <polyline points={lang === "fa" || lang === "ar" ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
           </svg>
-          <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : "Home"}</span>
+          <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : lang === "ar" ? "الرئيسية" : "Home"}</span>
         </Link>
 
         <h1 className="text-2xl font-black text-stone-900 mb-6 flex items-center gap-3">
@@ -197,7 +209,7 @@ export default function SavedListingsPage() {
                   }}
                   className="self-end text-xs text-rose-400 hover:text-rose-600 font-semibold transition-colors"
                 >
-                  {lang === "tr" ? "Kaldır" : lang === "fa" ? "حذف" : "Remove"}
+                  {lang === "tr" ? "Kaldır" : lang === "fa" ? "حذف" : lang === "ar" ? "إزالة" : "Remove"}
                 </button>
               </div>
             ))}

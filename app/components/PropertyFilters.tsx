@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { type Currency, CURRENCY_SYMBOLS } from "@/app/lib/currency";
 
-type Lang = "tr" | "en" | "fa";
+type Lang = "tr" | "en" | "fa" | "ar";
 
 interface FilterState {
   priceMin: string;
@@ -75,6 +75,20 @@ const LABELS = {
     remote: "مناسب دورکاری",
     any: "فرقی نمی‌کند", yes: "بله", no: "خیر", min: "حداقل", max: "حداکثر",
     activeFilters: (n: number) => `${n} فیلتر`,
+  },
+  // Always add "ar" key when adding new translations
+  ar: {
+    btn: "الفلاتر", clear: "مسح الكل", apply: "تطبيق", title: "فلاتر متقدمة",
+    sec1: "المالية", sec2: "المساحة والتخطيط", sec3: "المرافق", sec4: "قواعد المنزل",
+    price: "السعر (€/$)", deposit: "أقصى وديعة", bills: "الفواتير مشمولة؟",
+    size: "المساحة (m²)", rooms: "عدد الغرف", housemates: "شركاء السكن",
+    bathrooms: "عدد الحمامات", floor: "نطاق الطابق",
+    elevator: "مصعد", balcony: "شرفة", furnished: "مفروش",
+    unfurnished: "غير مفروش", internet: "Wi-Fi", parking: "موقف سيارات",
+    pets: "الحيوانات الأليفة مسموحة", smoking: "التدخين مسموح", student: "مناسب للطلاب",
+    remote: "مناسب للعمل عن بُعد",
+    any: "أي خيار", yes: "نعم", no: "لا", min: "الحد الأدنى", max: "الحد الأقصى",
+    activeFilters: (n: number) => `${n} فلتر`,
   },
 } as const;
 

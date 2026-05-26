@@ -59,6 +59,25 @@ const translations = {
     sampleReviewDate: "۱۵ اردیبهشت ۱۴۰۵",
     ratingLabel: "امتیاز شما",
   },
+  // Always add "ar" key when adding new translations
+  ar: {
+    title: "تعليقاتي وتقييماتي",
+    banner: "في هذا القسم، يمكنك عرض التعليقات والتقييمات التي أعطيتها للآخرين وتعديلها أو حذفها.",
+    empty: "لم تكتب أي تعليقات بعد.",
+    notLoggedIn: "يرجى تسجيل الدخول لعرض تعليقاتك.",
+    goHome: "الذهاب إلى الرئيسية",
+    edit: "تعديل",
+    delete: "حذف",
+    save: "حفظ",
+    cancel: "إلغاء",
+    confirmDelete: "هل أنت متأكد من رغبتك في حذف هذا التعليق؟",
+    confirmYes: "نعم، احذف",
+    confirmNo: "إلغاء",
+    editPlaceholder: "اكتب تعليقك هنا...",
+    sampleReviewText: "كان شخصاً طيباً، لا يحدث ضوضاء.\nمكثتُ هناك ٦ أشهر.",
+    sampleReviewDate: "١٥ مايو ٢٠٢٦",
+    ratingLabel: "تقييمك",
+  },
 };
 
 type Lang = keyof typeof translations;
@@ -129,11 +148,11 @@ export default function MyReviewsPage() {
 
   useEffect(() => {
     const saved = localStorage.getItem("sefira-lang") as Lang | null;
-    if (saved === "tr" || saved === "en" || saved === "fa") setLang(saved);
+    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar") setLang(saved);
   }, []);
 
   const t = translations[lang];
-  const isFa = lang === "fa";
+  const isFa = lang === "fa" || lang === "ar";
 
   const displayText = customText ?? t.sampleReviewText;
   const displayRating = customRating ?? 4;
@@ -213,9 +232,9 @@ export default function MyReviewsPage() {
         {/* Back to home */}
         <Link href="/" dir="ltr" className="inline-flex items-center gap-1.5 mb-5 text-sm font-semibold text-stone-500 hover:text-stone-800 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-lg transition-colors">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 flex-shrink-0">
-            <polyline points={lang === "fa" ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
+            <polyline points={isFa ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
           </svg>
-          <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : "Home"}</span>
+          <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : lang === "ar" ? "الرئيسية" : "Home"}</span>
         </Link>
 
         {/* Page title */}

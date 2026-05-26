@@ -39,6 +39,18 @@ const copy = {
     followerLabel: "دنبال‌کننده",
     handle: "@sefira.app",
   },
+  // Always add "ar" key when adding new translations
+  ar: {
+    badge: "مجتمع إنستغرام",
+    heading: "انضم إلى مجتمع سفيرا",
+    subtext:
+      "تابعنا للحصول على نصائح حصرية حول إيجاد شريك السكن، وقصص مطابقة حقيقية، وأدلة المدن من ٥٢ مدينة حول العالم.",
+    cta: "تابعنا",
+    ctaDone: "تمت المتابعة ✓",
+    followerCount: "12.4K",
+    followerLabel: "متابع",
+    handle: "@sefira.app",
+  },
 };
 
 const postGradients = [
@@ -55,7 +67,7 @@ function InstagramIcon({ className }: { className?: string }) {
   );
 }
 
-export default function InstagramCTA({ lang }: { lang: "tr" | "en" | "fa" }) {
+export default function InstagramCTA({ lang }: { lang: "tr" | "en" | "fa" | "ar" }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const [followed, setFollowed] = useState(false);

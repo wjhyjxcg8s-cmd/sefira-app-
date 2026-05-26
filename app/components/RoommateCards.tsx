@@ -28,6 +28,7 @@ interface Profile {
   bio: string;
   bioTr: string;
   bioFa: string;
+  bioAr?: string;
   verified: boolean;
   pets: boolean;
   smoking: boolean;
@@ -175,6 +176,30 @@ const LABELS = {
     closeModal:   "بستن",
     sendMessage:  "ارسال پیام",
   },
+  // Always add "ar" key when adding new translations
+  ar: {
+    heading:      "شركاء السكن المقترحون",
+    subheading:   "اسحب للاستكشاف",
+    dragHint:     "← اسحب للتخطي  ·  اسحب للإعجاب →",
+    liked:        "تم الإعجاب",
+    of:           "/",
+    budget:       "الميزانية",
+    languages:    "اللغات",
+    lifestyle:    "أسلوب الحياة",
+    petsOk:       "🐾 الحيوانات الأليفة مقبولة",
+    noPets:       "🚫 لا حيوانات أليفة",
+    smoker:       "🚬 مدخن",
+    nonSmoker:    "🚭 غير مدخن",
+    verified:     "موثّق",
+    match:        "تطابق",
+    perMonth:     "/شهر",
+    rejectLabel:  "تخطي",
+    messageLabel: "رسالة",
+    saveLabel:    "حفظ",
+    inspectBtn:   "عرض الإعلان كاملاً",
+    closeModal:   "إغلاق",
+    sendMessage:  "إرسال رسالة",
+  },
 } as const;
 
 type Labels = (typeof LABELS)[keyof typeof LABELS];
@@ -224,7 +249,7 @@ function SwipeCard({
   labels:     Labels;
   currency:   Currency;
   onInspect:  () => void;
-  lang:       "tr" | "en" | "fa";
+  lang:       "tr" | "en" | "fa" | "ar";
 }) {
   const isTop    = stackIndex === 0;
   const controls = useAnimation();
@@ -412,7 +437,7 @@ function SwipeCard({
 
           {/* Bio */}
           <p className="text-xs text-stone-500 leading-relaxed line-clamp-2 italic">
-            &ldquo;{lang === "tr" ? profile.bioTr : lang === "fa" ? profile.bioFa : profile.bio}&rdquo;
+            &ldquo;{lang === "tr" ? profile.bioTr : lang === "fa" ? profile.bioFa : lang === "ar" ? (profile.bioAr ?? profile.bio) : profile.bio}&rdquo;
           </p>
 
           {/* Pets / Smoking */}
@@ -456,7 +481,7 @@ function InspectModal({
   labels:   Labels;
   currency: Currency;
   onClose:  () => void;
-  lang:     "tr" | "en" | "fa";
+  lang:     "tr" | "en" | "fa" | "ar";
 }) {
   return (
     <motion.div
@@ -572,7 +597,7 @@ function InspectModal({
 
           <div className="rounded-2xl p-4" style={{ background: "rgba(248,247,246,0.9)" }}>
             <p className="text-sm text-stone-600 leading-relaxed italic">
-              &ldquo;{lang === "tr" ? profile.bioTr : lang === "fa" ? profile.bioFa : profile.bio}&rdquo;
+              &ldquo;{lang === "tr" ? profile.bioTr : lang === "fa" ? profile.bioFa : lang === "ar" ? (profile.bioAr ?? profile.bio) : profile.bio}&rdquo;
             </p>
           </div>
 
@@ -606,7 +631,7 @@ export default function RoommateCards({
   lang = "en",
   currency = "USD",
 }: {
-  lang?:           "tr" | "en" | "fa";
+  lang?:           "tr" | "en" | "fa" | "ar";
   currency?:       Currency;
   currencySymbol?: string;
 }) {

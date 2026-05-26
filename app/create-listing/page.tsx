@@ -194,6 +194,69 @@ const translations = {
     selectType: "لطفاً نوع آگهی را انتخاب کنید.",
     fillRequired: "لطفاً همه فیلدهای الزامی را پر کنید.",
   },
+  // Always add "ar" key when adding new translations
+  ar: {
+    pageTitle: "نشر إعلان",
+    stepOf: (current: number, total: number) => `الخطوة ${current} من ${total}`,
+    // Step 1
+    step1Title: "ما نوع الإعلان الذي تريد نشره؟",
+    hasPlace: "لديَّ مكان وأبحث عن شريك سكن",
+    hasPlaceSub: "شارك منزلك مع شخص آخر",
+    needsPlace: "ليس لديَّ مكان وأبحث عن شريك سكن",
+    needsPlaceSub: "تعاون مع الآخرين لإيجاد منزل معاً",
+    next: "التالي",
+    back: "رجوع",
+    submit: "نشر الإعلان",
+    submitting: "جارٍ النشر...",
+    edit: "تعديل",
+    // Step 2
+    step2Title: "تفاصيل المكان",
+    smoking: "التدخين مسموح؟",
+    smokingYes: "مسموح",
+    smokingNo: "غير مسموح",
+    parking: "مواقف سيارات؟",
+    parkingYes: "متوفر",
+    parkingNo: "غير متوفر",
+    currentResidents: "عدد السكان الحاليين",
+    neededRoommates: "عدد شركاء السكن المطلوبين",
+    rooms: "عدد الغرف",
+    rent: "تكلفة المشاركة الشهرية",
+    currency: "العملة",
+    photos: "صور المكان (حد أقصى ٣)",
+    uploadPhotos: "رفع الصور",
+    addMorePhotos: "إضافة المزيد",
+    address: "العنوان",
+    addressPlaceholder: "الشارع، الحي، المدينة، البلد",
+    // Step 3
+    step3Title: "تأكيد الإعلان",
+    typeLabel: "نوع الإعلان",
+    hasPlaceLabel: "لديه مكان — يبحث عن شريك سكن",
+    needsPlaceLabel: "ليس لديه مكان — يبحث عن المشاركة",
+    smokingLabel: "التدخين",
+    parkingLabel: "مواقف السيارات",
+    residentsLabel: "السكان الحاليون",
+    roommatesLabel: "شركاء السكن المطلوبون",
+    roomsLabel: "عدد الغرف",
+    rentLabel: "تكلفة المشاركة الشهرية",
+    addressLabel: "العنوان",
+    photosLabel: "الصور",
+    yes: "نعم",
+    no: "لا",
+    person: "شخص",
+    // Auth
+    notLoggedIn: "يرجى تسجيل الدخول لنشر إعلان.",
+    goHome: "الذهاب إلى الرئيسية",
+    // Errors
+    errorSubmit: "خطأ في نشر الإعلان. يرجى المحاولة مرة أخرى.",
+    errorPhoto: "خطأ في رفع الصورة.",
+    successTitle: "تم نشر الإعلان!",
+    successSub: "تم إنشاء إعلانك بنجاح.",
+    viewListings: "تصفّح الإعلانات",
+    createAnother: "نشر إعلان آخر",
+    requiredField: "هذا الحقل مطلوب.",
+    selectType: "يرجى اختيار نوع الإعلان.",
+    fillRequired: "يرجى تعبئة جميع الحقول المطلوبة.",
+  },
 };
 
 type ListingType = "has_place" | "needs_place";
@@ -309,10 +372,10 @@ function NumberStepper({
 export default function CreateListingPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const [lang, setLang] = useState<"tr" | "en" | "fa">("tr");
+  const [lang, setLang] = useState<"tr" | "en" | "fa" | "ar">("tr");
   useEffect(() => {
     const saved = localStorage.getItem("sefira-lang");
-    if (saved === "tr" || saved === "en" || saved === "fa") setLang(saved);
+    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar") setLang(saved);
   }, []);
   useEffect(() => { localStorage.setItem("sefira-lang", lang); }, [lang]);
   const t = translations[lang];
@@ -426,7 +489,7 @@ export default function CreateListingPage() {
     setSubmitting(false);
   };
 
-  const dir = lang === "fa" ? "rtl" : "ltr";
+  const dir = lang === "fa" || lang === "ar" ? "rtl" : "ltr";
 
   // ── Not logged in ─────────────────────────────────────────────────────────
   if (!loading && !user) {
@@ -501,7 +564,7 @@ export default function CreateListingPage() {
           </span>
         </Link>
         <div className="flex bg-stone-100 border border-stone-200 rounded-lg p-0.5 gap-0.5">
-          {(["tr", "en", "fa"] as const).map((l) => (
+          {(["tr", "en", "fa", "ar"] as const).map((l) => (
             <button
               key={l}
               onClick={() => setLang(l)}
@@ -512,9 +575,9 @@ export default function CreateListingPage() {
               }`}
             >
               <span className="text-sm leading-none">
-                {l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : "🇮🇷"}
+                {l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : l === "fa" ? "🇮🇷" : "🇸🇦"}
               </span>
-              <span>{l === "tr" ? "TR" : l === "en" ? "EN" : "FA"}</span>
+              <span>{l === "tr" ? "TR" : l === "en" ? "EN" : l === "fa" ? "FA" : "AR"}</span>
             </button>
           ))}
         </div>
@@ -551,9 +614,9 @@ export default function CreateListingPage() {
           {/* Back to home */}
           <Link href="/" dir="ltr" className="inline-flex items-center gap-1.5 mb-5 text-sm font-semibold text-stone-500 hover:text-stone-800 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-lg transition-colors">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 flex-shrink-0">
-              <polyline points={lang === "fa" ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
+              <polyline points={lang === "fa" || lang === "ar" ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
             </svg>
-            <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : "Home"}</span>
+            <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : lang === "ar" ? "الرئيسية" : "Home"}</span>
           </Link>
 
           <ProgressBar />
@@ -641,9 +704,9 @@ export default function CreateListingPage() {
           {/* Back to home */}
           <Link href="/" dir="ltr" className="inline-flex items-center gap-1.5 mb-5 text-sm font-semibold text-stone-500 hover:text-stone-800 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-lg transition-colors">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 flex-shrink-0">
-              <polyline points={lang === "fa" ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
+              <polyline points={lang === "fa" || lang === "ar" ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
             </svg>
-            <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : "Home"}</span>
+            <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : lang === "ar" ? "الرئيسية" : "Home"}</span>
           </Link>
 
           <ProgressBar />
@@ -841,7 +904,7 @@ export default function CreateListingPage() {
             {
               label: t.rentLabel,
               value: form.rent
-                ? `${CURRENCY_SYMBOLS[form.currency]}${form.rent} / ${lang === "tr" ? "ay" : lang === "fa" ? "ماه" : "mo"}`
+                ? `${CURRENCY_SYMBOLS[form.currency]}${form.rent} / ${lang === "tr" ? "ay" : lang === "fa" ? "ماه" : lang === "ar" ? "شهر" : "mo"}`
                 : "—",
             },
             { label: t.addressLabel, value: form.address || "—" },
@@ -856,9 +919,9 @@ export default function CreateListingPage() {
           {/* Back to home */}
           <Link href="/" dir="ltr" className="inline-flex items-center gap-1.5 mb-5 text-sm font-semibold text-stone-500 hover:text-stone-800 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-lg transition-colors">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 flex-shrink-0">
-              <polyline points={lang === "fa" ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
+              <polyline points={lang === "fa" || lang === "ar" ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
             </svg>
-            <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : "Home"}</span>
+            <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : lang === "ar" ? "الرئيسية" : "Home"}</span>
           </Link>
 
           <ProgressBar />

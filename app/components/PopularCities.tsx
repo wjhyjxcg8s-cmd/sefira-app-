@@ -10,9 +10,11 @@ const CITIES = [
     name: "Istanbul",
     nameTr: "İstanbul",
     nameFa: "استانبول",
+    nameAr: "إسطنبول",
     country: "Turkey",
     countryTr: "Türkiye",
     countryFa: "ترکیه",
+    countryAr: "تركيا",
     listings: "2,847",
     image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=800&q=80",
     accent: "from-orange-500 to-red-600",
@@ -22,9 +24,11 @@ const CITIES = [
     name: "Washington DC",
     nameTr: "Washington DC",
     nameFa: "واشنگتن",
+    nameAr: "واشنطن",
     country: "USA",
     countryTr: "ABD",
     countryFa: "آمریکا",
+    countryAr: "الولايات المتحدة",
     listings: "1,456",
     image: "https://images.unsplash.com/photo-1501466044931-62695aada8e9?auto=format&fit=crop&w=800&q=80",
     accent: "from-blue-500 to-cyan-600",
@@ -34,9 +38,11 @@ const CITIES = [
     name: "New York",
     nameTr: "New York",
     nameFa: "نیویورک",
+    nameAr: "نيويورك",
     country: "USA",
     countryTr: "ABD",
     countryFa: "آمریکا",
+    countryAr: "الولايات المتحدة",
     listings: "3,241",
     image: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=800&q=80",
     accent: "from-violet-500 to-indigo-600",
@@ -46,9 +52,11 @@ const CITIES = [
     name: "Paris",
     nameTr: "Paris",
     nameFa: "پاریس",
+    nameAr: "باريس",
     country: "France",
     countryTr: "Fransa",
     countryFa: "فرانسه",
+    countryAr: "فرنسا",
     listings: "2,103",
     image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80",
     accent: "from-rose-500 to-pink-600",
@@ -58,9 +66,11 @@ const CITIES = [
     name: "Barcelona",
     nameTr: "Barselona",
     nameFa: "بارسلون",
+    nameAr: "برشلونة",
     country: "Spain",
     countryTr: "İspanya",
     countryFa: "اسپانیا",
+    countryAr: "إسبانيا",
     listings: "1,541",
     image: "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&w=800&q=80",
     accent: "from-yellow-500 to-orange-600",
@@ -70,9 +80,11 @@ const CITIES = [
     name: "Berlin",
     nameTr: "Berlin",
     nameFa: "برلین",
+    nameAr: "برلين",
     country: "Germany",
     countryTr: "Almanya",
     countryFa: "آلمان",
+    countryAr: "ألمانيا",
     listings: "2,190",
     image: "https://images.unsplash.com/photo-1560969184-10fe8719e047?auto=format&fit=crop&w=800&q=80",
     accent: "from-slate-500 to-zinc-600",
@@ -82,9 +94,11 @@ const CITIES = [
     name: "Dubai",
     nameTr: "Dubai",
     nameFa: "دبی",
+    nameAr: "دبي",
     country: "UAE",
     countryTr: "BAE",
     countryFa: "امارات",
+    countryAr: "الإمارات",
     listings: "3,012",
     image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80",
     accent: "from-amber-500 to-yellow-600",
@@ -113,11 +127,19 @@ const copy = {
     listings: "آگهی",
     explore: "کشف کن ←",
   },
+  // Always add "ar" key when adding new translations
+  ar: {
+    badge: "الوجهات المميزة",
+    h2: "المدن الشهيرة",
+    sub: "أكثر المدن طلباً لدى السكان والمغتربين الباحثين عن منزلهم المثالي",
+    listings: "إعلان",
+    explore: "استكشف ←",
+  },
 };
 
 interface CityCardProps {
   city: (typeof CITIES)[number];
-  lang: "tr" | "en" | "fa";
+  lang: "tr" | "en" | "fa" | "ar";
   inView: boolean;
   delay: number;
   className?: string;
@@ -159,7 +181,7 @@ function CityCard({ city, lang, inView, delay, className = "", imgSizes, t, feat
       {/* Country chip — top start */}
       <div className="absolute top-4 start-4">
         <span className="text-xs font-bold bg-white/15 backdrop-blur-md text-white border border-white/20 rounded-full px-3 py-1.5">
-          {lang === "tr" ? city.countryTr : lang === "fa" ? city.countryFa : city.country}
+          {lang === "tr" ? city.countryTr : lang === "fa" ? city.countryFa : lang === "ar" ? city.countryAr : city.country}
         </span>
       </div>
 
@@ -191,7 +213,7 @@ function CityCard({ city, lang, inView, delay, className = "", imgSizes, t, feat
             featured ? "text-3xl sm:text-4xl" : "text-2xl"
           }`}
         >
-          {lang === "tr" ? city.nameTr : lang === "fa" ? city.nameFa : city.name}
+          {lang === "tr" ? city.nameTr : lang === "fa" ? city.nameFa : lang === "ar" ? city.nameAr : city.name}
         </h3>
 
         <div className="flex items-center justify-between mt-2">
@@ -224,7 +246,7 @@ function CityCard({ city, lang, inView, delay, className = "", imgSizes, t, feat
   );
 }
 
-export default function PopularCities({ lang }: { lang: "tr" | "en" | "fa" }) {
+export default function PopularCities({ lang }: { lang: "tr" | "en" | "fa" | "ar" }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const t = copy[lang];

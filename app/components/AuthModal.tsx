@@ -80,10 +80,36 @@ const authT = {
     backToLogin: "بازگشت به ورود",
     resetSuccess: "لینک بازنشانی رمز به ایمیل شما ارسال شد.",
   },
+  // Always add "ar" key when adding new translations
+  ar: {
+    loginTab: "تسجيل الدخول",
+    registerTab: "إنشاء حساب",
+    nameLabel: "الاسم الكامل",
+    namePlaceholder: "اسمك الكامل",
+    emailLabel: "البريد الإلكتروني",
+    emailPlaceholder: "example@email.com",
+    passwordLabel: "كلمة المرور",
+    passwordPlaceholder: "٦ أحرف على الأقل",
+    loginBtn: "تسجيل الدخول",
+    registerBtn: "إنشاء حساب",
+    successRegister: "تم التسجيل بنجاح! يرجى التحقق من بريدك الإلكتروني.",
+    switchToRegister: "ليس لديك حساب؟",
+    switchToLogin: "لديك حساب بالفعل؟",
+    switchRegisterLink: "إنشاء حساب",
+    switchLoginLink: "تسجيل الدخول",
+    subtitle: "مرحباً بك في سفيرا",
+    subtitleRegister: "ابدأ مجاناً اليوم",
+    forgotPassword: "نسيت كلمة المرور",
+    forgotTitle: "إعادة تعيين كلمة المرور",
+    resetEmailLabel: "أدخل بريدك الإلكتروني",
+    sendResetLink: "إرسال رابط إعادة التعيين",
+    backToLogin: "العودة إلى تسجيل الدخول",
+    resetSuccess: "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.",
+  },
 };
 
 interface AuthModalProps {
-  lang: "tr" | "en" | "fa";
+  lang: "tr" | "en" | "fa" | "ar";
   onClose: () => void;
 }
 

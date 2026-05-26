@@ -34,6 +34,17 @@ const translations = {
     send: "ارسال",
     goHome: "خانه",
   },
+  // Always add "ar" key when adding new translations
+  ar: {
+    title: "رسائلي",
+    messages: "الرسائل",
+    noConversation: "اختر محادثة للبدء في الدردشة.",
+    typeMessage: "اكتب رسالة...",
+    senderName: "دعم سفيرا",
+    supportMessage: "شكراً لاختيارك سفيرا. نحن هنا من أجلك، تماماً كما أنت هنا من أجلنا. 🙏\n\nفي هذا القسم، يمكنك رؤية الرسائل التي أرسلتها للآخرين ومتابعة محادثاتك.",
+    send: "إرسال",
+    goHome: "الرئيسية",
+  },
 };
 
 type Lang = keyof typeof translations;
@@ -50,14 +61,14 @@ export default function MessagesPage() {
 
   useEffect(() => {
     const savedLang = localStorage.getItem("sefira-lang") as Lang | null;
-    if (savedLang === "tr" || savedLang === "en" || savedLang === "fa") setLang(savedLang);
+    if (savedLang === "tr" || savedLang === "en" || savedLang === "fa" || savedLang === "ar") setLang(savedLang);
     const read = localStorage.getItem(SUPPORT_READ_KEY) === "true";
     setIsRead(read);
     setMounted(true);
   }, []);
 
   const t = translations[lang];
-  const isFa = lang === "fa";
+  const isFa = lang === "fa" || lang === "ar";
   const showUnread = mounted && !isRead;
 
   const openConversation = (id: string) => {
@@ -86,9 +97,9 @@ export default function MessagesPage() {
       <div className="px-4 py-2.5 border-b border-stone-100 bg-white flex-shrink-0">
         <Link href="/" dir="ltr" className="inline-flex items-center gap-1.5 text-sm font-semibold text-stone-500 hover:text-stone-800 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-lg transition-colors">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 flex-shrink-0">
-            <polyline points={lang === "fa" ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
+            <polyline points={isFa ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
           </svg>
-          <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : "Home"}</span>
+          <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : lang === "ar" ? "الرئيسية" : "Home"}</span>
         </Link>
       </div>
 

@@ -401,6 +401,134 @@ const translations = {
     girisYap: "ورود",
     kayitOl: "ثبت نام",
   },
+  // Always add "ar" key when adding new translations
+  ar: {
+    navLinks: [
+      { label: "البحث عن غرفة", href: "#" },
+      { label: "البحث عن شريك سكن", href: "#" },
+      { label: "نشر إعلان", href: "/create-listing" },
+      { label: "المجتمع", href: "#" },
+    ],
+    stats: [
+      { value: "127K+", label: "مستخدم موثَّق" },
+      { value: "52",    label: "مدينة حول العالم" },
+      { value: "98%",   label: "رضا عن المطابقة" },
+      { value: "4.9★",  label: "تقييم التطبيق" },
+    ],
+    signIn: "تسجيل الدخول",
+    signOut: "تسجيل الخروج",
+    getStarted: "ابدأ الآن",
+    heroBadge: "موثوق به من قِبَل أكثر من ١٢٧,٠٠٠ مستخدم موثَّق في ٥٢ مدينة",
+    heroLine1: "اعثر على",
+    heroLine2: "شريك السكن",
+    heroLine3: "المثالي.",
+    heroP: "مطابقة ذكية لشركاء السكن واكتشاف إعلانات المشاركة المميزة. مصمَّم للمغتربين والطلاب والمحترفين العصريين.",
+    // ── Wizard ──
+    wizardTitle: "ماذا تبحث عن؟",
+    optionSeekingTitle: "أبحث عن غرفة أو شريك سكن",
+    optionSeekingSubtitle: "أبحث عن غرفة أو شريك للسكن",
+    optionOfferingTitle: "لديَّ غرفة وأبحث عن شريك سكن",
+    optionOfferingSubtitle: "لديَّ غرفة وأبحث عن شريك سكن",
+    genderStep: "الجنس المفضَّل لشريك السكن",
+    genderStepSub: "الجنس المفضَّل",
+    genderMale: "ذكر",
+    genderFemale: "أنثى",
+    genderAny: "لا يهمني",
+    budgetStep: "الميزانية الشهرية",
+    budgetStepSub: "ميزانيتك الشهرية",
+    locationStep: "أين تبحث؟",
+    locationStepSub: "أين تبحث؟",
+    backBtn: "رجوع",
+    nextBtn: "التالي",
+    searchNowBtn: "ابحث الآن",
+    seekingChip: "يبحث عن غرفة",
+    offeringChip: "يعرض غرفة",
+    countryPlaceholder: "البلد",
+    cityPlaceholder: "المدينة",
+    loadingText: "جارٍ التحميل…",
+    priorityGroupLabel: "⭐ الوجهات المميزة",
+    allCountriesLabel: "جميع الدول",
+    searchPlaceholder: "ابحث عن مدينة أو حي أو كلمة مفتاحية...",
+    matchesThisWeek: "٢,٨٤٧ مطابقة هذا الأسبوع",
+    reviewsLabel: "٤.٩ نجوم من أكثر من ١٢,٠٠٠ تقييم",
+    storiesTitle: "قصص المجتمع",
+    storiesLive: "مباشر",
+    addStory: "إضافة قصة",
+    aiMatchBadge: "مطابقة بالذكاء الاصطناعي",
+    aiMatchLine1: "توأمك المثالي",
+    aiMatchLine2: "يجدك.",
+    aiMatchP: "يحلّل ذكاؤنا الاصطناعي أكثر من ٤٠ عاملاً للتوافق، من جداول النوم إلى العادات الاجتماعية، ليُبرز الأشخاص الذين ستودّ حقاً العيش معهم.",
+    compatBars: [
+      { label: "توافق أسلوب الحياة", value: 97,  color: "from-blue-500 to-violet-600" },
+      { label: "جدول النوم",          value: 94,  color: "from-emerald-500 to-teal-600" },
+      { label: "النظافة",             value: 100, color: "from-amber-500 to-orange-600" },
+      { label: "نطاق الميزانية",      value: 88,  color: "from-rose-500 to-pink-600" },
+    ],
+    findMatchesBtn: "ابحث عن مطابقاتي",
+    matchLabel: "توافق",
+    verifiedLabel: "موثَّق",
+    petsOk: "الحيوانات الأليفة مسموح بها",
+    noPets: "لا حيوانات أليفة",
+    smoker: "مدخِّن",
+    nonSmoker: "غير مدخِّن",
+    skipBtn: "تخطَّ",
+    likeBtn: "إعجاب",
+    featuredH2: "الإعلانات المميزة",
+    featuredP: "غرف وشقق مميزة موثَّقة",
+    listingFilterAll: "الكل",
+    listingVerified: "موثَّق",
+    perMonth: "/شهر",
+    viewAllBtn: "عرض جميع الإعلانات",
+    howH2: "كيف تعمل سفيرا؟",
+    howP: "من الملف الشخصي إلى المنزل المثالي في أقل من ٤٨ ساعة.",
+    howItWorks: [
+      { step: "٠١", title: "أنشئ ملفك الشخصي",      desc: "أخبرنا عن أسلوب حياتك وميزانيتك وشخصيتك. يتعلّم ذكاؤنا الاصطناعي ما يجعلك فريداً.",                                    icon: "✦", gradient: "from-blue-500 to-indigo-600" },
+      { step: "٠٢", title: "مطابقات بالذكاء الاصطناعي", desc: "تحليل فوري لأكثر من ٤٠ عامل توافق. شريك السكن المثالي أقرب مما تتصوّر.",                                           icon: "◈", gradient: "from-violet-500 to-purple-600" },
+      { step: "٠٣", title: "تصفَّح وتواصَل",           desc: "أعجب وطابق وراسِل. تحقَّق بالفيديو قبل أي التزام.",                                                                    icon: "◎", gradient: "from-pink-500 to-rose-600" },
+      { step: "٠٤", title: "انتقل للسكن",              desc: "وقِّع رقمياً، واحصل على دعم المجتمع، واستقرّ في منزلك المثالي.",                                                       icon: "⌂", gradient: "from-emerald-500 to-teal-600" },
+    ],
+    roommatesH2: "أفضل المطابقات بالقرب منك",
+    roommatesP: "أشخاص يبحثون عن شريك سكن في برلين الآن",
+    viewAll: "عرض الكل",
+    matchedBtn: "تمّت المطابقة!",
+    connectBtn: "تواصَل",
+    petsOkShort: "الحيوانات الأليفة مسموح بها",
+    noPetsShort: "لا حيوانات",
+    trendingH2: "المدن الرائجة",
+    trendingP: "أين ينتقل الناس المعاصرون في ٢٠٢٥",
+    activeListings: "إعلان نشط",
+    communityBadge: "تغذية المجتمع",
+    communityH2: "قصص حقيقية. أشخاص حقيقيون.",
+    communityP: "انضم إلى مجتمع يضم أكثر من ١٢٧,٠٠٠ عضو يتشاركون رحلتهم",
+    likesLabel: "إعجاب",
+    commentsLabel: "تعليق",
+    shareLabel: "مشاركة",
+    testiH2: "يحبّه الآلاف",
+    testiReviews: "من أكثر من ١٢,٠٠٠ تقييم",
+    appH2a: "سفيرا في جيبك.",
+    appH2b: "في أي مكان. في أي وقت.",
+    appP: "إشعارات فورية للمطابقات، ومراسلة في الوقت الحقيقي، وتصفُّح الإعلانات أينما كنت.",
+    appStoreLabel: "حمِّل من:",
+    appStoreName: "App Store",
+    googlePlayLabel: "احصل عليه من:",
+    googlePlayName: "Google Play",
+    newMatch: "مطابقة جديدة!",
+    likedProfile: "أعجبت Emma W. بملفك الشخصي",
+    compatibility: "توافق ٩٧٪ · منذ دقيقتين",
+    suggested: "مقترَح",
+    footerDesc: "المنصة الأكثر ثقةً للعثور على شركاء السكن والغرف. مصمَّمة للمعيشة العصرية عبر الحدود.",
+    footerLinks: [
+      { title: "المنتج",  links: ["البحث عن غرفة", "البحث عن شريك سكن", "نشر إعلان", "المطابقة بالذكاء الاصطناعي", "بريميوم"] },
+      { title: "الشركة",  links: ["من نحن", "المدوّنة", "الوظائف", "الصحافة", "اتصل بنا"] },
+      { title: "الدعم",   links: ["مركز المساعدة", "الأمان", "شروط الاستخدام", "الخصوصية", "ملفات تعريف الارتباط"] },
+    ],
+    footerCopy: "٢٠٢٥ Sefira Technologies, Inc. جميع الحقوق محفوظة.",
+    footerLegal: ["شروط الاستخدام", "الخصوصية", "ملفات تعريف الارتباط"],
+    ilanVer: "نشر إعلان",
+    ilanVerModal: "يرجى تسجيل الدخول أو التسجيل لنشر إعلان.",
+    girisYap: "تسجيل الدخول",
+    kayitOl: "إنشاء حساب",
+  },
 };
 type Lang = keyof typeof translations;
 
@@ -425,6 +553,7 @@ const matchProfiles = [
     bio: "Creative designer looking for a quiet, tidy flatmate who appreciates good aesthetics.",
     bioTr: "Sessiz, düzenli ve estetiği önemseyen bir ev arkadaşı arayan yaratıcı tasarımcı.",
     bioFa: "طراح خلاق به دنبال هم‌خانه‌ای آرام و مرتب که زیبایی‌شناسی خوب را ارزشمند بداند.",
+    bioAr: "مصمّمة مبدعة تبحث عن شريك سكن هادئ ومنظَّم يقدّر الذوق الجمالي الرفيع.",
     verified: true, pets: false, smoking: false, budget: "700-1000",
   },
   {
@@ -434,6 +563,7 @@ const matchProfiles = [
     bio: "Remote dev who values clean spaces and good coffee. Lets build a calm, focused home.",
     bioTr: "Temiz alanları ve güzel kahveyi önemseyen uzaktan geliştirici. Sakin, odaklı bir ev kuralım.",
     bioFa: "توسعه‌دهنده از راه دور که فضاهای تمیز و قهوه خوب را می‌پسندد. بیایید خانه‌ای آرام و متمرکز بسازیم.",
+    bioAr: "مطوّر عن بُعد يقدّر المساحات النظيفة والقهوة الجيدة. لنبني معاً بيتاً هادئاً ومركَّزاً.",
     verified: true, pets: true, smoking: false, budget: "800-1100",
   },
   {
@@ -443,6 +573,7 @@ const matchProfiles = [
     bio: "Med student, tidy and friendly. Latin music on weekends, focused on weeknights.",
     bioTr: "Tıp öğrencisi, düzenli ve arkadaş canlısı. Hafta sonları Latin müzik, hafta içi çalışma modu.",
     bioFa: "دانشجوی پزشکی، مرتب و دوستانه. آخر هفته‌ها موسیقی لاتین، شب‌های هفته مطالعه.",
+    bioAr: "طالبة طب، منظَّمة وودودة. موسيقى لاتينية في عطل نهاية الأسبوع، تركيز تام في أيام الدراسة.",
     verified: false, pets: false, smoking: false, budget: "500-750",
   },
 ];
@@ -516,6 +647,14 @@ const testimonialsByLang = {
     { name: "زهرا حسینی",    role: "طراح گرافیک",         city: "تبریز",    quote: "آگهی‌های تأیید شده سفیرا مانع از بسیاری کلاهبرداری‌ها شد. هر خانه‌ای که بازدید کردم دقیقاً همانطور بود که توضیح داده شده بود.",               rating: 5, gradient: "from-cyan-500 to-blue-600",      initials: "زح", avatar: "https://randomuser.me/api/portraits/women/75.jpg" },
     { name: "امیر صادقی",    role: "دانشجوی تبادلی",      city: "تهران",    quote: "هیچ‌وقت فکر نمی‌کردم پیدا کردن اتاق در خارج از کشور این‌قدر آسان باشد. جامعه سفیرا خیلی صمیمی بود.",                                         rating: 5, gradient: "from-violet-500 to-purple-600", initials: "اص", avatar: "https://randomuser.me/api/portraits/men/90.jpg"   },
   ],
+  ar: [
+    { name: "سارة العلي",    role: "طالبة",               city: "دبي",       quote: "وجدتُ شريكة السكن المثالية عبر سفيرا في ٤٨ ساعة فقط. دقة المطابقة بالذكاء الاصطناعي مذهلة؛ نفس جدول النوم ونفس عادات النظافة.",              rating: 5, gradient: "from-blue-500 to-indigo-600",    initials: "سع", avatar: "https://randomuser.me/api/portraits/women/32.jpg" },
+    { name: "خالد المنصور",  role: "مهندس برمجيات",       city: "الرياض",    quote: "حين عُدتُ من الخارج، كان إيجاد سكن آمن هاجسي الأكبر. نظام التحقق الدقيق في سفيرا ومجتمعها الدافئ جعلاني أشعر بالانتماء فوراً.",        rating: 5, gradient: "from-emerald-500 to-teal-600",   initials: "خم", avatar: "https://randomuser.me/api/portraits/men/44.jpg"   },
+    { name: "نورا الحمدان",  role: "طالبة طب",             city: "القاهرة",   quote: "التطبيق رائع ولا يمكن الاستغناء عنه. واصلتُ تصفّح الملفات حتى وجدتُ مكاناً يشعرني بأنه بيتي الحقيقي.",                                   rating: 5, gradient: "from-rose-500 to-pink-600",      initials: "نح", avatar: "https://randomuser.me/api/portraits/women/67.jpg" },
+    { name: "عمر الشريف",    role: "طالب دراسات عليا",    city: "بيروت",     quote: "انتقلتُ إلى مدينة جديدة ولا أعرف فيها أحداً. في أسبوع واحد، وصلتني سفيرا بشركاء سكن أصبحوا أقرب أصدقائي.",                                rating: 5, gradient: "from-yellow-500 to-orange-600",  initials: "عش", avatar: "https://randomuser.me/api/portraits/men/68.jpg"   },
+    { name: "ريم السعيد",    role: "مصمّمة مستقلة",       city: "أبوظبي",    quote: "الإعلانات الموثَّقة أنقذتني من كثير من عمليات الاحتيال. كل مكان زرتُه كان مطابقاً تماماً لما هو موصوف. انتقلتُ دون أي توتر.",             rating: 5, gradient: "from-cyan-500 to-blue-600",      initials: "رس", avatar: "https://randomuser.me/api/portraits/women/75.jpg" },
+    { name: "فيصل الغامدي",  role: "طالب تبادل",          city: "عمّان",     quote: "لم أتخيّل قط أن إيجاد غرفة في الخارج سيكون بهذه السهولة. المجتمع كان مرحّباً جداً والتطبيق جعل كل شيء شفافاً.",                           rating: 5, gradient: "from-violet-500 to-purple-600", initials: "فغ", avatar: "https://randomuser.me/api/portraits/men/90.jpg"   },
+  ],
 };
 
 const communityPostsByLang = {
@@ -533,6 +672,11 @@ const communityPostsByLang = {
     { id: 1, user: "سارا م.",   location: "تهران، ایران",   content: "هفته اول تو خونه جدیدم. سفیرا منو با ۳ نفر که عاشق سکوت و صبح‌های زود هستن متصل کرد!",                      likes: 342, comments: 28, gradient: "from-pink-500 to-rose-600",    initials: "سم", time: "۲ ساعت پیش" },
     { id: 2, user: "علی ر.",    location: "مشهد، ایران",    content: "نکته هم‌خانه‌یابی: در مورد برنامه خوابت صادق باش! هم‌خانه‌ام شب‌زنده‌دار و ما کاملاً مچ شدیم.",              likes: 218, comments: 45, gradient: "from-blue-500 to-indigo-600",  initials: "عر", time: "۵ ساعت پیش" },
     { id: 3, user: "نیلوفر ا.", location: "اصفهان، ایران",  content: "اولین هفتم تو آپارتمان جدیدم. سفیرا منو با ۳ نفر که طراحی مینیمالیستی و صبح‌های زود رو دوست دارن آشنا کرد.", likes: 456, comments: 67, gradient: "from-violet-500 to-purple-600",initials: "نا", time: "۱ روز پیش" },
+  ],
+  ar: [
+    { id: 1, user: "سارة ع.",  location: "دبي، الإمارات",  content: "وجدتُ للتو أروع شركاء السكن عبر سفيرا! سأنتقل إليهم الأسبوع القادم. بدأت هذه المدينة تشعرني بأنها بيتي الحقيقي.",          likes: 342, comments: 28, gradient: "from-pink-500 to-rose-600",    initials: "سع", time: "منذ ساعتين" },
+    { id: 2, user: "خالد م.",  location: "الرياض، السعودية", content: "نصيحة لشريك السكن: كن صادقاً بشأن جدول نومك! شريكي سهراني وتطابقنا بشكل مثالي. ٦ أشهر مضت ولا مشاكل أبداً.",             likes: 218, comments: 45, gradient: "from-blue-500 to-indigo-600",  initials: "خم", time: "منذ ٥ ساعات" },
+    { id: 3, user: "نورا ح.",  location: "القاهرة، مصر",    content: "أسبوعي الأول في شقتي الجديدة. وصلتني سفيرا بثلاثة أشخاص يحبون التصميم البسيط والصباح الباكر. فريق الأحلام!",              likes: 456, comments: 67, gradient: "from-violet-500 to-purple-600",initials: "نح", time: "منذ يوم" },
   ],
 };
 
@@ -648,7 +792,7 @@ export default function Home() {
   const [lang, setLang] = useState<Lang>("tr");
   useEffect(() => {
     const saved = localStorage.getItem("sefira-lang") as Lang | null;
-    if (saved === "tr" || saved === "en" || saved === "fa") setLang(saved);
+    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar") setLang(saved);
   }, []);
   useEffect(() => { localStorage.setItem("sefira-lang", lang); }, [lang]);
 
@@ -728,7 +872,7 @@ export default function Home() {
   const sliderPct = ((budgetUSD - 100) / 4900) * 100;
 
   return (
-    <div className="min-h-screen bg-stone-50 text-stone-900 overflow-x-hidden" dir={lang === "fa" ? "rtl" : "ltr"}>
+    <div className="min-h-screen bg-stone-50 text-stone-900 overflow-x-hidden" dir={lang === "fa" || lang === "ar" ? "rtl" : "ltr"}>
 
       {/* ── NAVBAR ────────────────────────────────────────────────────────────── */}
       <nav
@@ -776,14 +920,14 @@ export default function Home() {
                 <div className="absolute top-full mt-1 right-0 z-[100] bg-white border border-stone-200 rounded-xl shadow-xl overflow-hidden min-w-[190px] animate-dropdown-slide">
                   <div className="px-3 py-2 border-b border-stone-100">
                     <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">
-                      {lang === "tr" ? "Para Birimini Seçin" : lang === "fa" ? "انتخاب واحد پولی" : "Select Currency"}
+                      {lang === "tr" ? "Para Birimini Seçin" : lang === "fa" ? "انتخاب واحد پولی" : lang === "ar" ? "اختر العملة" : "Select Currency"}
                     </p>
                   </div>
                   {(["USD", "EUR", "TRY"] as const).map((cur) => {
                     const meta = {
-                      USD: { icon: "💵", name: lang === "tr" ? "ABD Doları" : lang === "fa" ? "دلار آمریکا" : "US Dollar" },
-                      EUR: { icon: "💶", name: lang === "tr" ? "Euro" : lang === "fa" ? "یورو" : "Euro" },
-                      TRY: { icon: "💴", name: lang === "tr" ? "Türk Lirası" : lang === "fa" ? "لیر ترکیه" : "Turkish Lira" },
+                      USD: { icon: "💵", name: lang === "tr" ? "ABD Doları" : lang === "fa" ? "دلار آمریکا" : lang === "ar" ? "دولار أمريكي" : "US Dollar" },
+                      EUR: { icon: "💶", name: lang === "tr" ? "Euro" : lang === "fa" ? "یورو" : lang === "ar" ? "يورو" : "Euro" },
+                      TRY: { icon: "💴", name: lang === "tr" ? "Türk Lirası" : lang === "fa" ? "لیر ترکیه" : lang === "ar" ? "ليرة تركية" : "Turkish Lira" },
                     }[cur];
                     return (
                       <button
@@ -813,10 +957,10 @@ export default function Home() {
                 className="flex items-center gap-1 bg-stone-100 border border-stone-200 rounded-lg px-2 py-1.5 text-[11px] font-black transition-all duration-200 hover:bg-stone-200 whitespace-nowrap"
               >
                 <span className="text-sm leading-none">
-                  {lang === "tr" ? "🇹🇷" : lang === "en" ? "🇬🇧" : "🇮🇷"}
+                  {lang === "tr" ? "🇹🇷" : lang === "en" ? "🇬🇧" : lang === "fa" ? "🇮🇷" : "🇸🇦"}
                 </span>
                 <span className="hidden sm:inline text-stone-700">
-                  {lang === "tr" ? "TR" : lang === "en" ? "EN" : "FA"}
+                  {lang === "tr" ? "TR" : lang === "en" ? "EN" : lang === "fa" ? "FA" : "AR"}
                 </span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className={`w-3 h-3 text-stone-400 transition-transform duration-200 ${langMenuOpen ? "rotate-180" : ""}`}>
                   <polyline points="6 9 12 15 18 9" />
@@ -824,14 +968,14 @@ export default function Home() {
               </button>
               {langMenuOpen && (
                 <div className="absolute top-full mt-1 right-0 z-[100] bg-white border border-stone-200 rounded-xl shadow-xl overflow-hidden min-w-[90px]">
-                  {(["tr", "en", "fa"] as const).map((l) => (
+                  {(["tr", "en", "fa", "ar"] as const).map((l) => (
                     <button
                       key={l}
                       onClick={() => { setLang(l); setLangMenuOpen(false); }}
                       className={`flex items-center gap-2 w-full px-3 py-2.5 text-[12px] font-bold transition-colors hover:bg-stone-50 ${lang === l ? "text-orange-500" : "text-stone-700"}`}
                     >
-                      <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : "🇮🇷"}</span>
-                      {l === "tr" ? "TR" : l === "en" ? "EN" : "FA"}
+                      <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : l === "fa" ? "🇮🇷" : "🇸🇦"}</span>
+                      {l === "tr" ? "TR" : l === "en" ? "EN" : l === "fa" ? "FA" : "AR"}
                     </button>
                   ))}
                 </div>
@@ -939,7 +1083,7 @@ export default function Home() {
                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                   <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                 </svg>
-                <span className="text-xs">{lang === "tr" ? "Profilimi Düzenle" : lang === "fa" ? "ویرایش پروفایل" : "Edit Profile"}</span>
+                <span className="text-xs">{lang === "tr" ? "Profilimi Düzenle" : lang === "fa" ? "ویرایش پروفایل" : lang === "ar" ? "تعديل الملف الشخصي" : "Edit Profile"}</span>
               </Link>
 
               {/* Saved Listings */}
@@ -951,7 +1095,7 @@ export default function Home() {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-orange-500 flex-shrink-0">
                   <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
                 </svg>
-                <span className="text-xs">{lang === "tr" ? "Kaydedilenler" : lang === "fa" ? "ذخیره‌ها" : "Saved"}</span>
+                <span className="text-xs">{lang === "tr" ? "Kaydedilenler" : lang === "fa" ? "ذخیره‌ها" : lang === "ar" ? "المحفوظات" : "Saved"}</span>
               </Link>
 
               {/* Post Listing */}
@@ -962,7 +1106,7 @@ export default function Home() {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 text-orange-500 flex-shrink-0">
                   <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
-                <span className="text-xs">{lang === "tr" ? "İlan Ver" : lang === "fa" ? "ثبت آگهی" : "Post Listing"}</span>
+                <span className="text-xs">{lang === "tr" ? "İlan Ver" : lang === "fa" ? "ثبت آگهی" : lang === "ar" ? "نشر إعلان" : "Post Listing"}</span>
               </button>
 
               {/* My Listings */}
@@ -977,7 +1121,7 @@ export default function Home() {
                   <line x1="9" y1="12" x2="15" y2="12" />
                   <line x1="9" y1="16" x2="13" y2="16" />
                 </svg>
-                <span className="text-xs">{lang === "tr" ? "İlanlarım" : lang === "fa" ? "آگهی‌های من" : "My Listings"}</span>
+                <span className="text-xs">{lang === "tr" ? "İlanlarım" : lang === "fa" ? "آگهی‌های من" : lang === "ar" ? "إعلاناتي" : "My Listings"}</span>
               </Link>
 
               {/* My Messages */}
@@ -994,7 +1138,7 @@ export default function Home() {
                     <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-orange-500 border border-white" />
                   )}
                 </div>
-                <span className="text-xs">{lang === "tr" ? "Mesajlarım" : lang === "fa" ? "پیام‌های من" : "My Messages"}</span>
+                <span className="text-xs">{lang === "tr" ? "Mesajlarım" : lang === "fa" ? "پیام‌های من" : lang === "ar" ? "رسائلي" : "My Messages"}</span>
               </Link>
 
               {/* My Comments & Ratings */}
@@ -1006,7 +1150,7 @@ export default function Home() {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-orange-500 flex-shrink-0">
                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                 </svg>
-                <span className="text-xs">{lang === "tr" ? "Yorumlarım ve Puanlarım" : lang === "fa" ? "کامنت‌ها و امتیازهای من" : "My Comments & Ratings"}</span>
+                <span className="text-xs">{lang === "tr" ? "Yorumlarım ve Puanlarım" : lang === "fa" ? "کامنت‌ها و امتیازهای من" : lang === "ar" ? "تعليقاتي وتقييماتي" : "My Comments & Ratings"}</span>
               </Link>
 
               <div className="h-px bg-stone-100 my-1 mx-2" />
@@ -1713,7 +1857,7 @@ export default function Home() {
                   </div>
                   <span className="text-xs text-stone-400">{p.nationality}</span>
                 </div>
-                <p className="text-xs text-stone-500 leading-relaxed mb-4">{lang === "tr" ? p.bioTr : lang === "fa" ? p.bioFa : p.bio}</p>
+                <p className="text-xs text-stone-500 leading-relaxed mb-4">{lang === "tr" ? p.bioTr : lang === "fa" ? p.bioFa : lang === "ar" ? (p.bioAr ?? p.bio) : p.bio}</p>
                 <div className="flex flex-wrap gap-1.5 mb-4">
                   {p.lifestyle.map((tag) => (
                     <span key={tag} className="text-xs bg-stone-100 border border-stone-200 rounded-full px-2.5 py-0.5 text-stone-600">
@@ -2054,7 +2198,7 @@ export default function Home() {
 
               {/* Title */}
               <h2 className="text-2xl font-black text-white drop-shadow-sm tracking-tight">
-                {lang === "tr" ? "Seni Çok Seviyoruz!" : lang === "fa" ? "خیلی دوستت داریم!" : "We Love You So Much!"}
+                {lang === "tr" ? "Seni Çok Seviyoruz!" : lang === "fa" ? "خیلی دوستت داریم!" : lang === "ar" ? "نحبك كثيراً 🧡" : "We Love You So Much!"}
               </h2>
 
               {/* Message */}
@@ -2063,6 +2207,8 @@ export default function Home() {
                   ? "Bizimle kaldığın için teşekkürler. Sen bizim için çok değerlisin! 🧡"
                   : lang === "fa"
                   ? "ممنون که موندی. تو برای ما خیلی ارزشمندی! 🧡"
+                  : lang === "ar"
+                  ? "شكراً لبقائك معنا. أنت تعني لنا الكثير! 🧡"
                   : "Thank you for staying with us. You mean so much to us! 🧡"}
               </p>
 
@@ -2143,7 +2289,7 @@ export default function Home() {
 
               {/* Title */}
               <h2 className="text-xl sm:text-2xl font-black text-white mb-3 drop-shadow-sm tracking-tight">
-                {lang === "tr" ? "Hoş Geldiniz!" : lang === "fa" ? "خوش آمدید! 🏠✨" : "Welcome Home!"}
+                {lang === "tr" ? "Hoş Geldiniz!" : lang === "fa" ? "خوش آمدید! 🏠✨" : lang === "ar" ? "أهلاً بك! 🏠✨" : "Welcome Home!"}
               </h2>
 
               {/* Body */}
@@ -2152,6 +2298,8 @@ export default function Home() {
                   ? "Sizi aramızda görmekten çok mutluyuz. Harika bir gün geçirmenizi diliyoruz! 🌟"
                   : lang === "fa"
                   ? "از اینکه به ما پیوستید خوشحالیم. روز خوبی داشته باشید! 🌟"
+                  : lang === "ar"
+                  ? "يسعدنا وجودك معنا. نتمنى لك يوماً رائعاً! 🌟"
                   : "We are so happy to have you here. Wishing you a wonderful day! 🌟"}
               </p>
 
@@ -2165,7 +2313,7 @@ export default function Home() {
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
-                {lang === "tr" ? "Kapat" : lang === "fa" ? "بستن" : "Close"}
+                {lang === "tr" ? "Kapat" : lang === "fa" ? "بستن" : lang === "ar" ? "إغلاق" : "Close"}
               </button>
             </div>
           </div>

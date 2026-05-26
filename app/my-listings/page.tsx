@@ -49,6 +49,21 @@ const translations = {
     type_has_place: "خانه دارم — دنبال هم‌خانه",
     type_needs_place: "خانه ندارم — دنبال زندگی مشترک",
   },
+  // Always add "ar" key when adding new translations
+  ar: {
+    title: "إعلاناتي",
+    empty: "لم تنشر أي إعلانات بعد. انشر إعلانك الأول الآن!",
+    createBtn: "نشر إعلان",
+    notLoggedIn: "يرجى تسجيل الدخول لعرض إعلاناتك.",
+    goHome: "الذهاب إلى الرئيسية",
+    address: "العنوان",
+    sharingCost: "تكلفة المشاركة الشهرية",
+    roommates: "شركاء السكن المطلوبون",
+    rooms: "الغرف",
+    active: "نشط",
+    type_has_place: "لديه مكان — يبحث عن شريك سكن",
+    type_needs_place: "ليس لديه مكان — يبحث عن المشاركة",
+  },
 };
 
 type Lang = keyof typeof translations;
@@ -75,7 +90,7 @@ export default function MyListingsPage() {
 
   useEffect(() => {
     const saved = localStorage.getItem("sefira-lang") as Lang | null;
-    if (saved === "tr" || saved === "en" || saved === "fa") setLang(saved);
+    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar") setLang(saved);
   }, []);
 
   useEffect(() => {
@@ -120,7 +135,7 @@ export default function MyListingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50" dir={lang === "fa" ? "rtl" : "ltr"}>
+    <div className="min-h-screen bg-stone-50" dir={lang === "fa" || lang === "ar" ? "rtl" : "ltr"}>
       {/* Navbar */}
       <nav dir="ltr" style={{ transform: "translateZ(0)", WebkitTransform: "translateZ(0)", willChange: "transform" }} className="fixed top-0 left-0 right-0 w-full z-[9999] bg-white border-b border-stone-200 shadow-sm">
         <div className="max-w-2xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
@@ -142,9 +157,9 @@ export default function MyListingsPage() {
         {/* Back to home */}
         <Link href="/" dir="ltr" className="inline-flex items-center gap-1.5 mb-5 text-sm font-semibold text-stone-500 hover:text-stone-800 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-lg transition-colors">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 flex-shrink-0">
-            <polyline points={lang === "fa" ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
+            <polyline points={lang === "fa" || lang === "ar" ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
           </svg>
-          <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : "Home"}</span>
+          <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : lang === "ar" ? "الرئيسية" : "Home"}</span>
         </Link>
 
         <div className="flex items-center justify-between mb-6 gap-3">
@@ -217,7 +232,7 @@ export default function MyListingsPage() {
                 </div>
                 <p className="text-[10px] text-stone-300 font-medium">
                   {new Date(listing.created_at).toLocaleDateString(
-                    lang === "tr" ? "tr-TR" : lang === "fa" ? "fa-IR" : "en-US",
+                    lang === "tr" ? "tr-TR" : lang === "fa" ? "fa-IR" : lang === "ar" ? "ar-SA" : "en-US",
                     { year: "numeric", month: "long", day: "numeric" }
                   )}
                 </p>

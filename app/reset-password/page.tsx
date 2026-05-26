@@ -48,11 +48,26 @@ const t = {
     goHome: "رفتن به صفحه اصلی",
     invalidLink: "لینک نامعتبر یا منقضی شده. لطفاً دوباره تلاش کنید.",
   },
+  // Always add "ar" key when adding new translations
+  ar: {
+    title: "تحديث كلمة المرور",
+    newPassword: "كلمة المرور الجديدة",
+    confirmPassword: "تأكيد كلمة المرور الجديدة",
+    placeholder: "٦ أحرف على الأقل",
+    updateBtn: "تحديث كلمة المرور",
+    updating: "جارٍ التحديث...",
+    passwordMismatch: "كلمتا المرور غير متطابقتين.",
+    minLength: "يجب أن تكون كلمة المرور ٦ أحرف على الأقل.",
+    success: "تم تحديث كلمة مرورك! جارٍ التحويل إلى الصفحة الرئيسية...",
+    error: "حدث خطأ. يرجى المحاولة مرة أخرى.",
+    goHome: "الذهاب إلى الرئيسية",
+    invalidLink: "رابط غير صالح أو منتهي الصلاحية. يرجى المحاولة مرة أخرى.",
+  },
 };
 
 export default function ResetPasswordPage() {
   const router = useRouter();
-  const [lang, setLang] = useState<"tr" | "en" | "fa">("tr");
+  const [lang, setLang] = useState<"tr" | "en" | "fa" | "ar">("tr");
   const tr = t[lang];
 
   // null = still checking, true = valid token, false = invalid/missing
@@ -64,8 +79,8 @@ export default function ResetPasswordPage() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem("sefira-lang") as "tr" | "en" | "fa" | null;
-    if (saved === "tr" || saved === "en" || saved === "fa") setLang(saved);
+    const saved = localStorage.getItem("sefira-lang") as "tr" | "en" | "fa" | "ar" | null;
+    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar") setLang(saved);
   }, []);
 
   useEffect(() => {
@@ -125,7 +140,7 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-50 flex items-center justify-center p-4" dir={lang === "fa" ? "rtl" : "ltr"}>
+    <div className="min-h-screen bg-stone-50 flex items-center justify-center p-4" dir={lang === "fa" || lang === "ar" ? "rtl" : "ltr"}>
       <div className="w-full max-w-md">
         {/* Card */}
         <div className="bg-white rounded-3xl shadow-2xl shadow-black/10 overflow-hidden">
