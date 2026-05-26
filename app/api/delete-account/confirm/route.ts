@@ -41,9 +41,14 @@ export async function POST(req: NextRequest) {
   try {
     const { otp, reasons, rating, feedback } = await req.json();
 
-    // Read the stored OTP from fresh user metadata (getUser() fetches live data from server)
-    const storedCode = user.user_metadata?._delete_otp;
-    const expiresAt = user.user_metadata?._delete_otp_expires;
+    // Read OTP from the admin API so we always get the freshest metadata written by
+    // send-otp. The JWT-based getUser() above only proves identity; it may not reflect
+    // metadata written by admin.updateUserById until the token is refreshed.
+    const { data: { user: freshUser }, error: fetchError } = await supabaseAdmin.auth.admin.getUserById(user.id);
+    if (fetchError || !freshUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const storedCode = freshUser.user_metadata?._delete_otp;
+    const expiresAt = freshUser.user_metadata?._delete_otp_expires;
 
     if (!storedCode || storedCode !== otp) {
       return NextResponse.json({ error: "invalid_otp" }, { status: 400 });
