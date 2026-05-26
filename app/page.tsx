@@ -8,6 +8,7 @@ import InstagramCTA from "@/app/components/InstagramCTA";
 import PopularCities from "@/app/components/PopularCities";
 import PropertyFilters from "@/app/components/PropertyFilters";
 import AuthModal from "@/app/components/AuthModal";
+import OnboardingFlow from "@/app/components/OnboardingFlow";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
 import {
@@ -889,6 +890,24 @@ export default function Home() {
       requestAnimationFrame(() => setStayMessageVisible(true));
     }
   }, []);
+
+  // ── Onboarding flow ───────────────────────────────────────────────────────
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  useEffect(() => {
+    if (!user) { setShowOnboarding(false); return; }
+    supabase
+      .from("profiles")
+      .select("birth_date, gender, country")
+      .eq("user_id", user.id)
+      .single()
+      .then(({ data }) => {
+        if (!data?.birth_date || !data?.gender || !data?.country) {
+          setShowOnboarding(true);
+          setShowWelcomeToast(false);
+        }
+      });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
 
   // ── Welcome modal ─────────────────────────────────────────────────────────
   const [showWelcomeToast, setShowWelcomeToast] = useState(false);
@@ -2472,6 +2491,15 @@ export default function Home() {
           {t.ilanVer}
         </button>
       </div>
+
+      {/* ── ONBOARDING FLOW ──────────────────────────────────────────────────── */}
+      {showOnboarding && user && (
+        <OnboardingFlow
+          userId={user.id}
+          lang={lang}
+          onComplete={() => setShowOnboarding(false)}
+        />
+      )}
 
       {/* ── İlan Ver — auth required modal ────────────────────────────────── */}
       {showListingModal && (
