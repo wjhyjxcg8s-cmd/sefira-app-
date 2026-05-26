@@ -35,13 +35,16 @@ export async function POST(req: NextRequest) {
     const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
 
     // Store OTP in user metadata
-    await supabaseAdmin.auth.admin.updateUserById(user.id, {
+    const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(user.id, {
       user_metadata: {
         ...user.user_metadata,
         _delete_otp: code,
         _delete_otp_expires: expiresAt,
       },
     });
+    if (updateError) {
+      return NextResponse.json({ error: updateError.message }, { status: 500 });
+    }
 
     // Send email via Resend
     const { error: sendError } = await resend.emails.send({
