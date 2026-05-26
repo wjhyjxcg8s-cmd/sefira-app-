@@ -3,8 +3,25 @@ import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 
 const SUPABASE_URL = "https://ceetzophaybywfuhezhv.supabase.co";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlZXR6b3BoYXlieXdmdWhlemh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTc4NTUsImV4cCI6MjA5NDkzMzg1NX0.DARDlw_AL8WX6yfgYDgb6nSgCo84jMV05aNbfT-zHpI";
 
 export async function POST(req: NextRequest) {
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  // Validate the user JWT by creating a client that uses it as the Authorization header.
+  // Using the service role key for getUser() is unreliable; the anon-key client with the
+  // user's own header is the correct Supabase pattern for Route Handlers.
+  const supabaseUser = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    global: { headers: { Authorization: authHeader } },
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+  const { data: { user }, error: userError } = await supabaseUser.auth.getUser();
+  if (userError || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  // Admin client for privileged operations — created at request time so env vars are
+  // read from the live runtime environment, not baked in at module-load time.
   const supabaseAdmin = createClient(
     SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -13,13 +30,6 @@ export async function POST(req: NextRequest) {
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   try {
-    const authHeader = req.headers.get("Authorization");
-    const token = authHeader?.replace("Bearer ", "");
-    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-    const { data: { user }, error: userError } = await supabaseAdmin.auth.getUser(token);
-    if (userError || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
     // Generate 6-digit code
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes

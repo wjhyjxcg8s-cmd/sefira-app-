@@ -16,25 +16,32 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 const SUPABASE_URL = "https://ceetzophaybywfuhezhv.supabase.co";
-
-const supabaseAdmin = createClient(
-  SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { autoRefreshToken: false, persistSession: false } }
-);
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlZXR6b3BoYXlieXdmdWhlemh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTc4NTUsImV4cCI6MjA5NDkzMzg1NX0.DARDlw_AL8WX6yfgYDgb6nSgCo84jMV05aNbfT-zHpI";
 
 export async function POST(req: NextRequest) {
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  // Validate the user JWT using a client initialized with the user's own Authorization header.
+  const supabaseUser = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    global: { headers: { Authorization: authHeader } },
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+  const { data: { user }, error: userError } = await supabaseUser.auth.getUser();
+  if (userError || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  // Admin client for privileged operations — created at request time.
+  const supabaseAdmin = createClient(
+    SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  );
+
   try {
-    const authHeader = req.headers.get("Authorization");
-    const token = authHeader?.replace("Bearer ", "");
-    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-    const { data: { user }, error: userError } = await supabaseAdmin.auth.getUser(token);
-    if (userError || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
     const { otp, reasons, rating, feedback } = await req.json();
 
-    // Verify OTP from user metadata
+    // Read the stored OTP from fresh user metadata (getUser() fetches live data from server)
     const storedCode = user.user_metadata?._delete_otp;
     const expiresAt = user.user_metadata?._delete_otp_expires;
 
