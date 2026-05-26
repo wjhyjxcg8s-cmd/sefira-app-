@@ -422,14 +422,14 @@ export default function ProfilePage() {
       if (deleteOtp !== code) { setDeleteError(t.deleteOtpInvalid); setDeleteLoading(false); return; }
       if (Date.now() > expiry) { setDeleteError(t.deleteOtpExpired); setDeleteLoading(false); return; }
 
-      const { error: feedbackError } = await supabase.from("deletion_feedback").insert([{
-        email: user?.email,
-        reasons: deleteReasons,
-        rating: deleteRating,
+      const { error: fbError } = await supabase.from("deletion_feedback").insert([{
+        email: user?.email || "",
+        reasons: deleteReasons || [],
+        rating: deleteRating || 0,
         feedback: deleteExtraFeedback || "",
         deleted_at: new Date().toISOString(),
       }]);
-      console.log("Feedback saved:", feedbackError);
+      console.log("FB Error:", fbError);
 
       const { error: rpcError } = await supabase.rpc("delete_user");
       if (rpcError) { setDeleteError(rpcError.message); setDeleteLoading(false); return; }
