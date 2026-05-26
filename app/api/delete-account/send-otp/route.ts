@@ -5,20 +5,12 @@ import { Resend } from "resend";
 const SUPABASE_URL = "https://ceetzophaybywfuhezhv.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlZXR6b3BoYXlieXdmdWhlemh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTc4NTUsImV4cCI6MjA5NDkzMzg1NX0.DARDlw_AL8WX6yfgYDgb6nSgCo84jMV05aNbfT-zHpI";
-const SUPABASE_SERVICE_ROLE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlZXR6b3BoYXlieXdmdWhlemh2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTM1Nzg1NSwiZXhwIjoyMDk0OTMzODU1fQ.Jw1bDN7wqxdqj-OinqK4ll7mV5ka7fT6T-9jORs4x_4";
 
 export async function POST(req: NextRequest) {
   try {
-    // ── 1. Auth clients — all initialised here so env vars are read at request time
-    const supabaseAdmin = createClient(
-      SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY ?? SUPABASE_SERVICE_ROLE_KEY,
-      { auth: { autoRefreshToken: false, persistSession: false } }
-    );
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    // ── 2. Verify caller session
+    // ── 1. Verify caller session using the user's own JWT
     const authHeader = req.headers.get("Authorization") ?? "";
     const supabaseUser = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       global: { headers: { Authorization: authHeader } },
@@ -30,13 +22,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // ── 3. Generate OTP and store in user metadata
+    // ── 2. Generate OTP and store in user metadata via the user's own session.
+    //    updateUser() works with the user JWT — no service role needed.
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = Date.now() + 10 * 60 * 1000;
 
-    const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(user.id, {
-      user_metadata: {
-        ...user.user_metadata,
+    const { error: updateError } = await supabaseUser.auth.updateUser({
+      data: {
         _delete_otp: code,
         _delete_otp_expires: expiresAt,
       },
