@@ -7,20 +7,8 @@ const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlZXR6b3BoYXlieXdmdWhlemh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTc4NTUsImV4cCI6MjA5NDkzMzg1NX0.DARDlw_AL8WX6yfgYDgb6nSgCo84jMV05aNbfT-zHpI";
 
 export async function POST(req: NextRequest) {
-  const authHeader = req.headers.get("Authorization");
-  if (!authHeader) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  const supabaseUser = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-    global: { headers: { Authorization: authHeader } },
-    auth: { autoRefreshToken: false, persistSession: false },
-  });
-  const { data: { user }, error: userError } = await supabaseUser.auth.getUser();
-  if (userError || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
   try {
-    // Both clients are initialised here so process.env is read at request time,
-    // not at module-load time. This is required for env vars to be available on
-    // the production server.
+    // ── 1. Auth clients — all initialised here so env vars are read at request time
     const supabaseAdmin = createClient(
       SUPABASE_URL,
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -28,8 +16,21 @@ export async function POST(req: NextRequest) {
     );
     const resend = new Resend(process.env.RESEND_API_KEY);
 
+    // ── 2. Verify caller session
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const supabaseUser = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      global: { headers: { Authorization: authHeader } },
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+    const { data: { user }, error: userError } = await supabaseUser.auth.getUser();
+    if (userError || !user || !user.email) {
+      console.error("[send-otp] auth:", userError?.message);
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // ── 3. Generate OTP and store in user metadata
     const code = Math.floor(100000 + Math.random() * 900000).toString();
-    const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
+    const expiresAt = Date.now() + 10 * 60 * 1000;
 
     const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(user.id, {
       user_metadata: {
@@ -39,12 +40,14 @@ export async function POST(req: NextRequest) {
       },
     });
     if (updateError) {
-      return NextResponse.json({ error: updateError.message }, { status: 500 });
+      console.error("[send-otp] metadata update:", updateError.message);
+      return NextResponse.json({ error: "Could not store OTP: " + updateError.message }, { status: 500 });
     }
 
+    // ── 4. Send email via Resend
     const { error: sendError } = await resend.emails.send({
       from: "Sefira <support@getsefira.com>",
-      to: user.email!,
+      to: user.email,
       subject: "Sefira — Hesap Silme Kodu / Account Deletion Code",
       html: `
         <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px">
@@ -69,11 +72,14 @@ export async function POST(req: NextRequest) {
         </div>
       `,
     });
-
-    if (sendError) return NextResponse.json({ error: sendError.message }, { status: 500 });
+    if (sendError) {
+      console.error("[send-otp] resend:", sendError.message);
+      return NextResponse.json({ error: "Could not send email: " + sendError.message }, { status: 500 });
+    }
 
     return NextResponse.json({ ok: true });
   } catch (err) {
+    console.error("[send-otp] unhandled:", err);
     return NextResponse.json({ error: String(err) }, { status: 500 });
   }
 }
