@@ -1046,7 +1046,7 @@ export default function Home() {
             {/* Currency switcher */}
             <div className="relative" ref={currencyMenuRef}>
               <button
-                onClick={() => setCurrencyMenuOpen((o) => !o)}
+                onClick={() => { setCurrencyMenuOpen((o) => !o); setProfileMenuOpen(false); setLangMenuOpen(false); }}
                 className="flex items-center gap-1 bg-stone-100 border border-stone-200 rounded-lg px-2 py-1.5 text-[11px] font-black transition-all duration-200 hover:bg-stone-200 whitespace-nowrap"
               >
                 <span className="text-stone-700">{CURRENCY_SYMBOLS[currency]}</span>
@@ -1092,7 +1092,7 @@ export default function Home() {
             {/* Lang switcher — single button + dropdown */}
             <div className="relative" ref={langMenuRef}>
               <button
-                onClick={() => setLangMenuOpen((o) => !o)}
+                onClick={() => { setLangMenuOpen((o) => !o); setProfileMenuOpen(false); setCurrencyMenuOpen(false); }}
                 className="flex items-center gap-1 bg-stone-100 border border-stone-200 rounded-lg px-2 py-1.5 text-[11px] font-black transition-all duration-200 hover:bg-stone-200 whitespace-nowrap"
               >
                 <span className="text-sm leading-none">
@@ -1124,7 +1124,7 @@ export default function Home() {
             {user ? (
               /* Avatar button — opens profile side panel */
               <button
-                onClick={() => setProfileMenuOpen((o) => !o)}
+                onClick={() => { setProfileMenuOpen((o) => !o); setLangMenuOpen(false); setCurrencyMenuOpen(false); }}
                 className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-[10px] sm:text-xs text-white shadow-md shadow-orange-500/40 flex-shrink-0 hover:scale-105 active:scale-90 transition-all duration-200 overflow-hidden ring-2 ${profileMenuOpen ? "ring-orange-500 ring-offset-2 scale-95" : "ring-orange-300 ring-offset-1"}`}
               >
                 {profileAvatarUrl ? (
