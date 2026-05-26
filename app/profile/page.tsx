@@ -426,18 +426,17 @@ export default function ProfilePage() {
       const { data: { session } } = await supabase.auth.getSession();
       const userEmail = session?.user?.email || savedEmailRef.current || "unknown";
 
-      const { error: fbError } = await supabase
-        .from("deletion_feedback")
-        .insert([{
+      const res = await fetch("/api/save-feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           email: userEmail,
           reasons: deleteReasons,
           rating: deleteRating,
           feedback: deleteExtraFeedback || "",
-        }]);
-
-      console.log("Email used:", userEmail);
-      console.log("Reasons:", deleteReasons);
-      console.log("Rating:", deleteRating);
+        }),
+      });
+      const { error: fbError } = await res.json();
       console.log("FB Error:", JSON.stringify(fbError));
 
       const { error: rpcError } = await supabase.rpc("delete_user");
