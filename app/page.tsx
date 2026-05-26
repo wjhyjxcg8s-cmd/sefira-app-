@@ -2043,7 +2043,7 @@ export default function Home() {
               <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-white/30 shadow-xl shadow-black/20 flex-shrink-0">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="https://cataas.com/cat?width=120&height=120"
+                  src="/images/sefira-cat.jpg"
                   alt="cat"
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />

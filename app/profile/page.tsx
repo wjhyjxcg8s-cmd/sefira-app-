@@ -688,7 +688,7 @@ export default function ProfilePage() {
                   className="w-full flex items-center gap-4 rounded-2xl bg-gradient-to-r from-orange-50 to-pink-50 border border-orange-200 py-4 px-5 hover:from-orange-100 hover:to-pink-100 active:scale-95 transition-all"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="https://cataas.com/cat?width=60&height=60" alt="cat" style={{ borderRadius: "50%", width: "50px", height: "50px", objectFit: "cover", flexShrink: 0 }} />
+                  <img src="/images/sefira-cat.jpg" alt="cat" style={{ borderRadius: "50%", width: "50px", height: "50px", objectFit: "cover", flexShrink: 0 }} />
                   <div className="flex flex-col items-start text-left">
                     <span className="text-sm font-bold text-stone-800">{t.cancelAndGoHome}</span>
                     <span className="text-xs text-stone-500 mt-0.5">{t.cancelSubtitle}</span>
@@ -724,7 +724,7 @@ export default function ProfilePage() {
                   className="w-full flex items-center gap-4 rounded-2xl bg-gradient-to-r from-orange-50 to-pink-50 border border-orange-200 py-4 px-5 hover:from-orange-100 hover:to-pink-100 active:scale-95 transition-all"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="https://cataas.com/cat?width=60&height=60" alt="cat" style={{ borderRadius: "50%", width: "50px", height: "50px", objectFit: "cover", flexShrink: 0 }} />
+                  <img src="/images/sefira-cat.jpg" alt="cat" style={{ borderRadius: "50%", width: "50px", height: "50px", objectFit: "cover", flexShrink: 0 }} />
                   <div className="flex flex-col items-start text-left">
                     <span className="text-sm font-bold text-stone-800">{t.cancelAndGoHome}</span>
                     <span className="text-xs text-stone-500 mt-0.5">{t.cancelSubtitle}</span>
@@ -757,7 +757,7 @@ export default function ProfilePage() {
                   className="w-full flex items-center gap-4 rounded-2xl bg-gradient-to-r from-orange-50 to-pink-50 border border-orange-200 py-4 px-5 hover:from-orange-100 hover:to-pink-100 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="https://cataas.com/cat?width=60&height=60" alt="cat" style={{ borderRadius: "50%", width: "50px", height: "50px", objectFit: "cover", flexShrink: 0 }} />
+                  <img src="/images/sefira-cat.jpg" alt="cat" style={{ borderRadius: "50%", width: "50px", height: "50px", objectFit: "cover", flexShrink: 0 }} />
                   <div className="flex flex-col items-start text-left">
                     <span className="text-sm font-bold text-stone-800">{t.cancelAndGoHome}</span>
                     <span className="text-xs text-stone-500 mt-0.5">{t.cancelSubtitle}</span>
