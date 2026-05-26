@@ -13,27 +13,19 @@ export async function POST(req: NextRequest) {
     const { error: sendError } = await resend.emails.send({
       from: "Sefira <support@getsefira.com>",
       to: email,
-      subject: "Sefira — Hesap Silme Kodu / Account Deletion Code",
+      subject: "Sefira - Hesap Silme Doğrulama Kodu",
       html: `
-        <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px">
-          <div style="margin-bottom:24px">
-            <span style="font-size:20px;font-weight:900;color:#f97316">Sefira</span>
+        <div style="font-family: Arial; max-width: 600px; margin: 0 auto;">
+          <div style="background: #f97316; padding: 20px; text-align: center; border-radius: 10px 10px 0 0;">
+            <h1 style="color: white; margin: 0;">Sefira</h1>
           </div>
-          <h2 style="font-size:18px;font-weight:700;color:#1c1917;margin-bottom:8px">
-            Hesap Silme Doğrulama / Account Deletion Verification
-          </h2>
-          <p style="color:#57534e;font-size:14px;margin-bottom:24px">
-            Hesabınızı silmek için aşağıdaki 6 haneli kodu kullanın.<br>
-            Use the 6-digit code below to delete your account.<br>
-            <span dir="rtl">برای حذف حساب خود از کد ۶ رقمی زیر استفاده کنید.</span>
-          </p>
-          <div style="background:#fff7ed;border:2px solid #fed7aa;border-radius:12px;padding:24px;text-align:center;margin-bottom:24px">
-            <span style="font-size:36px;font-weight:900;letter-spacing:8px;color:#ea580c">${code}</span>
+          <div style="padding: 30px; background: #ffffff;">
+            <h2>Hesap Silme Doğrulama Kodu</h2>
+            <p>Doğrulama kodunuz:</p>
+            <h1 style="color: #f97316; font-size: 48px; letter-spacing: 10px;">${code}</h1>
+            <p>Bu kod 10 dakika geçerlidir.</p>
+            <p>Eğer bu işlemi siz yapmadıysanız bu e-postayı dikkate almayınız.</p>
           </div>
-          <p style="color:#a8a29e;font-size:12px">
-            Bu kod 10 dakika geçerlidir. / This code is valid for 10 minutes.<br>
-            <span dir="rtl">این کد ۱۰ دقیقه معتبر است.</span>
-          </p>
         </div>
       `,
     });
