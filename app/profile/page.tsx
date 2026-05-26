@@ -422,6 +422,14 @@ export default function ProfilePage() {
       if (deleteOtp !== code) { setDeleteError(t.deleteOtpInvalid); setDeleteLoading(false); return; }
       if (Date.now() > expiry) { setDeleteError(t.deleteOtpExpired); setDeleteLoading(false); return; }
 
+      await supabase.from("deletion_feedback").insert({
+        email: user?.email ?? "",
+        reasons: deleteReasons,
+        rating: deleteRating,
+        feedback: deleteExtraFeedback || null,
+        deleted_at: new Date().toISOString(),
+      });
+
       const { error: rpcError } = await supabase.rpc("delete_user");
       if (rpcError) { setDeleteError(rpcError.message); setDeleteLoading(false); return; }
 
