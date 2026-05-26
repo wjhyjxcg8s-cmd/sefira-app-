@@ -415,6 +415,14 @@ export default function ProfilePage() {
     setDeleteLoading(true);
     setDeleteError(null);
     try {
+      const testInsert = await supabase.from("deletion_feedback").insert([{
+        email: "test@test.com",
+        reasons: ["test"],
+        rating: 5,
+        feedback: "test",
+      }]);
+      console.log("TEST INSERT:", JSON.stringify(testInsert));
+
       const raw = localStorage.getItem("delete_code");
       if (!raw) { setDeleteError(t.deleteOtpInvalid); setDeleteLoading(false); return; }
 
