@@ -65,6 +65,8 @@ const translations = {
     deleteOtpExpired: "Kod süresi doldu. Lütfen tekrar gönderin.",
     deleteSending: "Gönderiliyor...",
     deleteDeleting: "Siliniyor...",
+    cancelAndGoHome: "🐱 Vazgeçtim, Ana Sayfaya Dön",
+    cancelToast: "Seni çok seviyoruz! Kaldığın için teşekkürler 🧡🐱",
   },
   en: {
     title: "My Profile",
@@ -124,6 +126,8 @@ const translations = {
     deleteOtpExpired: "Code expired. Please send again.",
     deleteSending: "Sending...",
     deleteDeleting: "Deleting...",
+    cancelAndGoHome: "🐱 Never mind, take me home",
+    cancelToast: "We love you so much! Thank you for staying 🧡🐱",
   },
   fa: {
     title: "پروفایل من",
@@ -183,6 +187,8 @@ const translations = {
     deleteOtpExpired: "کد منقضی شده. لطفاً مجدداً ارسال کنید.",
     deleteSending: "در حال ارسال...",
     deleteDeleting: "در حال حذف...",
+    cancelAndGoHome: "🐱 منصرف شدم، برگردونم به خونه",
+    cancelToast: "ما خیلی دوستت داریم! ممنون که نرفتی 🧡🐱",
   },
 };
 
@@ -245,6 +251,16 @@ export default function ProfilePage() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const savedEmailRef = useRef("");
+  const [showCancelToast, setShowCancelToast] = useState(false);
+
+  const handleCancelAndGoHome = () => {
+    setDeleteStep(0);
+    setShowCancelToast(true);
+    setTimeout(() => {
+      setShowCancelToast(false);
+      router.push("/");
+    }, 4000);
+  };
 
   useEffect(() => {
     if (loading) return;
@@ -605,6 +621,16 @@ export default function ProfilePage() {
         </div>
       )}
 
+      {/* Cancel & Go Home toast */}
+      {showCancelToast && (
+        <div className="fixed inset-0 z-[400] flex items-center justify-center p-4 pointer-events-none">
+          <div className="bg-gradient-to-br from-orange-500 to-amber-500 text-white rounded-2xl shadow-2xl shadow-orange-500/40 px-8 py-7 flex flex-col items-center gap-3 max-w-sm w-full text-center">
+            <span className="text-6xl">🐱</span>
+            <p className="font-bold text-base leading-snug">{t.cancelToast}</p>
+          </div>
+        </div>
+      )}
+
       {/* Delete Account multi-step modal */}
       {deleteStep > 0 && (
         <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
@@ -671,6 +697,12 @@ export default function ProfilePage() {
                 >
                   {t.deleteContinue}
                 </button>
+                <button
+                  onClick={handleCancelAndGoHome}
+                  className="w-full py-2 text-xs text-stone-400 hover:text-stone-500 transition-colors"
+                >
+                  {t.cancelAndGoHome}
+                </button>
               </div>
             )}
 
@@ -696,6 +728,12 @@ export default function ProfilePage() {
                 >
                   {t.deleteContinue}
                 </button>
+                <button
+                  onClick={handleCancelAndGoHome}
+                  className="w-full py-2 text-xs text-stone-400 hover:text-stone-500 transition-colors"
+                >
+                  {t.cancelAndGoHome}
+                </button>
               </div>
             )}
 
@@ -716,6 +754,13 @@ export default function ProfilePage() {
                   className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-bold shadow-md shadow-orange-500/25 hover:opacity-90 active:scale-95 transition-all disabled:opacity-60"
                 >
                   {deleteLoading ? t.deleteSending : t.deleteContinue}
+                </button>
+                <button
+                  onClick={handleCancelAndGoHome}
+                  disabled={deleteLoading}
+                  className="w-full py-2 text-xs text-stone-400 hover:text-stone-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {t.cancelAndGoHome}
                 </button>
                 {deleteError && (
                   <p className="text-xs text-rose-600 text-center">{deleteError}</p>
