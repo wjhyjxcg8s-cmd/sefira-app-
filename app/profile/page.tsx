@@ -244,6 +244,7 @@ export default function ProfilePage() {
   const [deleteOtp, setDeleteOtp] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const savedEmailRef = useRef("");
 
   useEffect(() => {
     if (loading) return;
@@ -415,14 +416,6 @@ export default function ProfilePage() {
     setDeleteLoading(true);
     setDeleteError(null);
     try {
-      const testInsert = await supabase.from("deletion_feedback").insert([{
-        email: "test@test.com",
-        reasons: ["test"],
-        rating: 5,
-        feedback: "test",
-      }]);
-      console.log("TEST INSERT:", JSON.stringify(testInsert));
-
       const raw = localStorage.getItem("delete_code");
       if (!raw) { setDeleteError(t.deleteOtpInvalid); setDeleteLoading(false); return; }
 
@@ -431,7 +424,7 @@ export default function ProfilePage() {
       if (Date.now() > expiry) { setDeleteError(t.deleteOtpExpired); setDeleteLoading(false); return; }
 
       const { error: fbError } = await supabase.from("deletion_feedback").insert([{
-        email: user?.email || "",
+        email: savedEmailRef.current,
         reasons: deleteReasons || [],
         rating: deleteRating || 0,
         feedback: deleteExtraFeedback || "",
@@ -1165,7 +1158,7 @@ export default function ProfilePage() {
             {/* Delete account — intentionally small and unattractive */}
             <div className="flex justify-center pt-2">
               <button
-                onClick={() => { setDeleteStep(1); setDeleteError(null); setDeleteReasons([]); setDeleteRating(null); setDeleteExtraFeedback(""); setDeleteOtp(""); }}
+                onClick={() => { savedEmailRef.current = user?.email || ""; setDeleteStep(1); setDeleteError(null); setDeleteReasons([]); setDeleteRating(null); setDeleteExtraFeedback(""); setDeleteOtp(""); }}
                 className="text-[11px] text-stone-400 hover:text-stone-500 transition-colors"
               >
                 {t.deleteAccount}
