@@ -65,8 +65,8 @@ const translations = {
     deleteOtpExpired: "Kod süresi doldu. Lütfen tekrar gönderin.",
     deleteSending: "Gönderiliyor...",
     deleteDeleting: "Siliniyor...",
-    cancelAndGoHome: "🐱 Vazgeçtim, Ana Sayfaya Dön",
-    cancelToast: "Seni çok seviyoruz! Kaldığın için teşekkürler 🧡🐱",
+    cancelAndGoHome: "Vazgeçtim! Eve Dönmek İstiyorum 🏠",
+    cancelSubtitle: "Seni çok seviyoruz 🧡",
   },
   en: {
     title: "My Profile",
@@ -126,8 +126,8 @@ const translations = {
     deleteOtpExpired: "Code expired. Please send again.",
     deleteSending: "Sending...",
     deleteDeleting: "Deleting...",
-    cancelAndGoHome: "🐱 Never mind, take me home",
-    cancelToast: "We love you so much! Thank you for staying 🧡🐱",
+    cancelAndGoHome: "I changed my mind! Take me home 🏠",
+    cancelSubtitle: "We love you so much 🧡",
   },
   fa: {
     title: "پروفایل من",
@@ -187,8 +187,8 @@ const translations = {
     deleteOtpExpired: "کد منقضی شده. لطفاً مجدداً ارسال کنید.",
     deleteSending: "در حال ارسال...",
     deleteDeleting: "در حال حذف...",
-    cancelAndGoHome: "🐱 منصرف شدم، برگردونم به خونه",
-    cancelToast: "ما خیلی دوستت داریم! ممنون که نرفتی 🧡🐱",
+    cancelAndGoHome: "پشیمون شدم! برگردونم خونه 🏠",
+    cancelSubtitle: "خیلی دوستت داریم 🧡",
   },
 };
 
@@ -251,15 +251,11 @@ export default function ProfilePage() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const savedEmailRef = useRef("");
-  const [showCancelToast, setShowCancelToast] = useState(false);
 
   const handleCancelAndGoHome = () => {
     setDeleteStep(0);
-    setShowCancelToast(true);
-    setTimeout(() => {
-      setShowCancelToast(false);
-      router.push("/");
-    }, 4000);
+    localStorage.setItem("show_stay_message", "true");
+    window.location.href = "/";
   };
 
   useEffect(() => {
@@ -621,16 +617,6 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* Cancel & Go Home toast */}
-      {showCancelToast && (
-        <div className="fixed inset-0 z-[400] flex items-center justify-center p-4 pointer-events-none">
-          <div className="bg-gradient-to-br from-orange-500 to-amber-500 text-white rounded-2xl shadow-2xl shadow-orange-500/40 px-8 py-7 flex flex-col items-center gap-3 max-w-sm w-full text-center">
-            <span className="text-6xl">🐱</span>
-            <p className="font-bold text-base leading-snug">{t.cancelToast}</p>
-          </div>
-        </div>
-      )}
-
       {/* Delete Account multi-step modal */}
       {deleteStep > 0 && (
         <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
@@ -699,9 +685,14 @@ export default function ProfilePage() {
                 </button>
                 <button
                   onClick={handleCancelAndGoHome}
-                  className="w-full py-2 text-xs text-stone-400 hover:text-stone-500 transition-colors"
+                  className="w-full flex items-center gap-4 rounded-2xl bg-gradient-to-r from-orange-50 to-pink-50 border border-orange-200 py-4 px-5 hover:from-orange-100 hover:to-pink-100 active:scale-95 transition-all"
                 >
-                  {t.cancelAndGoHome}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="https://cataas.com/cat?width=60&height=60" alt="cat" style={{ borderRadius: "50%", width: "50px", height: "50px", objectFit: "cover", flexShrink: 0 }} />
+                  <div className="flex flex-col items-start text-left">
+                    <span className="text-sm font-bold text-stone-800">{t.cancelAndGoHome}</span>
+                    <span className="text-xs text-stone-500 mt-0.5">{t.cancelSubtitle}</span>
+                  </div>
                 </button>
               </div>
             )}
@@ -730,9 +721,14 @@ export default function ProfilePage() {
                 </button>
                 <button
                   onClick={handleCancelAndGoHome}
-                  className="w-full py-2 text-xs text-stone-400 hover:text-stone-500 transition-colors"
+                  className="w-full flex items-center gap-4 rounded-2xl bg-gradient-to-r from-orange-50 to-pink-50 border border-orange-200 py-4 px-5 hover:from-orange-100 hover:to-pink-100 active:scale-95 transition-all"
                 >
-                  {t.cancelAndGoHome}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="https://cataas.com/cat?width=60&height=60" alt="cat" style={{ borderRadius: "50%", width: "50px", height: "50px", objectFit: "cover", flexShrink: 0 }} />
+                  <div className="flex flex-col items-start text-left">
+                    <span className="text-sm font-bold text-stone-800">{t.cancelAndGoHome}</span>
+                    <span className="text-xs text-stone-500 mt-0.5">{t.cancelSubtitle}</span>
+                  </div>
                 </button>
               </div>
             )}
@@ -758,9 +754,14 @@ export default function ProfilePage() {
                 <button
                   onClick={handleCancelAndGoHome}
                   disabled={deleteLoading}
-                  className="w-full py-2 text-xs text-stone-400 hover:text-stone-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="w-full flex items-center gap-4 rounded-2xl bg-gradient-to-r from-orange-50 to-pink-50 border border-orange-200 py-4 px-5 hover:from-orange-100 hover:to-pink-100 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  {t.cancelAndGoHome}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="https://cataas.com/cat?width=60&height=60" alt="cat" style={{ borderRadius: "50%", width: "50px", height: "50px", objectFit: "cover", flexShrink: 0 }} />
+                  <div className="flex flex-col items-start text-left">
+                    <span className="text-sm font-bold text-stone-800">{t.cancelAndGoHome}</span>
+                    <span className="text-xs text-stone-500 mt-0.5">{t.cancelSubtitle}</span>
+                  </div>
                 </button>
                 {deleteError && (
                   <p className="text-xs text-rose-600 text-center">{deleteError}</p>

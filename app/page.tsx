@@ -596,6 +596,17 @@ export default function Home() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  // ── Stay message popup (shown after user cancels account deletion) ────────
+  const [showStayMessage, setShowStayMessage] = useState(false);
+  const [stayMessageVisible, setStayMessageVisible] = useState(false);
+  useEffect(() => {
+    if (localStorage.getItem("show_stay_message") === "true") {
+      localStorage.removeItem("show_stay_message");
+      setShowStayMessage(true);
+      requestAnimationFrame(() => setStayMessageVisible(true));
+    }
+  }, []);
+
   // ── Welcome modal ─────────────────────────────────────────────────────────
   const [showWelcomeToast, setShowWelcomeToast] = useState(false);
   const prevUserRef = useRef<typeof user | undefined>(undefined);
@@ -2003,6 +2014,73 @@ export default function Home() {
           to   { opacity: 1; }
         }
       `}</style>
+
+      {/* ── Stay message popup (after cancelling account deletion) ─────────── */}
+      {showStayMessage && (
+        <div
+          className="fixed inset-0 z-[500] flex items-center justify-center p-4 transition-opacity duration-300"
+          style={{ background: "rgba(0,0,0,0.65)", backdropFilter: "blur(8px)", opacity: stayMessageVisible ? 1 : 0 }}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            className="relative w-full max-w-sm overflow-hidden rounded-3xl transition-all duration-300"
+            style={{
+              background: "linear-gradient(145deg, #ff6b35 0%, #f97316 35%, #ec4899 75%, #f43f5e 100%)",
+              boxShadow: "0 32px 80px -12px rgba(249,115,22,0.6), 0 16px 40px -8px rgba(236,72,153,0.45)",
+              transform: stayMessageVisible ? "scale(1) translateY(0)" : "scale(0.85) translateY(24px)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Shimmer */}
+            <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)", backgroundSize: "200% auto", animation: "sefira-shimmer 3s linear infinite" }} />
+            <div className="absolute -top-8 -left-8 w-32 h-32 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+
+            {/* Content */}
+            <div className="relative px-6 py-8 flex flex-col items-center text-center gap-4">
+              {/* Cat image */}
+              <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-white/30 shadow-xl shadow-black/20 flex-shrink-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="https://cataas.com/cat?width=120&height=120"
+                  alt="cat"
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </div>
+
+              {/* Heart */}
+              <div className="text-5xl leading-none" style={{ animation: "sefira-float 2.5s ease-in-out infinite" }}>❤️</div>
+
+              {/* Title */}
+              <h2 className="text-2xl font-black text-white drop-shadow-sm tracking-tight">
+                {lang === "tr" ? "Seni Çok Seviyoruz!" : lang === "fa" ? "خیلی دوستت داریم!" : "We Love You So Much!"}
+              </h2>
+
+              {/* Message */}
+              <p className="text-white/90 text-sm leading-relaxed font-medium max-w-[260px]">
+                {lang === "tr"
+                  ? "Bizimle kaldığın için teşekkürler. Sen bizim için çok değerlisin! 🧡"
+                  : lang === "fa"
+                  ? "ممنون که موندی. تو برای ما خیلی ارزشمندی! 🧡"
+                  : "Thank you for staying with us. You mean so much to us! 🧡"}
+              </p>
+
+              {/* Close heart button */}
+              <button
+                onClick={() => {
+                  setStayMessageVisible(false);
+                  setTimeout(() => setShowStayMessage(false), 300);
+                }}
+                className="mt-2 text-5xl leading-none hover:scale-125 active:scale-95 transition-transform duration-200"
+                aria-label="Close"
+              >
+                ❤️
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showWelcomeToast && (
         <div
