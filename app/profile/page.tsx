@@ -383,13 +383,23 @@ export default function ProfilePage() {
     setDeleteLoading(true);
     setDeleteError(null);
     try {
+      const email = user?.email ?? "";
+      const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+      localStorage.setItem("delete_code", JSON.stringify({
+        code,
+        expiry: Date.now() + 600000,
+        email,
+      }));
+
       const { data: { session } } = await supabase.auth.getSession();
-      const res = await fetch("/api/delete-account/send-otp", {
+      const res = await fetch("/api/send-delete-code", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session?.access_token}`,
         },
+        body: JSON.stringify({ email, code }),
       });
       const json = await res.json();
       if (!res.ok) { setDeleteError(json.error ?? "Error"); setDeleteLoading(false); return; }
@@ -405,29 +415,18 @@ export default function ProfilePage() {
     setDeleteLoading(true);
     setDeleteError(null);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const res = await fetch("/api/delete-account/confirm", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session?.access_token}`,
-        },
-        body: JSON.stringify({
-          otp: deleteOtp,
-          reasons: deleteReasons,
-          rating: deleteRating,
-          feedback: deleteExtraFeedback,
-        }),
-      });
-      const json = await res.json();
-      if (!res.ok) {
-        if (json.error === "invalid_otp") setDeleteError(t.deleteOtpInvalid);
-        else if (json.error === "otp_expired") setDeleteError(t.deleteOtpExpired);
-        else setDeleteError(json.error ?? "Error");
-        setDeleteLoading(false);
-        return;
-      }
-      await supabase.auth.signOut();
+      const raw = localStorage.getItem("delete_code");
+      if (!raw) { setDeleteError(t.deleteOtpInvalid); setDeleteLoading(false); return; }
+
+      const { code, expiry } = JSON.parse(raw) as { code: string; expiry: number };
+      if (deleteOtp !== code) { setDeleteError(t.deleteOtpInvalid); setDeleteLoading(false); return; }
+      if (Date.now() > expiry) { setDeleteError(t.deleteOtpExpired); setDeleteLoading(false); return; }
+
+      const { error: rpcError } = await supabase.rpc("delete_user");
+      if (rpcError) { setDeleteError(rpcError.message); setDeleteLoading(false); return; }
+
+      localStorage.removeItem("delete_code");
+      try { await supabase.auth.signOut(); } catch { /* user already deleted */ }
       router.push("/");
     } catch (e) {
       setDeleteError(String(e));
