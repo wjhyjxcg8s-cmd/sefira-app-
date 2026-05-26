@@ -422,13 +422,14 @@ export default function ProfilePage() {
       if (deleteOtp !== code) { setDeleteError(t.deleteOtpInvalid); setDeleteLoading(false); return; }
       if (Date.now() > expiry) { setDeleteError(t.deleteOtpExpired); setDeleteLoading(false); return; }
 
-      await supabase.from("deletion_feedback").insert({
-        email: user?.email ?? "",
+      const { error: feedbackError } = await supabase.from("deletion_feedback").insert([{
+        email: user?.email,
         reasons: deleteReasons,
         rating: deleteRating,
-        feedback: deleteExtraFeedback || null,
+        feedback: deleteExtraFeedback || "",
         deleted_at: new Date().toISOString(),
-      });
+      }]);
+      console.log("Feedback saved:", feedbackError);
 
       const { error: rpcError } = await supabase.rpc("delete_user");
       if (rpcError) { setDeleteError(rpcError.message); setDeleteLoading(false); return; }
