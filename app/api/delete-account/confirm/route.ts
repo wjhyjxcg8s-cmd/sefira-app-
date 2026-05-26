@@ -23,7 +23,6 @@ export async function POST(req: NextRequest) {
   const authHeader = req.headers.get("Authorization");
   if (!authHeader) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  // Validate the user JWT using a client initialized with the user's own Authorization header.
   const supabaseUser = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     global: { headers: { Authorization: authHeader } },
     auth: { autoRefreshToken: false, persistSession: false },
@@ -31,19 +30,18 @@ export async function POST(req: NextRequest) {
   const { data: { user }, error: userError } = await supabaseUser.auth.getUser();
   if (userError || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  // Admin client for privileged operations — created at request time.
-  const supabaseAdmin = createClient(
-    SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  );
-
   try {
+    // supabaseAdmin initialised inside try so process.env is read at request time.
+    const supabaseAdmin = createClient(
+      SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      { auth: { autoRefreshToken: false, persistSession: false } }
+    );
+
     const { otp, reasons, rating, feedback } = await req.json();
 
-    // auth.getUser() (used above) fetches live user data from the Supabase Auth server —
-    // not from JWT claims — so user.user_metadata already contains the OTP written by
-    // send-otp via admin.updateUserById. No second admin fetch needed.
+    // auth.getUser() fetches live data from the Supabase Auth server (not JWT claims),
+    // so user.user_metadata contains the OTP written by send-otp.
     const storedCode = user.user_metadata?._delete_otp;
     const expiresAt = user.user_metadata?._delete_otp_expires;
 
@@ -64,7 +62,6 @@ export async function POST(req: NextRequest) {
       deleted_at: new Date().toISOString(),
     });
 
-    // Delete the user
     const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(user.id);
     if (deleteError) return NextResponse.json({ error: deleteError.message }, { status: 500 });
 

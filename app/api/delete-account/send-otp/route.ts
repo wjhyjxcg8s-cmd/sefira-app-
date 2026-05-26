@@ -10,9 +10,6 @@ export async function POST(req: NextRequest) {
   const authHeader = req.headers.get("Authorization");
   if (!authHeader) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  // Validate the user JWT by creating a client that uses it as the Authorization header.
-  // Using the service role key for getUser() is unreliable; the anon-key client with the
-  // user's own header is the correct Supabase pattern for Route Handlers.
   const supabaseUser = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     global: { headers: { Authorization: authHeader } },
     auth: { autoRefreshToken: false, persistSession: false },
@@ -20,21 +17,20 @@ export async function POST(req: NextRequest) {
   const { data: { user }, error: userError } = await supabaseUser.auth.getUser();
   if (userError || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  // Admin client for privileged operations — created at request time so env vars are
-  // read from the live runtime environment, not baked in at module-load time.
-  const supabaseAdmin = createClient(
-    SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  );
-  const resend = new Resend(process.env.RESEND_API_KEY);
-
   try {
-    // Generate 6-digit code
+    // Both clients are initialised here so process.env is read at request time,
+    // not at module-load time. This is required for env vars to be available on
+    // the production server.
+    const supabaseAdmin = createClient(
+      SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      { auth: { autoRefreshToken: false, persistSession: false } }
+    );
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
 
-    // Store OTP in user metadata
     const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(user.id, {
       user_metadata: {
         ...user.user_metadata,
@@ -46,7 +42,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: updateError.message }, { status: 500 });
     }
 
-    // Send email via Resend
     const { error: sendError } = await resend.emails.send({
       from: "Sefira <support@getsefira.com>",
       to: user.email!,
