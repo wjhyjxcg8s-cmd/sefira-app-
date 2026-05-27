@@ -79,18 +79,19 @@ export default function MessagesPage() {
   }, []);
 
   useEffect(() => {
-    const fetchAdminMessages = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user?.id) return;
-      const { data, error } = await supabase
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) return;
+      supabase
         .from("admin_messages")
         .select("*")
-        .or(`user_id.eq.${session.user.id},is_global.eq.true`)
-        .order("created_at", { ascending: false });
-      console.log("Admin msgs result:", data, error);
-      if (data) setAdminMessages(data as AdminMessage[]);
-    };
-    fetchAdminMessages();
+        .order("created_at", { ascending: false })
+        .then(({ data, error }) => {
+          console.log("ADMIN FETCH:", data?.length, error?.message);
+          if (data && data.length > 0) {
+            setAdminMessages(data as AdminMessage[]);
+          }
+        });
+    });
   }, []);
 
   const t = translations[lang];
