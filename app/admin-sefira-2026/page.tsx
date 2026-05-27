@@ -581,7 +581,7 @@ export default function AdminPage() {
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
                       <a
-                        href={`/profile`}
+                        href={`/admin-sefira-2026/user/${u.id}`}
                         className="px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
                       >
                         View
