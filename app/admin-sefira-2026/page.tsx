@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
+import { supabase } from "@/app/lib/supabase";
 
 const ADMIN_EMAIL = "supportsefira@gmail.com";
 const PAGE_SIZE = 20;
@@ -156,157 +157,239 @@ export default function AdminPage() {
   const [reviewsTotal, setReviewsTotal] = useState(0);
   const [reviewsPage, setReviewsPage] = useState(1);
 
-  const sessionRef = useRef(session);
-  useEffect(() => {
-    sessionRef.current = session;
-  }, [session]);
-
   useEffect(() => {
     if (!loading && (!user || user.email !== ADMIN_EMAIL)) {
       router.replace("/");
     }
   }, [user, loading, router]);
 
-  const apiCall = useCallback(async (url: string, options?: RequestInit) => {
-    const token = sessionRef.current?.access_token;
-    if (!token) return null;
-    try {
-      const res = await fetch(url, {
-        ...options,
-        headers: {
-          ...(options?.headers ?? {}),
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!res.ok) return null;
-      return res.json();
-    } catch {
-      return null;
-    }
-  }, []);
-
   // Dashboard stats
   useEffect(() => {
-    if (activeSection !== "dashboard" || !user || user.email !== ADMIN_EMAIL || !session) return;
+    if (activeSection !== "dashboard" || !user || user.email !== ADMIN_EMAIL) return;
     let cancelled = false;
     setDataLoading(true);
-    apiCall("/admin-sefira-2026/api?section=stats").then((data) => {
+
+    const fetchStats = async () => {
+      const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+      const { count: usersCount, error: e1 } = await supabase
+        .from("profiles")
+        .select("*", { count: "exact", head: true });
+      console.log("[Admin] profiles count:", usersCount, e1);
+
+      const { count: listingsCount, error: e2 } = await supabase
+        .from("listings")
+        .select("*", { count: "exact", head: true });
+      console.log("[Admin] listings count:", listingsCount, e2);
+
+      const { count: feedbackCount, error: e3 } = await supabase
+        .from("deletion_feedback")
+        .select("*", { count: "exact", head: true });
+      console.log("[Admin] feedback count:", feedbackCount, e3);
+
+      const { count: newUsersCount, error: e4 } = await supabase
+        .from("profiles")
+        .select("*", { count: "exact", head: true })
+        .gte("created_at", oneWeekAgo);
+      console.log("[Admin] new users this week:", newUsersCount, e4);
+
       if (!cancelled) {
-        if (data) setStats(data);
+        setStats({
+          totalUsers: usersCount ?? 0,
+          totalListings: listingsCount ?? 0,
+          totalDeletionFeedback: feedbackCount ?? 0,
+          newUsersThisWeek: newUsersCount ?? 0,
+        });
         setDataLoading(false);
       }
-    });
-    return () => {
-      cancelled = true;
     };
-  }, [activeSection, session, apiCall, user]);
+
+    fetchStats();
+    return () => { cancelled = true; };
+  }, [activeSection, user]);
 
   // Users
   useEffect(() => {
-    if (activeSection !== "users" || !user || user.email !== ADMIN_EMAIL || !session) return;
+    if (activeSection !== "users" || !user || user.email !== ADMIN_EMAIL) return;
     let cancelled = false;
     setDataLoading(true);
-    apiCall(
-      `/admin-sefira-2026/api?section=users&page=${usersPage}&search=${encodeURIComponent(usersSearch)}`
-    ).then((data) => {
+
+    const fetchUsers = async () => {
+      const { data: profiles, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .order("created_at", { ascending: false });
+      console.log("[Admin] profiles:", profiles, error);
+
       if (!cancelled) {
-        if (data) {
-          setUsers(data.users ?? []);
-          setUsersTotal(data.total ?? 0);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let allUsers: UserRecord[] = (profiles ?? []).map((p: any) => ({
+          id: p.id,
+          email: p.email ?? "N/A",
+          display_name: p.display_name ?? null,
+          avatar_url: p.avatar_url ?? null,
+          gender: p.gender ?? null,
+          birth_date: p.birth_date ?? null,
+          country: p.country ?? null,
+          created_at: p.created_at,
+        }));
+
+        if (usersSearch) {
+          const s = usersSearch.toLowerCase();
+          allUsers = allUsers.filter(
+            (u) =>
+              u.display_name?.toLowerCase().includes(s) ||
+              u.email.toLowerCase().includes(s)
+          );
         }
+
+        setUsersTotal(allUsers.length);
+        setUsers(allUsers.slice((usersPage - 1) * PAGE_SIZE, usersPage * PAGE_SIZE));
         setDataLoading(false);
       }
-    });
-    return () => {
-      cancelled = true;
     };
-  }, [activeSection, usersPage, usersSearch, session, apiCall, user]);
+
+    fetchUsers();
+    return () => { cancelled = true; };
+  }, [activeSection, usersPage, usersSearch, user]);
 
   // Listings
   useEffect(() => {
-    if (activeSection !== "listings" || !user || user.email !== ADMIN_EMAIL || !session) return;
+    if (activeSection !== "listings" || !user || user.email !== ADMIN_EMAIL) return;
     let cancelled = false;
     setDataLoading(true);
-    apiCall(`/admin-sefira-2026/api?section=listings&page=${listingsPage}`).then((data) => {
+
+    const fetchListings = async () => {
+      const { data: listingsData, error } = await supabase
+        .from("listings")
+        .select("*")
+        .order("created_at", { ascending: false });
+      console.log("[Admin] listings:", listingsData, error);
+
       if (!cancelled) {
-        if (data) {
-          setListings(data.listings ?? []);
-          setListingsTotal(data.total ?? 0);
-        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const allListings: ListingRecord[] = (listingsData ?? []).map((l: any) => ({
+          ...l,
+          user_email: l.user_email ?? l.email ?? "N/A",
+        }));
+
+        setListingsTotal(allListings.length);
+        setListings(allListings.slice((listingsPage - 1) * PAGE_SIZE, listingsPage * PAGE_SIZE));
         setDataLoading(false);
       }
-    });
-    return () => {
-      cancelled = true;
     };
-  }, [activeSection, listingsPage, session, apiCall, user]);
+
+    fetchListings();
+    return () => { cancelled = true; };
+  }, [activeSection, listingsPage, user]);
 
   // Feedback
   useEffect(() => {
-    if (activeSection !== "feedback" || !user || user.email !== ADMIN_EMAIL || !session) return;
+    if (activeSection !== "feedback" || !user || user.email !== ADMIN_EMAIL) return;
     let cancelled = false;
     setDataLoading(true);
-    apiCall(`/admin-sefira-2026/api?section=feedback&page=${feedbackPage}`).then((data) => {
+
+    const fetchFeedback = async () => {
+      const { data: feedbackData, error } = await supabase
+        .from("deletion_feedback")
+        .select("*")
+        .order("deleted_at", { ascending: false });
+      console.log("[Admin] deletion_feedback:", feedbackData, error);
+
       if (!cancelled) {
-        if (data) {
-          setFeedback(data.feedback ?? []);
-          setFeedbackTotal(data.total ?? 0);
-          setAvgRating(data.avgRating ?? 0);
-        }
+        const allFeedback: FeedbackRecord[] = feedbackData ?? [];
+        const rated = allFeedback.filter((f) => f.rating !== null);
+        const avg =
+          rated.length > 0
+            ? rated.reduce((sum, f) => sum + (f.rating ?? 0), 0) / rated.length
+            : 0;
+
+        setAvgRating(avg);
+        setFeedbackTotal(allFeedback.length);
+        setFeedback(allFeedback.slice((feedbackPage - 1) * PAGE_SIZE, feedbackPage * PAGE_SIZE));
         setDataLoading(false);
       }
-    });
-    return () => {
-      cancelled = true;
     };
-  }, [activeSection, feedbackPage, session, apiCall, user]);
+
+    fetchFeedback();
+    return () => { cancelled = true; };
+  }, [activeSection, feedbackPage, user]);
 
   // Reviews
   useEffect(() => {
-    if (activeSection !== "reviews" || !user || user.email !== ADMIN_EMAIL || !session) return;
+    if (activeSection !== "reviews" || !user || user.email !== ADMIN_EMAIL) return;
     let cancelled = false;
     setDataLoading(true);
-    apiCall(`/admin-sefira-2026/api?section=reviews&page=${reviewsPage}`).then((data) => {
+
+    const fetchReviews = async () => {
+      const { data: reviewsData, error } = await supabase
+        .from("deletion_feedback")
+        .select("*")
+        .order("deleted_at", { ascending: false });
+      console.log("[Admin] reviews (deletion_feedback):", reviewsData, error);
+
       if (!cancelled) {
-        if (data) {
-          setReviews(data.reviews ?? []);
-          setReviewsTotal(data.total ?? 0);
-        }
+        const allReviews: FeedbackRecord[] = reviewsData ?? [];
+        setReviewsTotal(allReviews.length);
+        setReviews(allReviews.slice((reviewsPage - 1) * PAGE_SIZE, reviewsPage * PAGE_SIZE));
         setDataLoading(false);
       }
-    });
-    return () => {
-      cancelled = true;
     };
-  }, [activeSection, reviewsPage, session, apiCall, user]);
+
+    fetchReviews();
+    return () => { cancelled = true; };
+  }, [activeSection, reviewsPage, user]);
 
   const handleDelete = async () => {
     if (!deleteConfirm) return;
-    const data = await apiCall(
-      `/admin-sefira-2026/api?type=${deleteConfirm.type}&id=${deleteConfirm.id}`,
-      { method: "DELETE" }
-    );
-    if (data?.ok) {
-      setDeleteConfirm(null);
-      if (deleteConfirm.type === "user") {
-        const ud = await apiCall(
-          `/admin-sefira-2026/api?section=users&page=${usersPage}&search=${encodeURIComponent(usersSearch)}`
-        );
-        if (ud) {
-          setUsers(ud.users ?? []);
-          setUsersTotal(ud.total ?? 0);
-        }
-        const sd = await apiCall("/admin-sefira-2026/api?section=stats");
-        if (sd) setStats(sd);
-      } else if (deleteConfirm.type === "listing") {
-        const ld = await apiCall(
-          `/admin-sefira-2026/api?section=listings&page=${listingsPage}`
-        );
-        if (ld) {
-          setListings(ld.listings ?? []);
-          setListingsTotal(ld.total ?? 0);
-        }
+    const { type, id } = deleteConfirm;
+
+    if (type === "listing") {
+      const { error } = await supabase.from("listings").delete().eq("id", id);
+      if (!error) {
+        setDeleteConfirm(null);
+        const { data: listingsData } = await supabase
+          .from("listings")
+          .select("*")
+          .order("created_at", { ascending: false });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const allListings: ListingRecord[] = (listingsData ?? []).map((l: any) => ({
+          ...l,
+          user_email: l.user_email ?? l.email ?? "N/A",
+        }));
+        setListingsTotal(allListings.length);
+        setListings(allListings.slice((listingsPage - 1) * PAGE_SIZE, listingsPage * PAGE_SIZE));
       }
+    } else if (type === "user") {
+      // User deletion requires service role key — keep going through the API route
+      const token = session?.access_token;
+      if (!token) return;
+      try {
+        const res = await fetch(`/admin-sefira-2026/api?type=user&id=${id}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          setDeleteConfirm(null);
+          const { data: profiles } = await supabase
+            .from("profiles")
+            .select("*")
+            .order("created_at", { ascending: false });
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const allUsers: UserRecord[] = (profiles ?? []).map((p: any) => ({
+            id: p.id,
+            email: p.email ?? "N/A",
+            display_name: p.display_name ?? null,
+            avatar_url: p.avatar_url ?? null,
+            gender: p.gender ?? null,
+            birth_date: p.birth_date ?? null,
+            country: p.country ?? null,
+            created_at: p.created_at,
+          }));
+          setUsersTotal(allUsers.length);
+          setUsers(allUsers.slice((usersPage - 1) * PAGE_SIZE, usersPage * PAGE_SIZE));
+        }
+      } catch { /* deletion failed silently */ }
     }
   };
 
