@@ -8,7 +8,10 @@ const ADMIN_EMAIL = "supportsefira@gmail.com";
 const PAGE_SIZE = 20;
 
 function getAdminClient() {
-  return createClient(SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
 }
 
 async function verifyAdmin(req: NextRequest) {
@@ -49,26 +52,28 @@ export async function GET(req: NextRequest) {
     if (section === "stats") {
       const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
-      const [
-        { count: totalUsers },
-        { count: totalListings },
-        { count: totalFeedback },
-        { count: newUsers },
-      ] = await Promise.all([
-        supabaseAdmin.from("profiles").select("*", { count: "exact", head: true }),
-        supabaseAdmin.from("listings").select("*", { count: "exact", head: true }),
-        supabaseAdmin.from("deletion_feedback").select("*", { count: "exact", head: true }),
-        supabaseAdmin
-          .from("profiles")
-          .select("*", { count: "exact", head: true })
-          .gte("created_at", oneWeekAgo),
-      ]);
+      const { count: usersCount } = await supabaseAdmin
+        .from("profiles")
+        .select("*", { count: "exact", head: true });
+
+      const { count: listingsCount } = await supabaseAdmin
+        .from("listings")
+        .select("*", { count: "exact", head: true });
+
+      const { count: feedbackCount } = await supabaseAdmin
+        .from("deletion_feedback")
+        .select("*", { count: "exact", head: true });
+
+      const { count: newUsersCount } = await supabaseAdmin
+        .from("profiles")
+        .select("*", { count: "exact", head: true })
+        .gte("created_at", oneWeekAgo);
 
       return NextResponse.json({
-        totalUsers: totalUsers ?? 0,
-        totalListings: totalListings ?? 0,
-        totalDeletionFeedback: totalFeedback ?? 0,
-        newUsersThisWeek: newUsers ?? 0,
+        totalUsers: usersCount ?? 0,
+        totalListings: listingsCount ?? 0,
+        totalDeletionFeedback: feedbackCount ?? 0,
+        newUsersThisWeek: newUsersCount ?? 0,
       });
     }
 
