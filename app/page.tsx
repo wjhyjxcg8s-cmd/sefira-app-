@@ -971,9 +971,14 @@ export default function Home() {
   // ── Unread messages badge ─────────────────────────────────────────────────
   const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
   useEffect(() => {
-    const read = localStorage.getItem("sefira_msg_support_read") === "true";
-    setHasUnreadMessages(!read);
-  }, [profileMenuOpen]);
+    if (!user) { setHasUnreadMessages(false); return; }
+    supabase
+      .from("admin_messages")
+      .select("*", { count: "exact", head: true })
+      .or(`user_id.eq.${user.id},is_global.eq.true`)
+      .eq("is_read", false)
+      .then(({ count }) => setHasUnreadMessages((count ?? 0) > 0));
+  }, [user?.id, profileMenuOpen]);
 
   // ── Currency ──────────────────────────────────────────────────────────────
   const [currency, setCurrency] = useState<Currency>("USD");
