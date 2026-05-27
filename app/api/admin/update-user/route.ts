@@ -18,16 +18,16 @@ async function verifyAdmin(req: NextRequest) {
   return user;
 }
 
-const SUPABASE_URL_FALLBACK = "https://ceetzophaybywfuhezhv.supabase.co";
-
-function getAdminClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? SUPABASE_URL_FALLBACK,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
-}
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  { auth: { autoRefreshToken: false, persistSession: false } }
+);
 
 export async function POST(req: NextRequest) {
+  console.log("URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
+  console.log("KEY exists:", !!process.env.SUPABASE_SERVICE_ROLE_KEY);
+
   const adminUser = await verifyAdmin(req);
   if (!adminUser) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -42,7 +42,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing userId or updates" }, { status: 400 });
     }
 
-    const supabaseAdmin = getAdminClient();
     const { error } = await supabaseAdmin
       .from("profiles")
       .update(updates)
