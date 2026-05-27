@@ -19,6 +19,12 @@ interface UserProfile {
   updated_at: string | null;
 }
 
+interface Review {
+  id: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+}
+
 interface Listing {
   id: string;
   listing_type: string | null;
@@ -42,27 +48,114 @@ function StarRating({ rating }: { rating: number | null }) {
   return (
     <span className="text-base leading-none">
       {Array.from({ length: 5 }, (_, i) => (
-        <span key={i} style={{ color: i < rating ? "#f59e0b" : "#d1d5db" }}>★</span>
+        <span key={i} style={{ color: i < rating ? "#f59e0b" : "#d1d5db" }}>
+          ★
+        </span>
       ))}
     </span>
   );
 }
 
-function InfoRow({
-  label,
-  value,
-  capitalize = false,
+function SectionCard({
+  title,
+  count,
+  children,
 }: {
-  label: string;
-  value: string | null | undefined;
-  capitalize?: boolean;
+  title: string;
+  count?: number;
+  children: React.ReactNode;
 }) {
   return (
-    <div>
-      <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-0.5">{label}</p>
-      <p className={`text-sm font-medium text-gray-800 ${capitalize ? "capitalize" : ""}`}>
-        {value ?? <span className="text-gray-400 font-normal">—</span>}
-      </p>
+    <div
+      className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
+      style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
+    >
+      <div className="px-6 py-4 border-b border-gray-100">
+        <h2 className="text-base font-bold text-gray-800">
+          {title}
+          {count !== undefined && (
+            <span className="ml-2 text-sm font-normal text-gray-400">
+              ({count})
+            </span>
+          )}
+        </h2>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function ConfirmModal({
+  open,
+  title,
+  body,
+  confirmLabel,
+  cancelLabel,
+  dangerous,
+  loading,
+  onConfirm,
+  onCancel,
+}: {
+  open: boolean;
+  title: string;
+  body: React.ReactNode;
+  confirmLabel: string;
+  cancelLabel: string;
+  dangerous?: boolean;
+  loading?: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  if (!open) return null;
+  return (
+    <div
+      className="fixed inset-0 flex items-center justify-center z-50 p-4"
+      style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+    >
+      <div
+        className="bg-white rounded-2xl p-6 w-full max-w-sm"
+        style={{ boxShadow: "0 20px 60px rgba(0,0,0,0.2)" }}
+      >
+        <div
+          className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4"
+          style={{ backgroundColor: dangerous ? "#fef2f2" : "#f3f4f6" }}
+        >
+          {dangerous ? "🗑️" : "⚠️"}
+        </div>
+        <h3 className="text-lg font-bold text-gray-800 text-center mb-2">
+          {title}
+        </h3>
+        <div className="text-sm text-gray-500 text-center mb-6">{body}</div>
+        <div className="flex gap-3">
+          <button
+            onClick={onCancel}
+            disabled={loading}
+            className="flex-1 py-2.5 rounded-xl text-sm font-medium text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors disabled:opacity-60"
+          >
+            {cancelLabel}
+          </button>
+          <button
+            onClick={onConfirm}
+            disabled={loading}
+            className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
+            style={{ backgroundColor: dangerous ? "#ef4444" : "#f97316" }}
+            onMouseEnter={(e) => {
+              if (!loading)
+                e.currentTarget.style.backgroundColor = dangerous
+                  ? "#dc2626"
+                  : "#ea6c08";
+            }}
+            onMouseLeave={(e) => {
+              if (!loading)
+                e.currentTarget.style.backgroundColor = dangerous
+                  ? "#ef4444"
+                  : "#f97316";
+            }}
+          >
+            {loading ? "…" : confirmLabel}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -74,27 +167,39 @@ export default function UserDetailPage() {
   const userId = params.id;
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [listings, setListings] = useState<Listing[]>([]);
   const [feedback, setFeedback] = useState<DeletionFeedback[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
 
+  // Profile edit
   const [editDisplayName, setEditDisplayName] = useState("");
   const [editGender, setEditGender] = useState("");
   const [editBirthDate, setEditBirthDate] = useState("");
   const [editCountry, setEditCountry] = useState("");
-  const [editSaving, setEditSaving] = useState(false);
-  const [editError, setEditError] = useState<string | null>(null);
-  const [editSuccess, setEditSuccess] = useState(false);
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileError, setProfileError] = useState<string | null>(null);
+  const [profileSuccess, setProfileSuccess] = useState(false);
 
+  // Password reset
   const [resetSending, setResetSending] = useState(false);
   const [resetSent, setResetSent] = useState(false);
   const [resetError, setResetError] = useState<string | null>(null);
 
+  // Delete user
   const [deleteUserConfirm, setDeleteUserConfirm] = useState(false);
   const [deletingUser, setDeletingUser] = useState(false);
 
+  // Delete listing
   const [deleteListingId, setDeleteListingId] = useState<string | null>(null);
   const [deletingListing, setDeletingListing] = useState(false);
+
+  // Review actions
+  const [editingReviewId, setEditingReviewId] = useState<string | null>(null);
+  const [editReviewText, setEditReviewText] = useState("");
+  const [savingReview, setSavingReview] = useState(false);
+  const [deleteReviewId, setDeleteReviewId] = useState<string | null>(null);
+  const [deletingReview, setDeletingReview] = useState(false);
 
   useEffect(() => {
     if (!loading && (!user || user.email !== ADMIN_EMAIL)) {
@@ -106,9 +211,10 @@ export default function UserDetailPage() {
     if (!user || user.email !== ADMIN_EMAIL || !userId) return;
     let cancelled = false;
 
-    const fetchData = async () => {
+    const fetchAll = async () => {
       setDataLoading(true);
 
+      // Profile
       const { data: profileData } = await supabase
         .from("profiles")
         .select("*")
@@ -120,7 +226,7 @@ export default function UserDetailPage() {
       if (profileData) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const p = profileData as any;
-        const profile: UserProfile = {
+        const prof: UserProfile = {
           id: p.id,
           email: p.email ?? null,
           display_name: p.display_name ?? null,
@@ -131,22 +237,32 @@ export default function UserDetailPage() {
           created_at: p.created_at,
           updated_at: p.updated_at ?? null,
         };
-        setProfile(profile);
-        setEditDisplayName(profile.display_name ?? "");
-        setEditGender(profile.gender ?? "");
-        setEditBirthDate(profile.birth_date ?? "");
-        setEditCountry(profile.country ?? "");
+        setProfile(prof);
+        setEditDisplayName(prof.display_name ?? "");
+        setEditGender(prof.gender ?? "");
+        setEditBirthDate(prof.birth_date ?? "");
+        setEditCountry(prof.country ?? "");
 
-        if (profile.email) {
+        // Deletion feedback by email
+        if (prof.email) {
           const { data: fbData } = await supabase
             .from("deletion_feedback")
             .select("*")
-            .eq("email", profile.email)
+            .eq("email", prof.email)
             .order("deleted_at", { ascending: false });
           if (!cancelled) setFeedback(fbData ?? []);
         }
       }
 
+      // Reviews by this user
+      const { data: reviewsData } = await supabase
+        .from("reviews")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false });
+      if (!cancelled) setReviews(reviewsData ?? []);
+
+      // Listings by this user
       const { data: listingsData } = await supabase
         .from("listings")
         .select("*")
@@ -157,9 +273,49 @@ export default function UserDetailPage() {
       if (!cancelled) setDataLoading(false);
     };
 
-    fetchData();
-    return () => { cancelled = true; };
+    fetchAll();
+    return () => {
+      cancelled = true;
+    };
   }, [userId, user]);
+
+  const authHeader = () => ({
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${session?.access_token ?? ""}`,
+  });
+
+  const handleSaveProfile = async () => {
+    if (!profile) return;
+    setProfileSaving(true);
+    setProfileError(null);
+    setProfileSuccess(false);
+
+    const updates = {
+      display_name: editDisplayName || null,
+      gender: editGender || null,
+      birth_date: editBirthDate || null,
+      country: editCountry || null,
+    };
+
+    try {
+      const res = await fetch("/api/admin/update-user", {
+        method: "POST",
+        headers: authHeader(),
+        body: JSON.stringify({ userId, updates }),
+      });
+      const json = await res.json();
+      if (json.error) {
+        setProfileError(json.error);
+      } else {
+        setProfileSuccess(true);
+        setProfile((prev) => (prev ? { ...prev, ...updates } : prev));
+        setTimeout(() => setProfileSuccess(false), 3000);
+      }
+    } catch (e) {
+      setProfileError(String(e));
+    }
+    setProfileSaving(false);
+  };
 
   const handleResetPassword = async () => {
     if (!profile?.email) return;
@@ -178,14 +334,15 @@ export default function UserDetailPage() {
   };
 
   const handleDeleteUser = async () => {
-    if (!session?.access_token) return;
     setDeletingUser(true);
     try {
-      const res = await fetch(`/admin-sefira-2026/api?type=user&id=${userId}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${session.access_token}` },
+      const res = await fetch("/api/admin/delete-user", {
+        method: "POST",
+        headers: authHeader(),
+        body: JSON.stringify({ userId }),
       });
-      if (res.ok) {
+      const json = await res.json();
+      if (!json.error) {
         router.replace("/admin-sefira-2026");
         return;
       }
@@ -195,13 +352,16 @@ export default function UserDetailPage() {
   };
 
   const handleDeleteListing = async () => {
-    if (!deleteListingId || !session?.access_token) return;
+    if (!deleteListingId) return;
     setDeletingListing(true);
     try {
-      const res = await fetch(`/admin-sefira-2026/api?type=listing&id=${deleteListingId}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+      const res = await fetch(
+        `/admin-sefira-2026/api?type=listing&id=${deleteListingId}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${session?.access_token ?? ""}` },
+        }
+      );
       if (res.ok) {
         setListings((prev) => prev.filter((l) => l.id !== deleteListingId));
         setDeleteListingId(null);
@@ -210,38 +370,53 @@ export default function UserDetailPage() {
     setDeletingListing(false);
   };
 
-  const handleSaveProfile = async () => {
-    if (!profile) return;
-    setEditSaving(true);
-    setEditError(null);
-    setEditSuccess(false);
-    const { error } = await supabase
-      .from("profiles")
-      .update({
-        display_name: editDisplayName || null,
-        gender: editGender || null,
-        birth_date: editBirthDate || null,
-        country: editCountry || null,
-      })
-      .eq("id", userId);
-    setEditSaving(false);
-    if (error) {
-      setEditError(error.message);
-    } else {
-      setEditSuccess(true);
-      setProfile((prev) =>
-        prev
-          ? {
-              ...prev,
-              display_name: editDisplayName || null,
-              gender: editGender || null,
-              birth_date: editBirthDate || null,
-              country: editCountry || null,
-            }
-          : prev
-      );
-      setTimeout(() => setEditSuccess(false), 3000);
-    }
+  const startEditReview = (review: Review) => {
+    setEditingReviewId(review.id);
+    setEditReviewText(
+      review.comment ?? review.text ?? review.feedback ?? review.body ?? ""
+    );
+  };
+
+  const handleSaveReview = async (reviewId: string) => {
+    setSavingReview(true);
+    try {
+      const res = await fetch("/api/admin/delete-review", {
+        method: "POST",
+        headers: authHeader(),
+        body: JSON.stringify({
+          reviewId,
+          updates: { comment: editReviewText },
+        }),
+      });
+      const json = await res.json();
+      if (!json.error) {
+        setReviews((prev) =>
+          prev.map((r) =>
+            r.id === reviewId ? { ...r, comment: editReviewText } : r
+          )
+        );
+        setEditingReviewId(null);
+      }
+    } catch { /* fall through */ }
+    setSavingReview(false);
+  };
+
+  const handleDeleteReview = async () => {
+    if (!deleteReviewId) return;
+    setDeletingReview(true);
+    try {
+      const res = await fetch("/api/admin/delete-review", {
+        method: "POST",
+        headers: authHeader(),
+        body: JSON.stringify({ reviewId: deleteReviewId }),
+      });
+      const json = await res.json();
+      if (!json.error) {
+        setReviews((prev) => prev.filter((r) => r.id !== deleteReviewId));
+        setDeleteReviewId(null);
+      }
+    } catch { /* fall through */ }
+    setDeletingReview(false);
   };
 
   const formatDate = (d: string | null | undefined) => {
@@ -252,6 +427,12 @@ export default function UserDetailPage() {
       day: "numeric",
     });
   };
+
+  const reviewText = (r: Review) =>
+    r.comment ?? r.text ?? r.feedback ?? r.body ?? null;
+
+  const reviewerName = (r: Review) =>
+    r.reviewer_name ?? r.author_name ?? r.name ?? null;
 
   if (loading || !user) {
     return (
@@ -269,7 +450,7 @@ export default function UserDetailPage() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#f8fafc" }}>
       <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
-        {/* Back button */}
+        {/* Back */}
         <button
           onClick={() => router.push("/admin-sefira-2026")}
           className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-orange-500 transition-colors mb-6"
@@ -286,128 +467,267 @@ export default function UserDetailPage() {
             />
           </div>
         ) : !profile ? (
-          <div className="text-center py-20 text-gray-400">User not found.</div>
+          <div className="text-center py-20 text-gray-400">
+            User not found.
+          </div>
         ) : (
           <div className="space-y-5">
 
-            {/* SECTION 1: Profile Info */}
-            <div
-              className="bg-white rounded-2xl p-6 border border-gray-100"
-              style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
-            >
-              <h2 className="text-base font-bold text-gray-800 mb-5">Profile Info</h2>
-              <div className="flex flex-col sm:flex-row gap-6">
-                {/* Avatar */}
-                <div className="shrink-0 flex justify-center sm:justify-start">
-                  {profile.avatar_url ? (
-                    <img
-                      src={profile.avatar_url}
-                      alt=""
-                      className="w-24 h-24 rounded-full object-cover"
-                      style={{ width: 100, height: 100 }}
+            {/* ── SECTION 1: Profile (display + edit) ─────────────────── */}
+            <SectionCard title="Profile">
+              <div className="p-6">
+                {/* Avatar + static info */}
+                <div className="flex flex-col sm:flex-row gap-5 mb-6">
+                  <div className="shrink-0 flex justify-center sm:justify-start">
+                    {profile.avatar_url ? (
+                      <img
+                        src={profile.avatar_url}
+                        alt=""
+                        className="rounded-full object-cover"
+                        style={{ width: 100, height: 100 }}
+                      />
+                    ) : (
+                      <div
+                        className="rounded-full flex items-center justify-center text-3xl font-bold"
+                        style={{
+                          width: 100,
+                          height: 100,
+                          backgroundColor: "#fff7ed",
+                          color: "#f97316",
+                          flexShrink: 0,
+                        }}
+                      >
+                        {profile.display_name?.[0]?.toUpperCase() ??
+                          profile.email?.[0]?.toUpperCase() ??
+                          "?"}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+                    <StaticField label="Email (read-only)" value={profile.email} />
+                    <StaticField
+                      label="Join Date"
+                      value={formatDate(profile.created_at)}
                     />
-                  ) : (
-                    <div
-                      className="rounded-full flex items-center justify-center text-3xl font-bold"
-                      style={{
-                        width: 100,
-                        height: 100,
-                        backgroundColor: "#fff7ed",
-                        color: "#f97316",
-                      }}
+                    <StaticField
+                      label="Last Updated"
+                      value={formatDate(profile.updated_at)}
+                    />
+                  </div>
+                </div>
+
+                {/* Editable fields */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                  <Field label="Display Name">
+                    <input
+                      value={editDisplayName}
+                      onChange={(e) => setEditDisplayName(e.target.value)}
+                      placeholder="Display name"
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                    />
+                  </Field>
+                  <Field label="Gender">
+                    <select
+                      value={editGender}
+                      onChange={(e) => setEditGender(e.target.value)}
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white"
                     >
-                      {profile.display_name?.[0]?.toUpperCase() ??
-                        profile.email?.[0]?.toUpperCase() ??
-                        "?"}
-                    </div>
-                  )}
+                      <option value="">— Not set —</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </Field>
+                  <Field label="Birth Date">
+                    <input
+                      type="date"
+                      value={editBirthDate}
+                      onChange={(e) => setEditBirthDate(e.target.value)}
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                    />
+                  </Field>
+                  <Field label="Country">
+                    <input
+                      value={editCountry}
+                      onChange={(e) => setEditCountry(e.target.value)}
+                      placeholder="Country"
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                    />
+                  </Field>
                 </div>
 
-                {/* Info grid */}
-                <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
-                  <InfoRow label="Display Name" value={profile.display_name} />
-                  <InfoRow label="Email" value={profile.email} />
-                  <InfoRow label="Gender" value={profile.gender} capitalize />
-                  <InfoRow label="Birth Date" value={formatDate(profile.birth_date)} />
-                  <InfoRow label="Country" value={profile.country} />
-                  <InfoRow label="Join Date" value={formatDate(profile.created_at)} />
-                  <InfoRow label="Last Updated" value={formatDate(profile.updated_at)} />
-                </div>
-              </div>
-            </div>
+                {profileError && (
+                  <p className="text-sm text-red-500 mb-3">{profileError}</p>
+                )}
+                {profileSuccess && (
+                  <p className="text-sm text-green-600 mb-3">
+                    Profile saved successfully.
+                  </p>
+                )}
 
-            {/* SECTION 2: Account Actions */}
-            <div
-              className="bg-white rounded-2xl p-6 border border-gray-100"
-              style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
-            >
-              <h2 className="text-base font-bold text-gray-800 mb-5">Account Actions</h2>
-              <div className="flex flex-wrap gap-3 items-start">
-                <div className="flex flex-col gap-1.5">
+                <div className="flex flex-wrap gap-3 items-center">
                   <button
-                    onClick={handleResetPassword}
-                    disabled={resetSending || resetSent}
-                    className="px-5 py-2.5 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
-                    style={{ backgroundColor: "#3b82f6" }}
+                    onClick={handleSaveProfile}
+                    disabled={profileSaving}
+                    className="px-6 py-2.5 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
+                    style={{ backgroundColor: "#f97316" }}
                     onMouseEnter={(e) => {
-                      if (!resetSending && !resetSent)
-                        e.currentTarget.style.backgroundColor = "#2563eb";
+                      if (!profileSaving)
+                        e.currentTarget.style.backgroundColor = "#ea6c08";
                     }}
                     onMouseLeave={(e) => {
-                      if (!resetSending && !resetSent)
-                        e.currentTarget.style.backgroundColor = "#3b82f6";
+                      if (!profileSaving)
+                        e.currentTarget.style.backgroundColor = "#f97316";
                     }}
                   >
-                    {resetSending ? "Sending…" : resetSent ? "Email Sent!" : "Reset Password"}
+                    {profileSaving ? "Saving…" : "Save Changes"}
                   </button>
-                  {resetError && (
-                    <p className="text-xs text-red-500">{resetError}</p>
-                  )}
+
+                  <div className="flex flex-col gap-1">
+                    <button
+                      onClick={handleResetPassword}
+                      disabled={resetSending || resetSent}
+                      className="px-5 py-2.5 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
+                      style={{ backgroundColor: "#3b82f6" }}
+                      onMouseEnter={(e) => {
+                        if (!resetSending && !resetSent)
+                          e.currentTarget.style.backgroundColor = "#2563eb";
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!resetSending && !resetSent)
+                          e.currentTarget.style.backgroundColor = "#3b82f6";
+                      }}
+                    >
+                      {resetSending
+                        ? "Sending…"
+                        : resetSent
+                        ? "Email Sent!"
+                        : "Reset Password"}
+                    </button>
+                    {resetError && (
+                      <p className="text-xs text-red-500">{resetError}</p>
+                    )}
+                  </div>
                 </div>
-
-                <button
-                  onClick={() => setDeleteUserConfirm(true)}
-                  className="px-5 py-2.5 rounded-xl text-sm font-medium transition-colors"
-                  style={{ backgroundColor: "#fef2f2", color: "#ef4444" }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.backgroundColor = "#fee2e2")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.backgroundColor = "#fef2f2")
-                  }
-                >
-                  Delete Account
-                </button>
               </div>
-            </div>
+            </SectionCard>
 
-            {/* SECTION 3: Listings */}
-            <div
-              className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
-              style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
-            >
-              <div className="px-6 py-5 border-b border-gray-100">
-                <h2 className="text-base font-bold text-gray-800">
-                  Listings{" "}
-                  <span className="text-sm font-normal text-gray-400">
-                    ({listings.length})
-                  </span>
-                </h2>
-              </div>
+            {/* ── SECTION 2: Reviews ───────────────────────────────────── */}
+            <SectionCard title="Reviews" count={reviews.length}>
+              {reviews.length === 0 ? (
+                <p className="px-6 py-8 text-center text-gray-400 text-sm">
+                  No reviews found.
+                </p>
+              ) : (
+                <div className="divide-y divide-gray-50">
+                  {reviews.map((r) => (
+                    <div key={r.id} className="px-6 py-4">
+                      {editingReviewId === r.id ? (
+                        /* Edit mode */
+                        <div className="space-y-2">
+                          <textarea
+                            value={editReviewText}
+                            onChange={(e) => setEditReviewText(e.target.value)}
+                            rows={3}
+                            className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
+                          />
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleSaveReview(r.id)}
+                              disabled={savingReview}
+                              className="px-4 py-1.5 rounded-lg text-xs font-medium text-white disabled:opacity-60"
+                              style={{ backgroundColor: "#f97316" }}
+                            >
+                              {savingReview ? "Saving…" : "Save"}
+                            </button>
+                            <button
+                              onClick={() => setEditingReviewId(null)}
+                              className="px-4 py-1.5 rounded-lg text-xs font-medium text-gray-600 border border-gray-200 hover:bg-gray-50"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        /* Display mode */
+                        <div className="flex items-start justify-between gap-4 flex-wrap">
+                          <div className="flex-1 min-w-0 space-y-1">
+                            {reviewerName(r) && (
+                              <p className="text-xs font-semibold text-gray-500">
+                                {reviewerName(r)}
+                              </p>
+                            )}
+                            <StarRating rating={r.rating ?? null} />
+                            {reviewText(r) && (
+                              <p className="text-sm text-gray-700 mt-1">
+                                {reviewText(r)}
+                              </p>
+                            )}
+                            <p className="text-xs text-gray-400">
+                              {formatDate(r.created_at)}
+                            </p>
+                          </div>
+                          <div className="flex gap-2 shrink-0">
+                            <button
+                              onClick={() => startEditReview(r)}
+                              className="px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => setDeleteReviewId(r.id)}
+                              className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors"
+                              style={{
+                                backgroundColor: "#fef2f2",
+                                color: "#ef4444",
+                              }}
+                              onMouseEnter={(e) =>
+                                (e.currentTarget.style.backgroundColor =
+                                  "#fee2e2")
+                              }
+                              onMouseLeave={(e) =>
+                                (e.currentTarget.style.backgroundColor =
+                                  "#fef2f2")
+                              }
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </SectionCard>
+
+            {/* ── SECTION 3: Listings ──────────────────────────────────── */}
+            <SectionCard title="Listings" count={listings.length}>
               {listings.length === 0 ? (
-                <div className="px-6 py-10 text-center text-gray-400 text-sm">
+                <p className="px-6 py-8 text-center text-gray-400 text-sm">
                   No listings found.
-                </div>
+                </p>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="bg-gray-50 text-gray-400 uppercase text-xs">
-                        <th className="px-4 py-3 text-left font-semibold">Type</th>
-                        <th className="px-4 py-3 text-left font-semibold">City</th>
-                        <th className="px-4 py-3 text-left font-semibold">Price</th>
-                        <th className="px-4 py-3 text-left font-semibold">Created</th>
-                        <th className="px-4 py-3 text-left font-semibold">Actions</th>
+                        <th className="px-4 py-3 text-left font-semibold">
+                          Type
+                        </th>
+                        <th className="px-4 py-3 text-left font-semibold">
+                          City
+                        </th>
+                        <th className="px-4 py-3 text-left font-semibold">
+                          Price
+                        </th>
+                        <th className="px-4 py-3 text-left font-semibold">
+                          Created
+                        </th>
+                        <th className="px-4 py-3 text-left font-semibold">
+                          Actions
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -416,7 +736,8 @@ export default function UserDetailPage() {
                           key={l.id}
                           className="border-t border-gray-50 transition-colors"
                           style={{
-                            backgroundColor: i % 2 === 1 ? "#fafafa" : "white",
+                            backgroundColor:
+                              i % 2 === 1 ? "#fafafa" : "white",
                           }}
                           onMouseEnter={(e) =>
                             (e.currentTarget.style.backgroundColor = "#fff7ed")
@@ -429,13 +750,18 @@ export default function UserDetailPage() {
                           <td className="px-4 py-3">
                             <span
                               className="px-2.5 py-1 rounded-lg text-xs font-medium capitalize"
-                              style={{ backgroundColor: "#fff7ed", color: "#f97316" }}
+                              style={{
+                                backgroundColor: "#fff7ed",
+                                color: "#f97316",
+                              }}
                             >
                               {l.listing_type?.replace(/_/g, " ") ?? "—"}
                             </span>
                           </td>
                           <td className="px-4 py-3 text-gray-700">
-                            {l.city ?? <span className="text-gray-400">—</span>}
+                            {l.city ?? (
+                              <span className="text-gray-400">—</span>
+                            )}
                           </td>
                           <td className="px-4 py-3 text-gray-800 font-semibold">
                             {l.rent != null
@@ -443,7 +769,9 @@ export default function UserDetailPage() {
                               : l.price != null
                               ? `$${l.price.toLocaleString()}`
                               : (
-                                <span className="text-gray-400 font-normal">—</span>
+                                <span className="text-gray-400 font-normal">
+                                  —
+                                </span>
                               )}
                           </td>
                           <td className="px-4 py-3 text-gray-600">
@@ -453,12 +781,17 @@ export default function UserDetailPage() {
                             <button
                               onClick={() => setDeleteListingId(l.id)}
                               className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors"
-                              style={{ backgroundColor: "#fef2f2", color: "#ef4444" }}
+                              style={{
+                                backgroundColor: "#fef2f2",
+                                color: "#ef4444",
+                              }}
                               onMouseEnter={(e) =>
-                                (e.currentTarget.style.backgroundColor = "#fee2e2")
+                                (e.currentTarget.style.backgroundColor =
+                                  "#fee2e2")
                               }
                               onMouseLeave={(e) =>
-                                (e.currentTarget.style.backgroundColor = "#fef2f2")
+                                (e.currentTarget.style.backgroundColor =
+                                  "#fef2f2")
                               }
                             >
                               Delete
@@ -470,22 +803,11 @@ export default function UserDetailPage() {
                   </table>
                 </div>
               )}
-            </div>
+            </SectionCard>
 
-            {/* SECTION 4: Deletion Feedback */}
+            {/* ── SECTION 4: Deletion Feedback ─────────────────────────── */}
             {feedback.length > 0 && (
-              <div
-                className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
-                style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
-              >
-                <div className="px-6 py-5 border-b border-gray-100">
-                  <h2 className="text-base font-bold text-gray-800">
-                    Deletion Feedback{" "}
-                    <span className="text-sm font-normal text-gray-400">
-                      ({feedback.length})
-                    </span>
-                  </h2>
-                </div>
+              <SectionCard title="Deletion Feedback" count={feedback.length}>
                 <div className="divide-y divide-gray-50">
                   {feedback.map((f) => (
                     <div key={f.id} className="px-6 py-4">
@@ -497,18 +819,24 @@ export default function UserDetailPage() {
                                 <span
                                   key={ri}
                                   className="px-2 py-0.5 rounded-md text-xs"
-                                  style={{ backgroundColor: "#f3f4f6", color: "#4b5563" }}
+                                  style={{
+                                    backgroundColor: "#f3f4f6",
+                                    color: "#4b5563",
+                                  }}
                                 >
                                   {r}
                                 </span>
                               ))}
                             </div>
                           )}
-                          {f.feedback && (
+                          {f.feedback ? (
                             <p className="text-sm text-gray-600">{f.feedback}</p>
-                          )}
-                          {!f.feedback && (!f.reasons || f.reasons.length === 0) && (
-                            <p className="text-sm text-gray-400">No feedback text.</p>
+                          ) : (
+                            !f.reasons?.length && (
+                              <p className="text-sm text-gray-400">
+                                No feedback text.
+                              </p>
+                            )
                           )}
                         </div>
                         <div className="text-right shrink-0">
@@ -521,89 +849,41 @@ export default function UserDetailPage() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </SectionCard>
             )}
 
-            {/* SECTION 5: Edit Profile */}
+            {/* ── SECTION 5: Danger Zone ───────────────────────────────── */}
             <div
-              className="bg-white rounded-2xl p-6 border border-gray-100"
-              style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
+              className="bg-white rounded-2xl border overflow-hidden"
+              style={{
+                borderColor: "#fecaca",
+                boxShadow: "0 1px 6px rgba(239,68,68,0.08)",
+              }}
             >
-              <h2 className="text-base font-bold text-gray-800 mb-5">Edit Profile</h2>
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">
-                      Display Name
-                    </label>
-                    <input
-                      value={editDisplayName}
-                      onChange={(e) => setEditDisplayName(e.target.value)}
-                      placeholder="Display name"
-                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">
-                      Gender
-                    </label>
-                    <select
-                      value={editGender}
-                      onChange={(e) => setEditGender(e.target.value)}
-                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white"
-                    >
-                      <option value="">— Not set —</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">
-                      Birth Date
-                    </label>
-                    <input
-                      type="date"
-                      value={editBirthDate}
-                      onChange={(e) => setEditBirthDate(e.target.value)}
-                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">
-                      Country
-                    </label>
-                    <input
-                      value={editCountry}
-                      onChange={(e) => setEditCountry(e.target.value)}
-                      placeholder="Country"
-                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
-                    />
-                  </div>
-                </div>
-
-                {editError && (
-                  <p className="text-sm text-red-500">{editError}</p>
-                )}
-                {editSuccess && (
-                  <p className="text-sm text-green-600">Profile updated successfully.</p>
-                )}
-
+              <div
+                className="px-6 py-4 border-b"
+                style={{ borderColor: "#fecaca", backgroundColor: "#fff5f5" }}
+              >
+                <h2 className="text-base font-bold" style={{ color: "#ef4444" }}>
+                  Tehlikeli İşlemler
+                </h2>
+              </div>
+              <div className="px-6 py-5">
+                <p className="text-sm text-gray-500 mb-4">
+                  Bu işlemler geri alınamaz. Lütfen dikkatli olun.
+                </p>
                 <button
-                  onClick={handleSaveProfile}
-                  disabled={editSaving}
-                  className="px-6 py-2.5 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
-                  style={{ backgroundColor: "#f97316" }}
-                  onMouseEnter={(e) => {
-                    if (!editSaving)
-                      e.currentTarget.style.backgroundColor = "#ea6c08";
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!editSaving)
-                      e.currentTarget.style.backgroundColor = "#f97316";
-                  }}
+                  onClick={() => setDeleteUserConfirm(true)}
+                  className="px-6 py-2.5 rounded-xl text-sm font-semibold text-white transition-colors"
+                  style={{ backgroundColor: "#ef4444" }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#dc2626")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#ef4444")
+                  }
                 >
-                  {editSaving ? "Saving…" : "Save Changes"}
+                  Hesabı Sil
                 </button>
               </div>
             </div>
@@ -612,112 +892,92 @@ export default function UserDetailPage() {
         )}
       </div>
 
-      {/* Delete user confirmation modal */}
-      {deleteUserConfirm && (
-        <div
-          className="fixed inset-0 flex items-center justify-center z-50 p-4"
-          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-        >
-          <div
-            className="bg-white rounded-2xl p-6 w-full max-w-sm"
-            style={{ boxShadow: "0 20px 60px rgba(0,0,0,0.2)" }}
-          >
-            <div
-              className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4"
-              style={{ backgroundColor: "#fef2f2" }}
-            >
-              🗑️
-            </div>
-            <h3 className="text-lg font-bold text-gray-800 text-center mb-2">
-              Delete Account
-            </h3>
-            <p className="text-sm text-gray-500 text-center mb-6">
-              Are you sure you want to delete{" "}
-              <span className="font-semibold text-gray-700">
-                {profile?.display_name ?? profile?.email ?? "this user"}
-              </span>
-              ? This action cannot be undone.
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setDeleteUserConfirm(false)}
-                disabled={deletingUser}
-                className="flex-1 py-2.5 rounded-xl text-sm font-medium text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors disabled:opacity-60"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDeleteUser}
-                disabled={deletingUser}
-                className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
-                style={{ backgroundColor: "#ef4444" }}
-                onMouseEnter={(e) => {
-                  if (!deletingUser)
-                    e.currentTarget.style.backgroundColor = "#dc2626";
-                }}
-                onMouseLeave={(e) => {
-                  if (!deletingUser)
-                    e.currentTarget.style.backgroundColor = "#ef4444";
-                }}
-              >
-                {deletingUser ? "Deleting…" : "Delete"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* ── Modals ─────────────────────────────────────────────────────── */}
 
-      {/* Delete listing confirmation modal */}
-      {deleteListingId && (
-        <div
-          className="fixed inset-0 flex items-center justify-center z-50 p-4"
-          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-        >
-          <div
-            className="bg-white rounded-2xl p-6 w-full max-w-sm"
-            style={{ boxShadow: "0 20px 60px rgba(0,0,0,0.2)" }}
-          >
-            <div
-              className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4"
-              style={{ backgroundColor: "#fef2f2" }}
-            >
-              🗑️
-            </div>
-            <h3 className="text-lg font-bold text-gray-800 text-center mb-2">
-              Delete Listing
-            </h3>
-            <p className="text-sm text-gray-500 text-center mb-6">
-              Are you sure you want to delete this listing? This action cannot be
-              undone.
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setDeleteListingId(null)}
-                disabled={deletingListing}
-                className="flex-1 py-2.5 rounded-xl text-sm font-medium text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors disabled:opacity-60"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDeleteListing}
-                disabled={deletingListing}
-                className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
-                style={{ backgroundColor: "#ef4444" }}
-                onMouseEnter={(e) => {
-                  if (!deletingListing)
-                    e.currentTarget.style.backgroundColor = "#dc2626";
-                }}
-                onMouseLeave={(e) => {
-                  if (!deletingListing)
-                    e.currentTarget.style.backgroundColor = "#ef4444";
-                }}
-              >
-                {deletingListing ? "Deleting…" : "Delete"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmModal
+        open={deleteUserConfirm}
+        title="Hesabı Sil"
+        body={
+          <>
+            Bu kullanıcıyı tamamen silmek istediğinizden emin misiniz?
+            <br />
+            <span className="font-semibold text-gray-700">
+              {profile?.display_name ?? profile?.email ?? "Bu kullanıcı"}
+            </span>{" "}
+            hesabı kalıcı olarak silinecek.
+            <br />
+            <span className="font-semibold text-red-500">
+              Bu işlem geri alınamaz.
+            </span>
+          </>
+        }
+        confirmLabel="Evet, Sil"
+        cancelLabel="İptal"
+        dangerous
+        loading={deletingUser}
+        onConfirm={handleDeleteUser}
+        onCancel={() => setDeleteUserConfirm(false)}
+      />
+
+      <ConfirmModal
+        open={!!deleteListingId}
+        title="Delete Listing"
+        body="Are you sure you want to delete this listing? This action cannot be undone."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        dangerous
+        loading={deletingListing}
+        onConfirm={handleDeleteListing}
+        onCancel={() => setDeleteListingId(null)}
+      />
+
+      <ConfirmModal
+        open={!!deleteReviewId}
+        title="Delete Review"
+        body="Are you sure you want to delete this review? This action cannot be undone."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        dangerous
+        loading={deletingReview}
+        onConfirm={handleDeleteReview}
+        onCancel={() => setDeleteReviewId(null)}
+      />
+    </div>
+  );
+}
+
+function StaticField({
+  label,
+  value,
+}: {
+  label: string;
+  value: string | null | undefined;
+}) {
+  return (
+    <div>
+      <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-0.5">
+        {label}
+      </p>
+      <p className="text-sm font-medium text-gray-700">
+        {value ?? <span className="text-gray-400 font-normal">—</span>}
+      </p>
+    </div>
+  );
+}
+
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">
+        {label}
+      </label>
+      {children}
     </div>
   );
 }
