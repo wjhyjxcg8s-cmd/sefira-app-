@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { supabase } from "@/app/lib/supabase";
 
 const translations = {
   tr: {
@@ -59,6 +60,17 @@ const translations = {
 
 type Lang = keyof typeof translations;
 
+interface AdminMessage {
+  id: string;
+  user_id: string | null;
+  email: string | null;
+  title: string;
+  message: string;
+  is_global: boolean;
+  created_at: string;
+  is_read: boolean;
+}
+
 const SUPPORT_READ_KEY = "sefira_msg_support_read";
 
 export default function MessagesPage() {
@@ -69,12 +81,33 @@ export default function MessagesPage() {
   const [messageInput, setMessageInput] = useState("");
   const [mobileView, setMobileView] = useState<"list" | "chat">("list");
 
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [adminMessages, setAdminMessages] = useState<AdminMessage[]>([]);
+
   useEffect(() => {
     const savedLang = localStorage.getItem("sefira-lang") as Lang | null;
     if (savedLang === "tr" || savedLang === "en" || savedLang === "fa" || savedLang === "ar" || savedLang === "de") setLang(savedLang);
     const read = localStorage.getItem(SUPPORT_READ_KEY) === "true";
     setIsRead(read);
     setMounted(true);
+  }, []);
+
+  // Fetch admin messages for current user
+  useEffect(() => {
+    const fetchAdminMessages = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      setCurrentUserId(user.id);
+
+      const { data } = await supabase
+        .from("admin_messages")
+        .select("*")
+        .or(`user_id.eq.${user.id},is_global.eq.true`)
+        .order("created_at", { ascending: false });
+
+      if (data) setAdminMessages(data as AdminMessage[]);
+    };
+    fetchAdminMessages();
   }, []);
 
   const t = translations[lang];
@@ -84,10 +117,33 @@ export default function MessagesPage() {
   const openConversation = (id: string) => {
     setSelectedConv(id);
     setMobileView("chat");
-    if (!isRead) {
+    if (!isRead && id === "support") {
       localStorage.setItem(SUPPORT_READ_KEY, "true");
       setIsRead(true);
     }
+  };
+
+  const openAdminMessage = async (msg: AdminMessage) => {
+    setSelectedConv(msg.id);
+    setMobileView("chat");
+    if (!msg.is_read && currentUserId) {
+      await supabase
+        .from("admin_messages")
+        .update({ is_read: true })
+        .eq("id", msg.id);
+      setAdminMessages((prev) =>
+        prev.map((m) => (m.id === msg.id ? { ...m, is_read: true } : m))
+      );
+    }
+  };
+
+  const selectedAdminMsg = adminMessages.find((m) => m.id === selectedConv) ?? null;
+
+  const formatDate = (d: string) => {
+    return new Date(d).toLocaleDateString(lang === "tr" ? "tr-TR" : lang === "fa" || lang === "ar" ? "ar" : "en-US", {
+      month: "short",
+      day: "numeric",
+    });
   };
 
   return (
@@ -127,7 +183,7 @@ export default function MessagesPage() {
             <h2 className="font-bold text-stone-500 text-xs uppercase tracking-wider">{t.messages}</h2>
           </div>
 
-          {/* Conversation item – Sefira Support */}
+          {/* Conversation item – Sefira Support (static welcome) */}
           <button
             onClick={() => openConversation("support")}
             className={`
@@ -135,12 +191,9 @@ export default function MessagesPage() {
               ${selectedConv === "support" ? "bg-orange-50" : "hover:bg-stone-50"}
             `}
           >
-            {/* Avatar */}
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center flex-shrink-0 text-white font-black text-lg shadow-sm">
               S
             </div>
-
-            {/* Text content */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-2 mb-0.5">
                 <span
@@ -160,6 +213,40 @@ export default function MessagesPage() {
               </p>
             </div>
           </button>
+
+          {/* Admin messages */}
+          {adminMessages.map((msg) => (
+            <button
+              key={msg.id}
+              onClick={() => openAdminMessage(msg)}
+              className={`
+                w-full flex items-center gap-3 px-4 py-3.5 transition-colors text-left border-t border-stone-100
+                ${selectedConv === msg.id ? "bg-orange-50" : "hover:bg-stone-50"}
+              `}
+            >
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center flex-shrink-0 text-white font-black text-lg shadow-sm">
+                S
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-2 mb-0.5">
+                  <span
+                    className={`text-sm truncate ${!msg.is_read ? "font-bold text-stone-900" : "font-semibold text-stone-700"}`}
+                  >
+                    {t.senderName}
+                  </span>
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    <span className="text-xs text-stone-400">{formatDate(msg.created_at)}</span>
+                    {!msg.is_read && (
+                      <div className="w-2.5 h-2.5 rounded-full bg-orange-500 flex-shrink-0" />
+                    )}
+                  </div>
+                </div>
+                <p className={`text-xs truncate ${!msg.is_read ? "text-stone-700 font-medium" : "text-stone-400"}`}>
+                  {msg.title}
+                </p>
+              </div>
+            </button>
+          ))}
         </div>
 
         {/* ── Right panel: chat view ─────────────────────────────────────── */}
@@ -194,7 +281,6 @@ export default function MessagesPage() {
 
               {/* Messages area */}
               <div className="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-3">
-                {/* Received bubble (left / gray) */}
                 <div className="flex items-end gap-2 max-w-[80%]">
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white font-black text-sm flex-shrink-0 mb-1 shadow-sm">
                     S
@@ -230,8 +316,53 @@ export default function MessagesPage() {
                 </div>
               </div>
             </>
+          ) : selectedAdminMsg ? (
+            <>
+              {/* Admin message chat header */}
+              <div className="flex items-center gap-3 px-4 py-3 bg-white border-b border-stone-200 shadow-sm flex-shrink-0">
+                <button
+                  onClick={() => setMobileView("list")}
+                  className="md:hidden p-2 -ml-2 text-stone-500 hover:text-stone-800 rounded-lg hover:bg-stone-100 transition-colors"
+                  aria-label="Back"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-5 h-5">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </button>
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white font-black shadow-sm flex-shrink-0">
+                  S
+                </div>
+                <div>
+                  <p className="font-bold text-stone-900 text-sm leading-tight">{t.senderName}</p>
+                  <p className="text-xs text-emerald-500 font-semibold">Sefira</p>
+                </div>
+              </div>
+
+              {/* Admin message content */}
+              <div className="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-3">
+                <div className="flex items-end gap-2 max-w-[80%]">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white font-black text-sm flex-shrink-0 mb-1 shadow-sm">
+                    S
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <div className="bg-white rounded-2xl rounded-bl-sm px-4 py-2.5 shadow-sm">
+                      <p className="text-xs font-bold text-orange-500 mb-1">{selectedAdminMsg.title}</p>
+                      <p className="text-sm text-stone-800 leading-relaxed whitespace-pre-line">{selectedAdminMsg.message}</p>
+                    </div>
+                    <span className="text-[11px] text-stone-400 px-1">{formatDate(selectedAdminMsg.created_at)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Read-only footer */}
+              <div className="px-4 py-3 bg-white border-t border-stone-200 flex-shrink-0">
+                <p className="text-xs text-stone-400 text-center">
+                  {lang === "tr" ? "Bu bir sistem mesajıdır." : lang === "fa" ? "این یک پیام سیستمی است." : lang === "ar" ? "هذه رسالة نظام." : lang === "de" ? "Dies ist eine Systemnachricht." : "This is a system message."}
+                </p>
+              </div>
+            </>
           ) : (
-            /* No conversation selected – shown on desktop when nothing is open */
+            /* No conversation selected */
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center px-6">
                 <div className="w-20 h-20 rounded-full bg-orange-100 flex items-center justify-center mx-auto mb-4">

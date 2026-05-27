@@ -8,7 +8,7 @@ import { supabase } from "@/app/lib/supabase";
 const ADMIN_EMAIL = "supportsefira@gmail.com";
 const PAGE_SIZE = 20;
 
-type Section = "dashboard" | "users" | "listings" | "feedback" | "reviews";
+type Section = "dashboard" | "users" | "listings" | "feedback" | "reviews" | "messages";
 
 interface Stats {
   totalUsers: number;
@@ -156,6 +156,10 @@ export default function AdminPage() {
   const [reviews, setReviews] = useState<FeedbackRecord[]>([]);
   const [reviewsTotal, setReviewsTotal] = useState(0);
   const [reviewsPage, setReviewsPage] = useState(1);
+
+  const [deletingGlobalMsgs, setDeletingGlobalMsgs] = useState(false);
+  const [deleteGlobalMsgsConfirm, setDeleteGlobalMsgsConfirm] = useState(false);
+  const [deleteGlobalMsgsResult, setDeleteGlobalMsgsResult] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && (!user || user.email !== ADMIN_EMAIL)) {
@@ -410,8 +414,9 @@ export default function AdminPage() {
     { id: "dashboard", label: "Dashboard", icon: "📊" },
     { id: "users", label: "Users", icon: "👥" },
     { id: "listings", label: "Listings", icon: "📋" },
-    { id: "feedback", label: "Messages", icon: "💬" },
+    { id: "feedback", label: "Del. Feedback", icon: "💬" },
     { id: "reviews", label: "Reviews", icon: "⭐" },
+    { id: "messages", label: "Messages", icon: "✉️" },
   ];
 
   const navigate = (section: Section) => {
@@ -874,8 +879,93 @@ export default function AdminPage() {
     </div>
   );
 
+  const handleDeleteGlobalMessages = async () => {
+    setDeletingGlobalMsgs(true);
+    setDeleteGlobalMsgsResult(null);
+    try {
+      const token = session?.access_token;
+      if (!token) { setDeleteGlobalMsgsResult("Not authenticated."); setDeletingGlobalMsgs(false); return; }
+      const res = await fetch("/api/admin/delete-messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      });
+      const json = await res.json();
+      if (json.error) {
+        setDeleteGlobalMsgsResult(`Error: ${json.error}`);
+      } else {
+        setDeleteGlobalMsgsResult("All global messages deleted.");
+        setDeleteGlobalMsgsConfirm(false);
+        setTimeout(() => setDeleteGlobalMsgsResult(null), 4000);
+      }
+    } catch (e) {
+      setDeleteGlobalMsgsResult(String(e));
+    }
+    setDeletingGlobalMsgs(false);
+  };
+
+  const renderMessages = () => (
+    <div>
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">Messages</h2>
+      <div
+        className="bg-white rounded-2xl border border-gray-100 p-6"
+        style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
+      >
+        <div className="mb-4">
+          <p className="text-sm text-gray-500 mb-1">
+            Send targeted or broadcast messages to users from the user detail page.
+          </p>
+          <p className="text-sm text-gray-500">
+            Use the button below to delete all global (broadcast) messages from the system.
+          </p>
+        </div>
+
+        {deleteGlobalMsgsResult && (
+          <p className={`text-sm mb-4 ${deleteGlobalMsgsResult.startsWith("Error") ? "text-red-500" : "text-green-600"}`}>
+            {deleteGlobalMsgsResult}
+          </p>
+        )}
+
+        {!deleteGlobalMsgsConfirm ? (
+          <button
+            onClick={() => setDeleteGlobalMsgsConfirm(true)}
+            className="px-6 py-2.5 rounded-xl text-sm font-semibold text-white transition-colors"
+            style={{ backgroundColor: "#ef4444" }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#dc2626")}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ef4444")}
+          >
+            Delete Message for All
+          </button>
+        ) : (
+          <div className="flex flex-col gap-3 max-w-sm">
+            <p className="text-sm font-semibold text-red-600">
+              This will permanently delete all global broadcast messages. Are you sure?
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={handleDeleteGlobalMessages}
+                disabled={deletingGlobalMsgs}
+                className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-colors disabled:opacity-60"
+                style={{ backgroundColor: "#ef4444" }}
+                onMouseEnter={(e) => { if (!deletingGlobalMsgs) e.currentTarget.style.backgroundColor = "#dc2626"; }}
+                onMouseLeave={(e) => { if (!deletingGlobalMsgs) e.currentTarget.style.backgroundColor = "#ef4444"; }}
+              >
+                {deletingGlobalMsgs ? "Deleting…" : "Yes, Delete All"}
+              </button>
+              <button
+                onClick={() => setDeleteGlobalMsgsConfirm(false)}
+                className="px-5 py-2.5 rounded-xl text-sm font-medium text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
   const renderContent = () => {
-    if (dataLoading) return <LoadingSpinner />;
+    if (dataLoading && activeSection !== "messages") return <LoadingSpinner />;
     switch (activeSection) {
       case "dashboard":
         return renderDashboard();
@@ -887,6 +977,8 @@ export default function AdminPage() {
         return renderFeedback();
       case "reviews":
         return renderReviews();
+      case "messages":
+        return renderMessages();
     }
   };
 

@@ -167,6 +167,7 @@ export default function UserDetailPage() {
   const userId = params.id;
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [userAuthEmail, setUserAuthEmail] = useState<string | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [listings, setListings] = useState<Listing[]>([]);
   const [feedback, setFeedback] = useState<DeletionFeedback[]>([]);
@@ -180,6 +181,14 @@ export default function UserDetailPage() {
   const [profileSaving, setProfileSaving] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
   const [profileSuccess, setProfileSuccess] = useState(false);
+
+  // Messaging
+  const [msgTitle, setMsgTitle] = useState("");
+  const [msgMessage, setMsgMessage] = useState("");
+  const [sendingMsg, setSendingMsg] = useState(false);
+  const [msgError, setMsgError] = useState<string | null>(null);
+  const [msgSuccess, setMsgSuccess] = useState<string | null>(null);
+  const [confirmGlobalMsg, setConfirmGlobalMsg] = useState(false);
 
   // Password reset
   const [resetSending, setResetSending] = useState(false);
@@ -242,6 +251,17 @@ export default function UserDetailPage() {
         setEditGender(prof.gender ?? "");
         setEditBirthDate(prof.birth_date ?? "");
         setEditCountry(prof.country ?? "");
+
+        // Fetch real email from auth admin API
+        const emailRes = await fetch(`/api/admin/get-user?userId=${userId}`, {
+          headers: {
+            Authorization: `Bearer ${session?.access_token ?? ""}`,
+          },
+        });
+        if (!cancelled && emailRes.ok) {
+          const emailJson = await emailRes.json();
+          if (emailJson.email) setUserAuthEmail(emailJson.email);
+        }
 
         // Deletion feedback by email
         if (prof.email) {
@@ -317,12 +337,49 @@ export default function UserDetailPage() {
     setProfileSaving(false);
   };
 
+  const handleSendMessage = async (sendToAll: boolean) => {
+    if (!msgTitle.trim() || !msgMessage.trim()) {
+      setMsgError("Title and message are required.");
+      return;
+    }
+    setSendingMsg(true);
+    setMsgError(null);
+    setMsgSuccess(null);
+    setConfirmGlobalMsg(false);
+    try {
+      const res = await fetch("/api/admin/send-message", {
+        method: "POST",
+        headers: authHeader(),
+        body: JSON.stringify({
+          userId,
+          userEmail: userAuthEmail ?? profile?.email,
+          title: msgTitle,
+          message: msgMessage,
+          sendToAll,
+        }),
+      });
+      const json = await res.json();
+      if (json.error) {
+        setMsgError(json.error);
+      } else {
+        setMsgSuccess(sendToAll ? "Message sent to all users." : "Message sent to this user.");
+        setMsgTitle("");
+        setMsgMessage("");
+        setTimeout(() => setMsgSuccess(null), 4000);
+      }
+    } catch (e) {
+      setMsgError(String(e));
+    }
+    setSendingMsg(false);
+  };
+
   const handleResetPassword = async () => {
-    if (!profile?.email) return;
+    const emailToReset = userAuthEmail ?? profile?.email;
+    if (!emailToReset) return;
     setResetSending(true);
     setResetError(null);
     setResetSent(false);
-    const { error } = await supabase.auth.resetPasswordForEmail(profile.email, {
+    const { error } = await supabase.auth.resetPasswordForEmail(emailToReset, {
       redirectTo: `${window.location.origin}/reset-password`,
     });
     setResetSending(false);
@@ -505,7 +562,7 @@ export default function UserDetailPage() {
                   </div>
 
                   <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-sm">
-                    <StaticField label="Email (read-only)" value={profile.email} />
+                    <StaticField label="Email (read-only)" value={userAuthEmail ?? profile.email} />
                     <StaticField
                       label="Join Date"
                       value={formatDate(profile.created_at)}
@@ -613,7 +670,60 @@ export default function UserDetailPage() {
               </div>
             </SectionCard>
 
-            {/* ── SECTION 2: Reviews ───────────────────────────────────── */}
+            {/* ── SECTION 2: Send Message ──────────────────────────────── */}
+            <SectionCard title="Send Message to User">
+              <div className="p-6 space-y-4">
+                <Field label="Title">
+                  <input
+                    value={msgTitle}
+                    onChange={(e) => setMsgTitle(e.target.value)}
+                    placeholder="Message title"
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  />
+                </Field>
+                <Field label="Message">
+                  <textarea
+                    value={msgMessage}
+                    onChange={(e) => setMsgMessage(e.target.value)}
+                    placeholder="Write your message here…"
+                    rows={4}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
+                  />
+                </Field>
+
+                {msgError && (
+                  <p className="text-sm text-red-500">{msgError}</p>
+                )}
+                {msgSuccess && (
+                  <p className="text-sm text-green-600">{msgSuccess}</p>
+                )}
+
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    onClick={() => handleSendMessage(false)}
+                    disabled={sendingMsg}
+                    className="px-5 py-2.5 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
+                    style={{ backgroundColor: "#f97316" }}
+                    onMouseEnter={(e) => { if (!sendingMsg) e.currentTarget.style.backgroundColor = "#ea6c08"; }}
+                    onMouseLeave={(e) => { if (!sendingMsg) e.currentTarget.style.backgroundColor = "#f97316"; }}
+                  >
+                    {sendingMsg ? "Sending…" : "Send to This User Only"}
+                  </button>
+                  <button
+                    onClick={() => setConfirmGlobalMsg(true)}
+                    disabled={sendingMsg}
+                    className="px-5 py-2.5 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
+                    style={{ backgroundColor: "#ea580c" }}
+                    onMouseEnter={(e) => { if (!sendingMsg) e.currentTarget.style.backgroundColor = "#c2410c"; }}
+                    onMouseLeave={(e) => { if (!sendingMsg) e.currentTarget.style.backgroundColor = "#ea580c"; }}
+                  >
+                    Send to ALL Users
+                  </button>
+                </div>
+              </div>
+            </SectionCard>
+
+            {/* ── SECTION 3: Reviews ───────────────────────────────────── */}
             <SectionCard title="Reviews" count={reviews.length}>
               {reviews.length === 0 ? (
                 <p className="px-6 py-8 text-center text-gray-400 text-sm">
@@ -702,7 +812,7 @@ export default function UserDetailPage() {
               )}
             </SectionCard>
 
-            {/* ── SECTION 3: Listings ──────────────────────────────────── */}
+            {/* ── SECTION 4: Listings ──────────────────────────────────── */}
             <SectionCard title="Listings" count={listings.length}>
               {listings.length === 0 ? (
                 <p className="px-6 py-8 text-center text-gray-400 text-sm">
@@ -805,7 +915,7 @@ export default function UserDetailPage() {
               )}
             </SectionCard>
 
-            {/* ── SECTION 4: Deletion Feedback ─────────────────────────── */}
+            {/* ── SECTION 5: Deletion Feedback ─────────────────────────── */}
             {feedback.length > 0 && (
               <SectionCard title="Deletion Feedback" count={feedback.length}>
                 <div className="divide-y divide-gray-50">
@@ -852,7 +962,7 @@ export default function UserDetailPage() {
               </SectionCard>
             )}
 
-            {/* ── SECTION 5: Danger Zone ───────────────────────────────── */}
+            {/* ── SECTION 6: Danger Zone ───────────────────────────────── */}
             <div
               className="bg-white rounded-2xl border overflow-hidden"
               style={{
@@ -893,6 +1003,23 @@ export default function UserDetailPage() {
       </div>
 
       {/* ── Modals ─────────────────────────────────────────────────────── */}
+
+      <ConfirmModal
+        open={confirmGlobalMsg}
+        title="Send to ALL Users"
+        body={
+          <>
+            This will send the message to every user on the platform.
+            <br />
+            <span className="font-semibold text-orange-600">This action cannot be undone.</span>
+          </>
+        }
+        confirmLabel="Yes, Send to All"
+        cancelLabel="Cancel"
+        loading={sendingMsg}
+        onConfirm={() => handleSendMessage(true)}
+        onCancel={() => setConfirmGlobalMsg(false)}
+      />
 
       <ConfirmModal
         open={deleteUserConfirm}

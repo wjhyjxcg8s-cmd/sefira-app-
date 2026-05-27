@@ -18,11 +18,9 @@ async function verifyAdmin(req: NextRequest) {
   return user;
 }
 
-const SUPABASE_URL_FALLBACK = "https://ceetzophaybywfuhezhv.supabase.co";
-
 function getAdminClient() {
   return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? SUPABASE_URL_FALLBACK,
+    process.env.NEXT_PUBLIC_SUPABASE_URL ?? SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 }
@@ -37,18 +35,35 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { userId, updates } = await req.json();
-    if (!userId || !updates || typeof updates !== "object") {
-      return NextResponse.json({ error: "Missing userId or updates" }, { status: 400 });
+    const { userId, userEmail, title, message, sendToAll } = await req.json();
+    if (!title || !message) {
+      return NextResponse.json({ error: "Missing title or message" }, { status: 400 });
     }
 
     const supabaseAdmin = getAdminClient();
-    const { error } = await supabaseAdmin
-      .from("profiles")
-      .update(updates)
-      .eq("id", userId);
 
-    return NextResponse.json({ error: error?.message ?? null });
+    if (sendToAll) {
+      const { error } = await supabaseAdmin.from("admin_messages").insert([{
+        user_id: null,
+        email: null,
+        title,
+        message,
+        is_global: true,
+      }]);
+      return NextResponse.json({ error: error?.message ?? null });
+    } else {
+      if (!userId) {
+        return NextResponse.json({ error: "Missing userId for single user message" }, { status: 400 });
+      }
+      const { error } = await supabaseAdmin.from("admin_messages").insert([{
+        user_id: userId,
+        email: userEmail ?? null,
+        title,
+        message,
+        is_global: false,
+      }]);
+      return NextResponse.json({ error: error?.message ?? null });
+    }
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
   }

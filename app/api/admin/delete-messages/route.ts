@@ -18,11 +18,9 @@ async function verifyAdmin(req: NextRequest) {
   return user;
 }
 
-const SUPABASE_URL_FALLBACK = "https://ceetzophaybywfuhezhv.supabase.co";
-
 function getAdminClient() {
   return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? SUPABASE_URL_FALLBACK,
+    process.env.NEXT_PUBLIC_SUPABASE_URL ?? SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 }
@@ -37,17 +35,11 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { userId, updates } = await req.json();
-    if (!userId || !updates || typeof updates !== "object") {
-      return NextResponse.json({ error: "Missing userId or updates" }, { status: 400 });
-    }
-
     const supabaseAdmin = getAdminClient();
     const { error } = await supabaseAdmin
-      .from("profiles")
-      .update(updates)
-      .eq("id", userId);
-
+      .from("admin_messages")
+      .delete()
+      .eq("is_global", true);
     return NextResponse.json({ error: error?.message ?? null });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });

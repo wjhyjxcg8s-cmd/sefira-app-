@@ -18,16 +18,14 @@ async function verifyAdmin(req: NextRequest) {
   return user;
 }
 
-const SUPABASE_URL_FALLBACK = "https://ceetzophaybywfuhezhv.supabase.co";
-
 function getAdminClient() {
   return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? SUPABASE_URL_FALLBACK,
+    process.env.NEXT_PUBLIC_SUPABASE_URL ?? SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 }
 
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
   const adminUser = await verifyAdmin(req);
   if (!adminUser) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -36,19 +34,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
   }
 
+  const url = new URL(req.url);
+  const userId = url.searchParams.get("userId");
+  if (!userId) {
+    return NextResponse.json({ error: "Missing userId" }, { status: 400 });
+  }
+
   try {
-    const { userId, updates } = await req.json();
-    if (!userId || !updates || typeof updates !== "object") {
-      return NextResponse.json({ error: "Missing userId or updates" }, { status: 400 });
-    }
-
     const supabaseAdmin = getAdminClient();
-    const { error } = await supabaseAdmin
-      .from("profiles")
-      .update(updates)
-      .eq("id", userId);
-
-    return NextResponse.json({ error: error?.message ?? null });
+    const { data: { user }, error } = await supabaseAdmin.auth.admin.getUserById(userId);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ email: user?.email ?? null });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
   }

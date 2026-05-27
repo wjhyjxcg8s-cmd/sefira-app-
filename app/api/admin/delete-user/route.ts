@@ -18,9 +18,11 @@ async function verifyAdmin(req: NextRequest) {
   return user;
 }
 
+const SUPABASE_URL_FALLBACK = "https://ceetzophaybywfuhezhv.supabase.co";
+
 function getAdminClient() {
   return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_URL ?? SUPABASE_URL_FALLBACK,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 }
