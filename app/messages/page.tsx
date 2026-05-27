@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { supabase } from "@/app/lib/supabase";
-import { useAuth } from "@/app/lib/AuthContext";
 
 const translations = {
   tr: {
@@ -67,12 +66,12 @@ interface AdminMessage {
 }
 
 export default function MessagesPage() {
-  const { user } = useAuth();
   const [lang, setLang] = useState<Lang>("tr");
   const [mounted, setMounted] = useState(false);
   const [selectedConv, setSelectedConv] = useState<string | null>(null);
   const [mobileView, setMobileView] = useState<"list" | "chat">("list");
   const [adminMessages, setAdminMessages] = useState<AdminMessage[]>([]);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const savedLang = localStorage.getItem("sefira-lang") as Lang | null;
@@ -81,18 +80,20 @@ export default function MessagesPage() {
   }, []);
 
   useEffect(() => {
-    if (!user?.id) return;
     const fetchAdminMessages = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user?.id) return;
+      setUserId(session.user.id);
       const { data, error } = await supabase
         .from("admin_messages")
         .select("*")
-        .or(`user_id.eq.${user.id},is_global.eq.true`)
+        .or(`user_id.eq.${session.user.id},is_global.eq.true`)
         .order("created_at", { ascending: false });
-      console.log("Admin messages:", data, "Error:", error);
+      console.log("Admin msgs:", data, "Error:", error);
       if (data) setAdminMessages(data as AdminMessage[]);
     };
     fetchAdminMessages();
-  }, [user?.id]);
+  }, []);
 
   const t = translations[lang];
   const isFa = lang === "fa" || lang === "ar";
@@ -102,11 +103,11 @@ export default function MessagesPage() {
   const openSefiraChannel = async () => {
     setSelectedConv("sefira-notifications");
     setMobileView("chat");
-    if (adminMessages.some((m) => !m.is_read) && user?.id) {
+    if (adminMessages.some((m) => !m.is_read) && userId) {
       await supabase
         .from("admin_messages")
         .update({ is_read: true })
-        .or(`user_id.eq.${user.id},is_global.eq.true`);
+        .or(`user_id.eq.${userId},is_global.eq.true`);
       setAdminMessages((prev) => prev.map((m) => ({ ...m, is_read: true })));
     }
   };
