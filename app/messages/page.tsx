@@ -183,38 +183,7 @@ export default function MessagesPage() {
             <h2 className="font-bold text-stone-500 text-xs uppercase tracking-wider">{t.messages}</h2>
           </div>
 
-          {/* Conversation item – Sefira Support (static welcome) */}
-          <button
-            onClick={() => openConversation("support")}
-            className={`
-              w-full flex items-center gap-3 px-4 py-3.5 transition-colors text-left
-              ${selectedConv === "support" ? "bg-orange-50" : "hover:bg-stone-50"}
-            `}
-          >
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center flex-shrink-0 text-white font-black text-lg shadow-sm">
-              S
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between gap-2 mb-0.5">
-                <span
-                  className={`text-sm truncate ${showUnread ? "font-bold text-stone-900" : "font-semibold text-stone-700"}`}
-                >
-                  {t.senderName}
-                </span>
-                <div className="flex items-center gap-1.5 flex-shrink-0">
-                  <span className="text-xs text-stone-400">Sefira</span>
-                  {showUnread && (
-                    <div className="w-2.5 h-2.5 rounded-full bg-orange-500 flex-shrink-0" />
-                  )}
-                </div>
-              </div>
-              <p className={`text-xs truncate ${showUnread ? "text-stone-700 font-medium" : "text-stone-400"}`}>
-                {t.supportMessage}
-              </p>
-            </div>
-          </button>
-
-          {/* Admin messages */}
+          {/* Admin messages – shown at top */}
           {adminMessages.map((msg) => (
             <button
               key={msg.id}
@@ -247,6 +216,37 @@ export default function MessagesPage() {
               </div>
             </button>
           ))}
+
+          {/* Conversation item – Sefira Support (static welcome) */}
+          <button
+            onClick={() => openConversation("support")}
+            className={`
+              w-full flex items-center gap-3 px-4 py-3.5 transition-colors text-left border-t border-stone-100
+              ${selectedConv === "support" ? "bg-orange-50" : "hover:bg-stone-50"}
+            `}
+          >
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center flex-shrink-0 text-white font-black text-lg shadow-sm">
+              S
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between gap-2 mb-0.5">
+                <span
+                  className={`text-sm truncate ${showUnread ? "font-bold text-stone-900" : "font-semibold text-stone-700"}`}
+                >
+                  {t.senderName}
+                </span>
+                <div className="flex items-center gap-1.5 flex-shrink-0">
+                  <span className="text-xs text-stone-400">Sefira</span>
+                  {showUnread && (
+                    <div className="w-2.5 h-2.5 rounded-full bg-orange-500 flex-shrink-0" />
+                  )}
+                </div>
+              </div>
+              <p className={`text-xs truncate ${showUnread ? "text-stone-700 font-medium" : "text-stone-400"}`}>
+                {t.supportMessage}
+              </p>
+            </div>
+          </button>
         </div>
 
         {/* ── Right panel: chat view ─────────────────────────────────────── */}
