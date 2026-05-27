@@ -893,19 +893,33 @@ export default function Home() {
 
   // ── Onboarding flow ───────────────────────────────────────────────────────
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [onboardingMissing, setOnboardingMissing] = useState({
+    displayName: false, birthDate: false, gender: false, country: false, photo: false,
+  });
   useEffect(() => {
     if (!user) { setShowOnboarding(false); return; }
-    supabase
-      .from("profiles")
-      .select("birth_date, gender, country")
-      .eq("user_id", user.id)
-      .single()
-      .then(({ data }) => {
-        if (!data?.birth_date || !data?.gender || !data?.country) {
-          setShowOnboarding(true);
-          setShowWelcomeToast(false);
-        }
-      });
+    const timer = setTimeout(() => {
+      supabase
+        .from("profiles")
+        .select("display_name, birth_date, gender, country, avatar_url")
+        .eq("user_id", user.id)
+        .single()
+        .then(({ data }) => {
+          const missing = {
+            displayName: !data?.display_name,
+            birthDate:   !data?.birth_date,
+            gender:      !data?.gender,
+            country:     !data?.country,
+            photo:       !data?.avatar_url,
+          };
+          if (Object.values(missing).some(Boolean)) {
+            setOnboardingMissing(missing);
+            setShowOnboarding(true);
+            setShowWelcomeToast(false);
+          }
+        });
+    }, 10000);
+    return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
@@ -2497,6 +2511,8 @@ export default function Home() {
         <OnboardingFlow
           userId={user.id}
           lang={lang}
+          onLangChange={setLang}
+          missingFields={onboardingMissing}
           onComplete={() => setShowOnboarding(false)}
         />
       )}

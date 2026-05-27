@@ -67,6 +67,10 @@ const translations = {
     deleteDeleting: "Siliniyor...",
     cancelAndGoHome: "Vazgeçtim! Eve Dönmek İstiyorum 🏠",
     cancelSubtitle: "Seni çok seviyoruz 🧡",
+    country: "Ülke",
+    countryPlaceholder: "Ülkenizi yazın...",
+    fieldRequired: "Bu alan zorunludur",
+    fieldEmpty: "Bu alan boş bırakılamaz",
   },
   en: {
     title: "My Profile",
@@ -128,6 +132,10 @@ const translations = {
     deleteDeleting: "Deleting...",
     cancelAndGoHome: "I changed my mind! Take me home 🏠",
     cancelSubtitle: "We love you so much 🧡",
+    country: "Country",
+    countryPlaceholder: "Type your country...",
+    fieldRequired: "This field is required",
+    fieldEmpty: "This field cannot be left empty",
   },
   fa: {
     title: "پروفایل من",
@@ -189,6 +197,10 @@ const translations = {
     deleteDeleting: "در حال حذف...",
     cancelAndGoHome: "پشیمون شدم! برگردونم خونه 🏠",
     cancelSubtitle: "خیلی دوستت داریم 🧡",
+    country: "کشور",
+    countryPlaceholder: "کشورتان را بنویسید...",
+    fieldRequired: "این فیلد اجباری است",
+    fieldEmpty: "این فیلد نمی‌تواند خالی باشد",
   },
   de: {
     title: "Mein Profil",
@@ -250,6 +262,10 @@ const translations = {
     deleteDeleting: "Wird gelöscht...",
     cancelAndGoHome: "🐱 Ich habe es mir anders überlegt",
     cancelSubtitle: "Wir lieben dich so sehr 🧡",
+    country: "Land",
+    countryPlaceholder: "Land eingeben...",
+    fieldRequired: "Dieses Feld ist erforderlich",
+    fieldEmpty: "Dieses Feld darf nicht leer sein",
   },
   // Always add "ar" key when adding new translations
   ar: {
@@ -312,6 +328,10 @@ const translations = {
     deleteDeleting: "جارٍ الحذف...",
     cancelAndGoHome: "🐱 تراجعت، أعدني للرئيسية",
     cancelSubtitle: "نحبك كثيراً 🧡",
+    country: "الدولة",
+    countryPlaceholder: "اكتب دولتك...",
+    fieldRequired: "هذا الحقل مطلوب",
+    fieldEmpty: "لا يمكن ترك هذا الحقل فارغاً",
   },
 };
 
@@ -343,6 +363,9 @@ export default function ProfilePage() {
   const [displayName, setDisplayName] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [gender, setGender] = useState<"male" | "female" | "other" | "">("");
+  const [country, setCountry] = useState("");
+  const [editCountry, setEditCountry] = useState("");
+  const [fieldError, setFieldError] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -396,6 +419,7 @@ export default function ProfilePage() {
           setBirthDate(data.birth_date ?? "");
           setAvatarUrl(data.avatar_url ?? null);
           setGender((data.gender ?? "") as "male" | "female" | "other" | "");
+          setCountry(data.country ?? "");
         } else {
           setDisplayName(user.user_metadata?.full_name ?? "");
         }
@@ -412,9 +436,11 @@ export default function ProfilePage() {
 
   const handleConfirmEdit = () => {
     if (!confirmField) return;
+    setFieldError(null);
     if (confirmField === "displayName") setEditDisplayName(displayName);
     if (confirmField === "birthDate") setEditBirthDate(birthDate);
     if (confirmField === "gender") setEditGender(gender);
+    if (confirmField === "country") setEditCountry(country);
     if (confirmField === "changePassword") {
       setEditCurrentPassword("");
       setEditNewPassword("");
@@ -426,6 +452,20 @@ export default function ProfilePage() {
   };
 
   const handleSaveField = async (field: string) => {
+    setFieldError(null);
+    // Validate required fields before touching Supabase
+    if (field === "displayName" && !editDisplayName.trim()) {
+      setFieldError(t.fieldEmpty); setEditDisplayName(displayName); return;
+    }
+    if (field === "birthDate" && !editBirthDate) {
+      setFieldError(t.fieldEmpty); setEditBirthDate(birthDate); return;
+    }
+    if (field === "gender" && !editGender) {
+      setFieldError(t.fieldEmpty); setEditGender(gender); return;
+    }
+    if (field === "country" && !editCountry.trim()) {
+      setFieldError(t.fieldEmpty); setEditCountry(country); return;
+    }
     setSaving(true);
     setError(null);
 
@@ -498,6 +538,7 @@ export default function ProfilePage() {
       if (field === "displayName") updates.display_name = editDisplayName;
       if (field === "birthDate") updates.birth_date = editBirthDate ? new Date(editBirthDate).toISOString().split("T")[0] : null;
       if (field === "gender") updates.gender = editGender || null;
+      if (field === "country") updates.country = editCountry;
 
       const { error: dbError } = await supabase
         .from("profiles")
@@ -507,6 +548,7 @@ export default function ProfilePage() {
       if (field === "displayName") setDisplayName(editDisplayName);
       if (field === "birthDate") setBirthDate(editBirthDate);
       if (field === "gender") setGender(editGender);
+      if (field === "country") setCountry(editCountry);
     }
 
     setSaved(true);
@@ -587,6 +629,7 @@ export default function ProfilePage() {
   };
 
   const cancelFieldEdit = (field: string) => {
+    setFieldError(null);
     if (field === "avatar") {
       setAvatarFile(null);
       setAvatarPreview(null);
@@ -1029,17 +1072,26 @@ export default function ProfilePage() {
             {/* Display Name */}
             <div className="px-6 sm:px-8 py-4 flex items-start gap-3">
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-stone-400 uppercase tracking-wide mb-1.5">{t.displayName}</p>
+                <p className="text-xs font-semibold text-stone-400 uppercase tracking-wide mb-1.5">
+                  {t.displayName}<span className="text-red-500 ml-0.5">*</span>
+                </p>
                 {editingField === "displayName" ? (
                   <div className="flex flex-col gap-2">
                     <input
                       type="text"
                       value={editDisplayName}
-                      onChange={(e) => setEditDisplayName(e.target.value)}
+                      onChange={(e) => { setEditDisplayName(e.target.value); setFieldError(null); }}
                       placeholder={t.displayNamePlaceholder}
                       autoFocus
                       className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
                     />
+                    <p className="text-[11px] text-stone-400">{t.fieldRequired}</p>
+                    {fieldError && (
+                      <div className="flex items-center gap-1.5 text-xs text-rose-600 bg-rose-50 border border-rose-100 rounded-lg px-2.5 py-1.5">
+                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 flex-shrink-0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                        {fieldError}
+                      </div>
+                    )}
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleSaveField("displayName")}
@@ -1081,17 +1133,26 @@ export default function ProfilePage() {
             {/* Birth Date */}
             <div className="px-6 sm:px-8 py-4 flex items-start gap-3">
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-stone-400 uppercase tracking-wide mb-1.5">{t.birthDate}</p>
+                <p className="text-xs font-semibold text-stone-400 uppercase tracking-wide mb-1.5">
+                  {t.birthDate}<span className="text-red-500 ml-0.5">*</span>
+                </p>
                 {editingField === "birthDate" ? (
                   <div className="flex flex-col gap-2">
                     <input
                       type="date"
                       value={editBirthDate}
-                      onChange={(e) => setEditBirthDate(e.target.value)}
+                      onChange={(e) => { setEditBirthDate(e.target.value); setFieldError(null); }}
                       max={new Date().toISOString().split("T")[0]}
                       autoFocus
                       className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
                     />
+                    <p className="text-[11px] text-stone-400">{t.fieldRequired}</p>
+                    {fieldError && (
+                      <div className="flex items-center gap-1.5 text-xs text-rose-600 bg-rose-50 border border-rose-100 rounded-lg px-2.5 py-1.5">
+                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 flex-shrink-0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                        {fieldError}
+                      </div>
+                    )}
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleSaveField("birthDate")}
@@ -1127,7 +1188,9 @@ export default function ProfilePage() {
             {/* Gender */}
             <div className="px-6 sm:px-8 py-4 flex items-start gap-3">
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-stone-400 uppercase tracking-wide mb-1.5">{t.gender}</p>
+                <p className="text-xs font-semibold text-stone-400 uppercase tracking-wide mb-1.5">
+                  {t.gender}<span className="text-red-500 ml-0.5">*</span>
+                </p>
                 {editingField === "gender" ? (
                   <div className="flex flex-col gap-2">
                     <div className="grid grid-cols-3 gap-2">
@@ -1155,6 +1218,13 @@ export default function ProfilePage() {
                         );
                       })}
                     </div>
+                    <p className="text-[11px] text-stone-400">{t.fieldRequired}</p>
+                    {fieldError && (
+                      <div className="flex items-center gap-1.5 text-xs text-rose-600 bg-rose-50 border border-rose-100 rounded-lg px-2.5 py-1.5">
+                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 flex-shrink-0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                        {fieldError}
+                      </div>
+                    )}
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleSaveField("gender")}
@@ -1195,6 +1265,61 @@ export default function ProfilePage() {
                 </button>
               )}
             </div>
+            {/* Country */}
+            <div className="px-6 sm:px-8 py-4 flex items-start gap-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-stone-400 uppercase tracking-wide mb-1.5">
+                  {t.country}<span className="text-red-500 ml-0.5">*</span>
+                </p>
+                {editingField === "country" ? (
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="text"
+                      value={editCountry}
+                      onChange={(e) => { setEditCountry(e.target.value); setFieldError(null); }}
+                      placeholder={t.countryPlaceholder}
+                      autoFocus
+                      className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+                    />
+                    <p className="text-[11px] text-stone-400">{t.fieldRequired}</p>
+                    {fieldError && (
+                      <div className="flex items-center gap-1.5 text-xs text-rose-600 bg-rose-50 border border-rose-100 rounded-lg px-2.5 py-1.5">
+                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 flex-shrink-0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                        {fieldError}
+                      </div>
+                    )}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleSaveField("country")}
+                        disabled={saving}
+                        className="flex-1 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold shadow-sm hover:opacity-90 transition-all active:scale-95 disabled:opacity-60"
+                      >
+                        {saving ? t.saving : t.save}
+                      </button>
+                      <button
+                        onClick={() => cancelFieldEdit("country")}
+                        className="flex-1 py-2 rounded-lg border-2 border-stone-200 text-stone-500 text-xs font-bold hover:bg-stone-50 transition-all active:scale-95"
+                      >
+                        {t.cancel}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-sm font-semibold text-stone-900">
+                    {country || <span className="text-stone-400 italic font-normal">{t.notSet}</span>}
+                  </p>
+                )}
+              </div>
+              {editingField !== "country" && (
+                <button
+                  onClick={() => setConfirmField("country")}
+                  className="mt-5 w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:text-orange-500 hover:bg-orange-50 transition-all flex-shrink-0"
+                >
+                  <EditIcon />
+                </button>
+              )}
+            </div>
+
             {/* Change Password */}
             <div className="px-6 sm:px-8 py-4 flex items-start gap-3">
               <div className="flex-1 min-w-0">
