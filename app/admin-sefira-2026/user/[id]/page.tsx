@@ -372,16 +372,29 @@ export default function UserDetailPage() {
     setMsgSuccess(null);
     setConfirmGlobalMsg(false);
     try {
+      if (!sendToAll) {
+        console.log('Sending to single user:', profile?.id, 'sendToAll: false');
+      }
       const res = await fetch("/api/admin/send-message", {
         method: "POST",
         headers: authHeader(),
-        body: JSON.stringify({
-          userId,
-          userEmail: userAuthEmail ?? profile?.email,
-          title: msgTitle,
-          message: msgMessage,
-          sendToAll,
-        }),
+        body: JSON.stringify(
+          sendToAll
+            ? {
+                userId: null,
+                userEmail: null,
+                title: msgTitle,
+                message: msgMessage,
+                sendToAll: true,
+              }
+            : {
+                userId: profile?.id,
+                userEmail: userAuthEmail ?? profile?.email,
+                title: msgTitle,
+                message: msgMessage,
+                sendToAll: false,
+              }
+        ),
       });
       const json = await res.json();
       if (json.error) {
