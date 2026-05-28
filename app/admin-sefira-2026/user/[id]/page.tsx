@@ -170,12 +170,11 @@ function ConfirmModal({
   );
 }
 
-interface PageProps { params: { id: string } }
-
-export default function UserDetailPage({ params }: PageProps) {
+export default function UserDetailPage() {
   const { user, session, loading } = useAuth();
   const router = useRouter();
-  const userId = params.id;
+  const params = useParams();
+  const userId = params.id as string;
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [userAuthEmail, setUserAuthEmail] = useState<string | null>(null);
