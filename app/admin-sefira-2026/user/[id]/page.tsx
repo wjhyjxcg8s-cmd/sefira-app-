@@ -173,8 +173,8 @@ function ConfirmModal({
 export default function UserDetailPage() {
   const { user, session, loading } = useAuth();
   const router = useRouter();
-  const params = useParams();
-  const userId = params.id as string;
+  const params = useParams<{ id: string }>();
+  const userId = params.id;
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [userAuthEmail, setUserAuthEmail] = useState<string | null>(null);
@@ -239,6 +239,7 @@ export default function UserDetailPage() {
 
     const fetchAll = async () => {
       setDataLoading(true);
+      try {
 
       // Profile
       const { data: profileData } = await supabase
@@ -315,7 +316,11 @@ export default function UserDetailPage() {
         .order("created_at", { ascending: false });
       if (!cancelled) setSentMsgs(msgsData ?? []);
 
-      if (!cancelled) setDataLoading(false);
+      } catch (e) {
+        console.error('fetchAll error:', e);
+      } finally {
+        if (!cancelled) setDataLoading(false);
+      }
     };
 
     fetchAll();
