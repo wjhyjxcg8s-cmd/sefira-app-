@@ -149,11 +149,7 @@ export default function MessagesPage() {
   const isFa = lang === "fa" || lang === "ar";
 
   const hasUnreadGlobal = mounted && globalMessages.some((m) => !m.is_read);
-  const hasUnreadChat =
-    mounted &&
-    chatMessages.some((m) => !m.is_read && m.sender === "admin");
   const lastGlobalMsg = globalMessages[0] ?? null;
-  const lastChatMsg = chatMessages[chatMessages.length - 1] ?? null;
 
   const openNotificationsChannel = async () => {
     setSelectedConv("sefira-notifications");
@@ -170,29 +166,6 @@ export default function MessagesPage() {
         setGlobalMessages((prev) => prev.map((m) => ({ ...m, is_read: true })));
       }
     }
-  };
-
-  const openSupportChat = async () => {
-    setSelectedConv("sefira-destek");
-    setMobileView("chat");
-    const unreadAdminIds = chatMessages
-      .filter((m) => !m.is_read && m.sender === "admin")
-      .map((m) => m.id);
-    if (unreadAdminIds.length > 0) {
-      await supabase
-        .from("admin_messages")
-        .update({ is_read: true })
-        .in("id", unreadAdminIds);
-      setChatMessages((prev) =>
-        prev.map((m) =>
-          unreadAdminIds.includes(m.id) ? { ...m, is_read: true } : m
-        )
-      );
-    }
-    setTimeout(
-      () => chatBottomRef.current?.scrollIntoView({ behavior: "instant" }),
-      50
-    );
   };
 
   const handleSendChat = async () => {
@@ -290,44 +263,23 @@ export default function MessagesPage() {
           </div>
 
           {/* Sefira Destek – two-way support chat */}
-          <button
-            onClick={openSupportChat}
-            className={`
-              w-full flex items-center gap-3 px-4 py-3.5 transition-colors text-left border-b border-stone-100
-              ${selectedConv === "sefira-destek" ? "bg-orange-50" : "hover:bg-stone-50"}
-            `}
+          <div
+            onClick={() => {
+              setSelectedConv("sefira-destek");
+              setMobileView("chat");
+            }}
+            className="flex items-center gap-3 p-3 cursor-pointer hover:bg-gray-100 border-b"
           >
-            <div className="relative w-12 h-12 flex-shrink-0">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-black text-xs shadow-sm">
-                SD
-              </div>
-              {hasUnreadChat && (
-                <div className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-orange-500 border-2 border-white" />
-              )}
+            <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold flex-shrink-0">
+              S
             </div>
             <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between gap-2 mb-0.5">
-                <span
-                  className={`text-sm truncate ${hasUnreadChat ? "font-bold text-stone-900" : "font-semibold text-stone-700"}`}
-                >
-                  {t.supportChannelName}
-                </span>
-                <span className="text-xs text-stone-400 flex-shrink-0">
-                  {lastChatMsg ? formatDate(lastChatMsg.created_at) : ""}
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <p
-                  className={`text-xs truncate flex-1 ${hasUnreadChat ? "text-stone-700 font-medium" : "text-stone-400"}`}
-                >
-                  {lastChatMsg ? lastChatMsg.message : t.supportWelcome}
-                </p>
-                {hasUnreadChat && (
-                  <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0" />
-                )}
+              <div className="font-semibold text-sm text-stone-900">{t.supportChannelName}</div>
+              <div className="text-sm text-gray-500 truncate">
+                {chatMessages[chatMessages.length - 1]?.message || "Mesaj yok"}
               </div>
             </div>
-          </button>
+          </div>
 
           {/* Sefira Bildirimleri – read-only announcements */}
           <button
