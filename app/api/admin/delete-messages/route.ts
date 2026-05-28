@@ -18,29 +18,52 @@ async function verifyAdmin(req: NextRequest) {
   return user;
 }
 
-function getAdminClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
-}
+const supabaseAdmin = createClient(
+  "https://ceetzophaybywfuhezhv.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlZXR6b3BoYXlieXdmdWhlemh2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTM1Nzg1NSwiZXhwIjoyMDk0OTMzODU1fQ.Jw1bDN7wqxdqj-OinqK4ll7mV5ka7fT6T-9jORs4x_4",
+  { auth: { autoRefreshToken: false, persistSession: false } }
+);
 
 export async function POST(req: NextRequest) {
   const adminUser = await verifyAdmin(req);
   if (!adminUser) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
-  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
-  }
 
   try {
-    const supabaseAdmin = getAdminClient();
-    const { error } = await supabaseAdmin
-      .from("admin_messages")
-      .delete()
-      .eq("is_global", true);
-    return NextResponse.json({ error: error?.message ?? null });
+    const { action, ids, userId } = await req.json();
+
+    if (action === "delete_selected") {
+      if (!ids || !Array.isArray(ids) || ids.length === 0) {
+        return NextResponse.json({ error: "No ids provided" }, { status: 400 });
+      }
+      const { error } = await supabaseAdmin
+        .from("admin_messages")
+        .delete()
+        .in("id", ids);
+      return NextResponse.json({ error: error?.message ?? null });
+    }
+
+    if (action === "delete_user") {
+      if (!userId) {
+        return NextResponse.json({ error: "No userId provided" }, { status: 400 });
+      }
+      const { error } = await supabaseAdmin
+        .from("admin_messages")
+        .delete()
+        .eq("user_id", userId);
+      return NextResponse.json({ error: error?.message ?? null });
+    }
+
+    if (action === "delete_global") {
+      const { error } = await supabaseAdmin
+        .from("admin_messages")
+        .delete()
+        .eq("is_global", true);
+      return NextResponse.json({ error: error?.message ?? null });
+    }
+
+    return NextResponse.json({ error: "Invalid action" }, { status: 400 });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
   }

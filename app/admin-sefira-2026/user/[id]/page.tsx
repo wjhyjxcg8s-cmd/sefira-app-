@@ -43,6 +43,16 @@ interface DeletionFeedback {
   deleted_at: string;
 }
 
+interface AdminMessage {
+  id: string;
+  user_id: string | null;
+  email: string | null;
+  title: string;
+  message: string;
+  is_global: boolean;
+  created_at: string;
+}
+
 function StarRating({ rating }: { rating: number | null }) {
   if (rating === null) return <span className="text-gray-400">—</span>;
   return (
@@ -210,6 +220,13 @@ export default function UserDetailPage() {
   const [deleteReviewId, setDeleteReviewId] = useState<string | null>(null);
   const [deletingReview, setDeletingReview] = useState(false);
 
+  // Sent messages
+  const [sentMsgs, setSentMsgs] = useState<AdminMessage[]>([]);
+  const [selectedMsgIds, setSelectedMsgIds] = useState<Set<string>>(new Set());
+  const [deletingMsgs, setDeletingMsgs] = useState(false);
+  const [confirmDeleteUserMsgs, setConfirmDeleteUserMsgs] = useState(false);
+  const [confirmDeleteGlobalMsgs, setConfirmDeleteGlobalMsgs] = useState(false);
+
   useEffect(() => {
     if (!loading && (!user || user.email !== ADMIN_EMAIL)) {
       router.replace("/");
@@ -290,6 +307,14 @@ export default function UserDetailPage() {
         .order("created_at", { ascending: false });
       if (!cancelled) setListings(listingsData ?? []);
 
+      // Messages sent to this user
+      const { data: msgsData } = await supabase
+        .from("admin_messages")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false });
+      if (!cancelled) setSentMsgs(msgsData ?? []);
+
       if (!cancelled) setDataLoading(false);
     };
 
@@ -366,6 +391,14 @@ export default function UserDetailPage() {
         setMsgTitle("");
         setMsgMessage("");
         setTimeout(() => setMsgSuccess(null), 4000);
+        if (!sendToAll) {
+          const { data: newMsgs } = await supabase
+            .from("admin_messages")
+            .select("*")
+            .eq("user_id", userId)
+            .order("created_at", { ascending: false });
+          setSentMsgs(newMsgs ?? []);
+        }
       }
     } catch (e) {
       setMsgError(String(e));
@@ -474,6 +507,55 @@ export default function UserDetailPage() {
       }
     } catch { /* fall through */ }
     setDeletingReview(false);
+  };
+
+  const handleDeleteSelectedMsgs = async () => {
+    if (selectedMsgIds.size === 0) return;
+    setDeletingMsgs(true);
+    try {
+      const res = await fetch("/api/admin/delete-messages", {
+        method: "POST",
+        headers: authHeader(),
+        body: JSON.stringify({ action: "delete_selected", ids: [...selectedMsgIds] }),
+      });
+      const json = await res.json();
+      if (!json.error) {
+        setSentMsgs((prev) => prev.filter((m) => !selectedMsgIds.has(m.id)));
+        setSelectedMsgIds(new Set());
+      }
+    } catch { /* fall through */ }
+    setDeletingMsgs(false);
+  };
+
+  const handleDeleteAllUserMsgs = async () => {
+    setConfirmDeleteUserMsgs(false);
+    setDeletingMsgs(true);
+    try {
+      const res = await fetch("/api/admin/delete-messages", {
+        method: "POST",
+        headers: authHeader(),
+        body: JSON.stringify({ action: "delete_user", userId }),
+      });
+      const json = await res.json();
+      if (!json.error) {
+        setSentMsgs([]);
+        setSelectedMsgIds(new Set());
+      }
+    } catch { /* fall through */ }
+    setDeletingMsgs(false);
+  };
+
+  const handleDeleteAllGlobalMsgs = async () => {
+    setConfirmDeleteGlobalMsgs(false);
+    setDeletingMsgs(true);
+    try {
+      await fetch("/api/admin/delete-messages", {
+        method: "POST",
+        headers: authHeader(),
+        body: JSON.stringify({ action: "delete_global" }),
+      });
+    } catch { /* fall through */ }
+    setDeletingMsgs(false);
   };
 
   const formatDate = (d: string | null | undefined) => {
@@ -723,7 +805,102 @@ export default function UserDetailPage() {
               </div>
             </SectionCard>
 
-            {/* ── SECTION 3: Reviews ───────────────────────────────────── */}
+            {/* ── SECTION 3: Sent Messages ────────────────────────────── */}
+            <SectionCard title="Sent Messages" count={sentMsgs.length}>
+              {sentMsgs.length === 0 ? (
+                <p className="px-6 py-6 text-center text-gray-400 text-sm">
+                  No messages sent to this user.
+                </p>
+              ) : (
+                <div className="divide-y divide-gray-50">
+                  {sentMsgs.map((m) => (
+                    <div key={m.id} className="px-6 py-4 flex items-start gap-3">
+                      <input
+                        type="checkbox"
+                        checked={selectedMsgIds.has(m.id)}
+                        onChange={(e) => {
+                          setSelectedMsgIds((prev) => {
+                            const next = new Set(prev);
+                            if (e.target.checked) next.add(m.id);
+                            else next.delete(m.id);
+                            return next;
+                          });
+                        }}
+                        className="mt-1"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-gray-800">{m.title}</p>
+                        <p className="text-xs text-gray-500 mt-0.5 truncate">{m.message}</p>
+                        <p className="text-xs text-gray-400 mt-1">{formatDate(m.created_at)}</p>
+                      </div>
+                      <button
+                        onClick={async () => {
+                          setDeletingMsgs(true);
+                          try {
+                            const res = await fetch("/api/admin/delete-messages", {
+                              method: "POST",
+                              headers: authHeader(),
+                              body: JSON.stringify({ action: "delete_selected", ids: [m.id] }),
+                            });
+                            const json = await res.json();
+                            if (!json.error) {
+                              setSentMsgs((prev) => prev.filter((x) => x.id !== m.id));
+                              setSelectedMsgIds((prev) => {
+                                const next = new Set(prev);
+                                next.delete(m.id);
+                                return next;
+                              });
+                            }
+                          } catch { /* fall through */ }
+                          setDeletingMsgs(false);
+                        }}
+                        disabled={deletingMsgs}
+                        className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors shrink-0 disabled:opacity-60"
+                        style={{ backgroundColor: "#fef2f2", color: "#ef4444" }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#fee2e2")}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#fef2f2")}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div className="px-6 py-4 border-t border-gray-100 flex flex-wrap gap-3">
+                <button
+                  onClick={handleDeleteSelectedMsgs}
+                  disabled={deletingMsgs || selectedMsgIds.size === 0}
+                  className="px-4 py-2 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
+                  style={{ backgroundColor: "#f97316" }}
+                  onMouseEnter={(e) => { if (!deletingMsgs && selectedMsgIds.size > 0) e.currentTarget.style.backgroundColor = "#ea6c08"; }}
+                  onMouseLeave={(e) => { if (!deletingMsgs && selectedMsgIds.size > 0) e.currentTarget.style.backgroundColor = "#f97316"; }}
+                >
+                  Delete Selected ({selectedMsgIds.size})
+                </button>
+                <button
+                  onClick={() => setConfirmDeleteUserMsgs(true)}
+                  disabled={deletingMsgs}
+                  className="px-4 py-2 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
+                  style={{ backgroundColor: "#ef4444" }}
+                  onMouseEnter={(e) => { if (!deletingMsgs) e.currentTarget.style.backgroundColor = "#dc2626"; }}
+                  onMouseLeave={(e) => { if (!deletingMsgs) e.currentTarget.style.backgroundColor = "#ef4444"; }}
+                >
+                  Delete ALL Messages for this User
+                </button>
+                <button
+                  onClick={() => setConfirmDeleteGlobalMsgs(true)}
+                  disabled={deletingMsgs}
+                  className="px-4 py-2 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
+                  style={{ backgroundColor: "#ef4444" }}
+                  onMouseEnter={(e) => { if (!deletingMsgs) e.currentTarget.style.backgroundColor = "#dc2626"; }}
+                  onMouseLeave={(e) => { if (!deletingMsgs) e.currentTarget.style.backgroundColor = "#ef4444"; }}
+                >
+                  Delete ALL Global Messages
+                </button>
+              </div>
+            </SectionCard>
+
+            {/* ── SECTION 5: Reviews ───────────────────────────────────── */}
             <SectionCard title="Reviews" count={reviews.length}>
               {reviews.length === 0 ? (
                 <p className="px-6 py-8 text-center text-gray-400 text-sm">
@@ -812,7 +989,7 @@ export default function UserDetailPage() {
               )}
             </SectionCard>
 
-            {/* ── SECTION 4: Listings ──────────────────────────────────── */}
+            {/* ── SECTION 6: Listings ──────────────────────────────────── */}
             <SectionCard title="Listings" count={listings.length}>
               {listings.length === 0 ? (
                 <p className="px-6 py-8 text-center text-gray-400 text-sm">
@@ -915,7 +1092,7 @@ export default function UserDetailPage() {
               )}
             </SectionCard>
 
-            {/* ── SECTION 5: Deletion Feedback ─────────────────────────── */}
+            {/* ── SECTION 7: Deletion Feedback ─────────────────────────── */}
             {feedback.length > 0 && (
               <SectionCard title="Deletion Feedback" count={feedback.length}>
                 <div className="divide-y divide-gray-50">
@@ -962,7 +1139,7 @@ export default function UserDetailPage() {
               </SectionCard>
             )}
 
-            {/* ── SECTION 6: Danger Zone ───────────────────────────────── */}
+            {/* ── SECTION 8: Danger Zone ───────────────────────────────── */}
             <div
               className="bg-white rounded-2xl border overflow-hidden"
               style={{
@@ -1068,6 +1245,30 @@ export default function UserDetailPage() {
         loading={deletingReview}
         onConfirm={handleDeleteReview}
         onCancel={() => setDeleteReviewId(null)}
+      />
+
+      <ConfirmModal
+        open={confirmDeleteUserMsgs}
+        title="Delete ALL Messages for this User"
+        body="This will permanently delete all messages sent to this user. This action cannot be undone."
+        confirmLabel="Delete All"
+        cancelLabel="Cancel"
+        dangerous
+        loading={deletingMsgs}
+        onConfirm={handleDeleteAllUserMsgs}
+        onCancel={() => setConfirmDeleteUserMsgs(false)}
+      />
+
+      <ConfirmModal
+        open={confirmDeleteGlobalMsgs}
+        title="Delete ALL Global Messages"
+        body="This will permanently delete all global messages sent to every user. This action cannot be undone."
+        confirmLabel="Delete All"
+        cancelLabel="Cancel"
+        dangerous
+        loading={deletingMsgs}
+        onConfirm={handleDeleteAllGlobalMsgs}
+        onCancel={() => setConfirmDeleteGlobalMsgs(false)}
       />
     </div>
   );
