@@ -37,7 +37,9 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { userId, userEmail, title, message, sendToAll } = await req.json();
+    const body = await req.json();
+    console.log('API RECEIVED:', JSON.stringify(body));
+    const { userId, userEmail, title, message, sendToAll } = body;
     if (!title || !message) {
       return NextResponse.json({ error: "Missing title or message" }, { status: 400 });
     }

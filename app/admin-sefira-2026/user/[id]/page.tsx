@@ -369,6 +369,7 @@ export default function UserDetailPage() {
 
   const handleSendToThisUser = async () => {
     const { data: { session } } = await supabase.auth.getSession();
+    console.log('SENDING BODY:', JSON.stringify({ userId, sendToAll: false, title: msgTitle, message: msgMessage }));
     const res = await fetch('/api/admin/send-message', {
       method: 'POST',
       headers: {
