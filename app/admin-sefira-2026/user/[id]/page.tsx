@@ -368,7 +368,7 @@ export default function UserDetailPage() {
   };
 
   const handleSendToThisUser = async () => {
-    const session = (await supabase.auth.getSession()).data.session;
+    const { data: { session } } = await supabase.auth.getSession();
     const res = await fetch('/api/admin/send-message', {
       method: 'POST',
       headers: {
@@ -376,16 +376,15 @@ export default function UserDetailPage() {
         'Authorization': `Bearer ${session?.access_token}`
       },
       body: JSON.stringify({
-        userId: params.id,
-        userEmail: profile?.email || '',
+        userId: userId,
+        userEmail: '',
         title: msgTitle,
         message: msgMessage,
         sendToAll: false
       })
     });
     const result = await res.json();
-    console.log('Single send result:', result);
-    alert(result.error ? 'Error: ' + result.error : 'Message sent!');
+    alert(result.error ? 'Error: ' + result.error : 'Sent!');
   };
 
   const handleSendToAll = async () => {
