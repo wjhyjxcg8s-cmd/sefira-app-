@@ -105,7 +105,6 @@ export default function MessagesPage() {
   const [chatMessages, setChatMessages] = useState<AdminMessage[]>([]);
   const [chatInput, setChatInput] = useState("");
   const [sendingChat, setSendingChat] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const chatBottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -118,7 +117,6 @@ export default function MessagesPage() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session?.user?.id) return;
       const uid = session.user.id;
-      setCurrentUserId(uid);
 
       supabase
         .from("admin_messages")
@@ -198,22 +196,29 @@ export default function MessagesPage() {
   };
 
   const handleSendChat = async () => {
-    if (!chatInput.trim() || !currentUserId || sendingChat) return;
+    console.log("SEND BUTTON CLICKED", chatInput);
+    if (!chatInput.trim() || sendingChat) return;
     setSendingChat(true);
     const text = chatInput.trim();
     setChatInput("");
 
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user?.id) {
+      console.log("SEND ABORTED: no session");
+      setSendingChat(false);
+      return;
+    }
+
     const { data, error } = await supabase
       .from("admin_messages")
-      .insert([
-        {
-          user_id: currentUserId,
-          title: "reply",
-          message: text,
-          is_global: false,
-          sender: "user",
-        },
-      ])
+      .insert([{
+        user_id: session.user.id,
+        title: "reply",
+        message: text,
+        is_global: false,
+        sender: "user",
+        is_read: false,
+      }])
       .select()
       .single();
 
