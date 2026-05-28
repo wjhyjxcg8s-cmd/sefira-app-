@@ -108,6 +108,10 @@ export default function MessagesPage() {
   const chatBottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    console.log("selectedConv changed:", selectedConv);
+  }, [selectedConv]);
+
+  useEffect(() => {
     const savedLang = localStorage.getItem("sefira-lang") as Lang | null;
     if (savedLang && savedLang in translations) setLang(savedLang as Lang);
     setMounted(true);
@@ -265,6 +269,7 @@ export default function MessagesPage() {
           {/* Sefira Destek – two-way support chat */}
           <div
             onClick={() => {
+              console.log("Sefira Destek clicked!");
               setSelectedConv("sefira-destek");
               setMobileView("chat");
             }}
