@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
@@ -51,6 +51,7 @@ interface AdminMessage {
   message: string;
   is_global: boolean;
   created_at: string;
+  sender: "admin" | "user" | null;
 }
 
 function StarRating({ rating }: { rating: number | null }) {
@@ -192,13 +193,21 @@ export default function UserDetailPage() {
   const [profileError, setProfileError] = useState<string | null>(null);
   const [profileSuccess, setProfileSuccess] = useState(false);
 
-  // Messaging
+  // Global announcement form
   const [msgTitle, setMsgTitle] = useState("");
   const [msgMessage, setMsgMessage] = useState("");
   const [sendingMsg, setSendingMsg] = useState(false);
   const [msgError, setMsgError] = useState<string | null>(null);
   const [msgSuccess, setMsgSuccess] = useState<string | null>(null);
   const [confirmGlobalMsg, setConfirmGlobalMsg] = useState(false);
+
+  // Conversation thread
+  const [chatThread, setChatThread] = useState<AdminMessage[]>([]);
+  const [adminReply, setAdminReply] = useState("");
+  const [sendingReply, setSendingReply] = useState(false);
+  const [deleteMsgId, setDeleteMsgId] = useState<string | null>(null);
+  const [deletingMsg, setDeletingMsg] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
 
   // Password reset
   const [resetSending, setResetSending] = useState(false);
@@ -220,12 +229,6 @@ export default function UserDetailPage() {
   const [deleteReviewId, setDeleteReviewId] = useState<string | null>(null);
   const [deletingReview, setDeletingReview] = useState(false);
 
-  // Sent messages
-  const [sentMsgs, setSentMsgs] = useState<AdminMessage[]>([]);
-  const [selectedMsgIds, setSelectedMsgIds] = useState<Set<string>>(new Set());
-  const [deletingMsgs, setDeletingMsgs] = useState(false);
-  const [confirmDeleteUserMsgs, setConfirmDeleteUserMsgs] = useState(false);
-  const [confirmDeleteGlobalMsgs, setConfirmDeleteGlobalMsgs] = useState(false);
 
   useEffect(() => {
     if (!loading && (!user || user.email !== ADMIN_EMAIL)) {
@@ -308,13 +311,14 @@ export default function UserDetailPage() {
         .order("created_at", { ascending: false });
       if (!cancelled) setListings(listingsData ?? []);
 
-      // Messages sent to this user
-      const { data: msgsData } = await supabase
+      // Conversation thread with this user
+      const { data: chatData } = await supabase
         .from("admin_messages")
         .select("*")
         .eq("user_id", userId)
-        .order("created_at", { ascending: false });
-      if (!cancelled) setSentMsgs(msgsData ?? []);
+        .eq("is_global", false)
+        .order("created_at", { ascending: true });
+      if (!cancelled) setChatThread(chatData ?? []);
 
       } catch (e) {
         console.error('fetchAll error:', e);
@@ -367,25 +371,60 @@ export default function UserDetailPage() {
     setProfileSaving(false);
   };
 
-  const handleSendToThisUser = async () => {
+  const refetchChatThread = async () => {
+    const { data } = await supabase
+      .from("admin_messages")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("is_global", false)
+      .order("created_at", { ascending: true });
+    setChatThread(data ?? []);
+    setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
+  };
+
+  const handleSendReply = async () => {
+    if (!adminReply.trim() || sendingReply) return;
+    setSendingReply(true);
+    const text = adminReply.trim();
+    setAdminReply("");
     const { data: { session } } = await supabase.auth.getSession();
-    console.log('SENDING BODY:', JSON.stringify({ userId, sendToAll: false, title: msgTitle, message: msgMessage }));
-    const res = await fetch('/api/admin/send-message', {
-      method: 'POST',
+    const res = await fetch("/api/admin/send-message", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session?.access_token}`
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session?.access_token}`,
       },
       body: JSON.stringify({
-        userId: userId,
-        userEmail: '',
-        title: msgTitle,
-        message: msgMessage,
-        sendToAll: false
-      })
+        userId,
+        userEmail: "",
+        title: "reply",
+        message: text,
+        sendToAll: false,
+      }),
     });
     const result = await res.json();
-    alert(result.error ? 'Error: ' + result.error : 'Sent!');
+    if (!result.error) {
+      await refetchChatThread();
+    }
+    setSendingReply(false);
+  };
+
+  const handleDeleteMsg = async () => {
+    if (!deleteMsgId) return;
+    setDeletingMsg(true);
+    try {
+      const res = await fetch("/api/admin/delete-messages", {
+        method: "POST",
+        headers: authHeader(),
+        body: JSON.stringify({ action: "delete_selected", ids: [deleteMsgId] }),
+      });
+      const json = await res.json();
+      if (!json.error) {
+        setChatThread((prev) => prev.filter((m) => m.id !== deleteMsgId));
+        setDeleteMsgId(null);
+      }
+    } catch { /* fall through */ }
+    setDeletingMsg(false);
   };
 
   const handleSendToAll = async () => {
@@ -507,55 +546,6 @@ export default function UserDetailPage() {
       }
     } catch { /* fall through */ }
     setDeletingReview(false);
-  };
-
-  const handleDeleteSelectedMsgs = async () => {
-    if (selectedMsgIds.size === 0) return;
-    setDeletingMsgs(true);
-    try {
-      const res = await fetch("/api/admin/delete-messages", {
-        method: "POST",
-        headers: authHeader(),
-        body: JSON.stringify({ action: "delete_selected", ids: [...selectedMsgIds] }),
-      });
-      const json = await res.json();
-      if (!json.error) {
-        setSentMsgs((prev) => prev.filter((m) => !selectedMsgIds.has(m.id)));
-        setSelectedMsgIds(new Set());
-      }
-    } catch { /* fall through */ }
-    setDeletingMsgs(false);
-  };
-
-  const handleDeleteAllUserMsgs = async () => {
-    setConfirmDeleteUserMsgs(false);
-    setDeletingMsgs(true);
-    try {
-      const res = await fetch("/api/admin/delete-messages", {
-        method: "POST",
-        headers: authHeader(),
-        body: JSON.stringify({ action: "delete_user", userId }),
-      });
-      const json = await res.json();
-      if (!json.error) {
-        setSentMsgs([]);
-        setSelectedMsgIds(new Set());
-      }
-    } catch { /* fall through */ }
-    setDeletingMsgs(false);
-  };
-
-  const handleDeleteAllGlobalMsgs = async () => {
-    setConfirmDeleteGlobalMsgs(false);
-    setDeletingMsgs(true);
-    try {
-      await fetch("/api/admin/delete-messages", {
-        method: "POST",
-        headers: authHeader(),
-        body: JSON.stringify({ action: "delete_global" }),
-      });
-    } catch { /* fall through */ }
-    setDeletingMsgs(false);
   };
 
   const formatDate = (d: string | null | undefined) => {
@@ -752,14 +742,14 @@ export default function UserDetailPage() {
               </div>
             </SectionCard>
 
-            {/* ── SECTION 2: Send Message ──────────────────────────────── */}
-            <SectionCard title="Send Message to User">
+            {/* ── SECTION 2: Global Announcement ──────────────────────── */}
+            <SectionCard title="Send Global Announcement">
               <div className="p-6 space-y-4">
                 <Field label="Title">
                   <input
                     value={msgTitle}
                     onChange={(e) => setMsgTitle(e.target.value)}
-                    placeholder="Message title"
+                    placeholder="Announcement title"
                     className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
                   />
                 </Field>
@@ -767,136 +757,119 @@ export default function UserDetailPage() {
                   <textarea
                     value={msgMessage}
                     onChange={(e) => setMsgMessage(e.target.value)}
-                    placeholder="Write your message here…"
-                    rows={4}
+                    placeholder="Write your announcement here…"
+                    rows={3}
                     className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
                   />
                 </Field>
 
-                {msgError && (
-                  <p className="text-sm text-red-500">{msgError}</p>
-                )}
-                {msgSuccess && (
-                  <p className="text-sm text-green-600">{msgSuccess}</p>
-                )}
+                {msgError && <p className="text-sm text-red-500">{msgError}</p>}
+                {msgSuccess && <p className="text-sm text-green-600">{msgSuccess}</p>}
 
-                <div className="flex flex-wrap gap-3">
-                  <button
-                    onClick={handleSendToThisUser}
-                    disabled={sendingMsg}
-                    className="px-5 py-2.5 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
-                    style={{ backgroundColor: "#f97316" }}
-                    onMouseEnter={(e) => { if (!sendingMsg) e.currentTarget.style.backgroundColor = "#ea6c08"; }}
-                    onMouseLeave={(e) => { if (!sendingMsg) e.currentTarget.style.backgroundColor = "#f97316"; }}
-                  >
-                    {sendingMsg ? "Sending…" : "Send to This User Only"}
-                  </button>
-                  <button
-                    onClick={handleSendToAll}
-                    disabled={sendingMsg}
-                    className="px-5 py-2.5 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
-                    style={{ backgroundColor: "#ea580c" }}
-                    onMouseEnter={(e) => { if (!sendingMsg) e.currentTarget.style.backgroundColor = "#c2410c"; }}
-                    onMouseLeave={(e) => { if (!sendingMsg) e.currentTarget.style.backgroundColor = "#ea580c"; }}
-                  >
-                    Send to ALL Users
-                  </button>
-                </div>
+                <button
+                  onClick={handleSendToAll}
+                  disabled={sendingMsg}
+                  className="px-5 py-2.5 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
+                  style={{ backgroundColor: "#ea580c" }}
+                  onMouseEnter={(e) => { if (!sendingMsg) e.currentTarget.style.backgroundColor = "#c2410c"; }}
+                  onMouseLeave={(e) => { if (!sendingMsg) e.currentTarget.style.backgroundColor = "#ea580c"; }}
+                >
+                  {sendingMsg ? "Sending…" : "Send to ALL Users"}
+                </button>
               </div>
             </SectionCard>
 
-            {/* ── SECTION 3: Sent Messages ────────────────────────────── */}
-            <SectionCard title="Sent Messages" count={sentMsgs.length}>
-              {sentMsgs.length === 0 ? (
-                <p className="px-6 py-6 text-center text-gray-400 text-sm">
-                  No messages sent to this user.
-                </p>
-              ) : (
-                <div className="divide-y divide-gray-50">
-                  {sentMsgs.map((m) => (
-                    <div key={m.id} className="px-6 py-4 flex items-start gap-3">
-                      <input
-                        type="checkbox"
-                        checked={selectedMsgIds.has(m.id)}
-                        onChange={(e) => {
-                          setSelectedMsgIds((prev) => {
-                            const next = new Set(prev);
-                            if (e.target.checked) next.add(m.id);
-                            else next.delete(m.id);
-                            return next;
-                          });
-                        }}
-                        className="mt-1"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-gray-800">{m.title}</p>
-                        <p className="text-xs text-gray-500 mt-0.5 truncate">{m.message}</p>
-                        <p className="text-xs text-gray-400 mt-1">{formatDate(m.created_at)}</p>
-                      </div>
-                      <button
-                        onClick={async () => {
-                          setDeletingMsgs(true);
-                          try {
-                            const res = await fetch("/api/admin/delete-messages", {
-                              method: "POST",
-                              headers: authHeader(),
-                              body: JSON.stringify({ action: "delete_selected", ids: [m.id] }),
-                            });
-                            const json = await res.json();
-                            if (!json.error) {
-                              setSentMsgs((prev) => prev.filter((x) => x.id !== m.id));
-                              setSelectedMsgIds((prev) => {
-                                const next = new Set(prev);
-                                next.delete(m.id);
-                                return next;
-                              });
-                            }
-                          } catch { /* fall through */ }
-                          setDeletingMsgs(false);
-                        }}
-                        disabled={deletingMsgs}
-                        className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors shrink-0 disabled:opacity-60"
-                        style={{ backgroundColor: "#fef2f2", color: "#ef4444" }}
-                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#fee2e2")}
-                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#fef2f2")}
+            {/* ── SECTION 3: Conversation ──────────────────────────────── */}
+            <SectionCard title={`Conversation (${chatThread.length})`}>
+              {/* Chat thread */}
+              <div
+                className="px-4 py-4 flex flex-col gap-3 overflow-y-auto"
+                style={{ maxHeight: "28rem", minHeight: "8rem", background: "#f8fafc" }}
+              >
+                {chatThread.length === 0 && (
+                  <p className="text-center text-gray-400 text-sm py-6">
+                    No messages yet. Start the conversation below.
+                  </p>
+                )}
+                {chatThread.map((m) => {
+                  const isAdmin = m.sender === "admin" || m.sender === null;
+                  return (
+                    <div
+                      key={m.id}
+                      className={`flex w-full ${isAdmin ? "justify-end" : "justify-start"}`}
+                    >
+                      <div
+                        className={`flex items-end gap-2 max-w-[75%] ${isAdmin ? "flex-row-reverse" : ""}`}
                       >
-                        Delete
-                      </button>
+                        <div
+                          className={`w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mb-1 ${
+                            isAdmin
+                              ? "bg-gradient-to-br from-orange-400 to-orange-600"
+                              : "bg-gradient-to-br from-gray-400 to-gray-500"
+                          }`}
+                        >
+                          {isAdmin ? "A" : "U"}
+                        </div>
+                        <div
+                          className={`flex flex-col gap-1 ${isAdmin ? "items-end" : "items-start"}`}
+                        >
+                          <div
+                            className={`rounded-2xl px-4 py-2.5 shadow-sm ${
+                              isAdmin
+                                ? "bg-orange-500 text-white rounded-br-sm"
+                                : "bg-white text-gray-800 rounded-bl-sm"
+                            }`}
+                          >
+                            <p className="text-sm leading-relaxed whitespace-pre-line">
+                              {m.message}
+                            </p>
+                          </div>
+                          <div className={`flex items-center gap-2 px-1 ${isAdmin ? "flex-row-reverse" : ""}`}>
+                            <span className="text-[11px] text-gray-400">
+                              {formatDate(m.created_at)}
+                            </span>
+                            <button
+                              onClick={() => setDeleteMsgId(m.id)}
+                              className="text-[11px] text-red-400 hover:text-red-600 transition-colors"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  ))}
+                  );
+                })}
+                <div ref={chatEndRef} />
+              </div>
+
+              {/* Reply input */}
+              <div className="px-4 py-3 border-t border-gray-100 bg-white">
+                <div className="flex gap-2">
+                  <textarea
+                    value={adminReply}
+                    onChange={(e) => setAdminReply(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendReply();
+                      }
+                    }}
+                    placeholder="Type a reply…"
+                    rows={2}
+                    className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
+                  />
+                  <button
+                    onClick={handleSendReply}
+                    disabled={!adminReply.trim() || sendingReply}
+                    className="px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60 self-end"
+                    style={{ backgroundColor: "#f97316" }}
+                    onMouseEnter={(e) => { if (!sendingReply) e.currentTarget.style.backgroundColor = "#ea6c08"; }}
+                    onMouseLeave={(e) => { if (!sendingReply) e.currentTarget.style.backgroundColor = "#f97316"; }}
+                  >
+                    {sendingReply ? "…" : "Send"}
+                  </button>
                 </div>
-              )}
-              <div className="px-6 py-4 border-t border-gray-100 flex flex-wrap gap-3">
-                <button
-                  onClick={handleDeleteSelectedMsgs}
-                  disabled={deletingMsgs || selectedMsgIds.size === 0}
-                  className="px-4 py-2 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
-                  style={{ backgroundColor: "#f97316" }}
-                  onMouseEnter={(e) => { if (!deletingMsgs && selectedMsgIds.size > 0) e.currentTarget.style.backgroundColor = "#ea6c08"; }}
-                  onMouseLeave={(e) => { if (!deletingMsgs && selectedMsgIds.size > 0) e.currentTarget.style.backgroundColor = "#f97316"; }}
-                >
-                  Delete Selected ({selectedMsgIds.size})
-                </button>
-                <button
-                  onClick={() => setConfirmDeleteUserMsgs(true)}
-                  disabled={deletingMsgs}
-                  className="px-4 py-2 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
-                  style={{ backgroundColor: "#ef4444" }}
-                  onMouseEnter={(e) => { if (!deletingMsgs) e.currentTarget.style.backgroundColor = "#dc2626"; }}
-                  onMouseLeave={(e) => { if (!deletingMsgs) e.currentTarget.style.backgroundColor = "#ef4444"; }}
-                >
-                  Delete ALL Messages for this User
-                </button>
-                <button
-                  onClick={() => setConfirmDeleteGlobalMsgs(true)}
-                  disabled={deletingMsgs}
-                  className="px-4 py-2 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
-                  style={{ backgroundColor: "#ef4444" }}
-                  onMouseEnter={(e) => { if (!deletingMsgs) e.currentTarget.style.backgroundColor = "#dc2626"; }}
-                  onMouseLeave={(e) => { if (!deletingMsgs) e.currentTarget.style.backgroundColor = "#ef4444"; }}
-                >
-                  Delete ALL Global Messages
-                </button>
               </div>
             </SectionCard>
 
@@ -1248,27 +1221,15 @@ export default function UserDetailPage() {
       />
 
       <ConfirmModal
-        open={confirmDeleteUserMsgs}
-        title="Delete ALL Messages for this User"
-        body="This will permanently delete all messages sent to this user. This action cannot be undone."
-        confirmLabel="Delete All"
+        open={!!deleteMsgId}
+        title="Delete Message"
+        body="Are you sure you want to delete this message? This action cannot be undone."
+        confirmLabel="Delete"
         cancelLabel="Cancel"
         dangerous
-        loading={deletingMsgs}
-        onConfirm={handleDeleteAllUserMsgs}
-        onCancel={() => setConfirmDeleteUserMsgs(false)}
-      />
-
-      <ConfirmModal
-        open={confirmDeleteGlobalMsgs}
-        title="Delete ALL Global Messages"
-        body="This will permanently delete all global messages sent to every user. This action cannot be undone."
-        confirmLabel="Delete All"
-        cancelLabel="Cancel"
-        dangerous
-        loading={deletingMsgs}
-        onConfirm={handleDeleteAllGlobalMsgs}
-        onCancel={() => setConfirmDeleteGlobalMsgs(false)}
+        loading={deletingMsg}
+        onConfirm={handleDeleteMsg}
+        onCancel={() => setDeleteMsgId(null)}
       />
     </div>
   );

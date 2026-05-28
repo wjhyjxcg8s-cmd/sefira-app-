@@ -51,6 +51,7 @@ export async function POST(req: NextRequest) {
         title,
         message,
         is_global: true,
+        sender: "admin",
       }]);
       return NextResponse.json({ error: error?.message ?? null });
     } else {
@@ -63,6 +64,7 @@ export async function POST(req: NextRequest) {
         title,
         message,
         is_global: false,
+        sender: "admin",
       }]);
       return NextResponse.json({ error: error?.message ?? null });
     }
