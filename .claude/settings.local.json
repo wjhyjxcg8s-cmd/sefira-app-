@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(npm install *)",
-      "Bash(dir \"public\\\\images\")"
+      "Bash(dir \"public\\\\images\")",
+      "PowerShell(Get-Process | Where-Object { $_.Name -match \"node|next|pm2\" } | Select-Object Name, Id, CPU, WorkingSet)",
+      "PowerShell(Get-Process -Id 12120)",
+      "PowerShell(npx pm2 list 2>&1)"
     ]
   }
 }
