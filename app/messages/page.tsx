@@ -80,10 +80,11 @@ export default function MessagesPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) return;
+      if (!session?.user?.id) return;
       supabase
         .from("admin_messages")
         .select("*")
+        .or(`user_id.eq.${session.user.id},is_global.eq.true`)
         .order("created_at", { ascending: false })
         .then(({ data, error }) => {
           console.log("ADMIN FETCH:", data?.length, error?.message);
