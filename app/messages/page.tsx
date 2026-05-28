@@ -217,6 +217,7 @@ export default function MessagesPage() {
       .select()
       .single();
 
+    console.log("CHAT INSERT error:", error, "data:", data);
     if (!error && data) {
       setChatMessages((prev) => [...prev, data as AdminMessage]);
     }
