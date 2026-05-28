@@ -170,10 +170,11 @@ function ConfirmModal({
   );
 }
 
-export default function UserDetailPage() {
+interface PageProps { params: { id: string } }
+
+export default function UserDetailPage({ params }: PageProps) {
   const { user, session, loading } = useAuth();
   const router = useRouter();
-  const params = useParams<{ id: string }>();
   const userId = params.id;
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -362,61 +363,43 @@ export default function UserDetailPage() {
     setProfileSaving(false);
   };
 
-  const handleSendMessage = async (sendToAll: boolean) => {
-    if (!msgTitle.trim() || !msgMessage.trim()) {
-      setMsgError("Title and message are required.");
-      return;
-    }
-    setSendingMsg(true);
-    setMsgError(null);
-    setMsgSuccess(null);
-    setConfirmGlobalMsg(false);
-    try {
-      if (!sendToAll) {
-        console.log('Sending to single user:', profile?.id, 'sendToAll: false');
-      }
-      const res = await fetch("/api/admin/send-message", {
-        method: "POST",
-        headers: authHeader(),
-        body: JSON.stringify(
-          sendToAll
-            ? {
-                userId: null,
-                userEmail: null,
-                title: msgTitle,
-                message: msgMessage,
-                sendToAll: true,
-              }
-            : {
-                userId: params.id,
-                userEmail: profile?.email || '',
-                title: msgTitle,
-                message: msgMessage,
-                sendToAll: false,
-              }
-        ),
-      });
-      const json = await res.json();
-      if (json.error) {
-        setMsgError(json.error);
-      } else {
-        setMsgSuccess(sendToAll ? "Message sent to all users." : "Message sent to this user.");
-        setMsgTitle("");
-        setMsgMessage("");
-        setTimeout(() => setMsgSuccess(null), 4000);
-        if (!sendToAll) {
-          const { data: newMsgs } = await supabase
-            .from("admin_messages")
-            .select("*")
-            .eq("user_id", userId)
-            .order("created_at", { ascending: false });
-          setSentMsgs(newMsgs ?? []);
-        }
-      }
-    } catch (e) {
-      setMsgError(String(e));
-    }
-    setSendingMsg(false);
+  const handleSendToThisUser = async () => {
+    const session = (await supabase.auth.getSession()).data.session;
+    const res = await fetch('/api/admin/send-message', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session?.access_token}`
+      },
+      body: JSON.stringify({
+        userId: params.id,
+        userEmail: profile?.email || '',
+        title: msgTitle,
+        message: msgMessage,
+        sendToAll: false
+      })
+    });
+    const result = await res.json();
+    console.log('Single send result:', result);
+    alert(result.error ? 'Error: ' + result.error : 'Message sent!');
+  };
+
+  const handleSendToAll = async () => {
+    const session = (await supabase.auth.getSession()).data.session;
+    const res = await fetch('/api/admin/send-message', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session?.access_token}`
+      },
+      body: JSON.stringify({
+        title: msgTitle,
+        message: msgMessage,
+        sendToAll: true
+      })
+    });
+    const result = await res.json();
+    alert(result.error ? 'Error: ' + result.error : 'Sent to all!');
   };
 
   const handleResetPassword = async () => {
@@ -795,7 +778,7 @@ export default function UserDetailPage() {
 
                 <div className="flex flex-wrap gap-3">
                   <button
-                    onClick={() => handleSendMessage(false)}
+                    onClick={handleSendToThisUser}
                     disabled={sendingMsg}
                     className="px-5 py-2.5 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
                     style={{ backgroundColor: "#f97316" }}
@@ -805,7 +788,7 @@ export default function UserDetailPage() {
                     {sendingMsg ? "Sending…" : "Send to This User Only"}
                   </button>
                   <button
-                    onClick={() => setConfirmGlobalMsg(true)}
+                    onClick={handleSendToAll}
                     disabled={sendingMsg}
                     className="px-5 py-2.5 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
                     style={{ backgroundColor: "#ea580c" }}
@@ -1207,7 +1190,7 @@ export default function UserDetailPage() {
         confirmLabel="Yes, Send to All"
         cancelLabel="Cancel"
         loading={sendingMsg}
-        onConfirm={() => handleSendMessage(true)}
+        onConfirm={handleSendToAll}
         onCancel={() => setConfirmGlobalMsg(false)}
       />
 
