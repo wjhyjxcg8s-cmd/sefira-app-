@@ -388,8 +388,8 @@ export default function UserDetailPage() {
                 sendToAll: true,
               }
             : {
-                userId: profile?.id,
-                userEmail: userAuthEmail ?? profile?.email,
+                userId: params.id,
+                userEmail: profile?.email || '',
                 title: msgTitle,
                 message: msgMessage,
                 sendToAll: false,
