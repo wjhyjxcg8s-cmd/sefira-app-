@@ -4,6 +4,13 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseAdmin = createClient(
+  "https://ceetzophaybywfuhezhv.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlZXR6b3BoYXlieXdmdWhlemh2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTM1Nzg1NSwiZXhwIjoyMDk0OTMzODU1fQ.Jw1bDN7wqxdqj-OinqK4ll7mV5ka7fT6T-9jORs4x_4",
+  { auth: { autoRefreshToken: false, persistSession: false } }
+);
 
 const ADMIN_EMAIL = "supportsefira@gmail.com";
 
@@ -243,12 +250,13 @@ export default function UserDetailPage() {
 
   useEffect(() => {
     const fetchChat = async () => {
-      const { data } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('admin_messages')
         .select('*')
         .eq('user_id', userId)
         .eq('is_global', false)
         .order('created_at', { ascending: true })
+      console.log('Chat history:', data?.length, error?.message)
       if (data) setChatHistory(data as AdminMessage[])
     }
     fetchChat()
@@ -809,36 +817,36 @@ export default function UserDetailPage() {
                   </p>
                 )}
                 {chatHistory.map((m) => {
-                  const isAdmin = m.sender === "admin" || m.sender === null;
+                  const isUser = m.sender === "user";
                   return (
                     <div
                       key={m.id}
-                      className={`flex w-full ${isAdmin ? "justify-end" : "justify-start"}`}
+                      className={`flex w-full ${isUser ? "justify-end" : "justify-start"}`}
                     >
                       <div
-                        className={`flex items-end gap-2 max-w-[75%] ${isAdmin ? "flex-row-reverse" : ""}`}
+                        className={`flex items-end gap-2 max-w-[75%] ${isUser ? "flex-row-reverse" : ""}`}
                       >
                         <div
                           className={`w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mb-1 ${
-                            isAdmin
+                            isUser
                               ? "bg-gradient-to-br from-orange-400 to-orange-600"
                               : "bg-gradient-to-br from-gray-400 to-gray-500"
                           }`}
                         >
-                          {isAdmin ? "A" : "U"}
+                          {isUser ? "U" : "S"}
                         </div>
                         <div
-                          className={`flex flex-col gap-1 ${isAdmin ? "items-end" : "items-start"}`}
+                          className={`flex flex-col gap-1 ${isUser ? "items-end" : "items-start"}`}
                         >
                           <div
                             className={`rounded-2xl px-4 py-2.5 shadow-sm ${
-                              isAdmin
+                              isUser
                                 ? "bg-orange-500 text-white rounded-br-sm"
                                 : "bg-white text-gray-800 rounded-bl-sm"
                             }`}
                           >
                             <div className="text-[11px] font-bold mb-1 opacity-70">
-                              {isAdmin ? "Admin" : "User"}
+                              {isUser ? "Kullanıcı" : "Sefira Destek"}
                             </div>
                             <p className="text-sm leading-relaxed whitespace-pre-line">
                               {m.message}
@@ -868,11 +876,11 @@ export default function UserDetailPage() {
                         const res = await fetch("/api/admin/send-message", {
                           method: "POST",
                           headers: { "Content-Type": "application/json", Authorization: `Bearer ${s?.access_token}` },
-                          body: JSON.stringify({ userId, userEmail: "", title: "reply", message: text, sendToAll: false }),
+                          body: JSON.stringify({ userId, userEmail: "", title: "reply", message: text, sendToAll: false, sender: "admin" }),
                         });
                         const result = await res.json();
                         if (!result.error) {
-                          const { data } = await supabase.from('admin_messages').select('*').eq('user_id', userId).eq('is_global', false).order('created_at', { ascending: true });
+                          const { data } = await supabaseAdmin.from('admin_messages').select('*').eq('user_id', userId).eq('is_global', false).order('created_at', { ascending: true });
                           if (data) setChatHistory(data as AdminMessage[]);
                         }
                         setSendingSupport(false);
@@ -891,11 +899,11 @@ export default function UserDetailPage() {
                       const res = await fetch("/api/admin/send-message", {
                         method: "POST",
                         headers: { "Content-Type": "application/json", Authorization: `Bearer ${s?.access_token}` },
-                        body: JSON.stringify({ userId, userEmail: "", title: "reply", message: text, sendToAll: false }),
+                        body: JSON.stringify({ userId, userEmail: "", title: "reply", message: text, sendToAll: false, sender: "admin" }),
                       });
                       const result = await res.json();
                       if (!result.error) {
-                        const { data } = await supabase.from('admin_messages').select('*').eq('user_id', userId).eq('is_global', false).order('created_at', { ascending: true });
+                        const { data } = await supabaseAdmin.from('admin_messages').select('*').eq('user_id', userId).eq('is_global', false).order('created_at', { ascending: true });
                         if (data) setChatHistory(data as AdminMessage[]);
                       }
                       setSendingSupport(false);
