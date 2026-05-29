@@ -134,8 +134,10 @@ export default function AdminPage() {
   const [deleteConfirm, setDeleteConfirm] = useState<{
     type: string;
     id: string;
+    userId?: string;
     name?: string;
   } | null>(null);
+  const [banConfirm, setBanConfirm] = useState<UserRecord | null>(null);
 
   const [stats, setStats] = useState<Stats | null>(null);
 
@@ -372,34 +374,20 @@ export default function AdminPage() {
         setListings(allListings.slice((listingsPage - 1) * PAGE_SIZE, listingsPage * PAGE_SIZE));
       }
     } else if (type === "user") {
-      // User deletion requires service role key — keep going through the API route
       const token = session?.access_token;
-      if (!token) return;
+      if (!token || !deleteConfirm?.userId) return;
       try {
-        const res = await fetch(`/admin-sefira-2026/api?type=user&id=${id}`, {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
+        const res = await fetch("/api/admin/delete-user", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ userId: deleteConfirm.userId }),
         });
-        if (res.ok) {
+        const json = await res.json();
+        if (!json.error) {
+          const deletedUserId = deleteConfirm.userId;
           setDeleteConfirm(null);
-          const { data: profiles } = await supabase
-            .from("profiles")
-            .select("*")
-            .order("created_at", { ascending: false });
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const allUsers: UserRecord[] = (profiles ?? []).map((p: any) => ({
-            id: p.id,
-            user_id: p.user_id,
-            email: p.email ?? "N/A",
-            display_name: p.display_name ?? null,
-            avatar_url: p.avatar_url ?? null,
-            gender: p.gender ?? null,
-            birth_date: p.birth_date ?? null,
-            country: p.country ?? null,
-            created_at: p.created_at,
-          }));
-          setUsersTotal(allUsers.length);
-          setUsers(allUsers.slice((usersPage - 1) * PAGE_SIZE, usersPage * PAGE_SIZE));
+          setUsers((prev) => prev.filter((u) => u.user_id !== deletedUserId));
+          setUsersTotal((prev) => prev - 1);
         }
       } catch { /* deletion failed silently */ }
     }
@@ -424,14 +412,14 @@ export default function AdminPage() {
   };
 
   const handleQuickUnban = async (u: UserRecord) => {
-    if (!u.user_id || !u.email) return;
+    if (!u.user_id) return;
     setBanningUserId(u.user_id);
     const token = session?.access_token;
     try {
       const res = await fetch("/api/admin/ban-user", {
-        method: "DELETE",
+        method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ userId: u.user_id, email: u.email }),
+        body: JSON.stringify({ userId: u.user_id, action: "unban" }),
       });
       const json = await res.json();
       if (!json.error) {
@@ -454,7 +442,7 @@ export default function AdminPage() {
 
   if (user.email !== ADMIN_EMAIL) return null;
 
-  const menuItems: { id: Section | "channels"; label: string; icon: string; href?: string }[] = [
+  const menuItems: { id: Section | "channels" | "banned"; label: string; icon: string; href?: string }[] = [
     { id: "dashboard", label: "Dashboard", icon: "📊" },
     { id: "users", label: "Users", icon: "👥" },
     { id: "listings", label: "Listings", icon: "📋" },
@@ -462,6 +450,7 @@ export default function AdminPage() {
     { id: "reviews", label: "Reviews", icon: "⭐" },
     { id: "messages", label: "Messages", icon: "✉️" },
     { id: "channels", label: "Kanallarım", icon: "📢", href: "/admin-sefira-2026/channels" },
+    { id: "banned", label: "Engelliler", icon: "🚫", href: "/admin-sefira-2026/banned" },
   ];
 
   const navigate = (section: Section) => {
@@ -655,18 +644,18 @@ export default function AdminPage() {
                           onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#dcfce7")}
                           onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#f0fdf4")}
                         >
-                          {banningUserId === u.user_id ? "…" : "Unban"}
+                          {banningUserId === u.user_id ? "…" : "✅ Engeli Kaldır"}
                         </button>
                       ) : (
                         <button
-                          onClick={(e) => { e.stopPropagation(); handleQuickBan(u); }}
+                          onClick={(e) => { e.stopPropagation(); setBanConfirm(u); }}
                           disabled={banningUserId === u.user_id}
                           className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
                           style={{ backgroundColor: "#fff7ed", color: "#f97316" }}
                           onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ffedd5")}
                           onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#fff7ed")}
                         >
-                          {banningUserId === u.user_id ? "…" : "Ban"}
+                          {banningUserId === u.user_id ? "…" : "🚫 Engelle"}
                         </button>
                       )}
                       <button
@@ -675,6 +664,7 @@ export default function AdminPage() {
                           setDeleteConfirm({
                             type: "user",
                             id: u.id,
+                            userId: u.user_id,
                             name: u.display_name ?? u.email,
                           });
                         }}
@@ -687,7 +677,7 @@ export default function AdminPage() {
                           (e.currentTarget.style.backgroundColor = "#fef2f2")
                         }
                       >
-                        Delete
+                        🗑️ Sil
                       </button>
                     </div>
                   </td>
@@ -1155,6 +1145,52 @@ export default function AdminPage() {
           </main>
         </div>
       </div>
+
+      {/* Ban confirmation modal */}
+      {banConfirm && (
+        <div
+          className="fixed inset-0 flex items-center justify-center z-50 p-4"
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+        >
+          <div
+            className="bg-white rounded-2xl p-6 w-full max-w-sm"
+            style={{ boxShadow: "0 20px 60px rgba(0,0,0,0.2)" }}
+          >
+            <div
+              className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4"
+              style={{ backgroundColor: "#fff7ed" }}
+            >
+              🚫
+            </div>
+            <h3 className="text-lg font-bold text-gray-800 text-center mb-2">
+              Kullanıcıyı Engelle
+            </h3>
+            <p className="text-sm text-gray-500 text-center mb-1">
+              Bu kullanıcıyı engellemek istiyor musunuz?
+            </p>
+            <p className="text-sm font-semibold text-gray-700 text-center mb-6 break-all">
+              {banConfirm.display_name ?? banConfirm.email}
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setBanConfirm(null)}
+                className="flex-1 py-2.5 rounded-xl text-sm font-medium text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors"
+              >
+                İptal
+              </button>
+              <button
+                onClick={() => { handleQuickBan(banConfirm); setBanConfirm(null); }}
+                className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white transition-colors"
+                style={{ backgroundColor: "#f97316" }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ea6c08")}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#f97316")}
+              >
+                Engelle
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Delete confirmation modal */}
       {deleteConfirm && (

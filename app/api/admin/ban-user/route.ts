@@ -27,17 +27,41 @@ const supabaseAdmin = createClient(
   { auth: { autoRefreshToken: false, persistSession: false } }
 );
 
-// POST — ban a user
+// POST — ban (default) or unban (action='unban')
 export async function POST(req: NextRequest) {
   const adminUser = await verifyAdmin(req);
   if (!adminUser) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const { userId, email, reason } = await req.json();
+  const { userId, email, reason, action } = await req.json();
+
+  if (action === "unban") {
+    if (!userId) {
+      return NextResponse.json({ error: "Missing userId" }, { status: 400 });
+    }
+
+    const { error: unbanAuthError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+      ban_duration: "none",
+    });
+    if (unbanAuthError) {
+      return NextResponse.json({ error: unbanAuthError.message }, { status: 500 });
+    }
+
+    const { error: dbError } = await supabaseAdmin
+      .from("banned_emails")
+      .delete()
+      .eq("user_id", userId);
+    if (dbError) {
+      return NextResponse.json({ error: dbError.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
+  }
+
+  // Default: ban
   if (!userId || !email) {
     return NextResponse.json({ error: "Missing userId or email" }, { status: 400 });
   }
 
-  // 1. Ban in Supabase auth (prevents login immediately)
   const { error: banAuthError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
     ban_duration: "876000h",
   });
@@ -45,10 +69,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: banAuthError.message }, { status: 500 });
   }
 
-  // 2. Add email to banned_emails table (prevents re-registration)
   const { error: dbError } = await supabaseAdmin
     .from("banned_emails")
-    .upsert([{ email, user_id: userId, reason: reason || "Banned by admin" }], {
+    .upsert([{ email, user_id: userId, reason: reason || "Admin tarafından engellendi" }], {
       onConflict: "email",
     });
   if (dbError) {
@@ -58,7 +81,7 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ success: true });
 }
 
-// DELETE — unban a user
+// DELETE — unban (kept for backwards compatibility)
 export async function DELETE(req: NextRequest) {
   const adminUser = await verifyAdmin(req);
   if (!adminUser) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -68,7 +91,6 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "Missing userId or email" }, { status: 400 });
   }
 
-  // 1. Unban in Supabase auth
   const { error: unbanAuthError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
     ban_duration: "none",
   });
@@ -76,7 +98,6 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: unbanAuthError.message }, { status: 500 });
   }
 
-  // 2. Remove from banned_emails table
   const { error: dbError } = await supabaseAdmin
     .from("banned_emails")
     .delete()

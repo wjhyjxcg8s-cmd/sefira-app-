@@ -35,9 +35,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing userId" }, { status: 400 });
     }
 
-    const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
+    // 1. Delete from Supabase auth
+    const { error: authError } = await supabaseAdmin.auth.admin.deleteUser(userId);
+    if (authError) {
+      return NextResponse.json({ error: authError.message }, { status: 500 });
+    }
 
-    return NextResponse.json({ error: error?.message ?? null });
+    // 2. Delete profile (best-effort, ignore errors)
+    await supabaseAdmin.from("profiles").delete().eq("user_id", userId);
+
+    // 3. Remove from banned_emails (best-effort, ignore errors)
+    await supabaseAdmin.from("banned_emails").delete().eq("user_id", userId);
+
+    return NextResponse.json({ success: true });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
   }
