@@ -410,13 +410,14 @@ export default function AdminPage() {
 
   if (user.email !== ADMIN_EMAIL) return null;
 
-  const menuItems: { id: Section; label: string; icon: string }[] = [
+  const menuItems: { id: Section | "channels"; label: string; icon: string; href?: string }[] = [
     { id: "dashboard", label: "Dashboard", icon: "📊" },
     { id: "users", label: "Users", icon: "👥" },
     { id: "listings", label: "Listings", icon: "📋" },
     { id: "feedback", label: "Del. Feedback", icon: "💬" },
     { id: "reviews", label: "Reviews", icon: "⭐" },
     { id: "messages", label: "Messages", icon: "✉️" },
+    { id: "channels", label: "Kanallarım", icon: "📢", href: "/admin-sefira-2026/channels" },
   ];
 
   const navigate = (section: Section) => {
@@ -970,7 +971,10 @@ export default function AdminPage() {
             return (
               <button
                 key={item.id}
-                onClick={() => navigate(item.id)}
+                onClick={() => {
+                  if (item.href) { router.push(item.href); setSidebarOpen(false); }
+                  else navigate(item.id as Section);
+                }}
                 className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-left"
                 style={{
                   backgroundColor: active ? "#f97316" : "transparent",
