@@ -969,15 +969,16 @@ export default function Home() {
   useEffect(() => { localStorage.setItem("sefira-lang", lang); }, [lang]);
 
   // ── Unread messages badge ─────────────────────────────────────────────────
-  const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
+  const [unreadSupportCount, setUnreadSupportCount] = useState(0);
   useEffect(() => {
-    if (!user) { setHasUnreadMessages(false); return; }
+    if (!user) { setUnreadSupportCount(0); return; }
     supabase
       .from("admin_messages")
       .select("*", { count: "exact", head: true })
-      .or(`user_id.eq.${user.id},is_global.eq.true`)
+      .eq("user_id", user.id)
+      .eq("sender", "admin")
       .eq("is_read", false)
-      .then(({ count }) => setHasUnreadMessages((count ?? 0) > 0));
+      .then(({ count }) => setUnreadSupportCount(count ?? 0));
   }, [user?.id, profileMenuOpen]);
 
   // ── Currency ──────────────────────────────────────────────────────────────
@@ -1311,8 +1312,12 @@ export default function Home() {
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-orange-500">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                   </svg>
-                  {hasUnreadMessages && (
-                    <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-orange-500 border border-white" />
+                  {unreadSupportCount > 0 && (
+                    <div className="absolute -top-1.5 -right-1.5 min-w-[14px] h-[14px] rounded-full bg-red-500 border border-white flex items-center justify-center px-0.5">
+                      <span className="text-white font-bold leading-none" style={{ fontSize: "9px" }}>
+                        {unreadSupportCount > 9 ? "9+" : unreadSupportCount}
+                      </span>
+                    </div>
                   )}
                 </div>
                 <span className="text-xs">{lang === "tr" ? "Mesajlarım" : lang === "fa" ? "پیام‌های من" : lang === "ar" ? "رسائلي" : lang === "de" ? "Meine Nachrichten" : "My Messages"}</span>

@@ -103,6 +103,7 @@ export default function MessagesPage() {
   const [mobileView, setMobileView] = useState<"list" | "chat">("list");
   const [globalMessages, setGlobalMessages] = useState<AdminMessage[]>([]);
   const [chatMessages, setChatMessages] = useState<AdminMessage[]>([]);
+  const [unreadSupportCount, setUnreadSupportCount] = useState(0);
   const [chatInput, setChatInput] = useState("");
   const [sendingChat, setSendingChat] = useState(false);
   const chatBottomRef = useRef<HTMLDivElement>(null);
@@ -140,6 +141,14 @@ export default function MessagesPage() {
         .then(({ data }) => {
           if (data) setChatMessages(data as AdminMessage[]);
         });
+
+      supabase
+        .from("admin_messages")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", uid)
+        .eq("sender", "admin")
+        .eq("is_read", false)
+        .then(({ count }) => setUnreadSupportCount(count ?? 0));
     });
   }, []);
 
@@ -267,20 +276,41 @@ export default function MessagesPage() {
           </div>
 
           {/* Sefira Destek – two-way support chat */}
-          <div
-            onClick={() => { window.location.href = '/support-chat' }}
-            className="flex items-center gap-3 p-3 cursor-pointer hover:bg-gray-100 border-b"
+          <button
+            onClick={() => { window.location.href = "/support-chat"; }}
+            className="w-full flex items-center gap-3 px-4 py-3.5 transition-colors text-left border-b border-stone-100 hover:bg-stone-50"
           >
-            <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold flex-shrink-0">
-              S
+            <div className="relative w-12 h-12 flex-shrink-0">
+              <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-lg shadow-sm">
+                S
+              </div>
+              {unreadSupportCount > 0 && (
+                <div className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-red-500 border-2 border-white" />
+              )}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="font-semibold text-sm text-stone-900">{t.supportChannelName}</div>
-              <div className="text-sm text-gray-500 truncate">
-                {chatMessages[chatMessages.length - 1]?.message || "Mesaj yok"}
+              <div className="flex items-center justify-between gap-2 mb-0.5">
+                <span className={`text-sm truncate ${unreadSupportCount > 0 ? "font-bold text-stone-900" : "font-semibold text-stone-700"}`}>
+                  {t.supportChannelName}
+                </span>
+                {chatMessages.length > 0 && (
+                  <span className="text-xs text-stone-400 flex-shrink-0">
+                    {formatDate(chatMessages[chatMessages.length - 1].created_at)}
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-1.5">
+                <p className={`text-xs truncate flex-1 ${unreadSupportCount > 0 ? "text-stone-700 font-medium" : "text-stone-400"}`}>
+                  {chatMessages[chatMessages.length - 1]?.message || t.supportWelcome}
+                </p>
+                {unreadSupportCount > 0 && (
+                  <span className="flex-shrink-0 min-w-[18px] h-[18px] rounded-full bg-orange-500 text-white text-[10px] font-bold flex items-center justify-center px-1">
+                    {unreadSupportCount > 9 ? "9+" : unreadSupportCount}
+                  </span>
+                )}
               </div>
             </div>
-          </div>
+          </button>
 
           {/* Sefira Bildirimleri – read-only announcements */}
           <button
