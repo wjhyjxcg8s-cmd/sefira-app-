@@ -1180,10 +1180,18 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
 
   useEffect(() => { fetchConversations(); }, []);
 
-  const selectConversation = (userId: string) => {
+  const selectConversation = async (userId: string) => {
     setSelectedId(userId);
     setMobileView("chat");
     fetchThread(userId);
+    // Feature 3: Mark user messages as read when admin opens conversation
+    await supabase
+      .from("admin_messages")
+      .update({ is_read: true })
+      .eq("user_id", userId)
+      .eq("sender", "user")
+      .eq("is_read", false);
+    fetchConversations();
   };
 
   const handleSend = async () => {
@@ -1191,6 +1199,20 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
     setSending(true);
     const text = replyText.trim();
     setReplyText("");
+
+    // Feature 1: Optimistic update — show message immediately
+    const tempId = "temp-" + Date.now();
+    const optimistic: ThreadMsg = {
+      id: tempId,
+      user_id: selectedId,
+      message: text,
+      sender: "admin",
+      is_read: false,
+      created_at: new Date().toISOString(),
+    };
+    setThread((prev) => [...prev, optimistic]);
+    setTimeout(() => threadEndRef.current?.scrollIntoView({ behavior: "smooth" }), 30);
+
     const res = await fetch("/api/admin/send-message", {
       method: "POST",
       headers: authJson,
@@ -1207,6 +1229,8 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
     if (!result.error) {
       await fetchThread(selectedId);
       fetchConversations();
+    } else {
+      setThread((prev) => prev.filter((m) => m.id !== tempId));
     }
     setSending(false);
   };
@@ -1444,8 +1468,14 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
                                 {msg.message}
                               </p>
                             </div>
-                            <span className="text-[11px] text-gray-400 px-1">
+                            <span className="text-[11px] text-gray-400 px-1" style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                               {fmtTime(msg.created_at)}
+                              {/* Feature 2: tick indicators on admin messages */}
+                              {isAdmin && (
+                                msg.is_read
+                                  ? <span style={{ color: "#34b7f1", fontSize: "12px", lineHeight: 1 }}>✓✓</span>
+                                  : <span style={{ color: "#9ca3af", fontSize: "12px", lineHeight: 1 }}>✓</span>
+                              )}
                             </span>
                           </div>
                         </div>

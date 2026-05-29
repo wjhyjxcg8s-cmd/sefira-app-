@@ -20,6 +20,15 @@ export default function SupportChat() {
         .eq('is_global', false)
         .order('created_at', { ascending: true })
       if (data) setMessages(data)
+
+      // Feature 3: Mark all admin messages as read when user opens chat
+      await supabase
+        .from('admin_messages')
+        .update({ is_read: true })
+        .eq('user_id', session.user.id)
+        .eq('sender', 'admin')
+        .eq('is_read', false)
+
       setLoading(false)
     }
     init()
@@ -29,6 +38,19 @@ export default function SupportChat() {
     if (!input.trim() || !userId) return
     const text = input.trim()
     setInput('')
+
+    // Feature 1: Optimistic update — show message immediately
+    const tempId = 'temp-' + Date.now()
+    const optimistic = {
+      id: tempId,
+      user_id: userId,
+      message: text,
+      sender: 'user',
+      is_read: false,
+      created_at: new Date().toISOString()
+    }
+    setMessages(prev => [...prev, optimistic])
+
     const { data, error } = await supabase
       .from('admin_messages')
       .insert([{
@@ -41,8 +63,18 @@ export default function SupportChat() {
       }])
       .select()
       .single()
-    if (data) setMessages(prev => [...prev, data])
-    if (error) alert('Error: ' + error.message)
+
+    if (data) {
+      setMessages(prev => prev.map(m => m.id === tempId ? data : m))
+    }
+    if (error) {
+      setMessages(prev => prev.filter(m => m.id !== tempId))
+      alert('Error: ' + error.message)
+    }
+  }
+
+  const fmtTime = (d: string) => {
+    return new Date(d).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
   }
 
   if (loading) return <div style={{padding:'20px'}}>Loading...</div>
@@ -66,6 +98,15 @@ export default function SupportChat() {
                 {msg.sender==='user'?'Siz':'Sefira Destek'}
               </div>
               {msg.message}
+              {/* Time + Feature 2: tick indicators on admin messages */}
+              <div style={{display:'flex',alignItems:'center',justifyContent:'flex-end',gap:'4px',marginTop:'4px'}}>
+                <span style={{fontSize:'10px',opacity:0.55}}>{fmtTime(msg.created_at)}</span>
+                {msg.sender === 'admin' && (
+                  msg.is_read
+                    ? <span style={{fontSize:'12px',color:'#34b7f1',lineHeight:1}}>✓✓</span>
+                    : <span style={{fontSize:'12px',color:'#9ca3af',lineHeight:1}}>✓</span>
+                )}
+              </div>
             </div>
           </div>
         ))}
