@@ -65,16 +65,17 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // Enrich with real emails from profiles table
+  // Enrich with real emails from auth (more reliable than profiles table)
   const userIds = Array.from(latestPerUser.keys())
-  const { data: profiles } = userIds.length
-    ? await supabaseAdmin.from('profiles').select('id, email').in('id', userIds)
-    : { data: [] }
-
   const emailMap = new Map<string, string>()
-  for (const p of profiles ?? []) {
-    if (p.email) emailMap.set(p.id, p.email)
-  }
+  await Promise.all(
+    userIds.map(async (uid) => {
+      try {
+        const { data: { user: authUser } } = await supabaseAdmin.auth.admin.getUserById(uid)
+        if (authUser?.email) emailMap.set(uid, authUser.email)
+      } catch {}
+    })
+  )
 
   const conversations = Array.from(latestPerUser.entries()).map(([uid, msg]) => ({
     user_id: uid,

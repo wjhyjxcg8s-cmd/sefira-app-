@@ -279,12 +279,17 @@ export default function UserDetailPage() {
 
       if (cancelled) return;
 
+      // Always fetch real email from auth (works even when profiles row is missing)
+      const { data: { user: authUser } } = await supabaseAdmin.auth.admin.getUserById(userId)
+      const authEmail = authUser?.email ?? null
+      if (!cancelled && authEmail) setUserAuthEmail(authEmail)
+
       if (profileData) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const p = profileData as any;
         const prof: UserProfile = {
           id: p.id,
-          email: p.email ?? null,
+          email: p.email ?? authEmail,
           display_name: p.display_name ?? null,
           avatar_url: p.avatar_url ?? null,
           gender: p.gender ?? null,
@@ -299,25 +304,32 @@ export default function UserDetailPage() {
         setEditBirthDate(prof.birth_date ?? "");
         setEditCountry(prof.country ?? "");
 
-        // Fetch real email from auth admin API
-        const emailRes = await fetch(`/api/admin/get-user?userId=${userId}`, {
-          headers: {
-            Authorization: `Bearer ${session?.access_token ?? ""}`,
-          },
-        });
-        if (!cancelled && emailRes.ok) {
-          const emailJson = await emailRes.json();
-          if (emailJson.email) setUserAuthEmail(emailJson.email);
-        }
-
         // Deletion feedback by email
-        if (prof.email) {
+        const emailForFeedback = prof.email ?? authEmail
+        if (emailForFeedback) {
           const { data: fbData } = await supabase
             .from("deletion_feedback")
             .select("*")
-            .eq("email", prof.email)
+            .eq("email", emailForFeedback)
             .order("deleted_at", { ascending: false });
           if (!cancelled) setFeedback(fbData ?? []);
+        }
+      } else if (authUser) {
+        // No profiles row — build minimal profile from auth data so page renders
+        const minProf: UserProfile = {
+          id: authUser.id,
+          email: authEmail,
+          display_name: null,
+          avatar_url: null,
+          gender: null,
+          birth_date: null,
+          country: null,
+          created_at: authUser.created_at,
+          updated_at: null,
+        }
+        if (!cancelled) {
+          setProfile(minProf)
+          setUserAuthEmail(authEmail)
         }
       }
 
