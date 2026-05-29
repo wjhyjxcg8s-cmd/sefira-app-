@@ -545,8 +545,9 @@ export default function AdminPage() {
               {users.map((u, i) => (
                 <tr
                   key={u.id}
-                  className="border-t border-gray-50 transition-colors"
+                  className="border-t border-gray-50 transition-colors cursor-pointer"
                   style={{ backgroundColor: i % 2 === 1 ? "#fafafa" : "white" }}
+                  onClick={() => router.push(`/admin-sefira-2026/user/${u.id}`)}
                   onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#fff7ed")}
                   onMouseLeave={(e) =>
                     (e.currentTarget.style.backgroundColor = i % 2 === 1 ? "#fafafa" : "white")
@@ -593,13 +594,14 @@ export default function AdminPage() {
                         View
                       </a>
                       <button
-                        onClick={() =>
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setDeleteConfirm({
                             type: "user",
                             id: u.id,
                             name: u.display_name ?? u.email,
-                          })
-                        }
+                          });
+                        }}
                         className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors"
                         style={{ backgroundColor: "#fef2f2", color: "#ef4444" }}
                         onMouseEnter={(e) =>
