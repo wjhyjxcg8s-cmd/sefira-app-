@@ -268,11 +268,7 @@ export default function MessagesPage() {
 
           {/* Sefira Destek – two-way support chat */}
           <div
-            onClick={() => {
-              console.log("Sefira Destek clicked!");
-              setSelectedConv("sefira-destek");
-              setMobileView("chat");
-            }}
+            onClick={() => { window.location.href = '/support-chat' }}
             className="flex items-center gap-3 p-3 cursor-pointer hover:bg-gray-100 border-b"
           >
             <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold flex-shrink-0">
