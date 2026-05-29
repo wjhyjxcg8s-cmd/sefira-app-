@@ -270,11 +270,11 @@ export default function UserDetailPage() {
       setDataLoading(true);
       try {
 
-      // Profile
-      const { data: profileData } = await supabase
+      // Profile — use service role to bypass RLS, filter by user_id column
+      const { data: profileData } = await supabaseAdmin
         .from("profiles")
         .select("*")
-        .eq("id", userId)
+        .eq("user_id", userId)
         .single();
 
       if (cancelled) return;
@@ -334,7 +334,7 @@ export default function UserDetailPage() {
       }
 
       // Reviews by this user
-      const { data: reviewsData } = await supabase
+      const { data: reviewsData } = await supabaseAdmin
         .from("reviews")
         .select("*")
         .eq("user_id", userId)
@@ -342,7 +342,7 @@ export default function UserDetailPage() {
       if (!cancelled) setReviews(reviewsData ?? []);
 
       // Listings by this user
-      const { data: listingsData } = await supabase
+      const { data: listingsData } = await supabaseAdmin
         .from("listings")
         .select("*")
         .eq("user_id", userId)
@@ -350,7 +350,7 @@ export default function UserDetailPage() {
       if (!cancelled) setListings(listingsData ?? []);
 
       // Conversation thread with this user
-      const { data: chatData } = await supabase
+      const { data: chatData } = await supabaseAdmin
         .from("admin_messages")
         .select("*")
         .eq("user_id", userId)
