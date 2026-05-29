@@ -5,7 +5,8 @@
       "Bash(dir \"public\\\\images\")",
       "PowerShell(Get-Process | Where-Object { $_.Name -match \"node|next|pm2\" } | Select-Object Name, Id, CPU, WorkingSet)",
       "PowerShell(Get-Process -Id 12120)",
-      "PowerShell(npx pm2 list 2>&1)"
+      "PowerShell(npx pm2 list 2>&1)",
+      "Bash(Get-ChildItem -Path \"e:\\\\sefıra-web\\\\sefira-app\\\\app\\\\admin-sefira-2026\\\\\" -Recurse -File | Select-Object FullName)"
     ]
   }
 }
