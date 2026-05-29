@@ -6,6 +6,7 @@ export default function SupportChat() {
   const [messages, setMessages] = useState<any[]>([])
   const [input, setInput] = useState('')
   const [userId, setUserId] = useState<string | null>(null)
+
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -13,21 +14,26 @@ export default function SupportChat() {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session?.user?.id) { setLoading(false); return }
       setUserId(session.user.id)
+
+
       const { data } = await supabase
         .from('admin_messages')
         .select('*')
         .eq('user_id', session.user.id)
         .eq('is_global', false)
         .order('created_at', { ascending: true })
-      if (data) setMessages(data)
+      if (data) {
+        // Mark admin messages as read in local state immediately
+        setMessages(data.map((m: any) =>
+          m.sender === 'admin' ? { ...m, is_read: true } : m
+        ))
+      }
 
-      // Feature 3: Mark all admin messages as read when user opens chat
-      await supabase
-        .from('admin_messages')
-        .update({ is_read: true })
-        .eq('user_id', session.user.id)
-        .eq('sender', 'admin')
-        .eq('is_read', false)
+      // Persist via API route (service role bypasses RLS)
+      fetch('/api/user/mark-read', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      })
 
       setLoading(false)
     }
@@ -39,7 +45,7 @@ export default function SupportChat() {
     const text = input.trim()
     setInput('')
 
-    // Feature 1: Optimistic update — show message immediately
+    // Optimistic update — show message immediately
     const tempId = 'temp-' + Date.now()
     const optimistic = {
       id: tempId,
@@ -98,13 +104,13 @@ export default function SupportChat() {
                 {msg.sender==='user'?'Siz':'Sefira Destek'}
               </div>
               {msg.message}
-              {/* Time + Feature 2: tick indicators on admin messages */}
+              {/* Time row — ticks on user's own messages only */}
               <div style={{display:'flex',alignItems:'center',justifyContent:'flex-end',gap:'4px',marginTop:'4px'}}>
                 <span style={{fontSize:'10px',opacity:0.55}}>{fmtTime(msg.created_at)}</span>
-                {msg.sender === 'admin' && (
+                {msg.sender === 'user' && (
                   msg.is_read
                     ? <span style={{fontSize:'12px',color:'#34b7f1',lineHeight:1}}>✓✓</span>
-                    : <span style={{fontSize:'12px',color:'#9ca3af',lineHeight:1}}>✓</span>
+                    : <span style={{fontSize:'12px',color:'rgba(255,255,255,0.7)',lineHeight:1}}>✓</span>
                 )}
               </div>
             </div>

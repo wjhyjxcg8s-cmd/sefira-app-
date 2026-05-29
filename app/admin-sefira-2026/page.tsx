@@ -1184,13 +1184,16 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
     setSelectedId(userId);
     setMobileView("chat");
     fetchThread(userId);
-    // Feature 3: Mark user messages as read when admin opens conversation
-    await supabase
-      .from("admin_messages")
-      .update({ is_read: true })
-      .eq("user_id", userId)
-      .eq("sender", "user")
-      .eq("is_read", false);
+    // Zero the badge immediately in local state
+    setConversations((prev) =>
+      prev.map((c) => c.user_id === userId ? { ...c, unread_count: 0 } : c)
+    );
+    // Persist read status via service-role API route (bypasses RLS)
+    await fetch("/api/admin/mark-read", {
+      method: "POST",
+      headers: authJson,
+      body: JSON.stringify({ userId }),
+    });
     fetchConversations();
   };
 
