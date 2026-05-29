@@ -222,6 +222,11 @@ export default function UserDetailPage() {
   const [deleteListingId, setDeleteListingId] = useState<string | null>(null);
   const [deletingListing, setDeletingListing] = useState(false);
 
+  // Support chat history
+  const [chatHistory, setChatHistory] = useState<AdminMessage[]>([]);
+  const [supportInput, setSupportInput] = useState("");
+  const [sendingSupport, setSendingSupport] = useState(false);
+
   // Review actions
   const [editingReviewId, setEditingReviewId] = useState<string | null>(null);
   const [editReviewText, setEditReviewText] = useState("");
@@ -235,6 +240,19 @@ export default function UserDetailPage() {
       router.replace("/");
     }
   }, [user, loading, router]);
+
+  useEffect(() => {
+    const fetchChat = async () => {
+      const { data } = await supabase
+        .from('admin_messages')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('is_global', false)
+        .order('created_at', { ascending: true })
+      if (data) setChatHistory(data as AdminMessage[])
+    }
+    fetchChat()
+  }, [userId])
 
   useEffect(() => {
     if (!user || user.email !== ADMIN_EMAIL || !userId) return;
@@ -776,6 +794,121 @@ export default function UserDetailPage() {
                 >
                   {sendingMsg ? "Sending…" : "Send to ALL Users"}
                 </button>
+              </div>
+            </SectionCard>
+
+            {/* ── Support Chat ─────────────────────────────────────────── */}
+            <SectionCard title={`Support Chat (${chatHistory.length})`}>
+              <div
+                className="px-4 py-4 flex flex-col gap-3 overflow-y-auto"
+                style={{ maxHeight: "28rem", minHeight: "8rem", background: "#f8fafc" }}
+              >
+                {chatHistory.length === 0 && (
+                  <p className="text-center text-gray-400 text-sm py-6">
+                    No messages yet.
+                  </p>
+                )}
+                {chatHistory.map((m) => {
+                  const isAdmin = m.sender === "admin" || m.sender === null;
+                  return (
+                    <div
+                      key={m.id}
+                      className={`flex w-full ${isAdmin ? "justify-end" : "justify-start"}`}
+                    >
+                      <div
+                        className={`flex items-end gap-2 max-w-[75%] ${isAdmin ? "flex-row-reverse" : ""}`}
+                      >
+                        <div
+                          className={`w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mb-1 ${
+                            isAdmin
+                              ? "bg-gradient-to-br from-orange-400 to-orange-600"
+                              : "bg-gradient-to-br from-gray-400 to-gray-500"
+                          }`}
+                        >
+                          {isAdmin ? "A" : "U"}
+                        </div>
+                        <div
+                          className={`flex flex-col gap-1 ${isAdmin ? "items-end" : "items-start"}`}
+                        >
+                          <div
+                            className={`rounded-2xl px-4 py-2.5 shadow-sm ${
+                              isAdmin
+                                ? "bg-orange-500 text-white rounded-br-sm"
+                                : "bg-white text-gray-800 rounded-bl-sm"
+                            }`}
+                          >
+                            <div className="text-[11px] font-bold mb-1 opacity-70">
+                              {isAdmin ? "Admin" : "User"}
+                            </div>
+                            <p className="text-sm leading-relaxed whitespace-pre-line">
+                              {m.message}
+                            </p>
+                          </div>
+                          <span className="text-[11px] text-gray-400 px-1">
+                            {formatDate(m.created_at)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="px-4 py-3 border-t border-gray-100 bg-white">
+                <div className="flex gap-2">
+                  <input
+                    value={supportInput}
+                    onChange={(e) => setSupportInput(e.target.value)}
+                    onKeyDown={async (e) => {
+                      if (e.key === "Enter") {
+                        if (!supportInput.trim() || sendingSupport) return;
+                        setSendingSupport(true);
+                        const text = supportInput.trim();
+                        setSupportInput("");
+                        const { data: { session: s } } = await supabase.auth.getSession();
+                        const res = await fetch("/api/admin/send-message", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json", Authorization: `Bearer ${s?.access_token}` },
+                          body: JSON.stringify({ userId, userEmail: "", title: "reply", message: text, sendToAll: false }),
+                        });
+                        const result = await res.json();
+                        if (!result.error) {
+                          const { data } = await supabase.from('admin_messages').select('*').eq('user_id', userId).eq('is_global', false).order('created_at', { ascending: true });
+                          if (data) setChatHistory(data as AdminMessage[]);
+                        }
+                        setSendingSupport(false);
+                      }
+                    }}
+                    placeholder="Type a reply…"
+                    className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  />
+                  <button
+                    onClick={async () => {
+                      if (!supportInput.trim() || sendingSupport) return;
+                      setSendingSupport(true);
+                      const text = supportInput.trim();
+                      setSupportInput("");
+                      const { data: { session: s } } = await supabase.auth.getSession();
+                      const res = await fetch("/api/admin/send-message", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", Authorization: `Bearer ${s?.access_token}` },
+                        body: JSON.stringify({ userId, userEmail: "", title: "reply", message: text, sendToAll: false }),
+                      });
+                      const result = await res.json();
+                      if (!result.error) {
+                        const { data } = await supabase.from('admin_messages').select('*').eq('user_id', userId).eq('is_global', false).order('created_at', { ascending: true });
+                        if (data) setChatHistory(data as AdminMessage[]);
+                      }
+                      setSendingSupport(false);
+                    }}
+                    disabled={!supportInput.trim() || sendingSupport}
+                    className="px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
+                    style={{ backgroundColor: "#f97316" }}
+                    onMouseEnter={(e) => { if (!sendingSupport) e.currentTarget.style.backgroundColor = "#ea6c08"; }}
+                    onMouseLeave={(e) => { if (!sendingSupport) e.currentTarget.style.backgroundColor = "#f97316"; }}
+                  >
+                    {sendingSupport ? "…" : "Send Reply"}
+                  </button>
+                </div>
               </div>
             </SectionCard>
 
