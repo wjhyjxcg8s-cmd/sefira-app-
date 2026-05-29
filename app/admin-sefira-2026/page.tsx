@@ -1142,6 +1142,7 @@ interface ThreadMsg {
 }
 
 function MessagesSection({ session }: { session: { access_token?: string } | null }) {
+  const router = useRouter();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [thread, setThread] = useState<ThreadMsg[]>([]);
@@ -1425,12 +1426,12 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
                   </p>
                   <p className="text-xs text-emerald-500 font-semibold">Kullanıcı</p>
                 </div>
-                <a
-                  href={`/admin-sefira-2026/user/${selectedId}`}
-                  className="px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors flex-shrink-0"
+                <button
+                  onClick={() => router.push(`/admin-sefira-2026/user/${selectedId}`)}
+                  className="px-3 py-1.5 text-xs font-medium rounded-lg bg-orange-50 hover:bg-orange-100 text-orange-600 transition-colors flex-shrink-0"
                 >
-                  Profil →
-                </a>
+                  👤 Kullanıcı Bilgileri
+                </button>
               </div>
 
               {/* Messages */}
