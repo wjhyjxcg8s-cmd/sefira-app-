@@ -27,58 +27,76 @@ const supabaseAdmin = createClient(
   { auth: { autoRefreshToken: false, persistSession: false } }
 );
 
-// POST — ban (default) or unban (action='unban')
+// POST — ban (action='ban') or unban (action='unban')
 export async function POST(req: NextRequest) {
   const adminUser = await verifyAdmin(req);
   if (!adminUser) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { userId, email, reason, action } = await req.json();
 
+  if (action === "ban") {
+    if (!userId || !email) {
+      return NextResponse.json({ error: "Missing userId or email" }, { status: 400 });
+    }
+
+    const { error: banError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+      ban_duration: "876000h",
+    });
+    console.log("Auth ban error:", banError);
+
+    const { error: dbError } = await supabaseAdmin
+      .from("banned_emails")
+      .upsert([{
+        email,
+        user_id: userId,
+        reason: reason || "Admin tarafından engellendi",
+        banned_at: new Date().toISOString(),
+      }], { onConflict: "email" });
+    console.log("DB insert error:", dbError);
+
+    return NextResponse.json({ success: !banError && !dbError, banError, dbError });
+  }
+
   if (action === "unban") {
     if (!userId) {
       return NextResponse.json({ error: "Missing userId" }, { status: 400 });
     }
 
-    const { error: unbanAuthError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+    const { error: unbanError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
       ban_duration: "none",
     });
-    if (unbanAuthError) {
-      return NextResponse.json({ error: unbanAuthError.message }, { status: 500 });
+    console.log("Auth unban error:", unbanError);
+
+    await supabaseAdmin.from("banned_emails").delete().eq("user_id", userId);
+
+    return NextResponse.json({ success: !unbanError });
+  }
+
+  // Backwards compat: no action field defaults to ban
+  if (!action) {
+    if (!userId || !email) {
+      return NextResponse.json({ error: "Missing userId or email" }, { status: 400 });
     }
+
+    const { error: banError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+      ban_duration: "876000h",
+    });
+    console.log("Auth ban error:", banError);
 
     const { error: dbError } = await supabaseAdmin
       .from("banned_emails")
-      .delete()
-      .eq("user_id", userId);
-    if (dbError) {
-      return NextResponse.json({ error: dbError.message }, { status: 500 });
-    }
+      .upsert([{
+        email,
+        user_id: userId,
+        reason: reason || "Admin tarafından engellendi",
+        banned_at: new Date().toISOString(),
+      }], { onConflict: "email" });
+    console.log("DB insert error:", dbError);
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: !banError && !dbError, banError, dbError });
   }
 
-  // Default: ban
-  if (!userId || !email) {
-    return NextResponse.json({ error: "Missing userId or email" }, { status: 400 });
-  }
-
-  const { error: banAuthError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
-    ban_duration: "876000h",
-  });
-  if (banAuthError) {
-    return NextResponse.json({ error: banAuthError.message }, { status: 500 });
-  }
-
-  const { error: dbError } = await supabaseAdmin
-    .from("banned_emails")
-    .upsert([{ email, user_id: userId, reason: reason || "Admin tarafından engellendi" }], {
-      onConflict: "email",
-    });
-  if (dbError) {
-    return NextResponse.json({ error: dbError.message }, { status: 500 });
-  }
-
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ error: "Unknown action" }, { status: 400 });
 }
 
 // DELETE — unban (kept for backwards compatibility)

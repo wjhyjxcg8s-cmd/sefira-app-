@@ -44,10 +44,11 @@ export default function BannedPage() {
 
   const fetchBanned = async () => {
     setPageLoading(true);
-    const { data } = await supabaseAdmin
+    const { data, error } = await supabaseAdmin
       .from("banned_emails")
       .select("*")
       .order("banned_at", { ascending: false });
+    console.log("Banned list:", data, error);
     setBannedList(data ?? []);
     setPageLoading(false);
   };
@@ -59,13 +60,20 @@ export default function BannedPage() {
       const res = await fetch("/api/admin/ban-user", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ userId: item.user_id, action: "unban" }),
+        body: JSON.stringify({ userId: item.user_id, email: item.email, action: "unban" }),
       });
-      const json = await res.json();
-      if (!json.error) {
-        setBannedList((prev) => prev.filter((b) => b.user_id !== item.user_id));
+      const result = await res.json();
+      console.log("Unban result:", result);
+      if (result.success) {
+        alert("Engel kaldırıldı!");
+        setBannedList((prev) => prev.filter((b) => b.email !== item.email));
+      } else {
+        alert("Hata: " + JSON.stringify(result));
       }
-    } catch { /* fail silently */ }
+    } catch (e) {
+      console.error("Unban error:", e);
+      alert("Bağlantı hatası");
+    }
     setActionLoading(null);
   };
 

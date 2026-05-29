@@ -401,13 +401,25 @@ export default function AdminPage() {
       const res = await fetch("/api/admin/ban-user", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ userId: u.user_id, email: u.email, reason: "Banned by admin" }),
+        body: JSON.stringify({
+          userId: u.user_id,
+          email: u.email,
+          action: "ban",
+          reason: "Admin tarafından engellendi",
+        }),
       });
-      const json = await res.json();
-      if (!json.error) {
+      const result = await res.json();
+      console.log("Ban result:", result);
+      if (result.success) {
         setBannedEmails((prev) => new Set([...prev, u.email]));
+        alert("Kullanıcı engellendi!");
+      } else {
+        alert("Hata: " + JSON.stringify(result));
       }
-    } catch { /* fall through */ }
+    } catch (e) {
+      console.error("Ban error:", e);
+      alert("Bağlantı hatası");
+    }
     setBanningUserId(null);
   };
 
@@ -419,13 +431,20 @@ export default function AdminPage() {
       const res = await fetch("/api/admin/ban-user", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ userId: u.user_id, action: "unban" }),
+        body: JSON.stringify({ userId: u.user_id, email: u.email, action: "unban" }),
       });
-      const json = await res.json();
-      if (!json.error) {
+      const result = await res.json();
+      console.log("Unban result:", result);
+      if (result.success) {
         setBannedEmails((prev) => { const s = new Set(prev); s.delete(u.email); return s; });
+        alert("Engel kaldırıldı!");
+      } else {
+        alert("Hata: " + JSON.stringify(result));
       }
-    } catch { /* fall through */ }
+    } catch (e) {
+      console.error("Unban error:", e);
+      alert("Bağlantı hatası");
+    }
     setBanningUserId(null);
   };
 
