@@ -19,6 +19,7 @@ interface Stats {
 
 interface UserRecord {
   id: string;
+  user_id: string;
   email: string;
   display_name: string | null;
   avatar_url: string | null;
@@ -229,6 +230,7 @@ export default function AdminPage() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let allUsers: UserRecord[] = (profiles ?? []).map((p: any) => ({
           id: p.id,
+          user_id: p.user_id,
           email: p.email ?? "N/A",
           display_name: p.display_name ?? null,
           avatar_url: p.avatar_url ?? null,
@@ -382,6 +384,7 @@ export default function AdminPage() {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const allUsers: UserRecord[] = (profiles ?? []).map((p: any) => ({
             id: p.id,
+            user_id: p.user_id,
             email: p.email ?? "N/A",
             display_name: p.display_name ?? null,
             avatar_url: p.avatar_url ?? null,
@@ -547,7 +550,7 @@ export default function AdminPage() {
                   key={u.id}
                   className="border-t border-gray-50 transition-colors cursor-pointer"
                   style={{ backgroundColor: i % 2 === 1 ? "#fafafa" : "white" }}
-                  onClick={() => router.push(`/admin-sefira-2026/user/${u.id}`)}
+                  onClick={() => router.push(`/admin-sefira-2026/user/${u.user_id}`)}
                   onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#fff7ed")}
                   onMouseLeave={(e) =>
                     (e.currentTarget.style.backgroundColor = i % 2 === 1 ? "#fafafa" : "white")
@@ -588,7 +591,7 @@ export default function AdminPage() {
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
                       <a
-                        href={`/admin-sefira-2026/user/${u.id}`}
+                        href={`/admin-sefira-2026/user/${u.user_id}`}
                         className="px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
                       >
                         View

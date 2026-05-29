@@ -271,11 +271,14 @@ export default function UserDetailPage() {
       try {
 
       // Profile — use service role to bypass RLS, filter by user_id column
-      const { data: profileData } = await supabaseAdmin
+      const { data: profileData, error: profileError } = await supabaseAdmin
         .from("profiles")
         .select("*")
         .eq("user_id", userId)
         .single();
+
+      console.log('detail page id from url:', userId);
+      console.log('profile result:', profileData, 'error:', profileError);
 
       if (cancelled) return;
 
