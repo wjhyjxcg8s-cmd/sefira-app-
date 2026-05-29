@@ -144,6 +144,8 @@ export default function AdminPage() {
   const [usersPage, setUsersPage] = useState(1);
   const [usersSearch, setUsersSearch] = useState("");
   const [usersSearchInput, setUsersSearchInput] = useState("");
+  const [bannedEmails, setBannedEmails] = useState<Set<string>>(new Set());
+  const [banningUserId, setBanningUserId] = useState<string | null>(null);
 
   const [listings, setListings] = useState<ListingRecord[]>([]);
   const [listingsTotal, setListingsTotal] = useState(0);
@@ -220,10 +222,12 @@ export default function AdminPage() {
     setDataLoading(true);
 
     const fetchUsers = async () => {
-      const { data: profiles, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .order("created_at", { ascending: false });
+      const [profilesRes, bannedRes] = await Promise.all([
+        supabase.from("profiles").select("*").order("created_at", { ascending: false }),
+        supabase.from("banned_emails").select("email"),
+      ]);
+      const profiles = profilesRes.data;
+      const error = profilesRes.error;
       console.log("[Admin] profiles:", profiles, error);
 
       if (!cancelled) {
@@ -249,6 +253,7 @@ export default function AdminPage() {
           );
         }
 
+        setBannedEmails(new Set((bannedRes.data ?? []).map((b: { email: string }) => b.email)));
         setUsersTotal(allUsers.length);
         setUsers(allUsers.slice((usersPage - 1) * PAGE_SIZE, usersPage * PAGE_SIZE));
         setDataLoading(false);
@@ -398,6 +403,42 @@ export default function AdminPage() {
         }
       } catch { /* deletion failed silently */ }
     }
+  };
+
+  const handleQuickBan = async (u: UserRecord) => {
+    if (!u.user_id || !u.email) return;
+    setBanningUserId(u.user_id);
+    const token = session?.access_token;
+    try {
+      const res = await fetch("/api/admin/ban-user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ userId: u.user_id, email: u.email, reason: "Banned by admin" }),
+      });
+      const json = await res.json();
+      if (!json.error) {
+        setBannedEmails((prev) => new Set([...prev, u.email]));
+      }
+    } catch { /* fall through */ }
+    setBanningUserId(null);
+  };
+
+  const handleQuickUnban = async (u: UserRecord) => {
+    if (!u.user_id || !u.email) return;
+    setBanningUserId(u.user_id);
+    const token = session?.access_token;
+    try {
+      const res = await fetch("/api/admin/ban-user", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ userId: u.user_id, email: u.email }),
+      });
+      const json = await res.json();
+      if (!json.error) {
+        setBannedEmails((prev) => { const s = new Set(prev); s.delete(u.email); return s; });
+      }
+    } catch { /* fall through */ }
+    setBanningUserId(null);
   };
 
   if (loading || !user) {
@@ -589,13 +630,45 @@ export default function AdminPage() {
                   </td>
                   <td className="px-4 py-3 text-gray-600">{formatDate(u.created_at)}</td>
                   <td className="px-4 py-3">
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-1.5 items-center">
+                      {bannedEmails.has(u.email) && (
+                        <span
+                          className="px-2 py-0.5 rounded-full text-xs font-bold"
+                          style={{ backgroundColor: "#fef2f2", color: "#ef4444", border: "1px solid #fecaca" }}
+                        >
+                          ⛔ BANNED
+                        </span>
+                      )}
                       <a
                         href={`/admin-sefira-2026/user/${u.user_id}`}
+                        onClick={(e) => e.stopPropagation()}
                         className="px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
                       >
                         View
                       </a>
+                      {bannedEmails.has(u.email) ? (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleQuickUnban(u); }}
+                          disabled={banningUserId === u.user_id}
+                          className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+                          style={{ backgroundColor: "#f0fdf4", color: "#16a34a" }}
+                          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#dcfce7")}
+                          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#f0fdf4")}
+                        >
+                          {banningUserId === u.user_id ? "…" : "Unban"}
+                        </button>
+                      ) : (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleQuickBan(u); }}
+                          disabled={banningUserId === u.user_id}
+                          className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+                          style={{ backgroundColor: "#fff7ed", color: "#f97316" }}
+                          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ffedd5")}
+                          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#fff7ed")}
+                        >
+                          {banningUserId === u.user_id ? "…" : "Ban"}
+                        </button>
+                      )}
                       <button
                         onClick={(e) => {
                           e.stopPropagation();

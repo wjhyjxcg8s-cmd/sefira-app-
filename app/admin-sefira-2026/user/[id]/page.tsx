@@ -241,6 +241,16 @@ export default function UserDetailPage() {
   const [deleteReviewId, setDeleteReviewId] = useState<string | null>(null);
   const [deletingReview, setDeletingReview] = useState(false);
 
+  // Ban
+  const [isBanned, setIsBanned] = useState(false);
+  const [banRecord, setBanRecord] = useState<{ reason: string | null; banned_at: string } | null>(null);
+  const [showBanInput, setShowBanInput] = useState(false);
+  const [banReason, setBanReason] = useState("");
+  const [banning, setBanning] = useState(false);
+  const [unbanning, setUnbanning] = useState(false);
+  const [banActionError, setBanActionError] = useState<string | null>(null);
+  const [banActionSuccess, setBanActionSuccess] = useState<string | null>(null);
+
 
   useEffect(() => {
     if (!loading && (!user || user.email !== ADMIN_EMAIL)) {
@@ -286,6 +296,18 @@ export default function UserDetailPage() {
       const { data: { user: authUser } } = await supabaseAdmin.auth.admin.getUserById(userId)
       const authEmail = authUser?.email ?? null
       if (!cancelled && authEmail) setUserAuthEmail(authEmail)
+
+      // Ban status
+      const emailForBan = authEmail ?? (profileData as { email?: string } | null)?.email
+      if (emailForBan && !cancelled) {
+        const { data: banData } = await supabaseAdmin
+          .from("banned_emails")
+          .select("*")
+          .eq("email", emailForBan)
+          .single();
+        setIsBanned(!!banData);
+        setBanRecord(banData ?? null);
+      }
 
       if (profileData) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -587,6 +609,64 @@ export default function UserDetailPage() {
       }
     } catch { /* fall through */ }
     setDeletingReview(false);
+  };
+
+  const handleBanUser = async () => {
+    const email = userAuthEmail ?? profile?.email;
+    if (!email) return;
+    setBanning(true);
+    setBanActionError(null);
+    setBanActionSuccess(null);
+    try {
+      const { data: { session: s } } = await supabase.auth.getSession();
+      const res = await fetch("/api/admin/ban-user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${s?.access_token}` },
+        body: JSON.stringify({ userId, email, reason: banReason.trim() || "Banned by admin" }),
+      });
+      const json = await res.json();
+      if (json.error) {
+        setBanActionError(json.error);
+      } else {
+        setIsBanned(true);
+        setBanRecord({ reason: banReason.trim() || "Banned by admin", banned_at: new Date().toISOString() });
+        setShowBanInput(false);
+        setBanReason("");
+        setBanActionSuccess("User banned successfully.");
+        setTimeout(() => setBanActionSuccess(null), 4000);
+      }
+    } catch (e) {
+      setBanActionError(String(e));
+    }
+    setBanning(false);
+  };
+
+  const handleUnbanUser = async () => {
+    const email = userAuthEmail ?? profile?.email;
+    if (!email) return;
+    setUnbanning(true);
+    setBanActionError(null);
+    setBanActionSuccess(null);
+    try {
+      const { data: { session: s } } = await supabase.auth.getSession();
+      const res = await fetch("/api/admin/ban-user", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${s?.access_token}` },
+        body: JSON.stringify({ userId, email }),
+      });
+      const json = await res.json();
+      if (json.error) {
+        setBanActionError(json.error);
+      } else {
+        setIsBanned(false);
+        setBanRecord(null);
+        setBanActionSuccess("User unbanned successfully.");
+        setTimeout(() => setBanActionSuccess(null), 4000);
+      }
+    } catch (e) {
+      setBanActionError(String(e));
+    }
+    setUnbanning(false);
   };
 
   const formatDate = (d: string | null | undefined) => {
@@ -1284,10 +1364,89 @@ export default function UserDetailPage() {
                   Tehlikeli İşlemler
                 </h2>
               </div>
-              <div className="px-6 py-5">
-                <p className="text-sm text-gray-500 mb-4">
+              <div className="px-6 py-5 space-y-5">
+                <p className="text-sm text-gray-500">
                   Bu işlemler geri alınamaz. Lütfen dikkatli olun.
                 </p>
+
+                {/* ── Ban / Unban ── */}
+                <div className="border border-red-100 rounded-xl p-4 bg-red-50/40">
+                  <div className="flex items-center justify-between flex-wrap gap-3 mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-semibold text-gray-700">Kullanıcı Yasağı</span>
+                      {isBanned && (
+                        <span
+                          className="px-2 py-0.5 rounded-full text-xs font-bold"
+                          style={{ backgroundColor: "#fef2f2", color: "#ef4444", border: "1px solid #fecaca" }}
+                        >
+                          ⛔ BANNED
+                        </span>
+                      )}
+                    </div>
+                    {isBanned ? (
+                      <button
+                        onClick={handleUnbanUser}
+                        disabled={unbanning}
+                        className="px-4 py-2 rounded-xl text-sm font-semibold text-white transition-colors disabled:opacity-60"
+                        style={{ backgroundColor: "#16a34a" }}
+                        onMouseEnter={(e) => { if (!unbanning) e.currentTarget.style.backgroundColor = "#15803d"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#16a34a"; }}
+                      >
+                        {unbanning ? "Kaldırılıyor…" : "✅ Yasağı Kaldır"}
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => setShowBanInput((v) => !v)}
+                        className="px-4 py-2 rounded-xl text-sm font-semibold text-white transition-colors"
+                        style={{ backgroundColor: "#ef4444" }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#dc2626")}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ef4444")}
+                      >
+                        🚫 Kullanıcıyı Yasakla
+                      </button>
+                    )}
+                  </div>
+
+                  {isBanned && banRecord && (
+                    <div className="text-xs text-gray-500 space-y-0.5 mt-1">
+                      {banRecord.reason && <p><span className="font-medium">Sebep:</span> {banRecord.reason}</p>}
+                      {banRecord.banned_at && <p><span className="font-medium">Tarih:</span> {formatDate(banRecord.banned_at)}</p>}
+                    </div>
+                  )}
+
+                  {!isBanned && showBanInput && (
+                    <div className="mt-3 space-y-2">
+                      <input
+                        type="text"
+                        value={banReason}
+                        onChange={(e) => setBanReason(e.target.value)}
+                        placeholder="Yasak sebebi (opsiyonel)"
+                        className="w-full px-3 py-2 rounded-xl border border-red-200 text-sm outline-none focus:border-red-400 bg-white"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={handleBanUser}
+                          disabled={banning}
+                          className="px-4 py-2 rounded-xl text-sm font-semibold text-white transition-colors disabled:opacity-60"
+                          style={{ backgroundColor: "#ef4444" }}
+                        >
+                          {banning ? "Yasaklanıyor…" : "Onayla ve Yasakla"}
+                        </button>
+                        <button
+                          onClick={() => { setShowBanInput(false); setBanReason(""); }}
+                          className="px-4 py-2 rounded-xl text-sm font-medium text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors"
+                        >
+                          İptal
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {banActionError && <p className="text-xs text-red-600 mt-2">{banActionError}</p>}
+                  {banActionSuccess && <p className="text-xs text-green-600 mt-2">{banActionSuccess}</p>}
+                </div>
+
+                {/* ── Delete account ── */}
                 <button
                   onClick={() => setDeleteUserConfirm(true)}
                   className="px-6 py-2.5 rounded-xl text-sm font-semibold text-white transition-colors"

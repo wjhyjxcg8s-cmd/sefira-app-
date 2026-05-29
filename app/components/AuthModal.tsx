@@ -169,6 +169,17 @@ export default function AuthModal({ lang, onClose }: AuthModalProps) {
         onClose();
       }
     } else {
+      // Check if this email is banned before allowing registration
+      try {
+        const banRes = await fetch(`/api/check-ban?email=${encodeURIComponent(email)}`);
+        const banJson = await banRes.json();
+        if (banJson.banned) {
+          setError("Bu hesap engellendi. / This account has been banned.");
+          setLoading(false);
+          return;
+        }
+      } catch { /* if check fails, allow registration to proceed */ }
+
       const { error } = await signUp(email, password, name);
       if (error) {
         setError(error);
