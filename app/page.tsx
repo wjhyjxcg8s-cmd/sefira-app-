@@ -1237,14 +1237,14 @@ export default function Home() {
                 <div className="absolute top-full mt-1 right-0 z-[100] bg-white border border-stone-200 rounded-xl shadow-xl overflow-hidden min-w-[190px] animate-dropdown-slide">
                   <div className="px-3 py-2 border-b border-stone-100">
                     <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">
-                      {lang === "tr" ? "Para Birimini Seçin" : lang === "fa" ? "انتخاب واحد پولی" : lang === "ar" ? "اختر العملة" : lang === "de" ? "Währung wählen" : "Select Currency"}
+                      {lang === "tr" ? "Para Birimini Seçin" : lang === "fa" ? "انتخاب واحد پولی" : lang === "ar" ? "اختر العملة" : lang === "de" ? "Währung wählen" : lang === "ru" ? "Выбрать валюту" : "Select Currency"}
                     </p>
                   </div>
                   {(["USD", "EUR", "TRY"] as const).map((cur) => {
                     const meta = {
-                      USD: { icon: "💵", name: lang === "tr" ? "ABD Doları" : lang === "fa" ? "دلار آمریکا" : lang === "ar" ? "دولار أمريكي" : lang === "de" ? "US-Dollar" : "US Dollar" },
-                      EUR: { icon: "💶", name: lang === "tr" ? "Euro" : lang === "fa" ? "یورو" : lang === "ar" ? "يورو" : lang === "de" ? "Euro" : "Euro" },
-                      TRY: { icon: "💴", name: lang === "tr" ? "Türk Lirası" : lang === "fa" ? "لیر ترکیه" : lang === "ar" ? "ليرة تركية" : lang === "de" ? "Türkische Lira" : "Turkish Lira" },
+                      USD: { icon: "💵", name: lang === "tr" ? "ABD Doları" : lang === "fa" ? "دلار آمریکا" : lang === "ar" ? "دولار أمريكي" : lang === "de" ? "US-Dollar" : lang === "ru" ? "Доллар США" : "US Dollar" },
+                      EUR: { icon: "💶", name: lang === "tr" ? "Euro" : lang === "fa" ? "یورو" : lang === "ar" ? "يورو" : lang === "de" ? "Euro" : lang === "ru" ? "Евро" : "Euro" },
+                      TRY: { icon: "💴", name: lang === "tr" ? "Türk Lirası" : lang === "fa" ? "لیر ترکیه" : lang === "ar" ? "ليرة تركية" : lang === "de" ? "Türkische Lira" : lang === "ru" ? "Турецкая лира" : "Turkish Lira" },
                     }[cur];
                     return (
                       <button
@@ -1400,7 +1400,7 @@ export default function Home() {
                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                   <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                 </svg>
-                <span className="text-xs">{lang === "tr" ? "Profilimi Düzenle" : lang === "fa" ? "ویرایش پروفایل" : lang === "ar" ? "تعديل الملف الشخصي" : lang === "de" ? "Profil bearbeiten" : "Edit Profile"}</span>
+                <span className="text-xs">{lang === "tr" ? "Profilimi Düzenle" : lang === "fa" ? "ویرایش پروفایل" : lang === "ar" ? "تعديل الملف الشخصي" : lang === "de" ? "Profil bearbeiten" : lang === "ru" ? "Редактировать профиль" : "Edit Profile"}</span>
               </Link>
 
               {/* Saved Listings */}
@@ -1412,7 +1412,7 @@ export default function Home() {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-orange-500 flex-shrink-0">
                   <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
                 </svg>
-                <span className="text-xs">{lang === "tr" ? "Kaydedilenler" : lang === "fa" ? "ذخیره‌ها" : lang === "ar" ? "المحفوظات" : lang === "de" ? "Gespeichert" : "Saved"}</span>
+                <span className="text-xs">{lang === "tr" ? "Kaydedilenler" : lang === "fa" ? "ذخیره‌ها" : lang === "ar" ? "المحفوظات" : lang === "de" ? "Gespeichert" : lang === "ru" ? "Сохранённые" : "Saved"}</span>
               </Link>
 
               {/* Post Listing */}
@@ -1423,7 +1423,7 @@ export default function Home() {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 text-orange-500 flex-shrink-0">
                   <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
-                <span className="text-xs">{lang === "tr" ? "İlan Ver" : lang === "fa" ? "ثبت آگهی" : lang === "ar" ? "نشر إعلان" : lang === "de" ? "Inserat aufgeben" : "Post Listing"}</span>
+                <span className="text-xs">{lang === "tr" ? "İlan Ver" : lang === "fa" ? "ثبت آگهی" : lang === "ar" ? "نشر إعلان" : lang === "de" ? "Inserat aufgeben" : lang === "ru" ? "Разместить объявление" : "Post Listing"}</span>
               </button>
 
               {/* My Listings */}
@@ -1438,7 +1438,7 @@ export default function Home() {
                   <line x1="9" y1="12" x2="15" y2="12" />
                   <line x1="9" y1="16" x2="13" y2="16" />
                 </svg>
-                <span className="text-xs">{lang === "tr" ? "İlanlarım" : lang === "fa" ? "آگهی‌های من" : lang === "ar" ? "إعلاناتي" : lang === "de" ? "Meine Inserate" : "My Listings"}</span>
+                <span className="text-xs">{lang === "tr" ? "İlanlarım" : lang === "fa" ? "آگهی‌های من" : lang === "ar" ? "إعلاناتي" : lang === "de" ? "Meine Inserate" : lang === "ru" ? "Мои объявления" : "My Listings"}</span>
               </Link>
 
               {/* My Messages */}
@@ -1459,7 +1459,7 @@ export default function Home() {
                     </div>
                   )}
                 </div>
-                <span className="text-xs">{lang === "tr" ? "Mesajlarım" : lang === "fa" ? "پیام‌های من" : lang === "ar" ? "رسائلي" : lang === "de" ? "Meine Nachrichten" : "My Messages"}</span>
+                <span className="text-xs">{lang === "tr" ? "Mesajlarım" : lang === "fa" ? "پیام‌های من" : lang === "ar" ? "رسائلي" : lang === "de" ? "Meine Nachrichten" : lang === "ru" ? "Мои сообщения" : "My Messages"}</span>
               </Link>
 
               {/* My Comments & Ratings */}
@@ -1471,7 +1471,7 @@ export default function Home() {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-orange-500 flex-shrink-0">
                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                 </svg>
-                <span className="text-xs">{lang === "tr" ? "Yorumlarım ve Puanlarım" : lang === "fa" ? "کامنت‌ها و امتیازهای من" : lang === "ar" ? "تعليقاتي وتقييماتي" : lang === "de" ? "Meine Bewertungen" : "My Comments & Ratings"}</span>
+                <span className="text-xs">{lang === "tr" ? "Yorumlarım ve Puanlarım" : lang === "fa" ? "کامنت‌ها و امتیازهای من" : lang === "ar" ? "تعليقاتي وتقييماتي" : lang === "de" ? "Meine Bewertungen" : lang === "ru" ? "Мои отзывы и оценки" : "My Comments & Ratings"}</span>
               </Link>
 
               <div className="h-px bg-stone-100 my-1 mx-2" />
