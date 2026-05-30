@@ -112,6 +112,12 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
     checkAuth()
   }, [])
 
+  useEffect(() => {
+    const handler = () => setShow(false)
+    window.addEventListener('langSelectorOpened', handler)
+    return () => window.removeEventListener('langSelectorOpened', handler)
+  }, [])
+
   const handleClose = () => setShow(false)
 
   const handleRegister = () => {

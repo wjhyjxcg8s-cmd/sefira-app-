@@ -1401,6 +1401,7 @@ export default function Home() {
                   setProfileMenuOpen(false);
                   setCurrencyMenuOpen(false);
                   setShowLangTooltip(false);
+                  window.dispatchEvent(new CustomEvent('langSelectorOpened'));
                 }}
                 style={{
                   display: 'flex',
@@ -1457,7 +1458,7 @@ export default function Home() {
               )}
 
               {langMenuOpen && (
-                <div className="absolute top-full mt-1 right-0 z-[100] bg-white border border-stone-200 rounded-xl shadow-xl overflow-hidden min-w-[90px] animate-dropdown-slide">
+                <div className="absolute top-full mt-1 right-0 bg-white border border-stone-200 rounded-xl shadow-xl overflow-hidden min-w-[90px] animate-dropdown-slide" style={{ zIndex: 99999 }}>
                   {(["tr", "en", "fa", "ar", "de", "ru"] as const).map((l) => (
                     <button
                       key={l}
