@@ -72,6 +72,7 @@ const translations = {
     countryPlaceholder: "Ülkenizi yazın...",
     fieldRequired: "Bu alan zorunludur",
     fieldEmpty: "Bu alan boş bırakılamaz",
+    countryInvalid: "Lütfen listeden bir ülke seçin",
   },
   en: {
     title: "My Profile",
@@ -137,6 +138,7 @@ const translations = {
     countryPlaceholder: "Type your country...",
     fieldRequired: "This field is required",
     fieldEmpty: "This field cannot be left empty",
+    countryInvalid: "Please select a country from the list",
   },
   fa: {
     title: "پروفایل من",
@@ -202,6 +204,7 @@ const translations = {
     countryPlaceholder: "کشورتان را بنویسید...",
     fieldRequired: "این فیلد اجباری است",
     fieldEmpty: "این فیلد نمی‌تواند خالی باشد",
+    countryInvalid: "لطفاً یک کشور از لیست انتخاب کنید",
   },
   de: {
     title: "Mein Profil",
@@ -267,6 +270,7 @@ const translations = {
     countryPlaceholder: "Land eingeben...",
     fieldRequired: "Dieses Feld ist erforderlich",
     fieldEmpty: "Dieses Feld darf nicht leer sein",
+    countryInvalid: "Bitte wählen Sie ein Land aus der Liste aus",
   },
   // Always add "ar" key when adding new translations
   ar: {
@@ -333,6 +337,7 @@ const translations = {
     countryPlaceholder: "اكتب دولتك...",
     fieldRequired: "هذا الحقل مطلوب",
     fieldEmpty: "لا يمكن ترك هذا الحقل فارغاً",
+    countryInvalid: "يرجى اختيار دولة من القائمة",
   },
 };
 
@@ -366,6 +371,7 @@ export default function ProfilePage() {
   const [gender, setGender] = useState<"male" | "female" | "other" | "">("");
   const [country, setCountry] = useState("");
   const [editCountry, setEditCountry] = useState("");
+  const [countryValid, setCountryValid] = useState(false);
   const [fieldError, setFieldError] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -421,6 +427,7 @@ export default function ProfilePage() {
           setAvatarUrl(data.avatar_url ?? null);
           setGender((data.gender ?? "") as "male" | "female" | "other" | "");
           setCountry(data.country ?? "");
+          setCountryValid(!!(data.country));
         } else {
           setDisplayName(user.user_metadata?.full_name ?? "");
         }
@@ -441,7 +448,7 @@ export default function ProfilePage() {
     if (confirmField === "displayName") setEditDisplayName(displayName);
     if (confirmField === "birthDate") setEditBirthDate(birthDate);
     if (confirmField === "gender") setEditGender(gender);
-    if (confirmField === "country") setEditCountry(country);
+    if (confirmField === "country") { setEditCountry(country); setCountryValid(!!country); }
     if (confirmField === "changePassword") {
       setEditCurrentPassword("");
       setEditNewPassword("");
@@ -466,6 +473,9 @@ export default function ProfilePage() {
     }
     if (field === "country" && !editCountry.trim()) {
       setFieldError(t.fieldEmpty); setEditCountry(country); return;
+    }
+    if (field === "country" && !countryValid) {
+      setFieldError(t.countryInvalid); return;
     }
     setSaving(true);
     setError(null);
@@ -1276,7 +1286,8 @@ export default function ProfilePage() {
                   <div className="flex flex-col gap-2">
                     <CountrySelect
                       value={editCountry}
-                      onChange={(val) => { setEditCountry(val); setFieldError(null); }}
+                      onChange={(val, valid) => { setEditCountry(val); setCountryValid(valid); setFieldError(null); }}
+                      lang={lang}
                       placeholder={t.countryPlaceholder}
                     />
                     <p className="text-[11px] text-stone-400">{t.fieldRequired}</p>
@@ -1289,8 +1300,9 @@ export default function ProfilePage() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleSaveField("country")}
-                        disabled={saving}
-                        className="flex-1 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold shadow-sm hover:opacity-90 transition-all active:scale-95 disabled:opacity-60"
+                        disabled={saving || !countryValid}
+                        className="flex-1 py-2 rounded-lg text-white text-xs font-bold shadow-sm transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{ background: countryValid ? 'linear-gradient(to right, #f97316, #f59e0b)' : '#9ca3af' }}
                       >
                         {saving ? t.saving : t.save}
                       </button>
