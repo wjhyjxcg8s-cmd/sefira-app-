@@ -997,6 +997,15 @@ const COUNTRY_RU: Record<string, string> = {
 type WizardMode = "seeking" | "offering" | null;
 type GenderPref = "male" | "female" | "any";
 
+// ─── Weekly Stories type ───────────────────────────────────────────────────────
+interface WeeklyStory {
+  id: string;
+  image_url: string;
+  caption: string | null;
+  week_label: string | null;
+  created_at: string;
+}
+
 export default function Home() {
   // ── Auth ──────────────────────────────────────────────────────────────────
   const { user, signOut: handleSignOut } = useAuth();
@@ -1156,6 +1165,19 @@ export default function Home() {
   const [wizardStep, setWizardStep] = useState(1);
   const [genderPref, setGenderPref] = useState<GenderPref>("any");
   const [budgetUSD, setBudgetUSD] = useState(800);
+
+  // ── Weekly Stories ────────────────────────────────────────────────────────
+  const [weeklyStories, setWeeklyStories] = useState<WeeklyStory[]>([]);
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [viewerIndex, setViewerIndex] = useState(0);
+  useEffect(() => {
+    supabase
+      .from("weekly_stories")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(10)
+      .then(({ data }) => { if (data) setWeeklyStories(data); });
+  }, []);
 
   const t = translations[lang];
   const testimonials   = testimonialsByLang[lang];
@@ -2086,43 +2108,114 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ── STORIES ───────────────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-5 py-12">
-        <div className="flex items-center gap-3 mb-6">
-          <h2 className="text-lg font-bold text-stone-900">{t.storiesTitle}</h2>
-          <span className="text-xs text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full font-medium shadow-sm shadow-emerald-500/10">
-            {t.storiesLive}
-          </span>
-        </div>
-        <div className="flex gap-5 overflow-x-auto pb-3" style={{ scrollbarWidth: "none" }}>
-          {stories.map((s) => (
-            <div key={s.id} className="flex flex-col items-center gap-2 flex-shrink-0 cursor-pointer group">
-              <div className="relative">
+      {/* ── WEEKLY STORIES ────────────────────────────────────────────────────── */}
+      {weeklyStories.length > 0 && (
+        <section className="max-w-7xl mx-auto px-5 pt-8 pb-4">
+          <p className="text-sm font-bold text-stone-800 mb-4">
+            {weeklyStories[0]?.week_label ?? "Bu Hafta"}
+          </p>
+          <div className="flex gap-4 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
+            {weeklyStories.map((story, idx) => (
+              <button
+                key={story.id}
+                onClick={() => { setViewerIndex(idx); setViewerOpen(true); }}
+                className="flex flex-col items-center gap-1.5 flex-shrink-0 focus:outline-none"
+              >
+                {/* Ring + circle */}
                 <div
-                  className={`w-16 h-16 rounded-full bg-gradient-to-br ${s.gradient} flex items-center justify-center font-bold text-sm group-hover:scale-105 transition-transform duration-200 ${
-                    !s.isAdd
-                      ? "ring-2 ring-orange-400/50 ring-offset-2 ring-offset-stone-50 group-hover:ring-orange-400/80 group-hover:shadow-lg group-hover:shadow-orange-500/20 transition-all duration-200"
-                      : "border-2 border-dashed border-stone-300"
-                  }`}
+                  className="p-[3px] rounded-full"
+                  style={{ background: "linear-gradient(135deg, #f97316, #f59e0b, #ec4899)" }}
                 >
-                  {s.isAdd ? (
-                    <span className="text-2xl text-stone-400 font-light">+</span>
-                  ) : (
-                    s.initials
-                  )}
+                  <div className="w-[74px] h-[74px] rounded-full overflow-hidden bg-stone-100 border-2 border-white">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={story.image_url}
+                      alt={story.caption ?? "Hikaye"}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                 </div>
-                {!s.isAdd && s.online && (
-                  <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-emerald-400 rounded-full border-2 border-stone-50" />
-                )}
-              </div>
-              <span className="text-xs text-stone-500 group-hover:text-stone-900 transition-colors whitespace-nowrap">
-                {s.isAdd ? t.addStory : s.name}
-              </span>
-              {s.city && <span className="text-xs text-stone-400">{s.city}</span>}
+                {/* Caption (max 2 words) */}
+                <span className="text-xs text-stone-600 font-medium w-20 text-center truncate leading-tight">
+                  {story.caption
+                    ? story.caption.split(" ").slice(0, 2).join(" ")
+                    : "Hikaye"}
+                </span>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── STORY VIEWER ──────────────────────────────────────────────────────── */}
+      {viewerOpen && weeklyStories.length > 0 && (
+        <div
+          className="fixed inset-0 z-[99999] bg-black flex flex-col"
+          onClick={() => setViewerOpen(false)}
+        >
+          {/* Close button */}
+          <button
+            onClick={(e) => { e.stopPropagation(); setViewerOpen(false); }}
+            className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center text-white text-xl"
+            aria-label="Kapat"
+          >
+            ✕
+          </button>
+
+          {/* Story counter */}
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 flex gap-1">
+            {weeklyStories.map((_, i) => (
+              <div
+                key={i}
+                className="h-0.5 rounded-full transition-all"
+                style={{ width: 32, backgroundColor: i === viewerIndex ? "white" : "rgba(255,255,255,0.4)" }}
+              />
+            ))}
+          </div>
+
+          {/* Image */}
+          <div className="flex-1 flex items-center justify-center px-4">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={weeklyStories[viewerIndex].image_url}
+              alt={weeklyStories[viewerIndex].caption ?? "Hikaye"}
+              className="max-w-full max-h-full object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+
+          {/* Caption */}
+          {weeklyStories[viewerIndex].caption && (
+            <div className="px-6 pb-10 pt-4 text-center">
+              <p className="text-white text-base font-medium drop-shadow-lg">
+                {weeklyStories[viewerIndex].caption}
+              </p>
             </div>
-          ))}
+          )}
+
+          {/* Tap zones: left = prev, right = next */}
+          <div className="absolute inset-0 flex pointer-events-none">
+            <button
+              className="w-1/2 h-full pointer-events-auto focus:outline-none"
+              onClick={(e) => {
+                e.stopPropagation();
+                setViewerIndex((i) => Math.max(0, i - 1));
+              }}
+              aria-label="Önceki hikaye"
+            />
+            <button
+              className="w-1/2 h-full pointer-events-auto focus:outline-none"
+              onClick={(e) => {
+                e.stopPropagation();
+                const next = viewerIndex + 1;
+                if (next >= weeklyStories.length) { setViewerOpen(false); }
+                else { setViewerIndex(next); }
+              }}
+              aria-label="Sonraki hikaye"
+            />
+          </div>
         </div>
-      </section>
+      )}
 
       {/* ── INSTAGRAM CTA ─────────────────────────────────────────────────────── */}
       <InstagramCTA lang={lang} />

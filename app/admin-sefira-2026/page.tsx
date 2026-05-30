@@ -668,7 +668,7 @@ export default function AdminPage() {
 
   if (user.email !== ADMIN_EMAIL) return null;
 
-  const menuItems: { id: Section | "channels" | "banned"; label: string; icon: string; href?: string }[] = [
+  const menuItems: { id: Section | "channels" | "banned" | "stories"; label: string; icon: string; href?: string }[] = [
     { id: "dashboard", label: "Dashboard", icon: "📊" },
     { id: "users", label: "Users", icon: "👥" },
     { id: "listings", label: "Listings", icon: "📋" },
@@ -677,6 +677,7 @@ export default function AdminPage() {
     { id: "messages", label: "Messages", icon: "✉️" },
     { id: "channels", label: "Kanallarım", icon: "📢", href: "/admin-sefira-2026/channels" },
     { id: "banned", label: "Engelliler", icon: "🚫", href: "/admin-sefira-2026/banned" },
+    { id: "stories", label: "Hikayeler", icon: "📸", href: "/admin-sefira-2026/stories" },
   ];
 
   const navigate = (section: Section) => {
