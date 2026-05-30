@@ -62,6 +62,17 @@ const copy = {
     followerLabel: "متابع",
     handle: "@sefira.app",
   },
+  ru: {
+    badge: "Instagram-сообщество",
+    heading: "Присоединяйтесь к сообществу Sefira",
+    subtext:
+      "Подписывайтесь на нас для получения советов по поиску соседей, реальных историй совпадений и гидов по городам.",
+    cta: "Подписаться",
+    ctaDone: "Подписаны ✓",
+    followerCount: "12.4K",
+    followerLabel: "подписчиков",
+    handle: "@sefira.app",
+  },
 };
 
 const postGradients = [

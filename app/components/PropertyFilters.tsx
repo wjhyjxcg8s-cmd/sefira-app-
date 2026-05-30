@@ -103,6 +103,19 @@ const LABELS = {
     any: "أي خيار", yes: "نعم", no: "لا", min: "الحد الأدنى", max: "الحد الأقصى",
     activeFilters: (n: number) => `${n} فلتر`,
   },
+  ru: {
+    btn: "Фильтры", clear: "Сбросить", apply: "Применить", title: "Расширенные фильтры",
+    sec1: "Финансы", sec2: "Площадь и планировка", sec3: "Удобства", sec4: "Правила дома",
+    price: "Цена (€/$)", deposit: "Макс. залог", bills: "Счета включены?",
+    size: "Площадь (м²)", rooms: "Комнаты", housemates: "Соседи",
+    bathrooms: "Ванные комнаты", floor: "Диапазон этажей",
+    elevator: "Лифт", balcony: "Балкон", furnished: "С мебелью",
+    unfurnished: "Без мебели", internet: "Wi-Fi", parking: "Парковка",
+    pets: "Животные разрешены", smoking: "Курение разрешено", student: "Для студентов",
+    remote: "Для удалённой работы",
+    any: "Не важно", yes: "Да", no: "Нет", min: "Мин", max: "Макс",
+    activeFilters: (n: number) => `${n} фильтр`,
+  },
 } as const;
 
 /* ── Reusable micro-components ─────────────────────────────────────────────── */
