@@ -274,6 +274,40 @@ function FeedbackDetailModal({ record, onClose }: { record: FeedbackRecord; onCl
   );
 }
 
+const REASON_LABELS: Record<string, string> = {
+  "1": "Uygulamayı beğenmedim, tasarımı zayıf",
+  "2": "Uygun bir şey bulamadım",
+  "3": "Artık ihtiyacım yok",
+};
+
+const COUNTRY_FLAGS: Record<string, string> = {
+  "Türkiye": "🇹🇷", "Turkey": "🇹🇷",
+  "İran": "🇮🇷", "Iran": "🇮🇷",
+  "Almanya": "🇩🇪", "Germany": "🇩🇪",
+  "Amerika Birleşik Devletleri": "🇺🇸", "United States": "🇺🇸", "USA": "🇺🇸",
+  "Birleşik Krallık": "🇬🇧", "United Kingdom": "🇬🇧", "UK": "🇬🇧",
+  "Hollanda": "🇳🇱", "Netherlands": "🇳🇱",
+  "Fransa": "🇫🇷", "France": "🇫🇷",
+  "İsviçre": "🇨🇭", "Switzerland": "🇨🇭",
+  "Avusturya": "🇦🇹", "Austria": "🇦🇹",
+  "Belçika": "🇧🇪", "Belgium": "🇧🇪",
+  "İsveç": "🇸🇪", "Sweden": "🇸🇪",
+  "Norveç": "🇳🇴", "Norway": "🇳🇴",
+  "Danimarka": "🇩🇰", "Denmark": "🇩🇰",
+  "İtalya": "🇮🇹", "Italy": "🇮🇹",
+  "İspanya": "🇪🇸", "Spain": "🇪🇸",
+  "Kanada": "🇨🇦", "Canada": "🇨🇦",
+  "Avustralya": "🇦🇺", "Australia": "🇦🇺",
+  "Bilinmiyor": "❓",
+};
+
+const TR_MONTHS = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+
+function formatMonth(yyyymm: string) {
+  const [year, month] = yyyymm.split("-");
+  return `${TR_MONTHS[parseInt(month) - 1]} ${year}`;
+}
+
 export default function AdminPage() {
   const { user, session, loading } = useAuth();
   const router = useRouter();
@@ -304,6 +338,7 @@ export default function AdminPage() {
   const [listingsPage, setListingsPage] = useState(1);
 
   const [feedback, setFeedback] = useState<FeedbackRecord[]>([]);
+  const [feedbackAll, setFeedbackAll] = useState<FeedbackRecord[]>([]);
   const [feedbackTotal, setFeedbackTotal] = useState(0);
   const [feedbackPage, setFeedbackPage] = useState(1);
   const [avgRating, setAvgRating] = useState(0);
@@ -469,6 +504,7 @@ export default function AdminPage() {
             : 0;
 
         setAvgRating(avg);
+        setFeedbackAll(allFeedback);
         setFeedbackTotal(allFeedback.length);
         setFeedback(allFeedback.slice((feedbackPage - 1) * PAGE_SIZE, feedbackPage * PAGE_SIZE));
         setDataLoading(false);
@@ -941,97 +977,256 @@ export default function AdminPage() {
     </div>
   );
 
-  const renderFeedback = () => (
-    <div>
-      <div className="flex items-center gap-4 mb-6 flex-wrap">
+  const renderFeedback = () => {
+    const total = feedbackAll.length;
+
+    // ── Reason counts ──────────────────────────────────────────────────────────
+    const reasonCounts: Record<string, number> = {};
+    feedbackAll.forEach((f) => {
+      (f.reasons || []).forEach((r) => {
+        reasonCounts[r] = (reasonCounts[r] || 0) + 1;
+      });
+    });
+    const topReasons = Object.entries(reasonCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10);
+    const maxReasonCount = topReasons[0]?.[1] ?? 1;
+
+    // ── Country counts ─────────────────────────────────────────────────────────
+    const countryCounts: Record<string, number> = {};
+    feedbackAll.forEach((f) => {
+      const c = (f.profile_snapshot as { country?: string } | null)?.country || "Bilinmiyor";
+      countryCounts[c] = (countryCounts[c] || 0) + 1;
+    });
+    const topCountries = Object.entries(countryCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10);
+
+    // ── Monthly counts ─────────────────────────────────────────────────────────
+    const monthCounts: Record<string, number> = {};
+    feedbackAll.forEach((f) => {
+      if (!f.deleted_at) return;
+      const m = f.deleted_at.substring(0, 7);
+      monthCounts[m] = (monthCounts[m] || 0) + 1;
+    });
+    const monthsSorted = Object.entries(monthCounts)
+      .sort((a, b) => b[0].localeCompare(a[0]))
+      .slice(0, 12);
+    const maxMonthCount = monthsSorted[0]?.[1] ?? 1;
+
+    // ── This month ─────────────────────────────────────────────────────────────
+    const thisMonthKey = new Date().toISOString().substring(0, 7);
+    const thisMonthCount = monthCounts[thisMonthKey] ?? 0;
+
+    const card = "bg-white rounded-2xl border border-gray-100 p-5";
+    const cardShadow = { boxShadow: "0 1px 6px rgba(0,0,0,0.06)" };
+
+    return (
+      <div className="space-y-6">
         <h2 className="text-2xl font-bold text-gray-800">Deletion Feedback</h2>
-        {avgRating > 0 && (
-          <div
-            className="flex items-center gap-2 bg-white rounded-xl px-4 py-2 border border-gray-100"
-            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
-          >
-            <span className="text-sm text-gray-500">Avg rating:</span>
-            <span className="font-bold" style={{ color: "#f97316" }}>
-              {avgRating.toFixed(1)}
-            </span>
-            <StarRating rating={Math.round(avgRating)} />
+
+        {/* ── Row 1: Summary cards ──────────────────────────────────────────── */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {/* Total */}
+          <div className={card} style={cardShadow}>
+            <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Toplam Silme</p>
+            <p className="text-4xl font-black" style={{ color: "#f97316" }}>{total}</p>
+            <p className="text-xs text-gray-400 mt-1">kayıtlı kullanıcı</p>
           </div>
-        )}
-      </div>
-      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden" style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-gray-50 text-gray-400 uppercase text-xs">
-                <th className="px-4 py-3 text-left font-semibold">Email</th>
-                <th className="px-4 py-3 text-left font-semibold">Reasons</th>
-                <th className="px-4 py-3 text-left font-semibold">Rating</th>
-                <th className="px-4 py-3 text-left font-semibold">Feedback</th>
-                <th className="px-4 py-3 text-left font-semibold">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {feedback.map((f, i) => (
-                <tr
-                  key={f.id}
-                  className="border-t border-gray-50 transition-colors"
-                  style={{ backgroundColor: i % 2 === 1 ? "#fafafa" : "white", cursor: "pointer" }}
-                  onClick={() => setSelectedFeedback(f)}
-                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#fff7ed")}
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.backgroundColor = i % 2 === 1 ? "#fafafa" : "white")
-                  }
-                >
-                  <td className="px-4 py-3 text-gray-600">{f.email}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex flex-wrap gap-1">
-                      {f.reasons && f.reasons.length > 0 ? (
-                        f.reasons.map((r, ri) => (
+          {/* Avg rating */}
+          <div className={card} style={cardShadow}>
+            <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Ortalama Puan</p>
+            <p className="text-4xl font-black" style={{ color: "#f97316" }}>
+              {avgRating > 0 ? avgRating.toFixed(1) : "—"}
+            </p>
+            <div className="mt-1">
+              <StarRating rating={avgRating > 0 ? Math.round(avgRating) : null} />
+            </div>
+          </div>
+          {/* This month */}
+          <div className={card} style={cardShadow}>
+            <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Bu Ay</p>
+            <p className="text-4xl font-black" style={{ color: "#f97316" }}>{thisMonthCount}</p>
+            <p className="text-xs text-gray-400 mt-1">{formatMonth(thisMonthKey)} silmesi</p>
+          </div>
+        </div>
+
+        {/* ── Row 2: Top reasons ────────────────────────────────────────────── */}
+        <div className={card} style={cardShadow}>
+          <p className="text-sm font-bold text-gray-700 mb-4">En Sık Ayrılma Nedenleri</p>
+          {topReasons.length === 0 ? (
+            <p className="text-gray-400 text-sm">Henüz veri yok</p>
+          ) : (
+            <div className="space-y-3">
+              {topReasons.map(([key, count], i) => {
+                const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+                const barPct = Math.round((count / maxReasonCount) * 100);
+                const label = REASON_LABELS[key] ?? `Neden ${key}`;
+                return (
+                  <div key={key} className="flex items-center gap-3">
+                    <span className="text-xs font-bold text-gray-400 w-4 shrink-0">{i + 1}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1 gap-2">
+                        <span className="text-sm text-gray-700 truncate">{label}</span>
+                        <div className="flex items-center gap-2 shrink-0">
                           <span
-                            key={ri}
-                            className="px-2 py-0.5 rounded-md text-xs"
-                            style={{ backgroundColor: "#f3f4f6", color: "#4b5563" }}
+                            className="text-xs font-bold px-2 py-0.5 rounded-full text-white"
+                            style={{ backgroundColor: "#f97316" }}
                           >
-                            {r}
+                            {count}
                           </span>
-                        ))
+                          <span className="text-xs text-gray-400 w-8 text-right">{pct}%</span>
+                        </div>
+                      </div>
+                      <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all"
+                          style={{ width: `${barPct}%`, backgroundColor: "#f97316" }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* ── Row 3: Countries + Monthly trend ─────────────────────────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* Countries */}
+          <div className={card} style={cardShadow}>
+            <p className="text-sm font-bold text-gray-700 mb-4">Ülkelere Göre Silmeler</p>
+            {topCountries.length === 0 ? (
+              <p className="text-gray-400 text-sm">Henüz veri yok</p>
+            ) : (
+              <div className="space-y-2">
+                {topCountries.map(([country, count]) => {
+                  const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+                  const flag = COUNTRY_FLAGS[country] ?? "🌍";
+                  return (
+                    <div key={country} className="flex items-center gap-3">
+                      <span className="text-xl shrink-0">{flag}</span>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-sm text-gray-700 truncate block">{country}</span>
+                      </div>
+                      <span className="text-lg font-black shrink-0" style={{ color: "#f97316" }}>
+                        {count}
+                      </span>
+                      <span className="text-xs text-gray-400 w-8 text-right shrink-0">{pct}%</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Monthly trend */}
+          <div className={card} style={cardShadow}>
+            <p className="text-sm font-bold text-gray-700 mb-4">Aylık Silme Trendi</p>
+            {monthsSorted.length === 0 ? (
+              <p className="text-gray-400 text-sm">Henüz veri yok</p>
+            ) : (
+              <div className="space-y-2">
+                {monthsSorted.map(([month, count]) => {
+                  const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+                  const barPct = Math.round((count / maxMonthCount) * 100);
+                  return (
+                    <div key={month}>
+                      <div className="flex items-center justify-between mb-0.5 text-xs">
+                        <span className="text-gray-600 font-medium">{formatMonth(month)}</span>
+                        <span className="text-gray-400">{count} silme ({pct}%)</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: `${barPct}%`, backgroundColor: "#f97316" }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ── Feedback table ────────────────────────────────────────────────── */}
+        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden" style={cardShadow}>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50 text-gray-400 uppercase text-xs">
+                  <th className="px-4 py-3 text-left font-semibold">Email</th>
+                  <th className="px-4 py-3 text-left font-semibold">Reasons</th>
+                  <th className="px-4 py-3 text-left font-semibold">Rating</th>
+                  <th className="px-4 py-3 text-left font-semibold">Feedback</th>
+                  <th className="px-4 py-3 text-left font-semibold">Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {feedback.map((f, i) => (
+                  <tr
+                    key={f.id}
+                    className="border-t border-gray-50 transition-colors"
+                    style={{ backgroundColor: i % 2 === 1 ? "#fafafa" : "white", cursor: "pointer" }}
+                    onClick={() => setSelectedFeedback(f)}
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#fff7ed")}
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.backgroundColor = i % 2 === 1 ? "#fafafa" : "white")
+                    }
+                  >
+                    <td className="px-4 py-3 text-gray-600">{f.email}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-wrap gap-1">
+                        {f.reasons && f.reasons.length > 0 ? (
+                          f.reasons.map((r, ri) => (
+                            <span
+                              key={ri}
+                              className="px-2 py-0.5 rounded-md text-xs"
+                              style={{ backgroundColor: "#f3f4f6", color: "#4b5563" }}
+                            >
+                              {REASON_LABELS[r] ?? r}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-gray-400">—</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <StarRating rating={f.rating} />
+                    </td>
+                    <td className="px-4 py-3 text-gray-600 max-w-xs">
+                      {f.feedback ? (
+                        <span
+                          className="block overflow-hidden"
+                          style={{
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                          }}
+                        >
+                          {f.feedback}
+                        </span>
                       ) : (
                         <span className="text-gray-400">—</span>
                       )}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <StarRating rating={f.rating} />
-                  </td>
-                  <td className="px-4 py-3 text-gray-600 max-w-xs">
-                    {f.feedback ? (
-                      <span
-                        className="block overflow-hidden"
-                        style={{
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                        }}
-                      >
-                        {f.feedback}
-                      </span>
-                    ) : (
-                      <span className="text-gray-400">—</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 text-gray-600">{formatDate(f.deleted_at)}</td>
-                </tr>
-              ))}
-              {feedback.length === 0 && !dataLoading && (
-                <EmptyRow cols={5} message="No feedback found" />
-              )}
-            </tbody>
-          </table>
+                    </td>
+                    <td className="px-4 py-3 text-gray-600">{formatDate(f.deleted_at)}</td>
+                  </tr>
+                ))}
+                {feedback.length === 0 && !dataLoading && (
+                  <EmptyRow cols={5} message="No feedback found" />
+                )}
+              </tbody>
+            </table>
+          </div>
+          <Pagination page={feedbackPage} total={feedbackTotal} onPageChange={setFeedbackPage} />
         </div>
-        <Pagination page={feedbackPage} total={feedbackTotal} onPageChange={setFeedbackPage} />
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderReviews = () => (
     <div>
