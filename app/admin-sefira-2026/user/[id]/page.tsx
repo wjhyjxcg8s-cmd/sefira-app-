@@ -407,29 +407,36 @@ export default function UserDetailPage() {
     setProfileError(null);
     setProfileSuccess(false);
 
-    const updates = {
-      display_name: editDisplayName || null,
-      gender: editGender || null,
-      birth_date: editBirthDate || null,
-      country: editCountry || null,
-    };
-
     try {
-      const res = await fetch("/api/admin/update-user", {
-        method: "POST",
-        headers: authHeader(),
-        body: JSON.stringify({ userId, updates }),
+      const res = await fetch('/api/admin/update-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: userId,
+          updates: {
+            display_name: editDisplayName,
+            gender: editGender,
+            birth_date: editBirthDate,
+            country: editCountry,
+          }
+        })
       });
-      const json = await res.json();
-      if (json.error) {
-        setProfileError(json.error);
+      const result = await res.json();
+      console.log('Save result:', result);
+      if (result.error) {
+        alert('Error: ' + JSON.stringify(result.error));
       } else {
-        setProfileSuccess(true);
-        setProfile((prev) => (prev ? { ...prev, ...updates } : prev));
-        setTimeout(() => setProfileSuccess(false), 3000);
+        alert('Kaydedildi!');
+        setProfile((prev) => prev ? {
+          ...prev,
+          display_name: editDisplayName || null,
+          gender: editGender || null,
+          birth_date: editBirthDate || null,
+          country: editCountry || null,
+        } : prev);
       }
     } catch (e) {
-      setProfileError(String(e));
+      alert('Error: ' + String(e));
     }
     setProfileSaving(false);
   };
