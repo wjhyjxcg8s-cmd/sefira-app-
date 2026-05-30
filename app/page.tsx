@@ -1018,6 +1018,7 @@ export default function Home() {
   const [profileAvatarUrl, setProfileAvatarUrl] = useState<string | null>(null);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const [showLangTooltip, setShowLangTooltip] = useState(false);
   const [currencyMenuOpen, setCurrencyMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
@@ -1029,6 +1030,17 @@ export default function Home() {
     const onScroll = () => setScrolled(window.scrollY > 24);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // ── Lang tooltip (one-time first-visit hint) ─────────────────────────────
+  useEffect(() => {
+    if (localStorage.getItem('lang_tooltip_shown')) return;
+    const timer = setTimeout(() => {
+      setShowLangTooltip(true);
+      localStorage.setItem('lang_tooltip_shown', 'true');
+      setTimeout(() => setShowLangTooltip(false), 4000);
+    }, 2000);
+    return () => clearTimeout(timer);
   }, []);
 
   // ── WelcomePopup → openAuthModal event ───────────────────────────────────
@@ -1381,24 +1393,71 @@ export default function Home() {
               )}
             </div>
 
-            {/* Lang switcher — single button + dropdown */}
+            {/* Lang switcher — prominent orange pill + dropdown */}
             <div className="relative" ref={langMenuRef}>
               <button
-                onClick={() => { setLangMenuOpen((o) => !o); setProfileMenuOpen(false); setCurrencyMenuOpen(false); }}
-                className="flex items-center gap-1 bg-stone-100 border border-stone-200 rounded-lg px-2 py-1.5 text-[11px] font-black transition-all duration-200 hover:bg-stone-200 whitespace-nowrap"
+                onClick={() => {
+                  setLangMenuOpen((o) => !o);
+                  setProfileMenuOpen(false);
+                  setCurrencyMenuOpen(false);
+                  setShowLangTooltip(false);
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                  border: 'none',
+                  borderRadius: '50px',
+                  padding: '8px 14px',
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 12px rgba(249,115,22,0.4)',
+                  transition: 'all 0.2s ease',
+                  animation: 'langPulse 3s infinite',
+                }}
               >
-                <span className="text-sm leading-none">
+                <span style={{ fontSize: '22px' }}>
                   {lang === "tr" ? "🇹🇷" : lang === "en" ? "🇬🇧" : lang === "fa" ? "🇮🇷" : lang === "ar" ? "🇸🇦" : lang === "ru" ? "🇷🇺" : "🇩🇪"}
                 </span>
-                <span className="hidden sm:inline text-stone-700">
+                <span style={{ color: 'white', fontSize: '13px', fontWeight: '700', letterSpacing: '0.5px' }}>
                   {lang === "tr" ? "TR" : lang === "en" ? "EN" : lang === "fa" ? "FA" : lang === "ar" ? "AR" : lang === "ru" ? "RU" : "DE"}
                 </span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className={`w-3 h-3 text-stone-400 transition-transform duration-200 ${langMenuOpen ? "rotate-180" : ""}`}>
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
+                <span style={{ color: 'white', fontSize: '12px' }}>▼</span>
               </button>
+
+              {/* One-time first-visit tooltip */}
+              {showLangTooltip && (
+                <div style={{
+                  position: 'absolute',
+                  top: '110%',
+                  right: 0,
+                  background: '#1a1a1a',
+                  color: 'white',
+                  padding: '8px 14px',
+                  borderRadius: '10px',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  whiteSpace: 'nowrap',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
+                  zIndex: 1000,
+                  animation: 'fadeIn 0.3s ease',
+                }}>
+                  🌍 Dili değiştir / Change language
+                  <div style={{
+                    position: 'absolute',
+                    top: '-6px',
+                    right: '16px',
+                    width: '12px',
+                    height: '12px',
+                    background: '#1a1a1a',
+                    transform: 'rotate(45deg)',
+                    borderRadius: '2px',
+                  }} />
+                </div>
+              )}
+
               {langMenuOpen && (
-                <div className="absolute top-full mt-1 right-0 z-[100] bg-white border border-stone-200 rounded-xl shadow-xl overflow-hidden min-w-[90px]">
+                <div className="absolute top-full mt-1 right-0 z-[100] bg-white border border-stone-200 rounded-xl shadow-xl overflow-hidden min-w-[90px] animate-dropdown-slide">
                   {(["tr", "en", "fa", "ar", "de", "ru"] as const).map((l) => (
                     <button
                       key={l}
