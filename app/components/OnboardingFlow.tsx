@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { supabase } from "@/app/lib/supabase";
+import CountrySelect from "@/app/components/CountrySelect";
 
 type Lang = "tr" | "en" | "fa" | "ar" | "de";
 type StepName = "displayname" | "birthdate" | "gender" | "country" | "photo";
@@ -78,22 +79,6 @@ const i18n: Record<Lang, {
   },
 };
 
-const COUNTRIES = [
-  "Afghanistan","Albania","Algeria","Argentina","Armenia","Australia","Austria","Azerbaijan",
-  "Bahrain","Bangladesh","Belgium","Bosnia and Herzegovina","Brazil","Bulgaria",
-  "Canada","China","Croatia","Czech Republic","Denmark",
-  "Egypt","Estonia","Finland","France","Georgia","Germany","Greece","Hungary",
-  "India","Indonesia","Iran","Iraq","Ireland","Israel","Italy",
-  "Japan","Jordan","Kazakhstan","Kuwait",
-  "Lebanon","Libya","Malaysia","Morocco",
-  "Netherlands","New Zealand","Nigeria","Norway",
-  "Oman","Pakistan","Palestine","Philippines","Poland","Portugal",
-  "Qatar","Romania","Russia",
-  "Saudi Arabia","Serbia","Singapore","South Korea","Spain","Sudan","Sweden","Switzerland","Syria",
-  "Taiwan","Thailand","Tunisia","Turkey",
-  "Ukraine","United Arab Emirates","United Kingdom","United States","Uzbekistan",
-  "Yemen",
-].sort();
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const DAYS   = Array.from({ length: 31 }, (_, i) => i + 1);
@@ -186,7 +171,7 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
   const [bdYear, setBdYear] = useState("");
   const [gender, setGender] = useState("");
   const [country, setCountry] = useState("");
-  const [countrySearch, setCountrySearch] = useState("");
+  const [countryValid, setCountryValid] = useState(false);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -194,10 +179,6 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
   // Index of current step within the queue (-1 when on welcome/celebration)
   const stepIdx   = stepQueue.indexOf(step as StepName);
   const totalSteps = stepQueue.length;
-
-  const filteredCountries = COUNTRIES.filter((c) =>
-    c.toLowerCase().includes(countrySearch.toLowerCase())
-  );
 
   const advanceStep = () => {
     const idx  = stepQueue.indexOf(step as StepName);
@@ -471,25 +452,18 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
               </p>
               <div className="text-5xl text-center mb-5 ob-globe-spin">🌍</div>
               <h3 className="text-lg font-black text-stone-900 text-center mb-4">{t.countryQ}</h3>
-              <input
-                type="text" placeholder={t.searchCountry} value={countrySearch}
-                onChange={(e) => setCountrySearch(e.target.value)}
-                className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2.5 text-sm text-stone-800 placeholder:text-stone-400 outline-none focus:border-orange-400 transition-colors mb-2"
-                dir="ltr"
-              />
-              <div className="max-h-44 overflow-y-auto rounded-xl border border-stone-100 mb-4 divide-y divide-stone-50">
-                {filteredCountries.map((c) => (
-                  <button key={c} onClick={() => { setCountry(c); setCountrySearch(c); }}
-                    className={`flex items-center gap-2 w-full px-3 py-2.5 text-sm transition-colors text-left ${
-                      country === c ? "bg-orange-50 text-orange-700 font-black" : "text-stone-700 hover:bg-stone-50 font-medium"
-                    }`}
-                  >
-                    {country === c && <span className="text-orange-500 text-xs">✓</span>}
-                    {c}
-                  </button>
-                ))}
+              <div className="mb-4">
+                <CountrySelect
+                  value={country}
+                  onChange={(val, isValid) => {
+                    setCountry(val);
+                    setCountryValid(isValid);
+                  }}
+                  lang={lang}
+                  placeholder={t.searchCountry}
+                />
               </div>
-              <button onClick={saveCountry} disabled={!country || saving}
+              <button onClick={saveCountry} disabled={!country || !countryValid || saving}
                 className="w-full py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 font-black text-white text-sm disabled:opacity-40 hover:opacity-95 active:scale-95 transition-all duration-200 shadow-lg shadow-orange-500/25">
                 {t.countryConfirm} 🌍
               </button>
