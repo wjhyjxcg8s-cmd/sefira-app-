@@ -91,65 +91,50 @@ const COUNTRY_MAP: Record<string, Record<string, string>> = {
   'Yemen':                        { en: 'Yemen',                 tr: 'Yemen',                          fa: 'یمن',                      ar: 'اليمن',                              ru: 'Йемен',             de: 'Jemen' },
 }
 
-const PRIORITY_KEYS = ['Russia', 'Turkey', 'Germany', 'United States', 'France', 'Italy', 'United Kingdom', 'Iran']
+// First 8 entries in COUNTRY_MAP are the priority countries
+const PRIORITY_COUNT = 8
 
 const RTL_LANGS = new Set(['fa', 'ar'])
 
-function getDisplayName(englishKey: string, lang: string): string {
-  return COUNTRY_MAP[englishKey]?.[lang] || englishKey
-}
-
-function findEnglishKey(displayName: string): string | null {
-  for (const [key, translations] of Object.entries(COUNTRY_MAP)) {
-    if (Object.values(translations).includes(displayName) || key === displayName) {
-      return key
-    }
-  }
-  return null
+function getCountryList(lang: string): string[] {
+  const l = lang || 'tr'
+  return Object.values(COUNTRY_MAP).map(t => t[l] || t['en'])
 }
 
 interface CountrySelectProps {
-  value: string
-  onChange: (englishKey: string, isValid: boolean) => void
-  lang?: string
+  value: string           // whatever is stored in DB — shown as-is
+  onChange: (country: string, isValid: boolean) => void
+  lang?: string           // used only for the dropdown list
   placeholder?: string
 }
 
 export default function CountrySelect({ value, onChange, lang = 'tr', placeholder }: CountrySelectProps) {
-  const [currentKey, setCurrentKey] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState(value || '')
+  // query drives filtering; kept separate so focusing with a stored value shows all countries
+  const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
-  const [isValid, setIsValid] = useState(false)
+  const [isValid, setIsValid] = useState(!!value)
   const [filtered, setFiltered] = useState<string[]>([])
   const ref = useRef<HTMLDivElement>(null)
   const isRtl = RTL_LANGS.has(lang)
 
-  // Convert stored value (possibly old language) to English key, update display for lang changes
+  // Show stored value as-is; no language conversion
   useEffect(() => {
-    const key = COUNTRY_MAP[value] ? value : findEnglishKey(value)
-    setCurrentKey(key ?? null)
-    setSearch(key ? getDisplayName(key, lang) : '')
-    setIsValid(!!key)
-  }, [value, lang])
+    setSearch(value || '')
+    setIsValid(!!value)
+    setQuery('')
+  }, [value])
 
-  // Build filtered list with priority keys first, then alphabetical
+  // Rebuild dropdown list when query or lang changes
   useEffect(() => {
-    const q = search.toLowerCase()
-    const allKeys = Object.keys(COUNTRY_MAP)
-
-    const matches = (key: string) => {
-      if (!q) return true
-      const display = getDisplayName(key, lang)
-      return display.toLowerCase().includes(q) || key.toLowerCase().includes(q)
+    const allList = getCountryList(lang)
+    if (!query) {
+      setFiltered(allList)
+    } else {
+      const q = query.toLowerCase()
+      setFiltered(allList.filter(c => c.toLowerCase().includes(q)))
     }
-
-    const priorityMatches = PRIORITY_KEYS.filter(k => COUNTRY_MAP[k] && matches(k))
-    const nonPriorityMatches = allKeys
-      .filter(k => !PRIORITY_KEYS.includes(k) && matches(k))
-      .sort((a, b) => getDisplayName(a, lang).localeCompare(getDisplayName(b, lang)))
-
-    setFiltered([...priorityMatches, ...nonPriorityMatches])
-  }, [search, lang])
+  }, [query, lang])
 
   // Close on outside click
   useEffect(() => {
@@ -162,29 +147,33 @@ export default function CountrySelect({ value, onChange, lang = 'tr', placeholde
     return () => document.removeEventListener('mousedown', handleClick)
   }, [])
 
-  const handleSelect = (englishKey: string) => {
-    setCurrentKey(englishKey)
-    setSearch(getDisplayName(englishKey, lang))
+  const handleSelect = (displayName: string) => {
+    setSearch(displayName)
+    setQuery('')
     setIsValid(true)
-    onChange(englishKey, true)
+    onChange(displayName, true)
     setOpen(false)
   }
 
-  // On blur: revert display to last valid selection, or clear if none
+  // On blur: if typed text is not in the current language's list, revert to stored value
   const handleBlur = () => {
     setTimeout(() => {
       setOpen(false)
-      if (!currentKey) {
-        setSearch('')
-        setIsValid(false)
-      } else {
-        setSearch(getDisplayName(currentKey, lang))
-        setIsValid(true)
+      setQuery('')
+      const currentList = getCountryList(lang)
+      if (!currentList.includes(search)) {
+        setSearch(value || '')
+        setIsValid(!!value)
+        onChange(value || '', !!value)
       }
     }, 200)
   }
 
   const borderColor = isValid ? '#22c55e' : search && !isValid ? '#ef4444' : '#ddd'
+
+  // Precompute priority set for the current language
+  const allList = getCountryList(lang)
+  const priorityNames = new Set(allList.slice(0, PRIORITY_COUNT))
 
   return (
     <div ref={ref} dir={isRtl ? 'rtl' : undefined} style={{ position: 'relative', width: '100%' }}>
@@ -193,8 +182,8 @@ export default function CountrySelect({ value, onChange, lang = 'tr', placeholde
           type="text"
           value={search}
           dir={isRtl ? 'rtl' : undefined}
-          onChange={(e) => { setSearch(e.target.value); setIsValid(false); setCurrentKey(null); setOpen(true) }}
-          onFocus={() => setOpen(true)}
+          onChange={(e) => { setSearch(e.target.value); setQuery(e.target.value); setIsValid(false); setOpen(true) }}
+          onFocus={() => { setQuery(''); setOpen(true) }}
           onBlur={handleBlur}
           placeholder={placeholder || 'Ülke seçin...'}
           style={{
@@ -243,14 +232,14 @@ export default function CountrySelect({ value, onChange, lang = 'tr', placeholde
             marginTop: '2px',
           }}
         >
-          {filtered.map((key, i) => {
-            const isPriority = PRIORITY_KEYS.includes(key)
-            const nextIsPriority = filtered[i + 1] ? PRIORITY_KEYS.includes(filtered[i + 1]) : false
+          {filtered.map((country, i) => {
+            const isPriority = priorityNames.has(country)
+            const nextIsPriority = filtered[i + 1] ? priorityNames.has(filtered[i + 1]) : false
             const showDivider = isPriority && !nextIsPriority && i < filtered.length - 1
             return (
               <div
-                key={key}
-                onMouseDown={() => handleSelect(key)}
+                key={country}
+                onMouseDown={() => handleSelect(country)}
                 style={{
                   padding: '10px 12px',
                   cursor: 'pointer',
@@ -262,7 +251,7 @@ export default function CountrySelect({ value, onChange, lang = 'tr', placeholde
                 onMouseEnter={e => (e.currentTarget.style.background = '#fff7ed')}
                 onMouseLeave={e => (e.currentTarget.style.background = 'white')}
               >
-                {isPriority ? '⭐ ' : ''}{getDisplayName(key, lang)}
+                {isPriority ? '⭐ ' : ''}{country}
               </div>
             )
           })}
