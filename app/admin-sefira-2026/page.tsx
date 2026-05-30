@@ -836,6 +836,8 @@ export default function AdminPage() {
               </tr>
             </thead>
             <tbody>
+              {/* DEBUG */}
+              <tr><td colSpan={5}><div style={{background:'yellow', padding:'8px'}}>DEBUG: feedback count = {feedback?.length ?? 'undefined'}</div></td></tr>
               {feedback.map((f, i) => (
                 <tr
                   key={f.id}
