@@ -7,12 +7,11 @@ const SUPABASE_ANON_KEY =
 const ADMIN_EMAIL = "supportsefira@gmail.com";
 const PAGE_SIZE = 20;
 
-function getAdminClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
-}
+const supabaseAdmin = createClient(
+  'https://ceetzophaybywfuhezhv.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlZXR6b3BoYXlieXdmdWhlemh2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTM1Nzg1NSwiZXhwIjoyMDk0OTMzODU1fQ.Jw1bDN7wqxdqj-OinqK4ll7mV5ka7fT6T-9jORs4x_4',
+  { auth: { autoRefreshToken: false, persistSession: false } }
+);
 
 async function verifyAdmin(req: NextRequest) {
   const authHeader = req.headers.get("Authorization");
@@ -37,11 +36,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
-  }
-
-  const supabaseAdmin = getAdminClient();
   const { searchParams } = new URL(req.url);
   const section = searchParams.get("section");
   const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
@@ -151,6 +145,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (section === "feedback") {
+      console.log('fetching deletion_feedback with admin client')
       const { data: allRatings } = await supabaseAdmin
         .from("deletion_feedback")
         .select("rating")
@@ -202,11 +197,6 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
-  }
-
-  const supabaseAdmin = getAdminClient();
   const { searchParams } = new URL(req.url);
   const type = searchParams.get("type");
   const id = searchParams.get("id");
