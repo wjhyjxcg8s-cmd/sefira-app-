@@ -9,12 +9,12 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
     tr: {
       badge: '🎉 Hoş Geldiniz!',
       title: 'Hayalindeki ev arkadaşını bul',
-      subtitle: 'Binlerce kişi Sefira sayesinde mükemmel ev arkadaşını buldu. Sen de aramıza katıl!',
+      subtitle: 'Türkiye\'nin en hızlı büyüyen ev arkadaşı platformuna katıl!',
       benefits: [
-        '✅ Ücretsiz profil oluştur',
-        '✅ Binlerce ilanı görüntüle',
-        '✅ Güvenli mesajlaşma',
-        '✅ Doğrulanmış kullanıcılar',
+        '🏠 Binlerce doğrulanmış ilan',
+        '⚡ Saniyeler içinde eşleş',
+        '🔒 %100 güvenli platform',
+        '💰 Tamamen ücretsiz kullan',
       ],
       cta: 'Ücretsiz Kayıt Ol 🚀',
       login: 'Zaten hesabım var',
@@ -23,12 +23,12 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
     en: {
       badge: '🎉 Welcome!',
       title: 'Find your perfect roommate',
-      subtitle: 'Thousands of people found their perfect roommate through Sefira. Join us today!',
+      subtitle: 'Join the fastest growing roommate platform!',
       benefits: [
-        '✅ Create free profile',
-        '✅ Browse thousands of listings',
-        '✅ Safe messaging',
-        '✅ Verified users',
+        '🏠 Thousands of verified listings',
+        '⚡ Match in seconds',
+        '🔒 100% safe platform',
+        '💰 Completely free to use',
       ],
       cta: 'Sign Up Free 🚀',
       login: 'I already have an account',
@@ -37,12 +37,12 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
     fa: {
       badge: '🎉 خوش آمدید!',
       title: 'هم‌خونه ایده‌آلت رو پیدا کن',
-      subtitle: 'هزاران نفر از طریق سفیرا هم‌خونه پیدا کردن. تو هم بپیوند!',
+      subtitle: 'به سریع‌ترین پلتفرم هم‌خونه‌یابی بپیوند!',
       benefits: [
-        '✅ پروفایل رایگان بساز',
-        '✅ هزاران آگهی ببین',
-        '✅ پیام‌رسانی امن',
-        '✅ کاربران تأیید شده',
+        '🏠 هزاران آگهی تأیید شده',
+        '⚡ در چند ثانیه هم‌خونه پیدا کن',
+        '🔒 پلتفرم ۱۰۰٪ امن',
+        '💰 کاملاً رایگان',
       ],
       cta: 'ثبت‌نام رایگان 🚀',
       login: 'حساب دارم',
@@ -51,12 +51,12 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
     ar: {
       badge: '🎉 مرحباً!',
       title: 'ابحث عن شريك السكن المثالي',
-      subtitle: 'آلاف الأشخاص وجدوا شريك السكن المثالي عبر Sefira. انضم إلينا!',
+      subtitle: 'انضم إلى أسرع منصة لإيجاد شريك السكن!',
       benefits: [
-        '✅ أنشئ ملفاً مجانياً',
-        '✅ تصفح آلاف الإعلانات',
-        '✅ مراسلة آمنة',
-        '✅ مستخدمون موثقون',
+        '🏠 آلاف الإعلانات الموثقة',
+        '⚡ اعثر على شريك سكن في ثوانٍ',
+        '🔒 منصة آمنة 100٪',
+        '💰 مجاني تماماً',
       ],
       cta: 'سجّل مجاناً 🚀',
       login: 'لدي حساب بالفعل',
@@ -65,12 +65,12 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
     de: {
       badge: '🎉 Willkommen!',
       title: 'Finde deinen perfekten Mitbewohner',
-      subtitle: 'Tausende haben über Sefira ihren perfekten Mitbewohner gefunden. Mach mit!',
+      subtitle: 'Tritt der am schnellsten wachsenden Mitbewohner-Plattform bei!',
       benefits: [
-        '✅ Kostenloses Profil erstellen',
-        '✅ Tausende Anzeigen durchsuchen',
-        '✅ Sicheres Messaging',
-        '✅ Verifizierte Nutzer',
+        '🏠 Tausende verifizierter Anzeigen',
+        '⚡ In Sekunden einen Match finden',
+        '🔒 100% sichere Plattform',
+        '💰 Völlig kostenlos',
       ],
       cta: 'Kostenlos registrieren 🚀',
       login: 'Ich habe bereits ein Konto',
@@ -79,12 +79,12 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
     ru: {
       badge: '🎉 Добро пожаловать!',
       title: 'Найди идеального соседа',
-      subtitle: 'Тысячи людей нашли идеального соседа через Sefira. Присоединяйся!',
+      subtitle: 'Присоединяйся к самой быстрорастущей платформе для поиска соседей!',
       benefits: [
-        '✅ Создай бесплатный профиль',
-        '✅ Просматривай тысячи объявлений',
-        '✅ Безопасные сообщения',
-        '✅ Проверенные пользователи',
+        '🏠 Тысячи проверенных объявлений',
+        '⚡ Найди соседа за секунды',
+        '🔒 Платформа безопасна на 100٪',
+        '💰 Полностью бесплатно',
       ],
       cta: 'Зарегистрироваться бесплатно 🚀',
       login: 'У меня уже есть аккаунт',
@@ -138,7 +138,7 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
           background: 'rgba(0,0,0,0.6)',
           backdropFilter: 'blur(4px)',
           zIndex: 9998,
-          animation: 'fadeIn 0.3s ease'
+          animation: 'fadeIn 0.3s ease',
         }}
       />
 
@@ -146,9 +146,9 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
       <div style={{
         position: 'fixed',
         bottom: 0, left: 0, right: 0,
-        background: 'white',
+        background: 'linear-gradient(180deg, #ffffff 0%, #fff7ed 100%)',
         borderRadius: '24px 24px 0 0',
-        padding: '32px 24px 40px',
+        padding: '28px 24px 40px',
         zIndex: 9999,
         maxWidth: '480px',
         margin: '0 auto',
@@ -162,8 +162,18 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
         <div style={{
           width: '40px', height: '4px',
           background: '#e0e0e0', borderRadius: '2px',
-          margin: '0 auto 24px',
+          margin: '0 auto 20px',
         }} />
+
+        {/* Hero decoration */}
+        <div style={{
+          fontSize: '48px',
+          lineHeight: 1,
+          marginBottom: '16px',
+          textAlign: 'center',
+        }}>
+          🏠✨
+        </div>
 
         {/* Badge */}
         <div style={{
@@ -174,16 +184,16 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
           borderRadius: '50px',
           fontSize: '13px',
           fontWeight: '700',
-          marginBottom: '16px',
+          marginBottom: '14px',
         }}>
           {t.badge}
         </div>
 
         {/* Title */}
         <h2 style={{
-          fontSize: '24px', fontWeight: '800',
-          color: '#1a1a1a', margin: '0 0 12px',
-          lineHeight: 1.3,
+          fontSize: '28px', fontWeight: '900',
+          color: '#1a1a1a', margin: '0 0 10px',
+          lineHeight: 1.25,
         }}>
           {t.title}
         </h2>
@@ -191,17 +201,17 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
         {/* Subtitle */}
         <p style={{
           fontSize: '15px', color: '#666',
-          margin: '0 0 20px', lineHeight: 1.6,
+          margin: '0 0 18px', lineHeight: 1.6,
         }}>
           {t.subtitle}
         </p>
 
         {/* Benefits */}
-        <div style={{ marginBottom: '24px' }}>
+        <div style={{ marginBottom: '22px' }}>
           {t.benefits.map((b, i) => (
             <div key={i} style={{
               fontSize: '14px', color: '#333',
-              padding: '6px 0', fontWeight: '500',
+              padding: '5px 0', fontWeight: '500',
             }}>
               {b}
             </div>
@@ -222,7 +232,7 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
             fontWeight: '800',
             cursor: 'pointer',
             marginBottom: '12px',
-            boxShadow: '0 4px 20px rgba(249,115,22,0.4)',
+            animation: 'ctaPulse 2s infinite',
             transition: 'transform 0.1s',
           }}
           onMouseDown={e => e.currentTarget.style.transform = 'scale(0.97)'}
@@ -275,6 +285,10 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
         @keyframes fadeIn {
           from { opacity: 0; }
           to { opacity: 1; }
+        }
+        @keyframes ctaPulse {
+          0%, 100% { box-shadow: 0 4px 20px rgba(249,115,22,0.4); }
+          50%       { box-shadow: 0 4px 35px rgba(249,115,22,0.7); }
         }
       `}</style>
     </>
