@@ -305,19 +305,19 @@ export default function AdminPage() {
 
   // Feedback
   useEffect(() => {
-    if (activeSection !== "feedback" || !user || user.email !== ADMIN_EMAIL) return;
+    if (!user || user.email !== ADMIN_EMAIL) return;
     let cancelled = false;
     setDataLoading(true);
 
     const fetchFeedback = async () => {
-      const { data: feedbackData, error } = await supabaseAdmin
-        .from("deletion_feedback")
-        .select("*")
-        .order("deleted_at", { ascending: false });
-      console.log('deletion_feedback:', feedbackData?.length, error);
+      const { data: feedbackData, error: feedbackError } = await supabaseAdmin
+        .from('deletion_feedback')
+        .select('id, email, reasons, rating, feedback, deleted_at')
+        .order('deleted_at', { ascending: false });
+      console.log('FEEDBACK RESULT:', feedbackData?.length, feedbackError?.message);
 
       if (!cancelled) {
-        const allFeedback: FeedbackRecord[] = feedbackData ?? [];
+        const allFeedback: FeedbackRecord[] = feedbackData || [];
         const rated = allFeedback.filter((f) => f.rating !== null);
         const avg =
           rated.length > 0
@@ -333,7 +333,7 @@ export default function AdminPage() {
 
     fetchFeedback();
     return () => { cancelled = true; };
-  }, [activeSection, feedbackPage, user]);
+  }, [feedbackPage, user]);
 
   // Reviews
   useEffect(() => {
@@ -836,8 +836,6 @@ export default function AdminPage() {
               </tr>
             </thead>
             <tbody>
-              {/* DEBUG */}
-              <tr><td colSpan={5}><div style={{background:'yellow', padding:'8px'}}>DEBUG: feedback count = {feedback?.length ?? 'undefined'}</div></td></tr>
               {feedback.map((f, i) => (
                 <tr
                   key={f.id}
