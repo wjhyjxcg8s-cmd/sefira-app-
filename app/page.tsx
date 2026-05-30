@@ -1004,6 +1004,13 @@ interface WeeklyStory {
   caption: string | null;
   week_label: string | null;
   created_at: string;
+  views: number;
+}
+
+function formatViews(count: number): string {
+  if (count >= 1_000_000) return (count / 1_000_000).toFixed(1) + "M";
+  if (count >= 1_000) return (count / 1_000).toFixed(1) + "K";
+  return count.toString();
 }
 
 export default function Home() {
@@ -1201,6 +1208,16 @@ export default function Home() {
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [viewerOpen, weeklyStories.length]);
+
+  const trackView = (storyId: string) => {
+    const viewKey = `story_viewed_${storyId}`;
+    if (sessionStorage.getItem(viewKey)) return;
+    sessionStorage.setItem(viewKey, "true");
+    setWeeklyStories((prev) =>
+      prev.map((s) => (s.id === storyId ? { ...s, views: (s.views ?? 0) + 1 } : s))
+    );
+    supabase.rpc("increment_story_views", { story_id: storyId });
+  };
 
   const t = translations[lang];
   const testimonials   = testimonialsByLang[lang];
@@ -2144,7 +2161,7 @@ export default function Home() {
             {weeklyStories.map((story, idx) => (
               <button
                 key={story.id}
-                onClick={() => { setViewerIndex(idx); setViewerOpen(true); }}
+                onClick={() => { trackView(story.id); setViewerIndex(idx); setViewerOpen(true); }}
                 className="flex flex-col items-center gap-1.5 flex-shrink-0 focus:outline-none"
                 style={{ minHeight: 44 }}
               >
@@ -2165,6 +2182,9 @@ export default function Home() {
                 {/* Caption: max 10 chars, truncated */}
                 <span className="text-xs text-stone-600 font-medium w-[70px] sm:w-[90px] text-center truncate leading-tight">
                   {(story.caption ?? "Hikaye").substring(0, 10)}
+                </span>
+                <span style={{ fontSize: 11, color: "#9ca3af", lineHeight: 1.2 }}>
+                  👁 {formatViews(story.views ?? 0)}
                 </span>
               </button>
             ))}
@@ -2222,6 +2242,13 @@ export default function Home() {
                 </p>
               </div>
             )}
+
+            {/* View count */}
+            <div className="absolute bottom-4 left-4 z-10 pointer-events-none">
+              <span className="text-white text-sm px-2.5 py-1 rounded-full bg-black/50">
+                👁 {formatViews(weeklyStories[viewerIndex].views ?? 0)} görüntülenme
+              </span>
+            </div>
 
             {/* Tap zones: left half = prev, right half = next */}
             <div className="absolute inset-0 flex pointer-events-none mt-10">

@@ -20,6 +20,13 @@ interface WeeklyStory {
   caption: string | null;
   week_label: string | null;
   created_at: string;
+  views: number;
+}
+
+function formatViews(count: number): string {
+  if (count >= 1_000_000) return (count / 1_000_000).toFixed(1) + "M";
+  if (count >= 1_000) return (count / 1_000).toFixed(1) + "K";
+  return count.toString();
 }
 
 const NAV_ITEMS = [
@@ -362,6 +369,9 @@ export default function StoriesPage() {
                         month: "short",
                         year: "numeric",
                       })}
+                    </p>
+                    <p className="text-xs font-bold text-orange-500 mt-1">
+                      👁 {formatViews(story.views ?? 0)} görüntülenme
                     </p>
                     <button
                       onClick={() => handleDelete(story)}
