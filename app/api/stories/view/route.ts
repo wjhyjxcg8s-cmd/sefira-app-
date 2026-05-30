@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { NextRequest } from "next/server";
 
 const supabaseAdmin = createClient(
   "https://ceetzophaybywfuhezhv.supabase.co",
@@ -6,26 +7,34 @@ const supabaseAdmin = createClient(
   { auth: { autoRefreshToken: false, persistSession: false } }
 );
 
-export async function POST(req: Request) {
-  const { storyId } = await req.json();
-  if (!storyId) return Response.json({ error: "No storyId" }, { status: 400 });
+export async function POST(req: NextRequest) {
+  try {
+    const { storyId } = await req.json();
+    if (!storyId) return Response.json({ error: "No storyId" }, { status: 400 });
 
-  const { data: current, error: fetchErr } = await supabaseAdmin
-    .from("weekly_stories")
-    .select("views")
-    .eq("id", storyId)
-    .single();
+    const { data: story, error: fetchError } = await supabaseAdmin
+      .from("weekly_stories")
+      .select("id, views")
+      .eq("id", storyId)
+      .single();
 
-  if (fetchErr) return Response.json({ error: fetchErr.message }, { status: 500 });
+    console.log("Current story:", story, fetchError?.message);
 
-  const newViews = (current?.views ?? 0) + 1;
+    if (!story) return Response.json({ error: "Story not found" }, { status: 404 });
 
-  const { error: updateErr } = await supabaseAdmin
-    .from("weekly_stories")
-    .update({ views: newViews })
-    .eq("id", storyId);
+    const currentViews = typeof story.views === "number" ? story.views : 0;
+    const newViews = currentViews + 1;
 
-  if (updateErr) return Response.json({ error: updateErr.message }, { status: 500 });
+    const { error: updateError } = await supabaseAdmin
+      .from("weekly_stories")
+      .update({ views: newViews })
+      .eq("id", storyId);
 
-  return Response.json({ success: true, views: newViews });
+    console.log("Updated views to:", newViews, "error:", updateError?.message);
+
+    return Response.json({ success: true, views: newViews });
+  } catch (err) {
+    console.error("View API error:", err);
+    return Response.json({ error: String(err) }, { status: 500 });
+  }
 }

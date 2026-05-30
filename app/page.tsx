@@ -1007,12 +1007,6 @@ interface WeeklyStory {
   views: number;
 }
 
-function formatViews(count: number): string {
-  if (count >= 1_000_000) return (count / 1_000_000).toFixed(1) + "M";
-  if (count >= 1_000) return (count / 1_000).toFixed(1) + "K";
-  return count.toString();
-}
-
 export default function Home() {
   // ── Auth ──────────────────────────────────────────────────────────────────
   const { user, signOut: handleSignOut } = useAuth();
@@ -1189,48 +1183,64 @@ export default function Home() {
     })();
   }, []);
 
-  // ── Story viewer keyboard navigation ─────────────────────────────────────
-  useEffect(() => {
-    if (!viewerOpen) return;
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setViewerOpen(false);
-      } else if (e.key === "ArrowLeft") {
-        setViewerIndex((i) => Math.max(0, i - 1));
-      } else if (e.key === "ArrowRight") {
-        setViewerIndex((i) => {
-          const next = i + 1;
-          if (next >= weeklyStories.length) { setViewerOpen(false); return i; }
-          return next;
-        });
-      }
-    };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [viewerOpen, weeklyStories.length]);
-
+  // ── Story viewer navigation helpers ──────────────────────────────────────
   const trackView = async (storyId: string) => {
-    const viewKey = `story_viewed_${storyId}`;
-    if (sessionStorage.getItem(viewKey)) return;
+    if (!storyId) return;
+    const viewKey = `viewed_${storyId}`;
+    if (sessionStorage.getItem(viewKey)) {
+      console.log("Already viewed:", storyId);
+      return;
+    }
     try {
       const res = await fetch("/api/stories/view", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ storyId }),
       });
-      if (res.ok) sessionStorage.setItem(viewKey, "true");
-    } catch {
-      // silently ignore — view tracking is non-critical
+      const data = await res.json();
+      console.log("View tracked for", storyId, ":", data);
+      sessionStorage.setItem(viewKey, "true");
+    } catch (e) {
+      console.error("trackView error:", e);
     }
   };
 
-  // ── Track view whenever the visible story changes ─────────────────────────
+  const openStory = (index: number) => {
+    setViewerIndex(index);
+    setViewerOpen(true);
+    trackView(weeklyStories[index].id);
+  };
+
+  const goToNext = () => {
+    const next = viewerIndex + 1;
+    if (next < weeklyStories.length) {
+      setViewerIndex(next);
+      trackView(weeklyStories[next].id);
+    } else {
+      setViewerOpen(false);
+    }
+  };
+
+  const goToPrev = () => {
+    const prev = viewerIndex - 1;
+    if (prev >= 0) {
+      setViewerIndex(prev);
+      trackView(weeklyStories[prev].id);
+    }
+  };
+
+  // ── Story viewer keyboard navigation ─────────────────────────────────────
   useEffect(() => {
-    if (!viewerOpen || weeklyStories.length === 0) return;
-    const story = weeklyStories[viewerIndex];
-    if (story) trackView(story.id);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewerIndex, viewerOpen]);
+    if (!viewerOpen) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setViewerOpen(false);
+      else if (e.key === "ArrowLeft") goToPrev();
+      else if (e.key === "ArrowRight") goToNext();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  // viewerIndex in deps so goToNext/goToPrev close over the current index
+  }, [viewerOpen, viewerIndex, weeklyStories.length]);
 
   const t = translations[lang];
   const testimonials   = testimonialsByLang[lang];
@@ -2174,7 +2184,7 @@ export default function Home() {
             {weeklyStories.map((story, idx) => (
               <button
                 key={story.id}
-                onClick={() => { setViewerIndex(idx); setViewerOpen(true); }}
+                onClick={() => openStory(idx)}
                 className="flex flex-col items-center gap-1.5 flex-shrink-0 focus:outline-none"
                 style={{ minHeight: 44 }}
               >
@@ -2257,16 +2267,12 @@ export default function Home() {
             <div className="absolute inset-0 flex pointer-events-none mt-10">
               <button
                 className="w-1/2 h-full pointer-events-auto focus:outline-none"
-                onClick={() => setViewerIndex((i) => Math.max(0, i - 1))}
+                onClick={() => goToPrev()}
                 aria-label="Önceki hikaye"
               />
               <button
                 className="w-1/2 h-full pointer-events-auto focus:outline-none"
-                onClick={() => {
-                  const next = viewerIndex + 1;
-                  if (next >= weeklyStories.length) { setViewerOpen(false); }
-                  else { setViewerIndex(next); }
-                }}
+                onClick={() => goToNext()}
                 aria-label="Sonraki hikaye"
               />
             </div>
