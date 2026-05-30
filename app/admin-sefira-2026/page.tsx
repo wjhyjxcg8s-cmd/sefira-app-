@@ -4,6 +4,13 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseAdmin = createClient(
+  'https://ceetzophaybywfuhezhv.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlZXR6b3BoYXlieXdmdWhlemh2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTM1Nzg1NSwiZXhwIjoyMDk0OTMzODU1fQ.Jw1bDN7wqxdqj-OinqK4ll7mV5ka7fT6T-9jORs4x_4',
+  { auth: { autoRefreshToken: false, persistSession: false } }
+);
 
 const ADMIN_EMAIL = "supportsefira@gmail.com";
 const PAGE_SIZE = 20;
@@ -191,7 +198,7 @@ export default function AdminPage() {
         .select("*", { count: "exact", head: true });
       console.log("[Admin] listings count:", listingsCount, e2);
 
-      const { count: feedbackCount, error: e3 } = await supabase
+      const { count: feedbackCount, error: e3 } = await supabaseAdmin
         .from("deletion_feedback")
         .select("*", { count: "exact", head: true });
       console.log("[Admin] feedback count:", feedbackCount, e3);
@@ -303,11 +310,11 @@ export default function AdminPage() {
     setDataLoading(true);
 
     const fetchFeedback = async () => {
-      const { data: feedbackData, error } = await supabase
+      const { data: feedbackData, error } = await supabaseAdmin
         .from("deletion_feedback")
         .select("*")
         .order("deleted_at", { ascending: false });
-      console.log("[Admin] deletion_feedback:", feedbackData, error);
+      console.log('deletion_feedback:', feedbackData?.length, error);
 
       if (!cancelled) {
         const allFeedback: FeedbackRecord[] = feedbackData ?? [];
@@ -335,11 +342,11 @@ export default function AdminPage() {
     setDataLoading(true);
 
     const fetchReviews = async () => {
-      const { data: reviewsData, error } = await supabase
+      const { data: reviewsData, error } = await supabaseAdmin
         .from("deletion_feedback")
         .select("*")
         .order("deleted_at", { ascending: false });
-      console.log("[Admin] reviews (deletion_feedback):", reviewsData, error);
+      console.log('deletion_feedback:', reviewsData?.length, error);
 
       if (!cancelled) {
         const allReviews: FeedbackRecord[] = reviewsData ?? [];
