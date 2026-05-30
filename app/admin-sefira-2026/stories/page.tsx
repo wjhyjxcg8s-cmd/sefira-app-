@@ -22,11 +22,20 @@ interface WeeklyStory {
   created_at: string;
 }
 
+const NAV_ITEMS = [
+  { label: "Dashboard", icon: "📊", href: "/admin-sefira-2026" },
+  { label: "Users", icon: "👥", href: "/admin-sefira-2026" },
+  { label: "Kanallarım", icon: "📢", href: "/admin-sefira-2026/channels" },
+  { label: "Engelliler", icon: "🚫", href: "/admin-sefira-2026/banned" },
+  { label: "Hikayeler", icon: "📸", href: "/admin-sefira-2026/stories", active: true },
+];
+
 export default function StoriesPage() {
   const { user } = useAuth();
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [stories, setStories] = useState<WeeklyStory[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -40,9 +49,7 @@ export default function StoriesPage() {
   const [weekLabel, setWeekLabel] = useState("Bu Hafta");
 
   useEffect(() => {
-    if (user && user.email === ADMIN_EMAIL) {
-      fetchStories();
-    }
+    if (user && user.email === ADMIN_EMAIL) fetchStories();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -59,12 +66,7 @@ export default function StoriesPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
     setSelectedFile(file);
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-    } else {
-      setPreviewUrl(null);
-    }
+    setPreviewUrl(file ? URL.createObjectURL(file) : null);
   };
 
   const handleUpload = async () => {
@@ -113,12 +115,8 @@ export default function StoriesPage() {
   const handleDelete = async (story: WeeklyStory) => {
     if (!confirm("Bu hikayeyi silmek istediğinize emin misiniz?")) return;
     setDeleting(story.id);
-
     const fileName = story.image_url.split("/").pop();
-    if (fileName) {
-      await supabaseAdmin.storage.from("stories").remove([fileName]);
-    }
-
+    if (fileName) await supabaseAdmin.storage.from("stories").remove([fileName]);
     await supabaseAdmin.from("weekly_stories").delete().eq("id", story.id);
     setStories((prev) => prev.filter((s) => s.id !== story.id));
     setDeleting(null);
@@ -132,20 +130,31 @@ export default function StoriesPage() {
       </div>
     );
   }
-  if (user.email !== ADMIN_EMAIL) {
-    router.replace("/");
-    return null;
-  }
+  if (user.email !== ADMIN_EMAIL) { router.replace("/"); return null; }
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
+      {/* Mobile sidebar backdrop */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-20 bg-black/40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar: hidden on mobile (slides in), always visible on desktop */}
       <aside
-        className="fixed top-0 left-0 h-full z-30 flex flex-col"
+        className={`fixed top-0 left-0 h-full z-30 flex flex-col lg:translate-x-0 transition-transform duration-[280ms] ease-[cubic-bezier(0.4,0,0.2,1)] ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
         style={{ width: 256, backgroundColor: "white", boxShadow: "2px 0 16px rgba(0,0,0,0.08)" }}
       >
+        {/* Logo */}
         <div className="p-5 border-b border-gray-100 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-base font-black shrink-0" style={{ backgroundColor: "#f97316" }}>
+          <div
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-base font-black shrink-0"
+            style={{ backgroundColor: "#f97316" }}
+          >
             S
           </div>
           <div className="min-w-0">
@@ -154,17 +163,12 @@ export default function StoriesPage() {
           </div>
         </div>
 
+        {/* Nav */}
         <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-          {[
-            { label: "Dashboard", icon: "📊", href: "/admin-sefira-2026" },
-            { label: "Users", icon: "👥", href: "/admin-sefira-2026" },
-            { label: "Kanallarım", icon: "📢", href: "/admin-sefira-2026/channels" },
-            { label: "Engelliler", icon: "🚫", href: "/admin-sefira-2026/banned" },
-            { label: "Hikayeler", icon: "📸", href: "/admin-sefira-2026/stories", active: true },
-          ].map((item) => (
+          {NAV_ITEMS.map((item) => (
             <button
               key={item.label}
-              onClick={() => router.push(item.href)}
+              onClick={() => { router.push(item.href); setSidebarOpen(false); }}
               className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-left"
               style={{
                 backgroundColor: item.active ? "#f97316" : "transparent",
@@ -172,10 +176,16 @@ export default function StoriesPage() {
                 boxShadow: item.active ? "0 2px 8px rgba(249,115,22,0.3)" : "none",
               }}
               onMouseEnter={(e) => {
-                if (!item.active) { e.currentTarget.style.backgroundColor = "#fff7ed"; e.currentTarget.style.color = "#f97316"; }
+                if (!item.active) {
+                  e.currentTarget.style.backgroundColor = "#fff7ed";
+                  e.currentTarget.style.color = "#f97316";
+                }
               }}
               onMouseLeave={(e) => {
-                if (!item.active) { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "#374151"; }
+                if (!item.active) {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.color = "#374151";
+                }
               }}
             >
               <span className="text-base leading-none">{item.icon}</span>
@@ -184,9 +194,15 @@ export default function StoriesPage() {
           ))}
         </nav>
 
+        {/* User info */}
         <div className="p-4 border-t border-gray-100">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0" style={{ backgroundColor: "#fff7ed", color: "#f97316" }}>A</div>
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+              style={{ backgroundColor: "#fff7ed", color: "#f97316" }}
+            >
+              A
+            </div>
             <div className="min-w-0">
               <p className="text-xs font-semibold text-gray-700 truncate">Admin</p>
               <p className="text-xs text-gray-400 truncate">{user.email}</p>
@@ -195,30 +211,49 @@ export default function StoriesPage() {
         </div>
       </aside>
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col min-h-screen" style={{ marginLeft: 256 }}>
+      {/* Main content — push right on desktop */}
+      <style>{`@media (min-width: 1024px) { .stories-main { margin-left: 256px; } }`}</style>
+      <div className="stories-main flex-1 flex flex-col min-h-screen">
+
+        {/* Sticky header */}
         <header
-          className="sticky top-0 z-10 flex items-center gap-4 px-6 py-3.5 border-b border-gray-100"
+          className="sticky top-0 z-10 flex items-center gap-3 px-4 sm:px-6 py-3.5 border-b border-gray-100"
           style={{ backgroundColor: "white", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
         >
-          <h1 className="text-lg font-bold text-gray-800">📸 Haftalık Hikayeler</h1>
+          {/* Hamburger (mobile only) */}
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="lg:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors -ml-1"
+            aria-label="Menüyü aç"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="3" y1="6"  x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+          <h1 className="text-base sm:text-lg font-bold text-gray-800">📸 Haftalık Hikayeler</h1>
         </header>
 
-        <main className="flex-1 p-6 max-w-3xl mx-auto w-full">
+        {/* Page content */}
+        <main className="flex-1 p-4 sm:p-6 max-w-3xl mx-auto w-full">
 
-          {/* Upload form */}
-          <div className="bg-white rounded-2xl border border-gray-100 p-6 mb-8" style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}>
-            <h2 className="text-base font-bold text-gray-800 mb-5">Yeni Hikaye Yükle</h2>
+          {/* ── Upload form ─────────────────────────────────────────────── */}
+          <div
+            className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6 mb-6 sm:mb-8"
+            style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
+          >
+            <h2 className="text-base font-bold text-gray-800 mb-4 sm:mb-5">Yeni Hikaye Yükle</h2>
 
             {/* Image picker */}
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Görsel</label>
               <div
-                className="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center cursor-pointer hover:border-orange-300 transition-colors"
+                className="border-2 border-dashed border-gray-200 rounded-xl p-5 sm:p-6 text-center cursor-pointer hover:border-orange-300 transition-colors"
                 onClick={() => fileInputRef.current?.click()}
               >
                 {previewUrl ? (
-                  <div className="relative w-32 h-32 mx-auto rounded-xl overflow-hidden">
+                  <div className="relative w-28 h-28 sm:w-32 sm:h-32 mx-auto rounded-xl overflow-hidden">
                     <Image src={previewUrl} alt="Önizleme" fill className="object-cover" />
                   </div>
                 ) : (
@@ -273,29 +308,46 @@ export default function StoriesPage() {
               onClick={handleUpload}
               disabled={uploading || !selectedFile}
               className="w-full py-3 rounded-xl text-white text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ backgroundColor: "#f97316", boxShadow: uploading || !selectedFile ? "none" : "0 4px 12px rgba(249,115,22,0.3)" }}
+              style={{
+                backgroundColor: "#f97316",
+                boxShadow: uploading || !selectedFile ? "none" : "0 4px 12px rgba(249,115,22,0.3)",
+              }}
             >
               {uploading ? "Yükleniyor…" : "Yükle"}
             </button>
           </div>
 
-          {/* Stories grid */}
-          <h2 className="text-base font-bold text-gray-800 mb-4">Yüklenen Hikayeler ({stories.length})</h2>
+          {/* ── Stories grid ─────────────────────────────────────────────── */}
+          <h2 className="text-base font-bold text-gray-800 mb-4">
+            Yüklenen Hikayeler ({stories.length})
+          </h2>
 
           {loading ? (
             <div className="flex justify-center py-12">
-              <div className="w-8 h-8 rounded-full border-4 border-gray-200 border-t-orange-500 animate-spin" style={{ animationDuration: "0.7s" }} />
+              <div
+                className="w-8 h-8 rounded-full border-4 border-gray-200 border-t-orange-500 animate-spin"
+                style={{ animationDuration: "0.7s" }}
+              />
             </div>
           ) : stories.length === 0 ? (
             <div className="bg-white rounded-2xl border border-gray-100 p-10 text-center text-gray-400 text-sm">
               Henüz hikaye yüklenmemiş.
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
               {stories.map((story) => (
-                <div key={story.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden" style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}>
+                <div
+                  key={story.id}
+                  className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
+                  style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
+                >
                   <div className="relative w-full aspect-square">
-                    <Image src={story.image_url} alt={story.caption ?? "Hikaye"} fill className="object-cover" />
+                    <Image
+                      src={story.image_url}
+                      alt={story.caption ?? "Hikaye"}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
                   <div className="p-3">
                     {story.week_label && (
@@ -305,12 +357,16 @@ export default function StoriesPage() {
                       <p className="text-xs text-gray-600 mt-0.5 line-clamp-2">{story.caption}</p>
                     )}
                     <p className="text-xs text-gray-400 mt-1">
-                      {new Date(story.created_at).toLocaleDateString("tr-TR", { day: "numeric", month: "short", year: "numeric" })}
+                      {new Date(story.created_at).toLocaleDateString("tr-TR", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </p>
                     <button
                       onClick={() => handleDelete(story)}
                       disabled={deleting === story.id}
-                      className="mt-2 w-full py-1.5 rounded-lg text-xs font-semibold text-white bg-red-500 hover:bg-red-600 transition-colors disabled:opacity-50"
+                      className="mt-2 w-full py-2 rounded-lg text-xs font-semibold text-white bg-red-500 hover:bg-red-600 transition-colors disabled:opacity-50"
                     >
                       {deleting === story.id ? "Siliniyor…" : "Sil"}
                     </button>

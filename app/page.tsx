@@ -1171,13 +1171,36 @@ export default function Home() {
   const [viewerOpen, setViewerOpen] = useState(false);
   const [viewerIndex, setViewerIndex] = useState(0);
   useEffect(() => {
-    supabase
-      .from("weekly_stories")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(10)
-      .then(({ data }) => { if (data) setWeeklyStories(data); });
+    (async () => {
+      const { data: stories, error: storiesError } = await supabase
+        .from("weekly_stories")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(10);
+      console.log("Stories:", stories?.length, storiesError?.message);
+      if (stories) setWeeklyStories(stories);
+    })();
   }, []);
+
+  // ── Story viewer keyboard navigation ─────────────────────────────────────
+  useEffect(() => {
+    if (!viewerOpen) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setViewerOpen(false);
+      } else if (e.key === "ArrowLeft") {
+        setViewerIndex((i) => Math.max(0, i - 1));
+      } else if (e.key === "ArrowRight") {
+        setViewerIndex((i) => {
+          const next = i + 1;
+          if (next >= weeklyStories.length) { setViewerOpen(false); return i; }
+          return next;
+        });
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [viewerOpen, weeklyStories.length]);
 
   const t = translations[lang];
   const testimonials   = testimonialsByLang[lang];
@@ -1436,7 +1459,7 @@ export default function Home() {
             dir="ltr"
             style={{
               position: "fixed", top: 0, right: 0,
-              width: "75%", maxWidth: "320px", height: "100%",
+              width: "80%", maxWidth: "350px", height: "100%",
               background: "white",
               zIndex: 1000,
               transform: profileMenuOpen ? "translateX(0)" : "translateX(100%)",
@@ -2110,23 +2133,27 @@ export default function Home() {
 
       {/* ── WEEKLY STORIES ────────────────────────────────────────────────────── */}
       {weeklyStories.length > 0 && (
-        <section className="max-w-7xl mx-auto px-5 pt-8 pb-4">
-          <p className="text-sm font-bold text-stone-800 mb-4">
+        <section className="max-w-7xl mx-auto px-4 sm:px-5 pt-6 sm:pt-8 pb-4">
+          <p className="text-sm font-bold text-stone-800 mb-3 sm:mb-4">
             {weeklyStories[0]?.week_label ?? "Bu Hafta"}
           </p>
-          <div className="flex gap-4 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
+          <div
+            className="flex gap-3 sm:gap-4 overflow-x-auto pb-2"
+            style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+          >
             {weeklyStories.map((story, idx) => (
               <button
                 key={story.id}
                 onClick={() => { setViewerIndex(idx); setViewerOpen(true); }}
                 className="flex flex-col items-center gap-1.5 flex-shrink-0 focus:outline-none"
+                style={{ minHeight: 44 }}
               >
-                {/* Ring + circle */}
+                {/* Gradient ring: 70px total on mobile, 90px on desktop */}
                 <div
                   className="p-[3px] rounded-full"
                   style={{ background: "linear-gradient(135deg, #f97316, #f59e0b, #ec4899)" }}
                 >
-                  <div className="w-[74px] h-[74px] rounded-full overflow-hidden bg-stone-100 border-2 border-white">
+                  <div className="w-[64px] h-[64px] sm:w-[84px] sm:h-[84px] rounded-full overflow-hidden bg-stone-100 border-2 border-white">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={story.image_url}
@@ -2135,11 +2162,9 @@ export default function Home() {
                     />
                   </div>
                 </div>
-                {/* Caption (max 2 words) */}
-                <span className="text-xs text-stone-600 font-medium w-20 text-center truncate leading-tight">
-                  {story.caption
-                    ? story.caption.split(" ").slice(0, 2).join(" ")
-                    : "Hikaye"}
+                {/* Caption: max 10 chars, truncated */}
+                <span className="text-xs text-stone-600 font-medium w-[70px] sm:w-[90px] text-center truncate leading-tight">
+                  {(story.caption ?? "Hikaye").substring(0, 10)}
                 </span>
               </button>
             ))}
@@ -2149,72 +2174,74 @@ export default function Home() {
 
       {/* ── STORY VIEWER ──────────────────────────────────────────────────────── */}
       {viewerOpen && weeklyStories.length > 0 && (
-        <div
-          className="fixed inset-0 z-[99999] bg-black flex flex-col"
-          onClick={() => setViewerOpen(false)}
-        >
-          {/* Close button */}
-          <button
-            onClick={(e) => { e.stopPropagation(); setViewerOpen(false); }}
-            className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center text-white text-xl"
-            aria-label="Kapat"
-          >
-            ✕
-          </button>
+        <>
+          {/* Backdrop (desktop only — mobile has full black bg) */}
+          <div
+            className="fixed inset-0 z-[99998] hidden md:block bg-black/70"
+            onClick={() => setViewerOpen(false)}
+          />
 
-          {/* Story counter */}
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 flex gap-1">
-            {weeklyStories.map((_, i) => (
-              <div
-                key={i}
-                className="h-0.5 rounded-full transition-all"
-                style={{ width: 32, backgroundColor: i === viewerIndex ? "white" : "rgba(255,255,255,0.4)" }}
-              />
-            ))}
-          </div>
+          {/* Modal: 100vw×100vh mobile, 600px×90vh centered on desktop */}
+          <div className="fixed z-[99999] bg-black flex flex-col inset-0 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-[600px] md:h-[90vh] md:rounded-2xl md:overflow-hidden">
 
-          {/* Image */}
-          <div className="flex-1 flex items-center justify-center px-4">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={weeklyStories[viewerIndex].image_url}
-              alt={weeklyStories[viewerIndex].caption ?? "Hikaye"}
-              className="max-w-full max-h-full object-contain"
-              onClick={(e) => e.stopPropagation()}
-            />
-          </div>
+            {/* Close button */}
+            <button
+              onClick={() => setViewerOpen(false)}
+              className="absolute top-4 right-4 z-10 w-11 h-11 rounded-full bg-black/50 flex items-center justify-center text-white text-lg hover:bg-black/70 transition-colors"
+              aria-label="Kapat"
+            >
+              ✕
+            </button>
 
-          {/* Caption */}
-          {weeklyStories[viewerIndex].caption && (
-            <div className="px-6 pb-10 pt-4 text-center">
-              <p className="text-white text-base font-medium drop-shadow-lg">
-                {weeklyStories[viewerIndex].caption}
-              </p>
+            {/* Progress bars */}
+            <div className="absolute top-4 left-4 right-16 z-10 flex gap-1">
+              {weeklyStories.map((_, i) => (
+                <div
+                  key={i}
+                  className="h-0.5 rounded-full flex-1 transition-all duration-200"
+                  style={{ backgroundColor: i === viewerIndex ? "white" : "rgba(255,255,255,0.35)" }}
+                />
+              ))}
             </div>
-          )}
 
-          {/* Tap zones: left = prev, right = next */}
-          <div className="absolute inset-0 flex pointer-events-none">
-            <button
-              className="w-1/2 h-full pointer-events-auto focus:outline-none"
-              onClick={(e) => {
-                e.stopPropagation();
-                setViewerIndex((i) => Math.max(0, i - 1));
-              }}
-              aria-label="Önceki hikaye"
-            />
-            <button
-              className="w-1/2 h-full pointer-events-auto focus:outline-none"
-              onClick={(e) => {
-                e.stopPropagation();
-                const next = viewerIndex + 1;
-                if (next >= weeklyStories.length) { setViewerOpen(false); }
-                else { setViewerIndex(next); }
-              }}
-              aria-label="Sonraki hikaye"
-            />
+            {/* Image */}
+            <div className="flex-1 flex items-center justify-center px-4 mt-10">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={weeklyStories[viewerIndex].image_url}
+                alt={weeklyStories[viewerIndex].caption ?? "Hikaye"}
+                className="max-w-full max-h-full object-contain select-none"
+              />
+            </div>
+
+            {/* Caption */}
+            {weeklyStories[viewerIndex].caption && (
+              <div className="px-6 pb-10 pt-4 text-center" style={{ paddingBottom: "max(2.5rem, env(safe-area-inset-bottom))" }}>
+                <p className="text-white text-base font-medium drop-shadow-lg">
+                  {weeklyStories[viewerIndex].caption}
+                </p>
+              </div>
+            )}
+
+            {/* Tap zones: left half = prev, right half = next */}
+            <div className="absolute inset-0 flex pointer-events-none mt-10">
+              <button
+                className="w-1/2 h-full pointer-events-auto focus:outline-none"
+                onClick={() => setViewerIndex((i) => Math.max(0, i - 1))}
+                aria-label="Önceki hikaye"
+              />
+              <button
+                className="w-1/2 h-full pointer-events-auto focus:outline-none"
+                onClick={() => {
+                  const next = viewerIndex + 1;
+                  if (next >= weeklyStories.length) { setViewerOpen(false); }
+                  else { setViewerIndex(next); }
+                }}
+                aria-label="Sonraki hikaye"
+              />
+            </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* ── INSTAGRAM CTA ─────────────────────────────────────────────────────── */}
