@@ -1224,6 +1224,14 @@ export default function Home() {
     }
   };
 
+  // ── Track view whenever the visible story changes ─────────────────────────
+  useEffect(() => {
+    if (!viewerOpen || weeklyStories.length === 0) return;
+    const story = weeklyStories[viewerIndex];
+    if (story) trackView(story.id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [viewerIndex, viewerOpen]);
+
   const t = translations[lang];
   const testimonials   = testimonialsByLang[lang];
   const communityPosts = communityPostsByLang[lang];
@@ -2166,7 +2174,7 @@ export default function Home() {
             {weeklyStories.map((story, idx) => (
               <button
                 key={story.id}
-                onClick={() => { trackView(story.id); setViewerIndex(idx); setViewerOpen(true); }}
+                onClick={() => { setViewerIndex(idx); setViewerOpen(true); }}
                 className="flex flex-col items-center gap-1.5 flex-shrink-0 focus:outline-none"
                 style={{ minHeight: 44 }}
               >
