@@ -370,9 +370,9 @@ export default function StoriesPage() {
                         year: "numeric",
                       })}
                     </p>
-                    <p className="text-xs font-bold text-orange-500 mt-1">
-                      👁 {formatViews(story.views ?? 0)} görüntülenme
-                    </p>
+                    <div style={{ display: "flex", alignItems: "center", gap: "4px", color: "#f97316", fontWeight: "bold", fontSize: "14px", marginTop: "8px" }}>
+                      👁 {story.views || 0} görüntülenme
+                    </div>
                     <button
                       onClick={() => handleDelete(story)}
                       disabled={deleting === story.id}

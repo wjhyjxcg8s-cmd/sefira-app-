@@ -2183,9 +2183,6 @@ export default function Home() {
                 <span className="text-xs text-stone-600 font-medium w-[70px] sm:w-[90px] text-center truncate leading-tight">
                   {(story.caption ?? "Hikaye").substring(0, 10)}
                 </span>
-                <span style={{ fontSize: 11, color: "#9ca3af", lineHeight: 1.2 }}>
-                  👁 {formatViews(story.views ?? 0)}
-                </span>
               </button>
             ))}
           </div>
@@ -2242,13 +2239,6 @@ export default function Home() {
                 </p>
               </div>
             )}
-
-            {/* View count */}
-            <div className="absolute bottom-4 left-4 z-10 pointer-events-none">
-              <span className="text-white text-sm px-2.5 py-1 rounded-full bg-black/50">
-                👁 {formatViews(weeklyStories[viewerIndex].views ?? 0)} görüntülenme
-              </span>
-            </div>
 
             {/* Tap zones: left half = prev, right half = next */}
             <div className="absolute inset-0 flex pointer-events-none mt-10">
