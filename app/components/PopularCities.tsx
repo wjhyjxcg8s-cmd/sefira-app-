@@ -15,6 +15,7 @@ const CITIES = [
     countryTr: "Türkiye",
     countryFa: "ترکیه",
     countryAr: "تركيا",
+    countryRu: "Турция",
     listings: "2,847",
     image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=800&q=80",
     accent: "from-orange-500 to-red-600",
@@ -29,6 +30,7 @@ const CITIES = [
     countryTr: "ABD",
     countryFa: "آمریکا",
     countryAr: "الولايات المتحدة",
+    countryRu: "США",
     listings: "1,456",
     image: "https://images.unsplash.com/photo-1501466044931-62695aada8e9?auto=format&fit=crop&w=800&q=80",
     accent: "from-blue-500 to-cyan-600",
@@ -43,6 +45,7 @@ const CITIES = [
     countryTr: "ABD",
     countryFa: "آمریکا",
     countryAr: "الولايات المتحدة",
+    countryRu: "США",
     listings: "3,241",
     image: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=800&q=80",
     accent: "from-violet-500 to-indigo-600",
@@ -57,6 +60,7 @@ const CITIES = [
     countryTr: "Fransa",
     countryFa: "فرانسه",
     countryAr: "فرنسا",
+    countryRu: "Франция",
     listings: "2,103",
     image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80",
     accent: "from-rose-500 to-pink-600",
@@ -71,6 +75,7 @@ const CITIES = [
     countryTr: "İspanya",
     countryFa: "اسپانیا",
     countryAr: "إسبانيا",
+    countryRu: "Испания",
     listings: "1,541",
     image: "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&w=800&q=80",
     accent: "from-yellow-500 to-orange-600",
@@ -85,6 +90,7 @@ const CITIES = [
     countryTr: "Almanya",
     countryFa: "آلمان",
     countryAr: "ألمانيا",
+    countryRu: "Германия",
     listings: "2,190",
     image: "https://images.unsplash.com/photo-1560969184-10fe8719e047?auto=format&fit=crop&w=800&q=80",
     accent: "from-slate-500 to-zinc-600",
@@ -99,6 +105,7 @@ const CITIES = [
     countryTr: "BAE",
     countryFa: "امارات",
     countryAr: "الإمارات",
+    countryRu: "ОАЭ",
     listings: "3,012",
     image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80",
     accent: "from-amber-500 to-yellow-600",
@@ -195,7 +202,7 @@ function CityCard({ city, lang, inView, delay, className = "", imgSizes, t, feat
       {/* Country chip — top start */}
       <div className="absolute top-4 start-4">
         <span className="text-xs font-bold bg-white/15 backdrop-blur-md text-white border border-white/20 rounded-full px-3 py-1.5">
-          {lang === "tr" ? city.countryTr : lang === "fa" ? city.countryFa : lang === "ar" ? city.countryAr : city.country}
+          {lang === "tr" ? city.countryTr : lang === "fa" ? city.countryFa : lang === "ar" ? city.countryAr : lang === "ru" ? city.countryRu : city.country}
         </span>
       </div>
 

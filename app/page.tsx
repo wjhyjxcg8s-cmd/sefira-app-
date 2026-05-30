@@ -976,6 +976,23 @@ const PRIORITY_CITIES: Record<string, string[]> = {
   "South Korea":          ["Seoul", "Busan", "Incheon", "Daegu", "Daejeon", "Gwangju"],
 };
 
+// ─── Russian label lookups (static demo data that bypasses the t object) ──────
+const TAG_RU: Record<string, string> = {
+  "Most Popular": "Самый популярный",
+  "New":          "Новый",
+  "Best Value":   "Лучшая цена",
+  "Top Rated":    "Лучший рейтинг",
+  "Featured":     "Рекомендуем",
+};
+const COUNTRY_RU: Record<string, string> = {
+  "Germany": "Германия",
+  "UAE":     "ОАЭ",
+  "Turkey":  "Турция",
+  "Spain":   "Испания",
+  "France":  "Франция",
+  "UK":      "Великобритания",
+};
+
 // ─── Wizard types ─────────────────────────────────────────────────────────────
 type WizardMode = "seeking" | "offering" | null;
 type GenderPref = "male" | "female" | "any";
@@ -2056,7 +2073,7 @@ export default function Home() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-stone-900/25 via-transparent to-stone-900/30" />
                 <div className={`absolute top-3 left-3 bg-gradient-to-r ${listing.tagColor} text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg`}>
-                  {listing.tag}
+                  {lang === "ru" ? (TAG_RU[listing.tag] ?? listing.tag) : listing.tag}
                 </div>
                 <button
                   onClick={() => toggleListing(listing.id)}
@@ -2087,13 +2104,13 @@ export default function Home() {
                   {listing.title}
                 </h3>
                 <p className="text-xs text-stone-500 mb-3">
-                  {listing.city}, {listing.country}
+                  {listing.city}, {lang === "ru" ? (COUNTRY_RU[listing.country] ?? listing.country) : listing.country}
                 </p>
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-amber-500 text-xs">★</span>
                   <span className="text-stone-900 text-xs font-bold">{listing.rating}</span>
                   <span className="text-stone-400 text-xs">({listing.reviews})</span>
-                  <span className="ml-auto text-xs text-stone-500">{listing.available}</span>
+                  <span className="ml-auto text-xs text-stone-500">{lang === "ru" && listing.available === "Now" ? "Сейчас" : listing.available}</span>
                 </div>
                 <div className="flex gap-1.5 flex-wrap items-center">
                   {listing.amenities.map((a) => (
@@ -2101,7 +2118,7 @@ export default function Home() {
                       {a}
                     </span>
                   ))}
-                  <span className="text-xs text-stone-400 ml-auto">{listing.gender}</span>
+                  <span className="text-xs text-stone-400 ml-auto">{listing.gender === "Male" ? t.genderMale : listing.gender === "Female" ? t.genderFemale : t.genderAny}</span>
                 </div>
               </div>
             </div>
