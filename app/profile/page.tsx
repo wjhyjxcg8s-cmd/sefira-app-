@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
+import CountrySelect from "@/app/components/CountrySelect";
 
 const translations = {
   tr: {
@@ -1273,13 +1274,10 @@ export default function ProfilePage() {
                 </p>
                 {editingField === "country" ? (
                   <div className="flex flex-col gap-2">
-                    <input
-                      type="text"
+                    <CountrySelect
                       value={editCountry}
-                      onChange={(e) => { setEditCountry(e.target.value); setFieldError(null); }}
+                      onChange={(val) => { setEditCountry(val); setFieldError(null); }}
                       placeholder={t.countryPlaceholder}
-                      autoFocus
-                      className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
                     />
                     <p className="text-[11px] text-stone-400">{t.fieldRequired}</p>
                     {fieldError && (
