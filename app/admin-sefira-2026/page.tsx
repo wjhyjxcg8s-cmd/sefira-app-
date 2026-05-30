@@ -47,6 +47,16 @@ interface ListingRecord {
   created_at: string;
 }
 
+interface ProfileSnapshot {
+  display_name: string | null;
+  gender: string | null;
+  birth_date: string | null;
+  country: string | null;
+  avatar_url: string | null;
+  created_at: string | null;
+  listings_count: number | null;
+}
+
 interface FeedbackRecord {
   id: string;
   email: string;
@@ -54,6 +64,7 @@ interface FeedbackRecord {
   rating: number | null;
   feedback: string | null;
   deleted_at: string;
+  profile_snapshot?: ProfileSnapshot | null;
 }
 
 function StarRating({ rating }: { rating: number | null }) {
@@ -131,6 +142,138 @@ function EmptyRow({ cols, message }: { cols: number; message: string }) {
   );
 }
 
+function formatDate(d: string) {
+  if (!d) return "—";
+  return new Date(d).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function FeedbackDetailModal({ record, onClose }: { record: FeedbackRecord; onClose: () => void }) {
+  const snap = record.profile_snapshot;
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ backgroundColor: "rgba(0,0,0,0.55)" }}
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+        style={{ boxShadow: "0 20px 60px rgba(0,0,0,0.25)" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="p-6">
+          {/* Header */}
+          <div className="flex items-start justify-between mb-5">
+            <h3 className="text-lg font-bold text-gray-800">Deletion Feedback Detail</h3>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600 text-xl leading-none ml-4 shrink-0"
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* Core fields */}
+          <div className="space-y-4 mb-5">
+            <div>
+              <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Email</p>
+              <p className="text-gray-800 text-sm">{record.email}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Deletion Date</p>
+              <p className="text-gray-800 text-sm">{formatDate(record.deleted_at)}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Reasons</p>
+              {record.reasons && record.reasons.length > 0 ? (
+                <div className="flex flex-wrap gap-1">
+                  {record.reasons.map((r, i) => (
+                    <span
+                      key={i}
+                      className="px-2 py-0.5 rounded-md text-xs"
+                      style={{ backgroundColor: "#f3f4f6", color: "#4b5563" }}
+                    >
+                      {r}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <span className="text-gray-400 text-sm">—</span>
+              )}
+            </div>
+            <div>
+              <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Rating</p>
+              <StarRating rating={record.rating} />
+            </div>
+            <div>
+              <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Feedback</p>
+              <p className="text-gray-700 text-sm whitespace-pre-wrap">
+                {record.feedback || <span className="text-gray-400">—</span>}
+              </p>
+            </div>
+          </div>
+
+          {/* Profile snapshot */}
+          <div className="border-t border-gray-100 pt-5">
+            <p className="text-xs text-gray-400 uppercase font-semibold mb-3">Profile Snapshot</p>
+            {!snap ? (
+              <p className="text-gray-400 text-sm italic">
+                Bu hesap için profil bilgisi kaydedilmemiş
+              </p>
+            ) : (
+              <div className="flex gap-4 items-start">
+                {snap.avatar_url && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={snap.avatar_url}
+                    alt=""
+                    className="w-16 h-16 rounded-full object-cover shrink-0 border border-gray-100"
+                  />
+                )}
+                <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+                  <div>
+                    <span className="text-gray-400">Name: </span>
+                    <span className="text-gray-700">{snap.display_name || "—"}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Gender: </span>
+                    <span className="text-gray-700">{snap.gender || "—"}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Birth: </span>
+                    <span className="text-gray-700">
+                      {snap.birth_date
+                        ? new Date(snap.birth_date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
+                        : "—"}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Country: </span>
+                    <span className="text-gray-700">{snap.country || "—"}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Listings: </span>
+                    <span className="text-gray-700">{snap.listings_count ?? "—"}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Joined: </span>
+                    <span className="text-gray-700">
+                      {snap.created_at ? formatDate(snap.created_at) : "—"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminPage() {
   const { user, session, loading } = useAuth();
   const router = useRouter();
@@ -164,6 +307,7 @@ export default function AdminPage() {
   const [feedbackTotal, setFeedbackTotal] = useState(0);
   const [feedbackPage, setFeedbackPage] = useState(1);
   const [avgRating, setAvgRating] = useState(0);
+  const [selectedFeedback, setSelectedFeedback] = useState<FeedbackRecord | null>(null);
 
   const [reviews, setReviews] = useState<FeedbackRecord[]>([]);
   const [reviewsTotal, setReviewsTotal] = useState(0);
@@ -312,7 +456,7 @@ export default function AdminPage() {
     const fetchFeedback = async () => {
       const { data: feedbackData, error: feedbackError } = await supabaseAdmin
         .from('deletion_feedback')
-        .select('id, email, reasons, rating, feedback, deleted_at')
+        .select('id, email, reasons, rating, feedback, deleted_at, profile_snapshot')
         .order('deleted_at', { ascending: false });
       console.log('FEEDBACK RESULT:', feedbackData?.length, feedbackError?.message);
 
@@ -482,15 +626,6 @@ export default function AdminPage() {
   const navigate = (section: Section) => {
     setActiveSection(section);
     setSidebarOpen(false);
-  };
-
-  const formatDate = (d: string) => {
-    if (!d) return "—";
-    return new Date(d).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
   };
 
   // ─── Section renderers ───────────────────────────────────────────────────────
@@ -840,7 +975,8 @@ export default function AdminPage() {
                 <tr
                   key={f.id}
                   className="border-t border-gray-50 transition-colors"
-                  style={{ backgroundColor: i % 2 === 1 ? "#fafafa" : "white" }}
+                  style={{ backgroundColor: i % 2 === 1 ? "#fafafa" : "white", cursor: "pointer" }}
+                  onClick={() => setSelectedFeedback(f)}
                   onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#fff7ed")}
                   onMouseLeave={(e) =>
                     (e.currentTarget.style.backgroundColor = i % 2 === 1 ? "#fafafa" : "white")
@@ -1171,6 +1307,14 @@ export default function AdminPage() {
           </main>
         </div>
       </div>
+
+      {/* Feedback detail modal */}
+      {selectedFeedback && (
+        <FeedbackDetailModal
+          record={selectedFeedback}
+          onClose={() => setSelectedFeedback(null)}
+        />
+      )}
 
       {/* Ban confirmation modal */}
       {banConfirm && (

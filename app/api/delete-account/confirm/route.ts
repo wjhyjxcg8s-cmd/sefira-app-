@@ -21,6 +21,22 @@ export async function POST(req: NextRequest) {
   try {
     const { reasons, rating, feedback } = await req.json();
 
+    // Capture profile snapshot and listings count BEFORE deletion.
+    const { data: profileSnap } = await supabaseUser
+      .from('profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .single();
+
+    const { count: listingsCount } = await supabaseUser
+      .from('listings')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', user.id);
+
+    const profileSnapshot = profileSnap
+      ? { ...profileSnap, listings_count: listingsCount ?? 0 }
+      : null;
+
     // Save feedback BEFORE deletion while the JWT is still valid.
     const { error: feedbackError } = await supabaseUser
       .from("deletion_feedback")
@@ -30,6 +46,7 @@ export async function POST(req: NextRequest) {
         rating: rating ?? null,
         feedback: feedback || null,
         deleted_at: new Date().toISOString(),
+        profile_snapshot: profileSnapshot,
       }]);
     if (feedbackError) {
       console.error("[confirm] feedback insert failed:", JSON.stringify(feedbackError));
