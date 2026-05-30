@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import InstagramCTA from "@/app/components/InstagramCTA";
+import WelcomePopup from "@/app/components/WelcomePopup";
 import PopularCities from "@/app/components/PopularCities";
 import PropertyFilters from "@/app/components/PropertyFilters";
 import AuthModal from "@/app/components/AuthModal";
@@ -1012,6 +1013,7 @@ export default function Home() {
   const { user, signOut: handleSignOut } = useAuth();
   const router = useRouter();
   const [showAuth, setShowAuth] = useState(false);
+  const [authTab, setAuthTab] = useState<"login" | "register">("login");
   const [showListingModal, setShowListingModal] = useState(false);
   const [profileAvatarUrl, setProfileAvatarUrl] = useState<string | null>(null);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
@@ -1028,6 +1030,16 @@ export default function Home() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // ── WelcomePopup → openAuthModal event ───────────────────────────────────
+  useEffect(() => {
+    const handler = (e: CustomEvent) => {
+      setAuthTab(e.detail?.tab || 'register')
+      setShowAuth(true)
+    }
+    window.addEventListener('openAuthModal', handler as EventListener)
+    return () => window.removeEventListener('openAuthModal', handler as EventListener)
+  }, [])
 
   // ── Close dropdowns on outside click ─────────────────────────────────────
   useEffect(() => {
@@ -2726,7 +2738,7 @@ export default function Home() {
       </footer>
 
       {showAuth && (
-        <AuthModal lang={lang} onClose={() => setShowAuth(false)} />
+        <AuthModal lang={lang} initialTab={authTab} onClose={() => { setShowAuth(false); setAuthTab('login'); }} />
       )}
 
       {/* ── WELCOME MODAL ─────────────────────────────────────────────────────── */}
@@ -2935,6 +2947,9 @@ export default function Home() {
           onComplete={() => setShowOnboarding(false)}
         />
       )}
+
+      {/* ── Welcome Popup ─────────────────────────────────────────────────── */}
+      <WelcomePopup lang={lang} />
 
       {/* ── İlan Ver — auth required modal ────────────────────────────────── */}
       {showListingModal && (

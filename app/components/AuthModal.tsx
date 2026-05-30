@@ -161,13 +161,14 @@ const authT = {
 interface AuthModalProps {
   lang: "tr" | "en" | "fa" | "ar" | "de" | "ru";
   onClose: () => void;
+  initialTab?: "login" | "register";
 }
 
-export default function AuthModal({ lang, onClose }: AuthModalProps) {
+export default function AuthModal({ lang, onClose, initialTab = "login" }: AuthModalProps) {
   const t = authT[lang];
   const { signIn, signUp, resetPassword } = useAuth();
 
-  const [tab, setTab] = useState<"login" | "register">("login");
+  const [tab, setTab] = useState<"login" | "register">(initialTab);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
