@@ -34,6 +34,7 @@ const translations = {
     createListing: "İlan Ver",
     myListings: "İlanlarım",
     savedListings: "Kaydedilenler",
+    backHome: "Ana Sayfa",
     signOut: "Çıkış Yap",
     confirmEditTitle: "Bu bilgiyi düzenlemek istediğinizden emin misiniz?",
     confirmEditBtn: "Evet, Düzenle",
@@ -100,6 +101,7 @@ const translations = {
     createListing: "Create Listing",
     myListings: "My Listings",
     savedListings: "Saved Listings",
+    backHome: "Home",
     signOut: "Sign Out",
     confirmEditTitle: "Are you sure you want to edit this information?",
     confirmEditBtn: "Yes, Edit",
@@ -166,6 +168,7 @@ const translations = {
     createListing: "ثبت آگهی",
     myListings: "آگهی‌های من",
     savedListings: "آگهی‌های ذخیره شده",
+    backHome: "خانه",
     signOut: "خروج",
     confirmEditTitle: "آیا مطمئن هستید که می‌خواهید این اطلاعات را ویرایش کنید؟",
     confirmEditBtn: "بله، ویرایش",
@@ -232,6 +235,7 @@ const translations = {
     createListing: "Inserat aufgeben",
     myListings: "Meine Inserate",
     savedListings: "Gespeicherte Inserate",
+    backHome: "Startseite",
     signOut: "Abmelden",
     confirmEditTitle: "Möchten Sie diese Information wirklich bearbeiten?",
     confirmEditBtn: "Ja, bearbeiten",
@@ -299,6 +303,7 @@ const translations = {
     createListing: "نشر إعلان",
     myListings: "إعلاناتي",
     savedListings: "الإعلانات المحفوظة",
+    backHome: "الرئيسية",
     signOut: "تسجيل الخروج",
     confirmEditTitle: "هل أنت متأكد من رغبتك في تعديل هذه المعلومات؟",
     confirmEditBtn: "نعم، عدِّل",
@@ -365,6 +370,7 @@ const translations = {
     createListing: "+ Разместить объявление",
     myListings: "Мои объявления",
     savedListings: "Сохранённые",
+    backHome: "Главная",
     signOut: "Выйти",
     confirmEditTitle: "Вы уверены, что хотите изменить эту информацию?",
     confirmEditBtn: "Да, изменить",
@@ -1050,12 +1056,36 @@ export default function ProfilePage() {
       {/* Page content */}
       <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
         {/* Back to home */}
-        <Link href="/" dir="ltr" className="inline-flex items-center gap-1.5 mb-5 text-sm font-semibold text-stone-500 hover:text-stone-800 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-lg transition-colors">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 flex-shrink-0">
-            <polyline points={lang === "fa" || lang === "ar" ? "9 18 15 12 9 6" : "15 18 9 12 15 6"} />
-          </svg>
-          <span>{lang === "tr" ? "Ana Sayfa" : lang === "fa" ? "صفحه اصلی" : lang === "ar" ? "الرئيسية" : "Home"}</span>
-        </Link>
+        <button
+          onClick={() => router.push('/')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            background: 'white',
+            border: '2px solid #f97316',
+            borderRadius: '50px',
+            padding: '10px 20px',
+            fontSize: '15px',
+            fontWeight: '700',
+            color: '#f97316',
+            cursor: 'pointer',
+            boxShadow: '0 2px 12px rgba(249,115,22,0.2)',
+            marginBottom: '20px',
+            transition: 'all 0.2s ease',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.background = '#f97316'
+            e.currentTarget.style.color = 'white'
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.background = 'white'
+            e.currentTarget.style.color = '#f97316'
+          }}
+        >
+          <span style={{ fontSize: '18px' }}>←</span>
+          <span>{t.backHome || 'Ana Sayfa'}</span>
+        </button>
 
         <h1 className="text-2xl font-black text-stone-900 mb-6">{t.title}</h1>
 
