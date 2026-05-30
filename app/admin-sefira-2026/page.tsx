@@ -33,6 +33,7 @@ interface UserRecord {
   gender: string | null;
   birth_date: string | null;
   country: string | null;
+  city?: string | null;
   created_at: string;
 }
 
@@ -298,6 +299,17 @@ const COUNTRY_FLAGS: Record<string, string> = {
   "İspanya": "🇪🇸", "Spain": "🇪🇸",
   "Kanada": "🇨🇦", "Canada": "🇨🇦",
   "Avustralya": "🇦🇺", "Australia": "🇦🇺",
+  "Rusya": "🇷🇺", "Russia": "🇷🇺",
+  "Azerbaycan": "🇦🇿", "Azerbaijan": "🇦🇿",
+  "Kazakistan": "🇰🇿", "Kazakhstan": "🇰🇿",
+  "Ukrayna": "🇺🇦", "Ukraine": "🇺🇦",
+  "Gürcistan": "🇬🇪", "Georgia": "🇬🇪",
+  "Ermenistan": "🇦🇲", "Armenia": "🇦🇲",
+  "Birleşik Arap Emirlikleri": "🇦🇪", "UAE": "🇦🇪", "United Arab Emirates": "🇦🇪",
+  "Irak": "🇮🇶", "Iraq": "🇮🇶",
+  "Suudi Arabistan": "🇸🇦", "Saudi Arabia": "🇸🇦",
+  "Suriye": "🇸🇾", "Syria": "🇸🇾",
+  "Lübnan": "🇱🇧", "Lebanon": "🇱🇧",
   "Bilinmiyor": "❓",
 };
 
@@ -326,12 +338,14 @@ export default function AdminPage() {
   const [stats, setStats] = useState<Stats | null>(null);
 
   const [users, setUsers] = useState<UserRecord[]>([]);
+  const [usersAll, setUsersAll] = useState<UserRecord[]>([]);
   const [usersTotal, setUsersTotal] = useState(0);
   const [usersPage, setUsersPage] = useState(1);
   const [usersSearch, setUsersSearch] = useState("");
   const [usersSearchInput, setUsersSearchInput] = useState("");
   const [bannedEmails, setBannedEmails] = useState<Set<string>>(new Set());
   const [banningUserId, setBanningUserId] = useState<string | null>(null);
+  const [announcementCount, setAnnouncementCount] = useState(0);
 
   const [listings, setListings] = useState<ListingRecord[]>([]);
   const [listingsTotal, setListingsTotal] = useState(0);
@@ -410,9 +424,10 @@ export default function AdminPage() {
     setDataLoading(true);
 
     const fetchUsers = async () => {
-      const [profilesRes, bannedRes] = await Promise.all([
+      const [profilesRes, bannedRes, announcementsRes] = await Promise.all([
         supabase.from("profiles").select("*").order("created_at", { ascending: false }),
         supabase.from("banned_emails").select("email"),
+        supabaseAdmin.from("admin_messages").select("*", { count: "exact", head: true }).eq("is_global", true),
       ]);
       const profiles = profilesRes.data;
       const error = profilesRes.error;
@@ -420,7 +435,7 @@ export default function AdminPage() {
 
       if (!cancelled) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let allUsers: UserRecord[] = (profiles ?? []).map((p: any) => ({
+        const rawUsers: UserRecord[] = (profiles ?? []).map((p: any) => ({
           id: p.id,
           user_id: p.user_id,
           email: p.email ?? "N/A",
@@ -429,12 +444,17 @@ export default function AdminPage() {
           gender: p.gender ?? null,
           birth_date: p.birth_date ?? null,
           country: p.country ?? null,
+          city: p.city ?? null,
           created_at: p.created_at,
         }));
 
+        setUsersAll(rawUsers);
+        setAnnouncementCount(announcementsRes.count ?? 0);
+
+        let allUsers = rawUsers;
         if (usersSearch) {
           const s = usersSearch.toLowerCase();
-          allUsers = allUsers.filter(
+          allUsers = rawUsers.filter(
             (u) =>
               u.display_name?.toLowerCase().includes(s) ||
               u.email.toLowerCase().includes(s)
@@ -725,171 +745,364 @@ export default function AdminPage() {
     </div>
   );
 
-  const renderUsers = () => (
-    <div>
-      <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
+  const renderUsers = () => {
+    const total = usersAll.length;
+    const bannedCount = usersAll.filter((u) => bannedEmails.has(u.email)).length;
+    const activeCount = total - bannedCount;
+    const pct = (n: number) => (total > 0 ? Math.round((n / total) * 100) : 0);
+
+    // ── Countries ─────────────────────────────────────────────────────────────
+    const countryCounts: Record<string, number> = {};
+    usersAll.forEach((u) => {
+      const c = u.country || "Bilinmiyor";
+      countryCounts[c] = (countryCounts[c] || 0) + 1;
+    });
+    const topCountries = Object.entries(countryCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
+    const maxCountry = topCountries[0]?.[1] ?? 1;
+
+    // ── Gender ────────────────────────────────────────────────────────────────
+    const genderCounts = { male: 0, female: 0, other: 0, unknown: 0 };
+    usersAll.forEach((u) => {
+      const g = u.gender?.toLowerCase();
+      if (!g) genderCounts.unknown++;
+      else if (["male", "erkek"].includes(g)) genderCounts.male++;
+      else if (["female", "kadın", "kadin"].includes(g)) genderCounts.female++;
+      else genderCounts.other++;
+    });
+
+    // ── Age groups ────────────────────────────────────────────────────────────
+    const currentYear = new Date().getFullYear();
+    const ageCounts = { y1825: 0, y2535: 0, y35plus: 0, unknown: 0 };
+    usersAll.forEach((u) => {
+      if (!u.birth_date) { ageCounts.unknown++; return; }
+      const age = currentYear - new Date(u.birth_date).getFullYear();
+      if (age >= 18 && age < 25) ageCounts.y1825++;
+      else if (age >= 25 && age < 35) ageCounts.y2535++;
+      else if (age >= 35) ageCounts.y35plus++;
+      else ageCounts.unknown++;
+    });
+    const maxAge = Math.max(ageCounts.y1825, ageCounts.y2535, ageCounts.y35plus, ageCounts.unknown, 1);
+    const ageGroups = [
+      { label: "🧑 18-25 yaş", count: ageCounts.y1825 },
+      { label: "👤 25-35 yaş", count: ageCounts.y2535 },
+      { label: "🧓 35+ yaş",   count: ageCounts.y35plus },
+      { label: "❓ Bilinmiyor", count: ageCounts.unknown },
+    ];
+
+    // ── Cities ────────────────────────────────────────────────────────────────
+    const hasCities = usersAll.some((u) => u.city);
+    const cityCounts: Record<string, number> = {};
+    if (hasCities) {
+      usersAll.forEach((u) => {
+        const c = u.city || "Bilinmiyor";
+        cityCounts[c] = (cityCounts[c] || 0) + 1;
+      });
+    }
+    const topCities = Object.entries(cityCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+    const maxCity = topCities[0]?.[1] ?? 1;
+
+    const card = "bg-white rounded-2xl border border-gray-100 p-5";
+    const shadow = { boxShadow: "0 1px 6px rgba(0,0,0,0.06)" };
+
+    return (
+      <div className="space-y-6">
         <h2 className="text-2xl font-bold text-gray-800">Users</h2>
-        <div className="flex gap-2">
-          <input
-            value={usersSearchInput}
-            onChange={(e) => setUsersSearchInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                setUsersSearch(usersSearchInput);
-                setUsersPage(1);
-              }
-            }}
-            placeholder="Search by name or email…"
-            className="px-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 w-56 sm:w-72"
-          />
-          <button
-            onClick={() => {
-              setUsersSearch(usersSearchInput);
-              setUsersPage(1);
-            }}
-            className="px-4 py-2 rounded-xl text-sm font-medium text-white transition-colors"
-            style={{ backgroundColor: "#f97316" }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ea6c08")}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#f97316")}
-          >
-            Search
-          </button>
+
+        {/* ── Row 1: Summary cards ──────────────────────────────────────────── */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className={card} style={shadow}>
+            <p className="text-xs text-gray-400 uppercase font-semibold mb-1">👥 Toplam Kullanıcı</p>
+            <p className="text-4xl font-black" style={{ color: "#f97316" }}>{total}</p>
+          </div>
+          <div className={card} style={shadow}>
+            <p className="text-xs text-gray-400 uppercase font-semibold mb-1">✅ Aktif Kullanıcı</p>
+            <p className="text-4xl font-black text-green-500">{activeCount}</p>
+          </div>
+          <div className={card} style={shadow}>
+            <p className="text-xs text-gray-400 uppercase font-semibold mb-1">🚫 Engellenen</p>
+            <p className="text-4xl font-black text-red-500">{bannedCount}</p>
+          </div>
         </div>
-      </div>
-      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden" style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-gray-50 text-gray-400 uppercase text-xs">
-                <th className="px-4 py-3 text-left font-semibold">Avatar</th>
-                <th className="px-4 py-3 text-left font-semibold">Display Name</th>
-                <th className="px-4 py-3 text-left font-semibold">Email</th>
-                <th className="px-4 py-3 text-left font-semibold">Gender</th>
-                <th className="px-4 py-3 text-left font-semibold">Birth Date</th>
-                <th className="px-4 py-3 text-left font-semibold">Country</th>
-                <th className="px-4 py-3 text-left font-semibold">Join Date</th>
-                <th className="px-4 py-3 text-left font-semibold">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((u, i) => (
-                <tr
-                  key={u.id}
-                  className="border-t border-gray-50 transition-colors cursor-pointer"
-                  style={{ backgroundColor: i % 2 === 1 ? "#fafafa" : "white" }}
-                  onClick={() => router.push(`/admin-sefira-2026/user/${u.user_id}`)}
-                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#fff7ed")}
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.backgroundColor = i % 2 === 1 ? "#fafafa" : "white")
-                  }
-                >
-                  <td className="px-4 py-3">
-                    {u.avatar_url ? (
-                      <img
-                        src={u.avatar_url}
-                        alt=""
-                        className="w-8 h-8 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
-                        style={{ backgroundColor: "#fff7ed", color: "#f97316" }}
-                      >
-                        {u.display_name?.[0]?.toUpperCase() ??
-                          u.email?.[0]?.toUpperCase() ??
-                          "?"}
+
+        {/* ── Row 2: Announcements ──────────────────────────────────────────── */}
+        <div className={card} style={shadow}>
+          <p className="text-xs text-gray-400 uppercase font-semibold mb-1">📢 Aktif Duyurular</p>
+          <p className="text-4xl font-black" style={{ color: "#f97316" }}>{announcementCount}</p>
+        </div>
+
+        {/* ── Row 3: Countries ──────────────────────────────────────────────── */}
+        <div className={card} style={shadow}>
+          <p className="text-sm font-bold text-gray-700 mb-4">Ülkelere Göre Kullanıcılar (Top 15)</p>
+          {topCountries.length === 0 ? (
+            <p className="text-sm text-gray-400">Veri yok</p>
+          ) : (
+            <div className="space-y-2.5">
+              {topCountries.map(([country, count], i) => {
+                const p = pct(count);
+                const barW = Math.round((count / maxCountry) * 100);
+                const flag = COUNTRY_FLAGS[country] ?? "🌍";
+                return (
+                  <div key={country} className="flex items-center gap-3">
+                    <span className="text-xs font-bold text-gray-400 w-4 shrink-0">{i + 1}</span>
+                    <span className="text-lg shrink-0">{flag}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-0.5 gap-2">
+                        <span className="text-sm text-gray-700 truncate">{country}</span>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-sm font-black" style={{ color: "#f97316" }}>{count}</span>
+                          <span className="text-xs text-gray-400 w-8 text-right">{p}%</span>
+                        </div>
                       </div>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 font-medium text-gray-800">
-                    {u.display_name ?? <span className="text-gray-400">—</span>}
-                  </td>
-                  <td className="px-4 py-3 text-gray-600">{u.email}</td>
-                  <td className="px-4 py-3 text-gray-600 capitalize">
-                    {u.gender ?? <span className="text-gray-400">—</span>}
-                  </td>
-                  <td className="px-4 py-3 text-gray-600">
-                    {u.birth_date ? formatDate(u.birth_date) : <span className="text-gray-400">—</span>}
-                  </td>
-                  <td className="px-4 py-3 text-gray-600">
-                    {u.country ?? <span className="text-gray-400">—</span>}
-                  </td>
-                  <td className="px-4 py-3 text-gray-600">{formatDate(u.created_at)}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex flex-wrap gap-1.5 items-center">
-                      {bannedEmails.has(u.email) && (
-                        <span
-                          className="px-2 py-0.5 rounded-full text-xs font-bold"
-                          style={{ backgroundColor: "#fef2f2", color: "#ef4444", border: "1px solid #fecaca" }}
-                        >
-                          ⛔ BANNED
-                        </span>
-                      )}
-                      <a
-                        href={`/admin-sefira-2026/user/${u.user_id}`}
-                        onClick={(e) => e.stopPropagation()}
-                        className="px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
-                      >
-                        View
-                      </a>
-                      {bannedEmails.has(u.email) ? (
-                        <button
-                          onClick={(e) => { e.stopPropagation(); handleQuickUnban(u); }}
-                          disabled={banningUserId === u.user_id}
-                          className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
-                          style={{ backgroundColor: "#f0fdf4", color: "#16a34a" }}
-                          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#dcfce7")}
-                          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#f0fdf4")}
-                        >
-                          {banningUserId === u.user_id ? "…" : "✅ Engeli Kaldır"}
-                        </button>
-                      ) : (
-                        <button
-                          onClick={(e) => { e.stopPropagation(); setBanConfirm(u); }}
-                          disabled={banningUserId === u.user_id}
-                          className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
-                          style={{ backgroundColor: "#fff7ed", color: "#f97316" }}
-                          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ffedd5")}
-                          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#fff7ed")}
-                        >
-                          {banningUserId === u.user_id ? "…" : "🚫 Engelle"}
-                        </button>
-                      )}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setDeleteConfirm({
-                            type: "user",
-                            id: u.id,
-                            userId: u.user_id,
-                            name: u.display_name ?? u.email,
-                          });
-                        }}
-                        className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors"
-                        style={{ backgroundColor: "#fef2f2", color: "#ef4444" }}
-                        onMouseEnter={(e) =>
-                          (e.currentTarget.style.backgroundColor = "#fee2e2")
-                        }
-                        onMouseLeave={(e) =>
-                          (e.currentTarget.style.backgroundColor = "#fef2f2")
-                        }
-                      >
-                        🗑️ Sil
-                      </button>
+                      <div className="h-1.5 rounded-full bg-gray-100 overflow-hidden">
+                        <div className="h-full rounded-full" style={{ width: `${barW}%`, backgroundColor: "#f97316" }} />
+                      </div>
                     </div>
-                  </td>
-                </tr>
-              ))}
-              {users.length === 0 && !dataLoading && (
-                <EmptyRow cols={8} message="No users found" />
-              )}
-            </tbody>
-          </table>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
-        <Pagination page={usersPage} total={usersTotal} onPageChange={setUsersPage} />
+
+        {/* ── Row 4: Gender | Age groups ────────────────────────────────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* Gender */}
+          <div className={card} style={shadow}>
+            <p className="text-sm font-bold text-gray-700 mb-4">Cinsiyet Dağılımı</p>
+            {genderCounts.male + genderCounts.female > 0 ? (
+              <>
+                <div className="flex h-3 rounded-full overflow-hidden mb-4">
+                  <div style={{ width: `${pct(genderCounts.male)}%`, backgroundColor: "#3b82f6" }} />
+                  <div style={{ width: `${pct(genderCounts.female)}%`, backgroundColor: "#ec4899" }} />
+                  <div style={{ width: `${pct(genderCounts.other + genderCounts.unknown)}%`, backgroundColor: "#d1d5db" }} />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="text-center p-3 rounded-xl" style={{ backgroundColor: "#eff6ff" }}>
+                    <p className="text-2xl mb-1">👨</p>
+                    <p className="text-2xl font-black text-blue-500">{pct(genderCounts.male)}%</p>
+                    <p className="text-xs text-gray-500 mt-0.5">Erkek · {genderCounts.male} kişi</p>
+                  </div>
+                  <div className="text-center p-3 rounded-xl" style={{ backgroundColor: "#fdf2f8" }}>
+                    <p className="text-2xl mb-1">👩</p>
+                    <p className="text-2xl font-black" style={{ color: "#ec4899" }}>{pct(genderCounts.female)}%</p>
+                    <p className="text-xs text-gray-500 mt-0.5">Kadın · {genderCounts.female} kişi</p>
+                  </div>
+                </div>
+                {(genderCounts.other > 0 || genderCounts.unknown > 0) && (
+                  <p className="text-xs text-gray-400 mt-3 text-center">
+                    Diğer: {genderCounts.other} · Belirtmemiş: {genderCounts.unknown}
+                  </p>
+                )}
+              </>
+            ) : (
+              <p className="text-sm text-gray-400">Veri yok</p>
+            )}
+          </div>
+
+          {/* Age groups */}
+          <div className={card} style={shadow}>
+            <p className="text-sm font-bold text-gray-700 mb-4">Yaş Grupları</p>
+            {total > 0 ? (
+              <div className="space-y-3">
+                {ageGroups.map(({ label, count }) => (
+                  <div key={label}>
+                    <div className="flex items-center justify-between mb-0.5 text-sm">
+                      <span className="text-gray-700">{label}</span>
+                      <span className="text-gray-500">{count} kişi ({pct(count)}%)</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
+                      <div
+                        className="h-full rounded-full"
+                        style={{ width: `${Math.round((count / maxAge) * 100)}%`, backgroundColor: "#f97316" }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-400">Veri yok</p>
+            )}
+          </div>
+        </div>
+
+        {/* ── Row 5: Top Cities (only if field exists) ──────────────────────── */}
+        {hasCities && (
+          <div className={card} style={shadow}>
+            <p className="text-sm font-bold text-gray-700 mb-4">En Çok Kullanıcı Olan Şehirler</p>
+            <div className="space-y-2.5">
+              {topCities.map(([city, count], i) => {
+                const p = pct(count);
+                const barW = Math.round((count / maxCity) * 100);
+                return (
+                  <div key={city} className="flex items-center gap-3">
+                    <span className="text-xs font-bold text-gray-400 w-4 shrink-0">{i + 1}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-0.5 gap-2">
+                        <span className="text-sm text-gray-700 truncate">{city}</span>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-sm font-black" style={{ color: "#f97316" }}>{count}</span>
+                          <span className="text-xs text-gray-400 w-8 text-right">{p}%</span>
+                        </div>
+                      </div>
+                      <div className="h-1.5 rounded-full bg-gray-100 overflow-hidden">
+                        <div className="h-full rounded-full" style={{ width: `${barW}%`, backgroundColor: "#f97316" }} />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* ── Users table ───────────────────────────────────────────────────── */}
+        <div>
+          <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
+            <p className="text-sm font-bold text-gray-600">
+              Kullanıcı Listesi ({usersTotal})
+            </p>
+            <div className="flex gap-2">
+              <input
+                value={usersSearchInput}
+                onChange={(e) => setUsersSearchInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") { setUsersSearch(usersSearchInput); setUsersPage(1); }
+                }}
+                placeholder="Search by name or email…"
+                className="px-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 w-56 sm:w-72"
+              />
+              <button
+                onClick={() => { setUsersSearch(usersSearchInput); setUsersPage(1); }}
+                className="px-4 py-2 rounded-xl text-sm font-medium text-white transition-colors"
+                style={{ backgroundColor: "#f97316" }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ea6c08")}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#f97316")}
+              >
+                Search
+              </button>
+            </div>
+          </div>
+          <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden" style={shadow}>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-gray-50 text-gray-400 uppercase text-xs">
+                    <th className="px-4 py-3 text-left font-semibold">Avatar</th>
+                    <th className="px-4 py-3 text-left font-semibold">Display Name</th>
+                    <th className="px-4 py-3 text-left font-semibold">Email</th>
+                    <th className="px-4 py-3 text-left font-semibold">Gender</th>
+                    <th className="px-4 py-3 text-left font-semibold">Birth Date</th>
+                    <th className="px-4 py-3 text-left font-semibold">Country</th>
+                    <th className="px-4 py-3 text-left font-semibold">Join Date</th>
+                    <th className="px-4 py-3 text-left font-semibold">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map((u, i) => (
+                    <tr
+                      key={u.id}
+                      className="border-t border-gray-50 transition-colors cursor-pointer"
+                      style={{ backgroundColor: i % 2 === 1 ? "#fafafa" : "white" }}
+                      onClick={() => router.push(`/admin-sefira-2026/user/${u.user_id}`)}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#fff7ed")}
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.backgroundColor = i % 2 === 1 ? "#fafafa" : "white")
+                      }
+                    >
+                      <td className="px-4 py-3">
+                        {u.avatar_url ? (
+                          <img src={u.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover" />
+                        ) : (
+                          <div
+                            className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+                            style={{ backgroundColor: "#fff7ed", color: "#f97316" }}
+                          >
+                            {u.display_name?.[0]?.toUpperCase() ?? u.email?.[0]?.toUpperCase() ?? "?"}
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 font-medium text-gray-800">
+                        {u.display_name ?? <span className="text-gray-400">—</span>}
+                      </td>
+                      <td className="px-4 py-3 text-gray-600">{u.email}</td>
+                      <td className="px-4 py-3 text-gray-600 capitalize">
+                        {u.gender ?? <span className="text-gray-400">—</span>}
+                      </td>
+                      <td className="px-4 py-3 text-gray-600">
+                        {u.birth_date ? formatDate(u.birth_date) : <span className="text-gray-400">—</span>}
+                      </td>
+                      <td className="px-4 py-3 text-gray-600">
+                        {u.country ?? <span className="text-gray-400">—</span>}
+                      </td>
+                      <td className="px-4 py-3 text-gray-600">{formatDate(u.created_at)}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex flex-wrap gap-1.5 items-center">
+                          {bannedEmails.has(u.email) && (
+                            <span
+                              className="px-2 py-0.5 rounded-full text-xs font-bold"
+                              style={{ backgroundColor: "#fef2f2", color: "#ef4444", border: "1px solid #fecaca" }}
+                            >
+                              ⛔ BANNED
+                            </span>
+                          )}
+                          <a
+                            href={`/admin-sefira-2026/user/${u.user_id}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className="px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
+                          >
+                            View
+                          </a>
+                          {bannedEmails.has(u.email) ? (
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleQuickUnban(u); }}
+                              disabled={banningUserId === u.user_id}
+                              className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+                              style={{ backgroundColor: "#f0fdf4", color: "#16a34a" }}
+                              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#dcfce7")}
+                              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#f0fdf4")}
+                            >
+                              {banningUserId === u.user_id ? "…" : "✅ Engeli Kaldır"}
+                            </button>
+                          ) : (
+                            <button
+                              onClick={(e) => { e.stopPropagation(); setBanConfirm(u); }}
+                              disabled={banningUserId === u.user_id}
+                              className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+                              style={{ backgroundColor: "#fff7ed", color: "#f97316" }}
+                              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ffedd5")}
+                              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#fff7ed")}
+                            >
+                              {banningUserId === u.user_id ? "…" : "🚫 Engelle"}
+                            </button>
+                          )}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDeleteConfirm({ type: "user", id: u.id, userId: u.user_id, name: u.display_name ?? u.email });
+                            }}
+                            className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors"
+                            style={{ backgroundColor: "#fef2f2", color: "#ef4444" }}
+                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#fee2e2")}
+                            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#fef2f2")}
+                          >
+                            🗑️ Sil
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {users.length === 0 && !dataLoading && (
+                    <EmptyRow cols={8} message="No users found" />
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <Pagination page={usersPage} total={usersTotal} onPageChange={setUsersPage} />
+          </div>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderListings = () => (
     <div>
