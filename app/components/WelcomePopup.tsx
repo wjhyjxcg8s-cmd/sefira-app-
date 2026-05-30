@@ -2,8 +2,18 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/app/lib/supabase'
 
+const languages = [
+  { code: 'tr', flag: '🇹🇷', label: 'TR' },
+  { code: 'en', flag: '🇬🇧', label: 'EN' },
+  { code: 'fa', flag: '🇮🇷', label: 'FA' },
+  { code: 'ar', flag: '🇸🇦', label: 'AR' },
+  { code: 'de', flag: '🇩🇪', label: 'DE' },
+  { code: 'ru', flag: '🇷🇺', label: 'RU' },
+]
+
 export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
   const [show, setShow] = useState(false)
+  const [currentLang, setCurrentLang] = useState(lang)
 
   const texts = {
     tr: {
@@ -92,7 +102,13 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
     },
   }
 
-  const t = texts[lang as keyof typeof texts] || texts.tr
+  const handleLangChange = (code: string) => {
+    setCurrentLang(code)
+    localStorage.setItem('sefira-lang', code)
+    window.dispatchEvent(new CustomEvent('languageChanged', { detail: code }))
+  }
+
+  const t = texts[currentLang as keyof typeof texts] || texts.tr
 
   useEffect(() => {
     if (sessionStorage.getItem('welcome_popup_shown')) return
@@ -132,7 +148,7 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
 
   if (!show) return null
 
-  const isRTL = lang === 'fa' || lang === 'ar'
+  const isRTL = currentLang === 'fa' || currentLang === 'ar'
 
   return (
     <>
@@ -164,11 +180,44 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
         textAlign: isRTL ? 'right' : 'left',
       }}>
 
+        {/* Language selector */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '8px',
+          padding: '16px 16px 0',
+          flexWrap: 'wrap',
+        }}>
+          {languages.map(l => (
+            <button
+              key={l.code}
+              onClick={() => handleLangChange(l.code)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '6px 12px',
+                borderRadius: '50px',
+                border: currentLang === l.code ? '2px solid #f97316' : '2px solid #eee',
+                background: currentLang === l.code ? '#fff7ed' : 'white',
+                cursor: 'pointer',
+                fontSize: '13px',
+                fontWeight: currentLang === l.code ? '700' : '500',
+                color: currentLang === l.code ? '#f97316' : '#666',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <span style={{ fontSize: '16px' }}>{l.flag}</span>
+              <span>{l.label}</span>
+            </button>
+          ))}
+        </div>
+
         {/* Handle bar */}
         <div style={{
           width: '40px', height: '4px',
           background: '#e0e0e0', borderRadius: '2px',
-          margin: '0 auto 20px',
+          margin: '20px auto 20px',
         }} />
 
         {/* Hero decoration */}

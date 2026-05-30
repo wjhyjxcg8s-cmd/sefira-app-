@@ -1157,6 +1157,11 @@ export default function Home() {
     if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de" || saved === "ru") setLang(saved);
   }, []);
   useEffect(() => { localStorage.setItem("sefira-lang", lang); }, [lang]);
+  useEffect(() => {
+    const handler = (e: CustomEvent) => { setLang(e.detail as Lang); };
+    window.addEventListener('languageChanged', handler as EventListener);
+    return () => window.removeEventListener('languageChanged', handler as EventListener);
+  }, []);
 
   // ── Unread messages badge ─────────────────────────────────────────────────
   const [unreadSupportCount, setUnreadSupportCount] = useState(0);
