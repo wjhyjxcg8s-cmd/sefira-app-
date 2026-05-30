@@ -1,315 +1,154 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
 
-const PRIORITY_COUNT = 8
-
-// First 8 entries = priority (⭐ + orange divider), rest sorted alphabetically
-const COUNTRIES: Record<string, string[]> = {
-  tr: [
-    'Rusya', 'Türkiye', 'Almanya', 'Amerika Birleşik Devletleri',
-    'Fransa', 'İtalya', 'Birleşik Krallık', 'İran',
-    'Afganistan', 'Andorra', 'Angola', 'Antigua ve Barbuda', 'Arjantin',
-    'Arnavutluk', 'Avustralya', 'Avusturya', 'Azerbaycan',
-    'Bahamalar', 'Bahreyn', 'Bangladeş', 'Barbados', 'Belçika', 'Belize',
-    'Benin', 'Beyaz Rusya', 'Bhutan', 'Birleşik Arap Emirlikleri',
-    'Bolivya', 'Bosna Hersek', 'Botsvana', 'Brezilya', 'Brunei',
-    'Bulgaristan', 'Burkina Faso', 'Burundi',
-    'Cabo Verde', 'Cezayir', 'Cibuti', 'Çad', 'Çekya', 'Çin',
-    'Danimarka', 'Demokratik Kongo Cumhuriyeti', 'Dominik Cumhuriyeti', 'Dominika',
-    'Ekvador', 'Ekvator Ginesi', 'El Salvador', 'Endonezya', 'Eritre',
-    'Ermenistan', 'Estonya', 'Etiyopya',
-    'Fas', 'Fiji', 'Fildişi Sahili', 'Filipinler', 'Finlandiya',
-    'Gabon', 'Gambiya', 'Gana', 'Gine', 'Gine-Bissau', 'Grenada',
-    'Guatemala', 'Guyana', 'Güney Afrika', 'Güney Kore', 'Güney Sudan', 'Gürcistan',
-    'Haiti', 'Hırvatistan', 'Hindistan', 'Hollanda', 'Honduras',
-    'Irak', 'İrlanda', 'İspanya', 'İsrail', 'İsveç', 'İsviçre', 'İzlanda',
-    'Jamaika', 'Japonya',
-    'Kamboçya', 'Kamerun', 'Kanada', 'Karadağ', 'Katar', 'Kazakistan',
-    'Kenya', 'Kıbrıs', 'Kırgızistan', 'Kiribati', 'Kolombiya', 'Komorlar',
-    'Kongo', 'Kosova', 'Kosta Rika', 'Küba', 'Kuzey Kore', 'Kuzey Makedonya', 'Kuveyt',
-    'Laos', 'Lesoto', 'Letonya', 'Liberya', 'Libya', 'Liechtenstein',
-    'Litvanya', 'Lübnan', 'Lüksemburg',
-    'Macaristan', 'Madagaskar', 'Malavi', 'Maldivler', 'Malezya', 'Mali',
-    'Malta', 'Marshall Adaları', 'Mauritanya', 'Mauritius', 'Meksika',
-    'Mikronezya', 'Mısır', 'Moğolistan', 'Moldova', 'Monako', 'Mozambik', 'Myanmar',
-    'Namibya', 'Nauru', 'Nepal', 'Nijer', 'Nijerya', 'Nikaragua', 'Norveç',
-    'Orta Afrika Cumhuriyeti', 'Özbekistan',
-    'Pakistan', 'Palau', 'Filistin', 'Panama', 'Papua Yeni Gine', 'Paraguay', 'Peru',
-    'Polonya', 'Portekiz',
-    'Romanya', 'Rwanda',
-    'Saint Kitts ve Nevis', 'Saint Lucia', 'Saint Vincent', 'Samoa',
-    'San Marino', 'Sao Tome ve Principe', 'Senegal', 'Seyşeller', 'Sierra Leone',
-    'Singapur', 'Sırbistan', 'Slovakya', 'Slovenya', 'Solomon Adaları',
-    'Somali', 'Sri Lanka', 'Sudan', 'Surinam', 'Suriye', 'Suudi Arabistan', 'Svaziland',
-    'Şili',
-    'Tacikistan', 'Tanzanya', 'Tayland', 'Timor-Leste', 'Togo', 'Tonga',
-    'Trinidad ve Tobago', 'Tunus', 'Türkmenistan', 'Tuvalu',
-    'Uganda', 'Ukrayna', 'Umman', 'Uruguay', 'Ürdün',
-    'Vanuatu', 'Venezuela', 'Vietnam',
-    'Yemen', 'Yeni Zelanda', 'Yunanistan',
-    'Zambiya', 'Zimbabve',
-  ],
-  en: [
-    'Russia', 'Turkey', 'Germany', 'United States',
-    'France', 'Italy', 'United Kingdom', 'Iran',
-    'Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola',
-    'Antigua and Barbuda', 'Argentina', 'Armenia', 'Australia', 'Austria', 'Azerbaijan',
-    'Bahamas', 'Bahrain', 'Bangladesh', 'Barbados', 'Belarus', 'Belgium',
-    'Belize', 'Benin', 'Bhutan', 'Bolivia', 'Bosnia and Herzegovina',
-    'Botswana', 'Brazil', 'Brunei', 'Bulgaria', 'Burkina Faso', 'Burundi',
-    'Cabo Verde', 'Cambodia', 'Cameroon', 'Canada', 'Central African Republic',
-    'Chad', 'Chile', 'China', 'Colombia', 'Comoros', 'Congo',
-    'Costa Rica', 'Croatia', 'Cuba', 'Cyprus', 'Czech Republic',
-    'Democratic Republic of the Congo', 'Denmark', 'Djibouti', 'Dominica', 'Dominican Republic',
-    'Ecuador', 'Egypt', 'El Salvador', 'Equatorial Guinea', 'Eritrea',
-    'Estonia', 'Eswatini', 'Ethiopia',
-    'Fiji', 'Finland',
-    'Gabon', 'Gambia', 'Georgia', 'Ghana', 'Greece', 'Grenada',
-    'Guatemala', 'Guinea', 'Guinea-Bissau', 'Guyana',
-    'Haiti', 'Honduras', 'Hungary',
-    'Iceland', 'India', 'Indonesia', 'Iraq', 'Ireland', 'Israel', 'Ivory Coast',
-    'Jamaica', 'Japan', 'Jordan',
-    'Kazakhstan', 'Kenya', 'Kiribati', 'Kosovo', 'Kuwait', 'Kyrgyzstan',
-    'Laos', 'Latvia', 'Lebanon', 'Lesotho', 'Liberia', 'Libya',
-    'Liechtenstein', 'Lithuania', 'Luxembourg',
-    'Madagascar', 'Malawi', 'Malaysia', 'Maldives', 'Mali', 'Malta',
-    'Marshall Islands', 'Mauritania', 'Mauritius', 'Mexico', 'Micronesia',
-    'Moldova', 'Monaco', 'Mongolia', 'Montenegro', 'Morocco', 'Mozambique', 'Myanmar',
-    'Namibia', 'Nauru', 'Nepal', 'Netherlands', 'New Zealand', 'Nicaragua',
-    'Niger', 'Nigeria', 'North Korea', 'North Macedonia', 'Norway',
-    'Oman',
-    'Pakistan', 'Palau', 'Palestine', 'Panama', 'Papua New Guinea',
-    'Paraguay', 'Peru', 'Philippines', 'Poland', 'Portugal',
-    'Qatar',
-    'Romania', 'Rwanda',
-    'Saint Kitts and Nevis', 'Saint Lucia', 'Saint Vincent and the Grenadines',
-    'Samoa', 'San Marino', 'São Tomé and Príncipe', 'Saudi Arabia', 'Senegal',
-    'Serbia', 'Seychelles', 'Sierra Leone', 'Singapore', 'Slovakia', 'Slovenia',
-    'Solomon Islands', 'Somalia', 'South Africa', 'South Korea', 'South Sudan',
-    'Spain', 'Sri Lanka', 'Sudan', 'Suriname', 'Sweden', 'Switzerland', 'Syria',
-    'Tajikistan', 'Tanzania', 'Thailand', 'Timor-Leste', 'Togo', 'Tonga',
-    'Trinidad and Tobago', 'Tunisia', 'Turkmenistan', 'Tuvalu',
-    'Uganda', 'Ukraine', 'United Arab Emirates', 'Uruguay', 'Uzbekistan',
-    'Vanuatu', 'Venezuela', 'Vietnam',
-    'Yemen',
-    'Zambia', 'Zimbabwe',
-  ],
-  fa: [
-    'روسیه', 'ترکیه', 'آلمان', 'ایالات متحده آمریکا',
-    'فرانسه', 'ایتالیا', 'بریتانیا', 'ایران',
-    'افغانستان', 'آلبانی', 'الجزایر', 'آندورا', 'آنگولا',
-    'آنتیگوا و باربودا', 'آرژانتین', 'ارمنستان', 'استرالیا', 'اتریش', 'آذربایجان',
-    'باهاما', 'بحرین', 'بنگلادش', 'باربادوس', 'بلاروس', 'بلژیک',
-    'بلیز', 'بنین', 'بوتان', 'بولیوی', 'بوسنی و هرزگوین',
-    'بوتسوانا', 'برزیل', 'برونئی', 'بلغارستان', 'بورکینافاسو', 'بوروندی',
-    'کابوورده', 'کامبوج', 'کامرون', 'کانادا', 'جمهوری آفریقای مرکزی',
-    'چاد', 'شیلی', 'چین', 'کلمبیا', 'کومور', 'کنگو',
-    'کاستاریکا', 'کرواسی', 'کوبا', 'قبرس', 'جمهوری چک',
-    'جمهوری دموکراتیک کنگو', 'دانمارک', 'جیبوتی', 'دومینیکا', 'جمهوری دومینیکن',
-    'اکوادور', 'مصر', 'السالوادور', 'گینه استوایی', 'اریتره',
-    'استونی', 'اسواتینی', 'اتیوپی',
-    'فیجی', 'فنلاند',
-    'گابون', 'گامبیا', 'گرجستان', 'غنا', 'یونان', 'گرنادا',
-    'گواتمالا', 'گینه', 'گینه‌بیسائو', 'گویان',
-    'هائیتی', 'هندوراس', 'مجارستان',
-    'ایسلند', 'هند', 'اندونزی', 'عراق', 'ایرلند', 'اسرائیل', 'ساحل عاج',
-    'جامائیکا', 'ژاپن', 'اردن',
-    'قزاقستان', 'کنیا', 'کیریباتی', 'کوزوو', 'کویت', 'قرقیزستان',
-    'لائوس', 'لتونی', 'لبنان', 'لسوتو', 'لیبریا', 'لیبی',
-    'لیختن‌اشتاین', 'لیتوانی', 'لوکزامبورگ',
-    'ماداگاسکار', 'مالاوی', 'مالزی', 'مالدیو', 'مالی', 'مالت',
-    'جزایر مارشال', 'موریتانی', 'موریس', 'مکزیک', 'میکرونزی',
-    'مولداوی', 'موناکو', 'مغولستان', 'مونتهنگرو', 'مراکش', 'موزامبیک', 'میانمار',
-    'نامیبیا', 'نائورو', 'نپال', 'هلند', 'نیوزیلند', 'نیکاراگوئه',
-    'نیجر', 'نیجریه', 'کره شمالی', 'مقدونیه شمالی', 'نروژ',
-    'عمان',
-    'پاکستان', 'پالائو', 'فلسطین', 'پاناما', 'پاپوآ گینه نو',
-    'پاراگوئه', 'پرو', 'فیلیپین', 'لهستان', 'پرتغال',
-    'قطر',
-    'رومانی', 'رواندا',
-    'سنت کیتس و نویس', 'سنت لوسیا', 'سنت وینسنت و گرنادین‌ها',
-    'ساموآ', 'سان مارینو', 'سائوتومه و پرینسیپه', 'عربستان سعودی', 'سنگال',
-    'صربستان', 'سیشل', 'سیرالئون', 'سنگاپور', 'اسلواکی', 'اسلوونی',
-    'جزایر سلیمان', 'سومالی', 'آفریقای جنوبی', 'کره جنوبی', 'سودان جنوبی',
-    'اسپانیا', 'سریلانکا', 'سودان', 'سورینام', 'سوئد', 'سوئیس', 'سوریه',
-    'تاجیکستان', 'تانزانیا', 'تایلند', 'تیمور-لسته', 'توگو', 'تونگا',
-    'ترینیداد و توباگو', 'تونس', 'ترکمنستان', 'تووالو',
-    'اوگاندا', 'اوکراین', 'امارات متحده عربی', 'اروگوئه', 'ازبکستان',
-    'وانواتو', 'ونزوئلا', 'ویتنام',
-    'یمن',
-    'زامبیا', 'زیمبابوه',
-  ],
-  ar: [
-    'روسيا', 'تركيا', 'ألمانيا', 'الولايات المتحدة الأمريكية',
-    'فرنسا', 'إيطاليا', 'المملكة المتحدة', 'إيران',
-    'أفغانستان', 'ألبانيا', 'الجزائر', 'أندورا', 'أنغولا',
-    'أنتيغوا وبربودا', 'الأرجنتين', 'أرمينيا', 'أستراليا', 'النمسا', 'أذربيجان',
-    'جزر البهاما', 'البحرين', 'بنغلاديش', 'باربادوس', 'بيلاروسيا', 'بلجيكا',
-    'بليز', 'بنين', 'بوتان', 'بوليفيا', 'البوسنة والهرسك',
-    'بوتسوانا', 'البرازيل', 'بروناي', 'بلغاريا', 'بوركينا فاسو', 'بوروندي',
-    'الرأس الأخضر', 'كمبوديا', 'الكاميرون', 'كندا', 'جمهورية أفريقيا الوسطى',
-    'تشاد', 'تشيلي', 'الصين', 'كولومبيا', 'جزر القمر', 'الكونغو',
-    'كوستاريكا', 'كرواتيا', 'كوبا', 'قبرص', 'جمهورية التشيك',
-    'جمهورية الكونغو الديمقراطية', 'الدنمارك', 'جيبوتي', 'دومينيكا', 'جمهورية الدومينيكان',
-    'الإكوادور', 'مصر', 'السلفادور', 'غينيا الاستوائية', 'إريتريا',
-    'إستونيا', 'إسواتيني', 'إثيوبيا',
-    'فيجي', 'فنلندا',
-    'الغابون', 'غامبيا', 'جورجيا', 'غانا', 'اليونان', 'غرينادا',
-    'غواتيمالا', 'غينيا', 'غينيا بيساو', 'غيانا',
-    'هايتي', 'هندوراس', 'المجر',
-    'آيسلندا', 'الهند', 'إندونيسيا', 'العراق', 'إيرلندا', 'إسرائيل', 'ساحل العاج',
-    'جامايكا', 'اليابان', 'الأردن',
-    'كازاخستان', 'كينيا', 'كيريباتي', 'كوسوفو', 'الكويت', 'قيرغيزستان',
-    'لاوس', 'لاتفيا', 'لبنان', 'ليسوتو', 'ليبيريا', 'ليبيا',
-    'ليختنشتاين', 'ليتوانيا', 'لوكسمبورغ',
-    'مدغشقر', 'ملاوي', 'ماليزيا', 'جزر المالديف', 'مالي', 'مالطا',
-    'جزر مارشال', 'موريتانيا', 'موريشيوس', 'المكسيك', 'ميكرونيزيا',
-    'مولدوفا', 'موناكو', 'منغوليا', 'الجبل الأسود', 'المغرب', 'موزمبيق', 'ميانمار',
-    'ناميبيا', 'ناورو', 'نيبال', 'هولندا', 'نيوزيلندا', 'نيكاراغوا',
-    'النيجر', 'نيجيريا', 'كوريا الشمالية', 'مقدونيا الشمالية', 'النرويج',
-    'عُمان',
-    'باكستان', 'بالاو', 'فلسطين', 'بنما', 'بابوا غينيا الجديدة',
-    'باراغواي', 'بيرو', 'الفلبين', 'بولندا', 'البرتغال',
-    'قطر',
-    'رومانيا', 'رواندا',
-    'سانت كيتس ونيفيس', 'سانت لوسيا', 'سانت فنسنت وجزر غرينادين',
-    'ساموا', 'سان مارينو', 'ساو تومي وبرينسيبي', 'المملكة العربية السعودية', 'السنغال',
-    'صربيا', 'سيشيل', 'سيراليون', 'سنغافورة', 'سلوفاكيا', 'سلوفينيا',
-    'جزر سليمان', 'الصومال', 'جنوب أفريقيا', 'كوريا الجنوبية', 'جنوب السودان',
-    'إسبانيا', 'سريلانكا', 'السودان', 'سورينام', 'السويد', 'سويسرا', 'سوريا',
-    'طاجيكستان', 'تنزانيا', 'تايلاند', 'تيمور الشرقية', 'توغو', 'تونغا',
-    'ترينيداد وتوباغو', 'تونس', 'تركمانستان', 'توفالو',
-    'أوغندا', 'أوكرانيا', 'الإمارات العربية المتحدة', 'أوروغواي', 'أوزبكستان',
-    'فانواتو', 'فنزويلا', 'فيتنام',
-    'اليمن',
-    'زامبيا', 'زيمبابوي',
-  ],
-  de: [
-    'Russland', 'Türkei', 'Deutschland', 'Vereinigte Staaten',
-    'Frankreich', 'Italien', 'Vereinigtes Königreich', 'Iran',
-    'Afghanistan', 'Albanien', 'Algerien', 'Andorra', 'Angola',
-    'Antigua und Barbuda', 'Argentinien', 'Armenien', 'Australien', 'Österreich', 'Aserbaidschan',
-    'Bahamas', 'Bahrain', 'Bangladesch', 'Barbados', 'Belarus', 'Belgien',
-    'Belize', 'Benin', 'Bhutan', 'Bolivien', 'Bosnien und Herzegowina',
-    'Botswana', 'Brasilien', 'Brunei', 'Bulgarien', 'Burkina Faso', 'Burundi',
-    'Cabo Verde', 'Kambodscha', 'Kamerun', 'Kanada', 'Zentralafrikanische Republik',
-    'Tschad', 'Chile', 'China', 'Kolumbien', 'Komoren', 'Kongo',
-    'Costa Rica', 'Kroatien', 'Kuba', 'Zypern', 'Tschechien',
-    'Demokratische Republik Kongo', 'Dänemark', 'Dschibuti', 'Dominica', 'Dominikanische Republik',
-    'Ecuador', 'Ägypten', 'El Salvador', 'Äquatorialguinea', 'Eritrea',
-    'Estland', 'Eswatini', 'Äthiopien',
-    'Fidschi', 'Finnland',
-    'Gabun', 'Gambia', 'Georgien', 'Ghana', 'Griechenland', 'Grenada',
-    'Guatemala', 'Guinea', 'Guinea-Bissau', 'Guyana',
-    'Haiti', 'Honduras', 'Ungarn',
-    'Island', 'Indien', 'Indonesien', 'Irak', 'Irland', 'Israel', 'Elfenbeinküste',
-    'Jamaika', 'Japan', 'Jordanien',
-    'Kasachstan', 'Kenia', 'Kiribati', 'Kosovo', 'Kuwait', 'Kirgisistan',
-    'Laos', 'Lettland', 'Libanon', 'Lesotho', 'Liberia', 'Libyen',
-    'Liechtenstein', 'Litauen', 'Luxemburg',
-    'Madagaskar', 'Malawi', 'Malaysia', 'Malediven', 'Mali', 'Malta',
-    'Marshallinseln', 'Mauretanien', 'Mauritius', 'Mexiko', 'Mikronesien',
-    'Moldau', 'Monaco', 'Mongolei', 'Montenegro', 'Marokko', 'Mosambik', 'Myanmar',
-    'Namibia', 'Nauru', 'Nepal', 'Niederlande', 'Neuseeland', 'Nicaragua',
-    'Niger', 'Nigeria', 'Nordkorea', 'Nordmazedonien', 'Norwegen',
-    'Oman',
-    'Pakistan', 'Palau', 'Palästina', 'Panama', 'Papua-Neuguinea',
-    'Paraguay', 'Peru', 'Philippinen', 'Polen', 'Portugal',
-    'Katar',
-    'Rumänien', 'Ruanda',
-    'St. Kitts und Nevis', 'St. Lucia', 'St. Vincent und die Grenadinen',
-    'Samoa', 'San Marino', 'São Tomé und Príncipe', 'Saudi-Arabien', 'Senegal',
-    'Serbien', 'Seychellen', 'Sierra Leone', 'Singapur', 'Slowakei', 'Slowenien',
-    'Salomonen', 'Somalia', 'Südafrika', 'Südkorea', 'Südsudan',
-    'Spanien', 'Sri Lanka', 'Sudan', 'Suriname', 'Schweden', 'Schweiz', 'Syrien',
-    'Tadschikistan', 'Tansania', 'Thailand', 'Timor-Leste', 'Togo', 'Tonga',
-    'Trinidad und Tobago', 'Tunesien', 'Turkmenistan', 'Tuvalu',
-    'Uganda', 'Ukraine', 'Vereinigte Arabische Emirate', 'Uruguay', 'Usbekistan',
-    'Vanuatu', 'Venezuela', 'Vietnam',
-    'Jemen',
-    'Sambia', 'Simbabwe',
-  ],
-  ru: [
-    'Россия', 'Турция', 'Германия', 'США',
-    'Франция', 'Италия', 'Великобритания', 'Иран',
-    'Афганистан', 'Албания', 'Алжир', 'Андорра', 'Ангола',
-    'Антигуа и Барбуда', 'Аргентина', 'Армения', 'Австралия', 'Австрия', 'Азербайджан',
-    'Багамы', 'Бахрейн', 'Бангладеш', 'Барбадос', 'Беларусь', 'Бельгия',
-    'Белиз', 'Бенин', 'Бутан', 'Боливия', 'Босния и Герцеговина',
-    'Ботсвана', 'Бразилия', 'Бруней', 'Болгария', 'Буркина-Фасо', 'Бурунди',
-    'Кабо-Верде', 'Камбоджа', 'Камерун', 'Канада', 'Центральноафриканская Республика',
-    'Чад', 'Чили', 'Китай', 'Колумбия', 'Коморы', 'Конго',
-    'Коста-Рика', 'Хорватия', 'Куба', 'Кипр', 'Чехия',
-    'Демократическая Республика Конго', 'Дания', 'Джибути', 'Доминика', 'Доминиканская Республика',
-    'Эквадор', 'Египет', 'Сальвадор', 'Экваториальная Гвинея', 'Эритрея',
-    'Эстония', 'Эсватини', 'Эфиопия',
-    'Фиджи', 'Финляндия',
-    'Габон', 'Гамбия', 'Грузия', 'Гана', 'Греция', 'Гренада',
-    'Гватемала', 'Гвинея', 'Гвинея-Бисау', 'Гайана',
-    'Гаити', 'Гондурас', 'Венгрия',
-    'Исландия', 'Индия', 'Индонезия', 'Ирак', 'Ирландия', 'Израиль', 'Кот-д\'Ивуар',
-    'Ямайка', 'Япония', 'Иордания',
-    'Казахстан', 'Кения', 'Кирибати', 'Косово', 'Кувейт', 'Кыргызстан',
-    'Лаос', 'Латвия', 'Ливан', 'Лесото', 'Либерия', 'Ливия',
-    'Лихтенштейн', 'Литва', 'Люксембург',
-    'Мадагаскар', 'Малави', 'Малайзия', 'Мальдивы', 'Мали', 'Мальта',
-    'Маршалловы Острова', 'Мавритания', 'Маврикий', 'Мексика', 'Микронезия',
-    'Молдова', 'Монако', 'Монголия', 'Черногория', 'Марокко', 'Мозамбик', 'Мьянма',
-    'Намибия', 'Науру', 'Непал', 'Нидерланды', 'Новая Зеландия', 'Никарагуа',
-    'Нигер', 'Нигерия', 'Северная Корея', 'Северная Македония', 'Норвегия',
-    'Оман',
-    'Пакистан', 'Палау', 'Палестина', 'Панама', 'Папуа — Новая Гвинея',
-    'Парагвай', 'Перу', 'Филиппины', 'Польша', 'Португалия',
-    'Катар',
-    'Румыния', 'Руанда',
-    'Сент-Китс и Невис', 'Сент-Люсия', 'Сент-Винсент и Гренадины',
-    'Самоа', 'Сан-Марино', 'Сан-Томе и Принсипи', 'Саудовская Аравия', 'Сенегал',
-    'Сербия', 'Сейшелы', 'Сьерра-Леоне', 'Сингапур', 'Словакия', 'Словения',
-    'Соломоновы Острова', 'Сомали', 'Южная Африка', 'Южная Корея', 'Южный Судан',
-    'Испания', 'Шри-Ланка', 'Судан', 'Суринам', 'Швеция', 'Швейцария', 'Сирия',
-    'Таджикистан', 'Танзания', 'Таиланд', 'Тимор-Лесте', 'Того', 'Тонга',
-    'Тринидад и Тобаго', 'Тунис', 'Туркменистан', 'Тувалу',
-    'Уганда', 'Украина', 'ОАЭ', 'Уругвай', 'Узбекистан',
-    'Вануату', 'Венесуэла', 'Вьетнам',
-    'Йемен',
-    'Замбия', 'Зимбабве',
-  ],
+const COUNTRY_MAP: Record<string, Record<string, string>> = {
+  'Russia':                       { en: 'Russia',                tr: 'Rusya',                          fa: 'روسیه',                    ar: 'روسيا',                              ru: 'Россия',            de: 'Russland' },
+  'Turkey':                       { en: 'Turkey',                tr: 'Türkiye',                        fa: 'ترکیه',                    ar: 'تركيا',                              ru: 'Турция',            de: 'Türkei' },
+  'Germany':                      { en: 'Germany',               tr: 'Almanya',                        fa: 'آلمان',                    ar: 'ألمانيا',                            ru: 'Германия',          de: 'Deutschland' },
+  'United States':                { en: 'United States',         tr: 'Amerika Birleşik Devletleri',    fa: 'ایالات متحده آمریکا',      ar: 'الولايات المتحدة الأمريكية',         ru: 'США',               de: 'Vereinigte Staaten' },
+  'France':                       { en: 'France',                tr: 'Fransa',                         fa: 'فرانسه',                   ar: 'فرنسا',                              ru: 'Франция',           de: 'Frankreich' },
+  'Italy':                        { en: 'Italy',                 tr: 'İtalya',                         fa: 'ایتالیا',                  ar: 'إيطاليا',                            ru: 'Италия',            de: 'Italien' },
+  'United Kingdom':               { en: 'United Kingdom',        tr: 'Birleşik Krallık',               fa: 'بریتانیا',                 ar: 'المملكة المتحدة',                    ru: 'Великобритания',    de: 'Vereinigtes Königreich' },
+  'Iran':                         { en: 'Iran',                  tr: 'İran',                           fa: 'ایران',                    ar: 'إيران',                              ru: 'Иран',              de: 'Iran' },
+  'Afghanistan':                  { en: 'Afghanistan',           tr: 'Afganistan',                     fa: 'افغانستان',                ar: 'أفغانستان',                          ru: 'Афганистан',        de: 'Afghanistan' },
+  'Albania':                      { en: 'Albania',               tr: 'Arnavutluk',                     fa: 'آلبانی',                   ar: 'ألبانيا',                            ru: 'Албания',           de: 'Albanien' },
+  'Algeria':                      { en: 'Algeria',               tr: 'Cezayir',                        fa: 'الجزایر',                  ar: 'الجزائر',                            ru: 'Алжир',             de: 'Algerien' },
+  'Argentina':                    { en: 'Argentina',             tr: 'Arjantin',                       fa: 'آرژانتین',                 ar: 'الأرجنتين',                          ru: 'Аргентина',         de: 'Argentinien' },
+  'Armenia':                      { en: 'Armenia',               tr: 'Ermenistan',                     fa: 'ارمنستان',                 ar: 'أرمينيا',                            ru: 'Армения',           de: 'Armenien' },
+  'Australia':                    { en: 'Australia',             tr: 'Avustralya',                     fa: 'استرالیا',                 ar: 'أستراليا',                           ru: 'Австралия',         de: 'Australien' },
+  'Austria':                      { en: 'Austria',               tr: 'Avusturya',                      fa: 'اتریش',                    ar: 'النمسا',                             ru: 'Австрия',           de: 'Österreich' },
+  'Azerbaijan':                   { en: 'Azerbaijan',            tr: 'Azerbaycan',                     fa: 'آذربایجان',                ar: 'أذربيجان',                           ru: 'Азербайджан',       de: 'Aserbaidschan' },
+  'Bangladesh':                   { en: 'Bangladesh',            tr: 'Bangladeş',                      fa: 'بنگلادش',                  ar: 'بنغلاديش',                           ru: 'Бангладеш',         de: 'Bangladesch' },
+  'Belarus':                      { en: 'Belarus',               tr: 'Beyaz Rusya',                    fa: 'بلاروس',                   ar: 'روسيا البيضاء',                      ru: 'Беларусь',          de: 'Weißrussland' },
+  'Belgium':                      { en: 'Belgium',               tr: 'Belçika',                        fa: 'بلژیک',                    ar: 'بلجيكا',                             ru: 'Бельгия',           de: 'Belgien' },
+  'Bolivia':                      { en: 'Bolivia',               tr: 'Bolivya',                        fa: 'بولیوی',                   ar: 'بوليفيا',                            ru: 'Боливия',           de: 'Bolivien' },
+  'Brazil':                       { en: 'Brazil',                tr: 'Brezilya',                       fa: 'برزیل',                    ar: 'البرازيل',                           ru: 'Бразилия',         de: 'Brasilien' },
+  'Bulgaria':                     { en: 'Bulgaria',              tr: 'Bulgaristan',                    fa: 'بلغارستان',                ar: 'بلغاريا',                            ru: 'Болгария',          de: 'Bulgarien' },
+  'Canada':                       { en: 'Canada',                tr: 'Kanada',                         fa: 'کانادا',                   ar: 'كندا',                               ru: 'Канада',            de: 'Kanada' },
+  'Chile':                        { en: 'Chile',                 tr: 'Şili',                           fa: 'شیلی',                     ar: 'تشيلي',                              ru: 'Чили',              de: 'Chile' },
+  'China':                        { en: 'China',                 tr: 'Çin',                            fa: 'چین',                      ar: 'الصين',                              ru: 'Китай',             de: 'China' },
+  'Colombia':                     { en: 'Colombia',              tr: 'Kolombiya',                      fa: 'کلمبیا',                   ar: 'كولومبيا',                           ru: 'Колумбия',          de: 'Kolumbien' },
+  'Croatia':                      { en: 'Croatia',               tr: 'Hırvatistan',                    fa: 'کرواسی',                   ar: 'كرواتيا',                            ru: 'Хорватия',          de: 'Kroatien' },
+  'Cuba':                         { en: 'Cuba',                  tr: 'Küba',                           fa: 'کوبا',                     ar: 'كوبا',                               ru: 'Куба',              de: 'Kuba' },
+  'Czech Republic':               { en: 'Czech Republic',        tr: 'Çekya',                          fa: 'جمهوری چک',                ar: 'جمهورية التشيك',                     ru: 'Чехия',             de: 'Tschechien' },
+  'Denmark':                      { en: 'Denmark',               tr: 'Danimarka',                      fa: 'دانمارک',                  ar: 'الدنمارك',                           ru: 'Дания',             de: 'Dänemark' },
+  'Egypt':                        { en: 'Egypt',                 tr: 'Mısır',                          fa: 'مصر',                      ar: 'مصر',                                ru: 'Египет',            de: 'Ägypten' },
+  'Ethiopia':                     { en: 'Ethiopia',              tr: 'Etiyopya',                       fa: 'اتیوپی',                   ar: 'إثيوبيا',                            ru: 'Эфиопия',           de: 'Äthiopien' },
+  'Finland':                      { en: 'Finland',               tr: 'Finlandiya',                     fa: 'فنلاند',                   ar: 'فنلندا',                             ru: 'Финляндия',         de: 'Finnland' },
+  'Georgia':                      { en: 'Georgia',               tr: 'Gürcistan',                      fa: 'گرجستان',                  ar: 'جورجيا',                             ru: 'Грузия',            de: 'Georgien' },
+  'Ghana':                        { en: 'Ghana',                 tr: 'Gana',                           fa: 'غنا',                      ar: 'غانا',                               ru: 'Гана',              de: 'Ghana' },
+  'Greece':                       { en: 'Greece',                tr: 'Yunanistan',                     fa: 'یونان',                    ar: 'اليونان',                            ru: 'Греция',            de: 'Griechenland' },
+  'Hungary':                      { en: 'Hungary',               tr: 'Macaristan',                     fa: 'مجارستان',                 ar: 'المجر',                              ru: 'Венгрия',           de: 'Ungarn' },
+  'India':                        { en: 'India',                 tr: 'Hindistan',                      fa: 'هند',                      ar: 'الهند',                              ru: 'Индия',             de: 'Indien' },
+  'Indonesia':                    { en: 'Indonesia',             tr: 'Endonezya',                      fa: 'اندونزی',                  ar: 'إندونيسيا',                          ru: 'Индонезия',         de: 'Indonesien' },
+  'Iraq':                         { en: 'Iraq',                  tr: 'Irak',                           fa: 'عراق',                     ar: 'العراق',                             ru: 'Ирак',              de: 'Irak' },
+  'Ireland':                      { en: 'Ireland',               tr: 'İrlanda',                        fa: 'ایرلند',                   ar: 'أيرلندا',                            ru: 'Ирландия',          de: 'Irland' },
+  'Israel':                       { en: 'Israel',                tr: 'İsrail',                         fa: 'اسرائیل',                  ar: 'إسرائيل',                            ru: 'Израиль',           de: 'Israel' },
+  'Japan':                        { en: 'Japan',                 tr: 'Japonya',                        fa: 'ژاپن',                     ar: 'اليابان',                            ru: 'Япония',            de: 'Japan' },
+  'Jordan':                       { en: 'Jordan',                tr: 'Ürdün',                          fa: 'اردن',                     ar: 'الأردن',                             ru: 'Иордания',          de: 'Jordanien' },
+  'Kazakhstan':                   { en: 'Kazakhstan',            tr: 'Kazakistan',                     fa: 'قزاقستان',                 ar: 'كازاخستان',                          ru: 'Казахстан',         de: 'Kasachstan' },
+  'Kenya':                        { en: 'Kenya',                 tr: 'Kenya',                          fa: 'کنیا',                     ar: 'كينيا',                              ru: 'Кения',             de: 'Kenia' },
+  'Kuwait':                       { en: 'Kuwait',                tr: 'Kuveyt',                         fa: 'کویت',                     ar: 'الكويت',                             ru: 'Кувейт',            de: 'Kuwait' },
+  'Kyrgyzstan':                   { en: 'Kyrgyzstan',            tr: 'Kırgızistan',                    fa: 'قرقیزستان',                ar: 'قيرغيزستان',                         ru: 'Киргизия',          de: 'Kirgisistan' },
+  'Lebanon':                      { en: 'Lebanon',               tr: 'Lübnan',                         fa: 'لبنان',                    ar: 'لبنان',                              ru: 'Ливан',             de: 'Libanon' },
+  'Libya':                        { en: 'Libya',                 tr: 'Libya',                          fa: 'لیبی',                     ar: 'ليبيا',                              ru: 'Ливия',             de: 'Libyen' },
+  'Malaysia':                     { en: 'Malaysia',              tr: 'Malezya',                        fa: 'مالزی',                    ar: 'ماليزيا',                            ru: 'Малайзия',          de: 'Malaysia' },
+  'Mexico':                       { en: 'Mexico',                tr: 'Meksika',                        fa: 'مکزیک',                    ar: 'المكسيك',                            ru: 'Мексика',           de: 'Mexiko' },
+  'Morocco':                      { en: 'Morocco',               tr: 'Fas',                            fa: 'مراکش',                    ar: 'المغرب',                             ru: 'Марокко',           de: 'Marokko' },
+  'Netherlands':                  { en: 'Netherlands',           tr: 'Hollanda',                       fa: 'هلند',                     ar: 'هولندا',                             ru: 'Нидерланды',        de: 'Niederlande' },
+  'New Zealand':                  { en: 'New Zealand',           tr: 'Yeni Zelanda',                   fa: 'نیوزیلند',                 ar: 'نيوزيلندا',                          ru: 'Новая Зеландия',    de: 'Neuseeland' },
+  'Nigeria':                      { en: 'Nigeria',               tr: 'Nijerya',                        fa: 'نیجریه',                   ar: 'نيجيريا',                            ru: 'Нигерия',           de: 'Nigeria' },
+  'Norway':                       { en: 'Norway',                tr: 'Norveç',                         fa: 'نروژ',                     ar: 'النرويج',                            ru: 'Норвегия',          de: 'Norwegen' },
+  'Oman':                         { en: 'Oman',                  tr: 'Umman',                          fa: 'عمان',                     ar: 'عُمان',                              ru: 'Оман',              de: 'Oman' },
+  'Pakistan':                     { en: 'Pakistan',              tr: 'Pakistan',                       fa: 'پاکستان',                  ar: 'باكستان',                            ru: 'Пакистан',          de: 'Pakistan' },
+  'Peru':                         { en: 'Peru',                  tr: 'Peru',                           fa: 'پرو',                      ar: 'بيرو',                               ru: 'Перу',              de: 'Peru' },
+  'Philippines':                  { en: 'Philippines',           tr: 'Filipinler',                     fa: 'فیلیپین',                  ar: 'الفلبين',                            ru: 'Филиппины',         de: 'Philippinen' },
+  'Poland':                       { en: 'Poland',                tr: 'Polonya',                        fa: 'لهستان',                   ar: 'بولندا',                             ru: 'Польша',            de: 'Polen' },
+  'Portugal':                     { en: 'Portugal',              tr: 'Portekiz',                       fa: 'پرتغال',                   ar: 'البرتغال',                           ru: 'Португалия',        de: 'Portugal' },
+  'Qatar':                        { en: 'Qatar',                 tr: 'Katar',                          fa: 'قطر',                      ar: 'قطر',                                ru: 'Катар',             de: 'Katar' },
+  'Romania':                      { en: 'Romania',               tr: 'Romanya',                        fa: 'رومانی',                   ar: 'رومانيا',                            ru: 'Румыния',           de: 'Rumänien' },
+  'Saudi Arabia':                 { en: 'Saudi Arabia',          tr: 'Suudi Arabistan',                fa: 'عربستان سعودی',            ar: 'المملكة العربية السعودية',           ru: 'Саудовская Аравия', de: 'Saudi-Arabien' },
+  'Serbia':                       { en: 'Serbia',                tr: 'Sırbistan',                      fa: 'صربستان',                  ar: 'صربيا',                              ru: 'Сербия',            de: 'Serbien' },
+  'Singapore':                    { en: 'Singapore',             tr: 'Singapur',                       fa: 'سنگاپور',                  ar: 'سنغافورة',                           ru: 'Сингапур',          de: 'Singapur' },
+  'Slovakia':                     { en: 'Slovakia',              tr: 'Slovakya',                       fa: 'اسلواکی',                  ar: 'سلوفاكيا',                           ru: 'Словакия',          de: 'Slowakei' },
+  'Somalia':                      { en: 'Somalia',               tr: 'Somali',                         fa: 'سومالی',                   ar: 'الصومال',                            ru: 'Сомали',            de: 'Somalia' },
+  'South Africa':                 { en: 'South Africa',          tr: 'Güney Afrika',                   fa: 'آفریقای جنوبی',            ar: 'جنوب أفريقيا',                       ru: 'ЮАР',               de: 'Südafrika' },
+  'South Korea':                  { en: 'South Korea',           tr: 'Güney Kore',                     fa: 'کره جنوبی',                ar: 'كوريا الجنوبية',                     ru: 'Южная Корея',       de: 'Südkorea' },
+  'Spain':                        { en: 'Spain',                 tr: 'İspanya',                        fa: 'اسپانیا',                  ar: 'إسبانيا',                            ru: 'Испания',           de: 'Spanien' },
+  'Sudan':                        { en: 'Sudan',                 tr: 'Sudan',                          fa: 'سودان',                    ar: 'السودان',                            ru: 'Судан',             de: 'Sudan' },
+  'Sweden':                       { en: 'Sweden',                tr: 'İsveç',                          fa: 'سوئد',                     ar: 'السويد',                             ru: 'Швеция',            de: 'Schweden' },
+  'Switzerland':                  { en: 'Switzerland',           tr: 'İsviçre',                        fa: 'سوئیس',                    ar: 'سويسرا',                             ru: 'Швейцария',         de: 'Schweiz' },
+  'Syria':                        { en: 'Syria',                 tr: 'Suriye',                         fa: 'سوریه',                    ar: 'سوريا',                              ru: 'Сирия',             de: 'Syrien' },
+  'Tajikistan':                   { en: 'Tajikistan',            tr: 'Tacikistan',                     fa: 'تاجیکستان',                ar: 'طاجيكستان',                          ru: 'Таджикистан',       de: 'Tadschikistan' },
+  'Thailand':                     { en: 'Thailand',              tr: 'Tayland',                        fa: 'تایلند',                   ar: 'تايلاند',                            ru: 'Таиланд',           de: 'Thailand' },
+  'Tunisia':                      { en: 'Tunisia',               tr: 'Tunus',                          fa: 'تونس',                     ar: 'تونس',                               ru: 'Тунис',             de: 'Tunesien' },
+  'Turkmenistan':                 { en: 'Turkmenistan',          tr: 'Türkmenistan',                   fa: 'ترکمنستان',                ar: 'تركمانستان',                         ru: 'Туркменистан',      de: 'Turkmenistan' },
+  'Ukraine':                      { en: 'Ukraine',               tr: 'Ukrayna',                        fa: 'اوکراین',                  ar: 'أوكرانيا',                           ru: 'Украина',           de: 'Ukraine' },
+  'United Arab Emirates':         { en: 'United Arab Emirates',  tr: 'Birleşik Arap Emirlikleri',      fa: 'امارات متحده عربی',        ar: 'الإمارات العربية المتحدة',           ru: 'ОАЭ',               de: 'Vereinigte Arabische Emirate' },
+  'Uzbekistan':                   { en: 'Uzbekistan',            tr: 'Özbekistan',                     fa: 'ازبکستان',                 ar: 'أوزبكستان',                          ru: 'Узбекистан',        de: 'Usbekistan' },
+  'Venezuela':                    { en: 'Venezuela',             tr: 'Venezuela',                      fa: 'ونزوئلا',                  ar: 'فنزويلا',                            ru: 'Венесуэла',         de: 'Venezuela' },
+  'Vietnam':                      { en: 'Vietnam',               tr: 'Vietnam',                        fa: 'ویتنام',                   ar: 'فيتنام',                             ru: 'Вьетнам',           de: 'Vietnam' },
+  'Yemen':                        { en: 'Yemen',                 tr: 'Yemen',                          fa: 'یمن',                      ar: 'اليمن',                              ru: 'Йемен',             de: 'Jemen' },
 }
+
+const PRIORITY_KEYS = ['Russia', 'Turkey', 'Germany', 'United States', 'France', 'Italy', 'United Kingdom', 'Iran']
 
 const RTL_LANGS = new Set(['fa', 'ar'])
 
+function getDisplayName(englishKey: string, lang: string): string {
+  return COUNTRY_MAP[englishKey]?.[lang] || englishKey
+}
+
+function findEnglishKey(displayName: string): string | null {
+  for (const [key, translations] of Object.entries(COUNTRY_MAP)) {
+    if (Object.values(translations).includes(displayName) || key === displayName) {
+      return key
+    }
+  }
+  return null
+}
+
 interface CountrySelectProps {
   value: string
-  onChange: (country: string, isValid: boolean) => void
+  onChange: (englishKey: string, isValid: boolean) => void
   lang?: string
   placeholder?: string
 }
 
 export default function CountrySelect({ value, onChange, lang = 'tr', placeholder }: CountrySelectProps) {
-  const list = COUNTRIES[lang] ?? COUNTRIES.tr
-  const [search, setSearch] = useState(value || '')
+  const [currentKey, setCurrentKey] = useState<string | null>(null)
+  const [search, setSearch] = useState('')
   const [open, setOpen] = useState(false)
-  const [isValid, setIsValid] = useState(() => !!value && list.includes(value))
-  const [filtered, setFiltered] = useState(list)
+  const [isValid, setIsValid] = useState(false)
+  const [filtered, setFiltered] = useState<string[]>([])
   const ref = useRef<HTMLDivElement>(null)
   const isRtl = RTL_LANGS.has(lang)
 
-  // Sync when value or lang changes
+  // Convert stored value (possibly old language) to English key, update display for lang changes
   useEffect(() => {
-    setSearch(value || '')
-    const newList = COUNTRIES[lang] ?? COUNTRIES.tr
-    setIsValid(!!value && newList.includes(value))
+    const key = COUNTRY_MAP[value] ? value : findEnglishKey(value)
+    setCurrentKey(key ?? null)
+    setSearch(key ? getDisplayName(key, lang) : '')
+    setIsValid(!!key)
   }, [value, lang])
 
-  // Filter list as user types
+  // Build filtered list with priority keys first, then alphabetical
   useEffect(() => {
-    const newList = COUNTRIES[lang] ?? COUNTRIES.tr
-    if (search.trim() === '') {
-      setFiltered(newList)
-    } else {
-      const q = search.toLowerCase()
-      setFiltered(newList.filter(c => c.toLowerCase().includes(q)))
+    const q = search.toLowerCase()
+    const allKeys = Object.keys(COUNTRY_MAP)
+
+    const matches = (key: string) => {
+      if (!q) return true
+      const display = getDisplayName(key, lang)
+      return display.toLowerCase().includes(q) || key.toLowerCase().includes(q)
     }
+
+    const priorityMatches = PRIORITY_KEYS.filter(k => COUNTRY_MAP[k] && matches(k))
+    const nonPriorityMatches = allKeys
+      .filter(k => !PRIORITY_KEYS.includes(k) && matches(k))
+      .sort((a, b) => getDisplayName(a, lang).localeCompare(getDisplayName(b, lang)))
+
+    setFiltered([...priorityMatches, ...nonPriorityMatches])
   }, [search, lang])
 
   // Close on outside click
@@ -323,23 +162,24 @@ export default function CountrySelect({ value, onChange, lang = 'tr', placeholde
     return () => document.removeEventListener('mousedown', handleClick)
   }, [])
 
-  const handleSelect = (country: string) => {
-    setSearch(country)
+  const handleSelect = (englishKey: string) => {
+    setCurrentKey(englishKey)
+    setSearch(getDisplayName(englishKey, lang))
     setIsValid(true)
-    onChange(country, true)
+    onChange(englishKey, true)
     setOpen(false)
   }
 
-  // On blur: if typed text is not a valid country, revert to last confirmed value
+  // On blur: revert display to last valid selection, or clear if none
   const handleBlur = () => {
     setTimeout(() => {
       setOpen(false)
-      const currentList = COUNTRIES[lang] ?? COUNTRIES.tr
-      if (!currentList.includes(search)) {
-        setSearch(value || '')
-        const revertValid = !!value && currentList.includes(value)
-        setIsValid(revertValid)
-        if (!revertValid) onChange(value || '', false)
+      if (!currentKey) {
+        setSearch('')
+        setIsValid(false)
+      } else {
+        setSearch(getDisplayName(currentKey, lang))
+        setIsValid(true)
       }
     }, 200)
   }
@@ -353,7 +193,7 @@ export default function CountrySelect({ value, onChange, lang = 'tr', placeholde
           type="text"
           value={search}
           dir={isRtl ? 'rtl' : undefined}
-          onChange={(e) => { setSearch(e.target.value); setIsValid(false); setOpen(true) }}
+          onChange={(e) => { setSearch(e.target.value); setIsValid(false); setCurrentKey(null); setOpen(true) }}
           onFocus={() => setOpen(true)}
           onBlur={handleBlur}
           placeholder={placeholder || 'Ülke seçin...'}
@@ -370,7 +210,6 @@ export default function CountrySelect({ value, onChange, lang = 'tr', placeholde
             transition: 'border-color 0.15s',
           }}
         />
-        {/* Checkmark or X indicator */}
         <span style={{
           position: 'absolute',
           top: '50%',
@@ -404,14 +243,14 @@ export default function CountrySelect({ value, onChange, lang = 'tr', placeholde
             marginTop: '2px',
           }}
         >
-          {filtered.map((country, i) => {
-            const isPriority = i < PRIORITY_COUNT
-            // Show orange divider after last priority item (only when all priority items are visible)
-            const showDivider = isPriority && i === PRIORITY_COUNT - 1 && filtered.length > PRIORITY_COUNT
+          {filtered.map((key, i) => {
+            const isPriority = PRIORITY_KEYS.includes(key)
+            const nextIsPriority = filtered[i + 1] ? PRIORITY_KEYS.includes(filtered[i + 1]) : false
+            const showDivider = isPriority && !nextIsPriority && i < filtered.length - 1
             return (
               <div
-                key={country}
-                onMouseDown={() => handleSelect(country)}
+                key={key}
+                onMouseDown={() => handleSelect(key)}
                 style={{
                   padding: '10px 12px',
                   cursor: 'pointer',
@@ -423,7 +262,7 @@ export default function CountrySelect({ value, onChange, lang = 'tr', placeholde
                 onMouseEnter={e => (e.currentTarget.style.background = '#fff7ed')}
                 onMouseLeave={e => (e.currentTarget.style.background = 'white')}
               >
-                {isPriority ? '⭐ ' : ''}{country}
+                {isPriority ? '⭐ ' : ''}{getDisplayName(key, lang)}
               </div>
             )
           })}
