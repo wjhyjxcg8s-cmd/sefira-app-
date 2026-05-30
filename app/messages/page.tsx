@@ -80,6 +80,21 @@ const translations = {
     sendButton: "إرسال",
     home: "الرئيسية",
   },
+  ru: {
+    title: "Мои сообщения",
+    messages: "Сообщения",
+    channelName: "Уведомления Sefira",
+    supportChannelName: "Поддержка Sefira",
+    noConversation: "Нет сообщений",
+    welcomePreview: "Добро пожаловать! 🙏",
+    welcomeMessage:
+      "Искренне благодарим вас за выбор Sefira.\nМы — ваш друг, как и вы — наш. 🙏\n\nЗдесь вы можете видеть сообщения, отправленные другим пользователям, и продолжать разговоры. Спасибо.",
+    systemMessage: "Это системное сообщение.",
+    supportWelcome: "Привет! Чем мы можем помочь? 🙏",
+    supportPlaceholder: "Напишите сообщение...",
+    sendButton: "Отправить",
+    home: "Главная",
+  },
 };
 
 type Lang = keyof typeof translations;

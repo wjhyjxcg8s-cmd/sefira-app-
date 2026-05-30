@@ -78,7 +78,7 @@ function InstagramIcon({ className }: { className?: string }) {
   );
 }
 
-export default function InstagramCTA({ lang }: { lang: "tr" | "en" | "fa" | "ar" | "de" }) {
+export default function InstagramCTA({ lang }: { lang: "tr" | "en" | "fa" | "ar" | "de" | "ru" }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const [followed, setFollowed] = useState(false);

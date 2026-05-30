@@ -62,6 +62,17 @@ const translations = {
     roommates: "شريك السكن",
     rooms: "الغرف",
   },
+  ru: {
+    title: "Сохранённые объявления",
+    empty: "Нет сохранённых объявлений.",
+    emptyAction: "Просмотреть объявления",
+    notLoggedIn: "Войдите, чтобы просмотреть сохранённые объявления.",
+    goHome: "Перейти на главную",
+    address: "Адрес",
+    sharingCost: "Стоимость аренды в месяц",
+    roommates: "Соседи",
+    rooms: "Комнаты",
+  },
 };
 
 type Lang = keyof typeof translations;
@@ -82,7 +93,7 @@ export default function SavedListingsPage() {
 
   useEffect(() => {
     const saved = localStorage.getItem("sefira-lang") as Lang | null;
-    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de") setLang(saved);
+    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de" || saved === "ru") setLang(saved);
   }, []);
 
   const [savedIds, setSavedIds] = useState<number[]>([]);

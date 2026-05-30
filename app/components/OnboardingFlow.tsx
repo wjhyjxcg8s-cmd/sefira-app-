@@ -5,7 +5,7 @@ import Image from "next/image";
 import { supabase } from "@/app/lib/supabase";
 import CountrySelect from "@/app/components/CountrySelect";
 
-type Lang = "tr" | "en" | "fa" | "ar" | "de";
+type Lang = "tr" | "en" | "fa" | "ar" | "de" | "ru";
 type StepName = "displayname" | "birthdate" | "gender" | "country" | "photo";
 type ViewStep = "welcome" | StepName | "celebration";
 
@@ -77,6 +77,16 @@ const i18n: Record<Lang, {
     celebration: "Profil abgeschlossen! Willkommen bei Sefira! 🌹❤️", stepLabel: "Schritt",
     day: "Tag", month: "Monat", year: "Jahr", confirm: "Bestätigen",
   },
+  ru: {
+    welcomeTitle: "Добро пожаловать! 🌟", welcomeMsg: "Прежде чем продолжить, нам нужно несколько данных. Заполните профиль для полного доступа!",
+    letsGo: "Начать", nameQ: "Как вас зовут? 😊", namePlaceholder: "Введите ваше имя...",
+    birthdateQ: "Когда ваш день рождения? 🎂", thanks: "Спасибо! 🎉",
+    genderQ: "Ваш пол?", male: "Мужской", female: "Женский", other: "Другой",
+    countryQ: "Из какой вы страны?", searchCountry: "Поиск страны...", countryConfirm: "Продолжить",
+    photoQ: "Дорогой, выбери красивое фото профиля! 🌟", choosePhoto: "Выбрать фото", photoConfirm: "Сохранить", photoSkip: "Пропустить пока",
+    celebration: "Профиль заполнен! Добро пожаловать в Sefira! 🌹❤️", stepLabel: "Шаг",
+    day: "День", month: "Месяц", year: "Год", confirm: "Подтвердить",
+  },
 };
 
 
@@ -84,8 +94,8 @@ const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov
 const DAYS   = Array.from({ length: 31 }, (_, i) => i + 1);
 const YEARS  = Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - 18 - i);
 
-const FLAG: Record<Lang, string> = { tr: "🇹🇷", en: "🇬🇧", fa: "🇮🇷", ar: "🇸🇦", de: "🇩🇪" };
-const CODE: Record<Lang, string> = { tr: "TR", en: "EN", fa: "FA", ar: "AR", de: "DE" };
+const FLAG: Record<Lang, string> = { tr: "🇹🇷", en: "🇬🇧", fa: "🇮🇷", ar: "🇸🇦", de: "🇩🇪", ru: "🇷🇺" };
+const CODE: Record<Lang, string> = { tr: "TR", en: "EN", fa: "FA", ar: "AR", de: "DE", ru: "RU" };
 
 interface Props {
   userId: string;
@@ -288,7 +298,7 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
         </button>
         {langOpen && (
           <div className="absolute top-full mt-1.5 right-0 bg-white rounded-xl shadow-2xl border border-stone-100 overflow-hidden min-w-[110px]">
-            {(["tr", "en", "fa", "ar", "de"] as const).map((l) => (
+            {(["tr", "en", "fa", "ar", "de", "ru"] as const).map((l) => (
               <button
                 key={l}
                 onClick={() => handleLangChange(l)}

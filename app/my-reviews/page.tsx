@@ -96,6 +96,24 @@ const translations = {
     sampleReviewDate: "١٥ مايو ٢٠٢٦",
     ratingLabel: "تقييمك",
   },
+  ru: {
+    title: "Мои отзывы",
+    banner: "Здесь вы можете просматривать, редактировать или удалять отзывы, оставленные другим пользователям.",
+    empty: "У вас нет отзывов.",
+    notLoggedIn: "Войдите, чтобы просмотреть отзывы.",
+    goHome: "Перейти на главную",
+    edit: "Редактировать",
+    delete: "Удалить",
+    save: "Сохранить",
+    cancel: "Отмена",
+    confirmDelete: "Удалить этот отзыв?",
+    confirmYes: "Да, удалить",
+    confirmNo: "Отмена",
+    editPlaceholder: "Напишите ваш отзыв...",
+    sampleReviewText: "Хороший человек, никогда не шумел.\nЯ прожил там 6 месяцев.",
+    sampleReviewDate: "15 мая 2026",
+    ratingLabel: "Оценка",
+  },
 };
 
 type Lang = keyof typeof translations;
@@ -166,7 +184,7 @@ export default function MyReviewsPage() {
 
   useEffect(() => {
     const saved = localStorage.getItem("sefira-lang") as Lang | null;
-    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de") setLang(saved);
+    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de" || saved === "ru") setLang(saved);
   }, []);
 
   const t = translations[lang];

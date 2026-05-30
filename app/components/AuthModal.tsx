@@ -134,7 +134,7 @@ const authT = {
 };
 
 interface AuthModalProps {
-  lang: "tr" | "en" | "fa" | "ar" | "de";
+  lang: "tr" | "en" | "fa" | "ar" | "de" | "ru";
   onClose: () => void;
 }
 

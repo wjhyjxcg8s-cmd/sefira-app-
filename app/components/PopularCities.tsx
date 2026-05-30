@@ -146,7 +146,7 @@ const copy = {
 
 interface CityCardProps {
   city: (typeof CITIES)[number];
-  lang: "tr" | "en" | "fa" | "ar" | "de";
+  lang: "tr" | "en" | "fa" | "ar" | "de" | "ru";
   inView: boolean;
   delay: number;
   className?: string;
@@ -253,7 +253,7 @@ function CityCard({ city, lang, inView, delay, className = "", imgSizes, t, feat
   );
 }
 
-export default function PopularCities({ lang }: { lang: "tr" | "en" | "fa" | "ar" | "de" }) {
+export default function PopularCities({ lang }: { lang: "tr" | "en" | "fa" | "ar" | "de" | "ru" }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const t = copy[lang];

@@ -656,6 +656,132 @@ const translations = {
     girisYap: "تسجيل الدخول",
     kayitOl: "إنشاء حساب",
   },
+  ru: {
+    navLinks: [
+      { label: "Главная", href: "#" },
+      { label: "Объявления", href: "#" },
+      { label: "Как это работает", href: "#" },
+      { label: "Отзывы", href: "#" },
+    ],
+    stats: [
+      { value: "127K+", label: "Активных пользователей" },
+      { value: "52",    label: "Успешных совпадений" },
+      { value: "98%",   label: "Городов" },
+      { value: "4.9★",  label: "Отзывов" },
+    ],
+    signIn: "Войти",
+    signOut: "Выйти",
+    getStarted: "Начать",
+    heroBadge: "Поиск соседей по комнате",
+    heroLine1: "Найди своего",
+    heroLine2: "идеального",
+    heroLine3: "соседа",
+    heroP: "Найди надёжного соседа по комнате или идеальное жильё. Безопасно, быстро и удобно.",
+    wizardTitle: "Что вы ищете?",
+    optionSeekingTitle: "Ищу жильё",
+    optionSeekingSubtitle: "Ищу комнату или квартиру",
+    optionOfferingTitle: "Сдаю жильё",
+    optionOfferingSubtitle: "Ищу соседа по комнате",
+    genderStep: "Предпочтение по полу",
+    genderStepSub: "Какой пол соседа вы предпочитаете?",
+    genderMale: "Мужской",
+    genderFemale: "Женский",
+    genderAny: "Не важно",
+    budgetStep: "Ваш бюджет",
+    budgetStepSub: "Какой у вас ежемесячный бюджет?",
+    locationStep: "Местоположение",
+    locationStepSub: "Где вы ищете жильё?",
+    backBtn: "Назад",
+    nextBtn: "Далее",
+    searchNowBtn: "Найти сейчас",
+    seekingChip: "Ищу жильё",
+    offeringChip: "Сдаю жильё",
+    countryPlaceholder: "Выберите страну",
+    cityPlaceholder: "Введите город",
+    loadingText: "Загрузка...",
+    priorityGroupLabel: "Популярные страны",
+    allCountriesLabel: "Все страны",
+    searchPlaceholder: "Поиск...",
+    matchesThisWeek: "совпадений на этой неделе",
+    reviewsLabel: "отзывов",
+    storiesTitle: "Истории",
+    storiesLive: "Прямой эфир",
+    addStory: "Добавить историю",
+    aiMatchBadge: "ИИ подбор",
+    aiMatchLine1: "Умный",
+    aiMatchLine2: "подбор соседей",
+    aiMatchP: "Наш ИИ анализирует ваши предпочтения и находит идеальных соседей.",
+    compatBars: [
+      { label: "Образ жизни", value: 97,  color: "from-blue-500 to-violet-600" },
+      { label: "Расписание",  value: 94,  color: "from-emerald-500 to-teal-600" },
+      { label: "Чистота",     value: 100, color: "from-amber-500 to-orange-600" },
+      { label: "Бюджет",      value: 88,  color: "from-rose-500 to-pink-600" },
+    ],
+    findMatchesBtn: "Найти совпадения",
+    matchLabel: "Совпадение",
+    verifiedLabel: "Проверено",
+    petsOk: "Животные разрешены",
+    noPets: "Без животных",
+    smoker: "Курящий",
+    nonSmoker: "Некурящий",
+    skipBtn: "Пропустить",
+    likeBtn: "Нравится",
+    featuredH2: "Рекомендуемые объявления",
+    featuredP: "Проверенные и популярные объявления",
+    listingFilterAll: "Все",
+    listingVerified: "Проверено",
+    perMonth: "/месяц",
+    viewAllBtn: "Смотреть все",
+    howH2: "Как это работает",
+    howP: "Найти соседа по комнате легко за 3 шага",
+    howItWorks: [
+      { step: "01", title: "Создайте профиль",    desc: "Расскажите о себе и своих предпочтениях",         icon: "✦", gradient: "from-blue-500 to-indigo-600" },
+      { step: "02", title: "Найдите совпадения",  desc: "Наш ИИ подберёт подходящих соседей",              icon: "◈", gradient: "from-violet-500 to-purple-600" },
+      { step: "03", title: "Свяжитесь",           desc: "Общайтесь и договаривайтесь о встрече",           icon: "◎", gradient: "from-pink-500 to-rose-600" },
+      { step: "04", title: "Въезжайте",           desc: "Подпишите договор и обустраивайтесь в новом доме", icon: "⌂", gradient: "from-emerald-500 to-teal-600" },
+    ],
+    roommatesH2: "Активные пользователи",
+    roommatesP: "Люди, которые ищут соседей прямо сейчас",
+    viewAll: "Смотреть всех",
+    matchedBtn: "Совпадение!",
+    connectBtn: "Связаться",
+    petsOkShort: "Животные ✓",
+    noPetsShort: "Без животных",
+    trendingH2: "Популярные объявления",
+    trendingP: "Самые просматриваемые объявления этой недели",
+    activeListings: "Активные объявления",
+    communityBadge: "Сообщество",
+    communityH2: "Присоединяйтесь к нашему сообществу",
+    communityP: "Тысячи людей уже нашли идеального соседа",
+    likesLabel: "лайков",
+    commentsLabel: "комментариев",
+    shareLabel: "Поделиться",
+    testiH2: "Отзывы пользователей",
+    testiReviews: "отзывов",
+    appH2a: "Скачайте",
+    appH2b: "приложение",
+    appP: "Ищите соседей в любое время и в любом месте",
+    appStoreLabel: "Скачать в",
+    appStoreName: "App Store",
+    googlePlayLabel: "Доступно в",
+    googlePlayName: "Google Play",
+    newMatch: "Новое совпадение",
+    likedProfile: "оценил ваш профиль",
+    compatibility: "Совместимость",
+    suggested: "Рекомендуется",
+    footerDesc: "Лучшая платформа для поиска соседей по комнате",
+    footerLinks: [
+      { title: "Продукт",   links: ["Найти комнату", "Найти соседа", "Разместить объявление", "ИИ подбор", "Премиум"] },
+      { title: "Компания",  links: ["О нас", "Блог", "Карьера", "Пресса", "Контакты"] },
+      { title: "Поддержка", links: ["Центр помощи", "Безопасность", "Условия", "Конфиденциальность", "Cookies"] },
+    ],
+    footerCopy: "Все права защищены",
+    footerLegal: ["Политика конфиденциальности", "Условия использования", "Cookies"],
+    ilanVer: "+ Разместить объявление",
+    ilanVerModal: "Разместить объявление",
+    girisYap: "Войти",
+    kayitOl: "Регистрация",
+  },
 };
 type Lang = keyof typeof translations;
 
@@ -790,6 +916,14 @@ const testimonialsByLang = {
     { name: "Max Müller",     role: "Remote-Designer",      city: "Köln",      quote: "Die verifizierten Inserate haben mich vor so vielen Betrügereien bewahrt. Jede besichtigte Wohnung war genau so wie beschrieben. Stressfreier Umzug.",         rating: 5, gradient: "from-cyan-500 to-blue-600",      initials: "MM", avatar: "https://randomuser.me/api/portraits/men/75.jpg"   },
     { name: "Sarah König",    role: "Austauschstudentin",   city: "Stuttgart", quote: "Ich hätte nie gedacht, dass Zimmersuche im Ausland so reibungslos funktioniert. Die Community war so herzlich und die App sehr transparent.",                 rating: 5, gradient: "from-violet-500 to-purple-600", initials: "SK", avatar: "https://randomuser.me/api/portraits/women/90.jpg" },
   ],
+  ru: [
+    { name: "Alex Morrison", role: "Digital Nomad",     city: "Amsterdam", quote: "Found my perfect roommate in 48 hours. The AI matching is insanely accurate. Same sleep schedule, same cleaning habits.",                                              rating: 5, gradient: "from-blue-500 to-indigo-600",   initials: "AM", avatar: "https://randomuser.me/api/portraits/men/32.jpg"   },
+    { name: "Layla Hassan",  role: "Medical Student",   city: "Berlin",    quote: "As an expat I was terrified about finding safe housing. Sefiras verification system and warm community made me feel at home.",                                          rating: 5, gradient: "from-emerald-500 to-teal-600", initials: "LH", avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
+    { name: "Daniel Park",   role: "Tech Professional", city: "Dubai",     quote: "The UI is addictive. I kept swiping through profiles until I found a place that actually feels like home, not just a room.",                                            rating: 5, gradient: "from-rose-500 to-pink-600",    initials: "DP", avatar: "https://randomuser.me/api/portraits/men/67.jpg"   },
+    { name: "Sofia Reyes",   role: "Graduate Student",  city: "Barcelona", quote: "I moved to Spain knowing nobody. Within a week Sefira connected me with flatmates who became my closest friends here.",                                               rating: 5, gradient: "from-yellow-500 to-orange-600", initials: "SR", avatar: "https://randomuser.me/api/portraits/women/68.jpg" },
+    { name: "Marcus Webb",   role: "Remote Designer",   city: "Lisbon",    quote: "The verified listings saved me from so many scams. Every place I toured was exactly as described. Finally moved in stress-free.",                                      rating: 5, gradient: "from-cyan-500 to-blue-600",    initials: "MW", avatar: "https://randomuser.me/api/portraits/men/75.jpg"   },
+    { name: "Nina Okafor",   role: "Exchange Student",  city: "London",    quote: "Never thought finding a room abroad would be this smooth. The community was welcoming and the app made everything transparent.",                                        rating: 5, gradient: "from-violet-500 to-purple-600", initials: "NO", avatar: "https://randomuser.me/api/portraits/women/90.jpg" },
+  ],
 };
 
 const communityPostsByLang = {
@@ -817,6 +951,11 @@ const communityPostsByLang = {
     { id: 1, user: "Lena B.", location: "Berlin, Deutschland", content: "Habe gerade die tollsten Mitbewohner über Sefira gefunden! Ziehe nächstes Wochenende ein. Diese Stadt fühlt sich endlich wie Zuhause an.",      likes: 342, comments: 28, gradient: "from-pink-500 to-rose-600",    initials: "LB", time: "vor 2 Std." },
     { id: 2, user: "Max M.",  location: "München, Deutschland", content: "Tipp für die WG-Suche: Seid ehrlich bei eurem Schlafrhythmus! Meiner ist ein Nachtmensch und wir passen perfekt zusammen. 6 Monate, null Probleme.", likes: 218, comments: 45, gradient: "from-blue-500 to-indigo-600",  initials: "MM", time: "vor 5 Std." },
     { id: 3, user: "Julia K.", location: "Hamburg, Deutschland", content: "Erste Woche in meiner neuen Wohnung. Sefira hat mich mit 3 Leuten zusammengebracht, die minimalistisches Design und frühe Morgen lieben. Traumteam!", likes: 456, comments: 67, gradient: "from-violet-500 to-purple-600",initials: "JK", time: "vor 1 Tag" },
+  ],
+  ru: [
+    { id: 1, user: "Sarah K.", location: "Berlin, Germany", content: "Just found the most amazing flatmates through Sefira! Moving in next weekend. This city finally feels like home.",                               likes: 342, comments: 28, gradient: "from-pink-500 to-rose-600",    initials: "SK", time: "2h ago" },
+    { id: 2, user: "Ahmed M.", location: "Dubai, UAE",      content: "Roommate tip: be honest about your sleep schedule! Mine is a night owl and we matched perfectly. 6 months in, zero issues.",                    likes: 218, comments: 45, gradient: "from-blue-500 to-indigo-600",  initials: "AM", time: "5h ago" },
+    { id: 3, user: "Yuki T.",  location: "Amsterdam, NL",   content: "First week in my new flat. Sefira matched me with 3 others who love minimalist design and early mornings. Dream team.",                          likes: 456, comments: 67, gradient: "from-violet-500 to-purple-600",initials: "YT", time: "1d ago" },
   ],
 };
 
@@ -964,7 +1103,7 @@ export default function Home() {
   const [lang, setLang] = useState<Lang>("tr");
   useEffect(() => {
     const saved = localStorage.getItem("sefira-lang") as Lang | null;
-    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de") setLang(saved);
+    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de" || saved === "ru") setLang(saved);
   }, []);
   useEffect(() => { localStorage.setItem("sefira-lang", lang); }, [lang]);
 
@@ -1135,10 +1274,10 @@ export default function Home() {
                 className="flex items-center gap-1 bg-stone-100 border border-stone-200 rounded-lg px-2 py-1.5 text-[11px] font-black transition-all duration-200 hover:bg-stone-200 whitespace-nowrap"
               >
                 <span className="text-sm leading-none">
-                  {lang === "tr" ? "🇹🇷" : lang === "en" ? "🇬🇧" : lang === "fa" ? "🇮🇷" : lang === "ar" ? "🇸🇦" : "🇩🇪"}
+                  {lang === "tr" ? "🇹🇷" : lang === "en" ? "🇬🇧" : lang === "fa" ? "🇮🇷" : lang === "ar" ? "🇸🇦" : lang === "ru" ? "🇷🇺" : "🇩🇪"}
                 </span>
                 <span className="hidden sm:inline text-stone-700">
-                  {lang === "tr" ? "TR" : lang === "en" ? "EN" : lang === "fa" ? "FA" : lang === "ar" ? "AR" : "DE"}
+                  {lang === "tr" ? "TR" : lang === "en" ? "EN" : lang === "fa" ? "FA" : lang === "ar" ? "AR" : lang === "ru" ? "RU" : "DE"}
                 </span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className={`w-3 h-3 text-stone-400 transition-transform duration-200 ${langMenuOpen ? "rotate-180" : ""}`}>
                   <polyline points="6 9 12 15 18 9" />
@@ -1146,14 +1285,14 @@ export default function Home() {
               </button>
               {langMenuOpen && (
                 <div className="absolute top-full mt-1 right-0 z-[100] bg-white border border-stone-200 rounded-xl shadow-xl overflow-hidden min-w-[90px]">
-                  {(["tr", "en", "fa", "ar", "de"] as const).map((l) => (
+                  {(["tr", "en", "fa", "ar", "de", "ru"] as const).map((l) => (
                     <button
                       key={l}
                       onClick={() => { setLang(l); setLangMenuOpen(false); }}
                       className={`flex items-center gap-2 w-full px-3 py-2.5 text-[12px] font-bold transition-colors hover:bg-stone-50 ${lang === l ? "text-orange-500" : "text-stone-700"}`}
                     >
-                      <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : l === "fa" ? "🇮🇷" : l === "ar" ? "🇸🇦" : "🇩🇪"}</span>
-                      {l === "tr" ? "TR" : l === "en" ? "EN" : l === "fa" ? "FA" : l === "ar" ? "AR" : "DE"}
+                      <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : l === "fa" ? "🇮🇷" : l === "ar" ? "🇸🇦" : l === "ru" ? "🇷🇺" : "🇩🇪"}</span>
+                      {l === "tr" ? "TR" : l === "en" ? "EN" : l === "fa" ? "FA" : l === "ar" ? "AR" : l === "ru" ? "RU" : "DE"}
                     </button>
                   ))}
                 </div>

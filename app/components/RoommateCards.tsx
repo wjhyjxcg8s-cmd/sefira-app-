@@ -272,7 +272,7 @@ function SwipeCard({
   labels:     Labels;
   currency:   Currency;
   onInspect:  () => void;
-  lang:       "tr" | "en" | "fa" | "ar" | "de";
+  lang:       "tr" | "en" | "fa" | "ar" | "de" | "ru";
 }) {
   const isTop    = stackIndex === 0;
   const controls = useAnimation();
@@ -504,7 +504,7 @@ function InspectModal({
   labels:   Labels;
   currency: Currency;
   onClose:  () => void;
-  lang:     "tr" | "en" | "fa" | "ar" | "de";
+  lang:     "tr" | "en" | "fa" | "ar" | "de" | "ru";
 }) {
   return (
     <motion.div
@@ -654,7 +654,7 @@ export default function RoommateCards({
   lang = "en",
   currency = "USD",
 }: {
-  lang?:           "tr" | "en" | "fa" | "ar" | "de";
+  lang?:           "tr" | "en" | "fa" | "ar" | "de" | "ru";
   currency?:       Currency;
   currencySymbol?: string;
 }) {

@@ -78,6 +78,20 @@ const translations = {
     type_has_place: "لديه مكان — يبحث عن شريك سكن",
     type_needs_place: "ليس لديه مكان — يبحث عن المشاركة",
   },
+  ru: {
+    title: "Мои объявления",
+    empty: "У вас нет объявлений. Разместите первое!",
+    createBtn: "Создать объявление",
+    notLoggedIn: "Войдите, чтобы просмотреть объявления.",
+    goHome: "Перейти на главную",
+    address: "Адрес",
+    sharingCost: "Стоимость аренды в месяц",
+    roommates: "Нужных соседей",
+    rooms: "Комнаты",
+    active: "Активно",
+    type_has_place: "Есть жильё — ищу соседа",
+    type_needs_place: "Нет жилья — ищу совместное проживание",
+  },
 };
 
 type Lang = keyof typeof translations;
@@ -104,7 +118,7 @@ export default function MyListingsPage() {
 
   useEffect(() => {
     const saved = localStorage.getItem("sefira-lang") as Lang | null;
-    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de") setLang(saved);
+    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de" || saved === "ru") setLang(saved);
   }, []);
 
   useEffect(() => {

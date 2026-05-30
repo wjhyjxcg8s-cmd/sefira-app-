@@ -339,19 +339,85 @@ const translations = {
     fieldEmpty: "لا يمكن ترك هذا الحقل فارغاً",
     countryInvalid: "يرجى اختيار دولة من القائمة",
   },
+  ru: {
+    title: "Мой профиль",
+    displayName: "Имя пользователя",
+    displayNamePlaceholder: "Имя, которое видят другие пользователи",
+    birthDate: "Дата рождения",
+    gender: "Пол",
+    genderMale: "Мужской",
+    genderFemale: "Женский",
+    genderOther: "Другой",
+    profilePhoto: "Фото профиля",
+    uploadPhoto: "Загрузить фото",
+    changePhoto: "Изменить фото",
+    choosePhoto: "Выбрать фото",
+    save: "Сохранить",
+    saving: "Сохранение...",
+    saved: "Сохранено!",
+    cancel: "Отмена",
+    notLoggedIn: "Войдите, чтобы просмотреть профиль.",
+    goHome: "Перейти на главную",
+    error: "Ошибка",
+    photoError: "Ошибка загрузки фото.",
+    emailLabel: "Эл. почта (нельзя изменить)",
+    memberSince: "Участник с",
+    createListing: "+ Разместить объявление",
+    myListings: "Мои объявления",
+    savedListings: "Сохранённые",
+    signOut: "Выйти",
+    confirmEditTitle: "Вы уверены, что хотите изменить эту информацию?",
+    confirmEditBtn: "Да, изменить",
+    cancelEditBtn: "Отмена",
+    notSet: "Не указано",
+    changePassword: "Изменить пароль",
+    currentPassword: "Текущий пароль",
+    newPassword: "Новый пароль",
+    confirmNewPassword: "Подтвердить пароль",
+    passwordPlaceholder: "Минимум 6 символов",
+    passwordMismatch: "Пароли не совпадают",
+    passwordMinLength: "Пароль должен быть не менее 6 символов.",
+    passwordUpdated: "Пароль изменён!",
+    wrongPassword: "Текущий пароль неверен.",
+    deleteAccount: "Удалить аккаунт",
+    deleteWarningTitle: "Вы уверены, что хотите удалить аккаунт?",
+    deleteContinue: "Продолжить",
+    deleteCancel: "Отмена",
+    deleteReasonTitle: "Почему вы уходите?",
+    deleteReason1: "Мне не понравилось приложение, дизайн слабый",
+    deleteReason2: "Я не нашёл ничего подходящего",
+    deleteReason3: "Мне больше не нужно",
+    deleteRatingTitle: "Оцените нас от 1 до 10",
+    deleteFeedbackTitle: "Есть дополнительные комментарии? (Необязательно)",
+    deleteFeedbackPlaceholder: "Напишите ваши мысли здесь...",
+    deleteOtpTitle: "На ваш email отправлен код подтверждения.",
+    deleteOtpPlaceholder: "Введите 6-значный код",
+    deleteConfirmBtn: "Удалить аккаунт",
+    deleteOtpInvalid: "Неверный код. Попробуйте снова.",
+    deleteOtpExpired: "Срок действия кода истёк. Отправьте снова.",
+    deleteSending: "Отправка...",
+    deleteDeleting: "Удаление...",
+    cancelAndGoHome: "Передумал! Хочу домой 🏠",
+    cancelSubtitle: "Мы тебя очень любим 🧡",
+    country: "Страна",
+    countryPlaceholder: "Выберите страну",
+    fieldRequired: "Это поле обязательно",
+    fieldEmpty: "Это поле не может быть пустым",
+    countryInvalid: "Пожалуйста, выберите страну из списка",
+  },
 };
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const [lang, setLang] = useState<"tr" | "en" | "fa" | "ar" | "de">("tr");
+  const [lang, setLang] = useState<"tr" | "en" | "fa" | "ar" | "de" | "ru">("tr");
   const t = translations[lang];
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const langMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem("sefira-lang") as "tr" | "en" | "fa" | "ar" | "de" | null;
-    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de") setLang(saved);
+    const saved = localStorage.getItem("sefira-lang") as "tr" | "en" | "fa" | "ar" | "de" | "ru" | null;
+    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de" || saved === "ru") setLang(saved);
   }, []);
   useEffect(() => { localStorage.setItem("sefira-lang", lang); }, [lang]);
 
@@ -741,10 +807,10 @@ export default function ProfilePage() {
                 className="flex items-center gap-1 bg-stone-100 border border-stone-200 rounded-lg px-2 py-1.5 text-[11px] font-black transition-all duration-200 hover:bg-stone-200 whitespace-nowrap"
               >
                 <span className="text-sm leading-none">
-                  {lang === "tr" ? "🇹🇷" : lang === "en" ? "🇬🇧" : lang === "fa" ? "🇮🇷" : lang === "ar" ? "🇸🇦" : "🇩🇪"}
+                  {lang === "tr" ? "🇹🇷" : lang === "en" ? "🇬🇧" : lang === "fa" ? "🇮🇷" : lang === "ar" ? "🇸🇦" : lang === "ru" ? "🇷🇺" : "🇩🇪"}
                 </span>
                 <span className="text-stone-700">
-                  {lang === "tr" ? "TR" : lang === "en" ? "EN" : lang === "fa" ? "FA" : lang === "ar" ? "AR" : "DE"}
+                  {lang === "tr" ? "TR" : lang === "en" ? "EN" : lang === "fa" ? "FA" : lang === "ar" ? "AR" : lang === "ru" ? "RU" : "DE"}
                 </span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className={`w-3 h-3 text-stone-400 transition-transform duration-200 ${langMenuOpen ? "rotate-180" : ""}`}>
                   <polyline points="6 9 12 15 18 9" />
@@ -752,14 +818,14 @@ export default function ProfilePage() {
               </button>
               {langMenuOpen && (
                 <div className="absolute top-full mt-1 right-0 z-[100] bg-white border border-stone-200 rounded-xl shadow-xl overflow-hidden min-w-[90px]">
-                  {(["tr", "en", "fa", "ar", "de"] as const).map((l) => (
+                  {(["tr", "en", "fa", "ar", "de", "ru"] as const).map((l) => (
                     <button
                       key={l}
                       onClick={() => { setLang(l); setLangMenuOpen(false); }}
                       className={`flex items-center gap-2 w-full px-3 py-2.5 text-[12px] font-bold transition-colors hover:bg-stone-50 ${lang === l ? "text-orange-500" : "text-stone-700"}`}
                     >
-                      <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : l === "fa" ? "🇮🇷" : l === "ar" ? "🇸🇦" : "🇩🇪"}</span>
-                      {l === "tr" ? "TR" : l === "en" ? "EN" : l === "fa" ? "FA" : l === "ar" ? "AR" : "DE"}
+                      <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : l === "fa" ? "🇮🇷" : l === "ar" ? "🇸🇦" : l === "ru" ? "🇷🇺" : "🇩🇪"}</span>
+                      {l === "tr" ? "TR" : l === "en" ? "EN" : l === "fa" ? "FA" : l === "ar" ? "AR" : l === "ru" ? "RU" : "DE"}
                     </button>
                   ))}
                 </div>

@@ -77,11 +77,25 @@ const t = {
     goHome: "الذهاب إلى الرئيسية",
     invalidLink: "رابط غير صالح أو منتهي الصلاحية. يرجى المحاولة مرة أخرى.",
   },
+  ru: {
+    title: "Сброс пароля",
+    newPassword: "Новый пароль",
+    confirmPassword: "Подтвердить пароль",
+    placeholder: "Минимум 6 символов",
+    updateBtn: "Сохранить",
+    updating: "Загрузка...",
+    passwordMismatch: "Пароли не совпадают",
+    minLength: "Минимум 8 символов",
+    success: "Пароль успешно изменён!",
+    error: "Ошибка",
+    goHome: "Вернуться к входу",
+    invalidLink: "Недействительная ссылка",
+  },
 };
 
 export default function ResetPasswordPage() {
   const router = useRouter();
-  const [lang, setLang] = useState<"tr" | "en" | "fa" | "ar" | "de">("tr");
+  const [lang, setLang] = useState<"tr" | "en" | "fa" | "ar" | "de" | "ru">("tr");
   const tr = t[lang];
 
   // null = still checking, true = valid token, false = invalid/missing
@@ -93,8 +107,8 @@ export default function ResetPasswordPage() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem("sefira-lang") as "tr" | "en" | "fa" | "ar" | "de" | null;
-    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de") setLang(saved);
+    const saved = localStorage.getItem("sefira-lang") as "tr" | "en" | "fa" | "ar" | "de" | "ru" | null;
+    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de" || saved === "ru") setLang(saved);
   }, []);
 
   useEffect(() => {

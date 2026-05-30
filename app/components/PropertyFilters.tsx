@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { type Currency, CURRENCY_SYMBOLS } from "@/app/lib/currency";
 
-type Lang = "tr" | "en" | "fa" | "ar" | "de";
+type Lang = "tr" | "en" | "fa" | "ar" | "de" | "ru";
 
 interface FilterState {
   priceMin: string;
