@@ -1209,14 +1209,19 @@ export default function Home() {
     return () => window.removeEventListener("keydown", handleKey);
   }, [viewerOpen, weeklyStories.length]);
 
-  const trackView = (storyId: string) => {
+  const trackView = async (storyId: string) => {
     const viewKey = `story_viewed_${storyId}`;
     if (sessionStorage.getItem(viewKey)) return;
-    sessionStorage.setItem(viewKey, "true");
-    setWeeklyStories((prev) =>
-      prev.map((s) => (s.id === storyId ? { ...s, views: (s.views ?? 0) + 1 } : s))
-    );
-    supabase.rpc("increment_story_views", { story_id: storyId });
+    try {
+      const res = await fetch("/api/stories/view", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ storyId }),
+      });
+      if (res.ok) sessionStorage.setItem(viewKey, "true");
+    } catch {
+      // silently ignore — view tracking is non-critical
+    }
   };
 
   const t = translations[lang];
