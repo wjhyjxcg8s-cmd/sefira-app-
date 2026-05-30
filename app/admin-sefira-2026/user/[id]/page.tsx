@@ -332,11 +332,12 @@ export default function UserDetailPage() {
         // Deletion feedback by email
         const emailForFeedback = prof.email ?? authEmail
         if (emailForFeedback) {
-          const { data: fbData } = await supabase
+          const { data: fbData, error: fbError } = await supabaseAdmin
             .from("deletion_feedback")
             .select("*")
             .eq("email", emailForFeedback)
             .order("deleted_at", { ascending: false });
+          console.log('feedback data:', fbData?.length, 'error:', fbError?.message);
           if (!cancelled) setFeedback(fbData ?? []);
         }
       } else if (authUser) {
