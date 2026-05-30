@@ -1377,86 +1377,81 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* ── PROFILE BOTTOM SHEET ─────────────────────────────────────────────── */}
-      {user && profileMenuOpen && (
+      {/* PROFILE RIGHT DRAWER */}
+      {user && (
         <>
           <style>{`
-            .ps-backdrop {
-              position: fixed; inset: 0; z-index: 60;
-              background: rgba(0,0,0,0.55);
-              backdrop-filter: blur(6px);
-              -webkit-backdrop-filter: blur(6px);
-              animation: psBdFade 0.25s ease forwards;
-            }
-            .ps-sheet {
-              position: fixed; bottom: 0; left: 0; right: 0; z-index: 70;
-              background: white;
-              border-radius: 24px 24px 0 0;
-              box-shadow: 0 -4px 40px rgba(0,0,0,0.15);
-              max-height: 92vh;
-              overflow-y: auto;
-              animation: psSlideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            }
-            @media (min-width: 640px) {
-              .ps-sheet {
-                bottom: auto; left: auto; top: 68px; right: 16px;
-                width: 380px; max-height: 85vh;
-                border-radius: 24px;
-                box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-                animation: psFadeScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-              }
-              .ps-handle { display: none !important; }
-            }
-            @keyframes psBdFade { from { opacity: 0; } to { opacity: 1; } }
-            @keyframes psSlideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-            @keyframes psFadeScale {
-              from { opacity: 0; transform: scale(0.96) translateY(-6px); }
-              to   { opacity: 1; transform: scale(1)    translateY(0);    }
-            }
-            @keyframes psItemIn {
-              from { opacity: 0; transform: translateY(8px); }
-              to   { opacity: 1; transform: translateY(0);   }
-            }
             .ps-item {
               display: flex; align-items: center; gap: 14px;
               padding: 14px 16px; background: white; border-radius: 14px;
-              text-decoration: none; opacity: 0; width: 100%;
-              animation: psItemIn 0.3s ease forwards;
+              text-decoration: none; width: 100%;
               cursor: pointer; border: none; text-align: left;
               transition: background 0.15s ease, transform 0.1s ease;
-              box-sizing: border-box;
+              box-sizing: border-box; color: inherit;
             }
-            .ps-item:hover  { background: #f9fafb; }
+            .ps-item:hover  { background: #f0f0f0; }
             .ps-item:active { transform: scale(0.97); }
           `}</style>
 
-          {/* Backdrop */}
-          <div className="ps-backdrop" onClick={() => setProfileMenuOpen(false)} />
-
-          {/* Sheet */}
+          {/* Overlay */}
           <div
-            className="ps-sheet"
+            onClick={() => setProfileMenuOpen(false)}
+            style={{
+              position: "fixed", top: 0, left: 0,
+              width: "100%", height: "100%",
+              background: "rgba(0,0,0,0.5)",
+              backdropFilter: "blur(2px)",
+              WebkitBackdropFilter: "blur(2px)",
+              zIndex: 999,
+              opacity: profileMenuOpen ? 1 : 0,
+              transition: "opacity 0.3s ease-out",
+              pointerEvents: profileMenuOpen ? "auto" : "none",
+            }}
+          />
+
+          {/* Drawer */}
+          <div
             dir="ltr"
-            onTouchStart={(e) => { e.currentTarget.dataset.touchY = String(e.touches[0].clientY); }}
-            onTouchEnd={(e) => {
-              const startY = parseFloat(e.currentTarget.dataset.touchY || "0");
-              if (e.changedTouches[0].clientY - startY > 80) setProfileMenuOpen(false);
+            style={{
+              position: "fixed", top: 0, right: 0,
+              width: "75%", maxWidth: "320px", height: "100%",
+              background: "white",
+              zIndex: 1000,
+              transform: profileMenuOpen ? "translateX(0)" : "translateX(100%)",
+              transition: "transform 0.3s ease-out",
+              overflowY: "auto",
+              boxShadow: "-4px 0 30px rgba(0,0,0,0.2)",
+              display: "flex", flexDirection: "column",
             }}
           >
-            {/* Handle pill — hidden on desktop */}
-            <div className="ps-handle" style={{ display: "flex", justifyContent: "center", paddingTop: "12px", paddingBottom: "6px" }}>
-              <div style={{ width: "40px", height: "4px", background: "#d1d5db", borderRadius: "9999px" }} />
-            </div>
-
-            {/* Header */}
+            {/* Orange gradient header */}
             <div style={{
               background: "linear-gradient(135deg, #f97316 0%, #f59e0b 100%)",
-              padding: "24px 24px 28px",
+              padding: "48px 24px 28px",
               display: "flex", flexDirection: "column", alignItems: "center", gap: "8px",
-              position: "relative", overflow: "hidden",
+              position: "relative", overflow: "hidden", flexShrink: 0,
             }}>
               <div style={{ position: "absolute", top: "-20px", right: "-20px", width: "120px", height: "120px", borderRadius: "50%", background: "rgba(255,255,255,0.08)", pointerEvents: "none" }} />
-              <div style={{ position: "absolute", bottom: "-30px", left: "-10px", width: "90px",  height: "90px",  borderRadius: "50%", background: "rgba(255,255,255,0.06)", pointerEvents: "none" }} />
+              <div style={{ position: "absolute", bottom: "-30px", left: "-10px", width: "90px", height: "90px", borderRadius: "50%", background: "rgba(255,255,255,0.06)", pointerEvents: "none" }} />
+
+              {/* X close button */}
+              <button
+                onClick={() => setProfileMenuOpen(false)}
+                style={{
+                  position: "absolute", top: "12px", left: "12px",
+                  width: "32px", height: "32px", borderRadius: "50%",
+                  background: "rgba(255,255,255,0.2)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  cursor: "pointer", border: "none", flexShrink: 0,
+                }}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" style={{ width: "16px", height: "16px" }}>
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+
+              {/* Avatar */}
               <button
                 onClick={() => { setProfileMenuOpen(false); router.push("/profile"); }}
                 style={{
@@ -1476,6 +1471,7 @@ export default function Home() {
                     .split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()
                 )}
               </button>
+
               <p style={{ fontWeight: 800, fontSize: "20px", color: "white", margin: 0, textAlign: "center" }}>
                 {user.user_metadata?.full_name ?? user.email?.split("@")[0] ?? "User"}
               </p>
@@ -1485,10 +1481,10 @@ export default function Home() {
             </div>
 
             {/* Menu items */}
-            <div style={{ padding: "12px 16px 8px", background: "#f8f8f8", display: "flex", flexDirection: "column", gap: "8px" }}>
+            <div style={{ flex: 1, padding: "12px 16px 8px", background: "#f8f8f8", display: "flex", flexDirection: "column", gap: "8px" }}>
 
               {/* Edit Profile */}
-              <Link href="/profile" onClick={() => setProfileMenuOpen(false)} className="ps-item" style={{ animationDelay: "50ms" }}>
+              <Link href="/profile" onClick={() => setProfileMenuOpen(false)} className="ps-item">
                 <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "#ede9fe", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: "20px", height: "20px" }}>
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -1496,7 +1492,7 @@ export default function Home() {
                   </svg>
                 </div>
                 <span style={{ fontWeight: 700, fontSize: "15px", color: "#111", flex: 1 }}>
-                  {lang === "tr" ? "Profilimi Düzenle" : lang === "fa" ? "ویرایش پروفایل" : lang === "ar" ? "تعديل الملف الشخصي" : lang === "de" ? "Profil bearbeiten" : lang === "ru" ? "Редактировать профиль" : "Edit Profile"}
+                  {lang === "tr" ? "Profilimi Düzenle" : lang === "fa" ? "ویرایش پروفایل" : lang === "ar" ? "تعدیل الملف الشخصی" : lang === "de" ? "Profil bearbeiten" : lang === "ru" ? "Редактировать профиль" : "Edit Profile"}
                 </span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: "16px", height: "16px", flexShrink: 0 }}>
                   <polyline points="9 18 15 12 9 6" />
@@ -1504,7 +1500,7 @@ export default function Home() {
               </Link>
 
               {/* Saved */}
-              <Link href="/saved-listings" onClick={() => setProfileMenuOpen(false)} className="ps-item" style={{ animationDelay: "100ms" }}>
+              <Link href="/saved-listings" onClick={() => setProfileMenuOpen(false)} className="ps-item">
                 <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "#dbeafe", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: "20px", height: "20px" }}>
                     <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
@@ -1519,7 +1515,7 @@ export default function Home() {
               </Link>
 
               {/* Post Listing */}
-              <button onClick={() => { handleCreateListing(); setProfileMenuOpen(false); }} className="ps-item" style={{ animationDelay: "150ms" }}>
+              <button onClick={() => { handleCreateListing(); setProfileMenuOpen(false); }} className="ps-item">
                 <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "#dcfce7", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" style={{ width: "20px", height: "20px" }}>
                     <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
@@ -1534,7 +1530,7 @@ export default function Home() {
               </button>
 
               {/* My Listings */}
-              <Link href="/my-listings" onClick={() => setProfileMenuOpen(false)} className="ps-item" style={{ animationDelay: "200ms" }}>
+              <Link href="/my-listings" onClick={() => setProfileMenuOpen(false)} className="ps-item">
                 <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "#ffedd5", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: "20px", height: "20px" }}>
                     <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
@@ -1543,7 +1539,7 @@ export default function Home() {
                   </svg>
                 </div>
                 <span style={{ fontWeight: 700, fontSize: "15px", color: "#111", flex: 1 }}>
-                  {lang === "tr" ? "İlanlarım" : lang === "fa" ? "آگهی‌های من" : lang === "ar" ? "إعلاناتي" : lang === "de" ? "Meine Inserate" : lang === "ru" ? "Мои объявления" : "My Listings"}
+                  {lang === "tr" ? "İlanlarım" : lang === "fa" ? "آگهی‌های من" : lang === "ar" ? "إعلاناتی" : lang === "de" ? "Meine Inserate" : lang === "ru" ? "Мои объявления" : "My Listings"}
                 </span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: "16px", height: "16px", flexShrink: 0 }}>
                   <polyline points="9 18 15 12 9 6" />
@@ -1551,7 +1547,7 @@ export default function Home() {
               </Link>
 
               {/* My Messages */}
-              <Link href="/messages" onClick={() => setProfileMenuOpen(false)} className="ps-item" style={{ animationDelay: "250ms" }}>
+              <Link href="/messages" onClick={() => setProfileMenuOpen(false)} className="ps-item">
                 <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "#ccfbf1", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, position: "relative" }}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="#0d9488" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: "20px", height: "20px" }}>
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
@@ -1565,7 +1561,7 @@ export default function Home() {
                   )}
                 </div>
                 <span style={{ fontWeight: 700, fontSize: "15px", color: "#111", flex: 1 }}>
-                  {lang === "tr" ? "Mesajlarım" : lang === "fa" ? "پیام‌های من" : lang === "ar" ? "رسائلي" : lang === "de" ? "Meine Nachrichten" : lang === "ru" ? "Мои сообщения" : "My Messages"}
+                  {lang === "tr" ? "Mesajlarım" : lang === "fa" ? "پیام‌های من" : lang === "ar" ? "رسائلی" : lang === "de" ? "Meine Nachrichten" : lang === "ru" ? "Мои сооبщения" : "My Messages"}
                 </span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: "16px", height: "16px", flexShrink: 0 }}>
                   <polyline points="9 18 15 12 9 6" />
@@ -1573,14 +1569,14 @@ export default function Home() {
               </Link>
 
               {/* Reviews & Ratings */}
-              <Link href="/my-reviews" onClick={() => setProfileMenuOpen(false)} className="ps-item" style={{ animationDelay: "300ms" }}>
+              <Link href="/my-reviews" onClick={() => setProfileMenuOpen(false)} className="ps-item">
                 <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "#fef9c3", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="#ca8a04" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: "20px", height: "20px" }}>
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                   </svg>
                 </div>
                 <span style={{ fontWeight: 700, fontSize: "15px", color: "#111", flex: 1 }}>
-                  {lang === "tr" ? "Yorumlarım ve Puanlarım" : lang === "fa" ? "کامنت‌ها و امتیازهای من" : lang === "ar" ? "تعليقاتي وتقييماتي" : lang === "de" ? "Meine Bewertungen" : lang === "ru" ? "Мои отзывы и оценки" : "Reviews & Ratings"}
+                  {lang === "tr" ? "Yorumlarım ve Puanım" : lang === "fa" ? "کامنت‌ها و امتیازهای من" : lang === "ar" ? "تعلیقاتی وتقییماتی" : lang === "de" ? "Meine Bewertungen" : lang === "ru" ? "Мои отзывы и оценки" : "Reviews & Ratings"}
                 </span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: "16px", height: "16px", flexShrink: 0 }}>
                   <polyline points="9 18 15 12 9 6" />
@@ -1589,12 +1585,11 @@ export default function Home() {
             </div>
 
             {/* Sign Out */}
-            <div style={{ padding: "8px 16px 32px", background: "#f8f8f8" }}>
+            <div style={{ padding: "8px 16px 32px", background: "#f8f8f8", flexShrink: 0 }}>
               <div style={{ height: "1px", background: "#e5e7eb", marginBottom: "8px" }} />
               <button
                 onClick={() => { handleSignOut(); setProfileMenuOpen(false); }}
                 className="ps-item"
-                style={{ animationDelay: "350ms" }}
               >
                 <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "#fee2e2", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <svg viewBox="0 0 24 24" fill="#dc2626" style={{ width: "20px", height: "20px" }}>
