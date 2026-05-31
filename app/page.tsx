@@ -2406,20 +2406,21 @@ export default function Home() {
             <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-4 tracking-tight">{t.howH2}</h2>
             <p className="text-stone-600 text-lg max-w-xl mx-auto">{t.howP}</p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
-            {t.howItWorks.map((step, i) => (
-              <div key={step.step} className="relative text-center group">
-                {i < t.howItWorks.length - 1 && (
-                  <div className="hidden lg:block absolute top-8 left-full w-full h-px bg-gradient-to-r from-stone-300 to-transparent -translate-x-1/2 z-0" />
-                )}
-                <div className={`relative z-10 w-16 h-16 rounded-2xl bg-gradient-to-br ${step.gradient} flex items-center justify-center text-2xl mx-auto mb-5 shadow-xl group-hover:scale-110 group-hover:shadow-2xl group-hover:shadow-orange-500/20 transition-all duration-300`}>
-                  {step.icon}
+          <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
+            {t.howItWorks.map((step, i) => {
+              const emojis = ["📝", "🤖", "💬", "🏡"];
+              const bgs    = ["bg-blue-50", "bg-purple-50", "bg-pink-50", "bg-green-50"];
+              return (
+                <div key={step.step} className="bg-white rounded-2xl p-5 shadow-md border border-gray-100 text-center flex flex-col items-center hover:shadow-xl hover:-translate-y-1 transition-all">
+                  <div className={`w-16 h-16 ${bgs[i]} rounded-2xl flex items-center justify-center mb-3 text-4xl`}>
+                    {emojis[i]}
+                  </div>
+                  <span className="text-xs font-bold text-orange-500">{step.step}</span>
+                  <h3 className="text-base font-bold text-gray-900 mt-2">{step.title}</h3>
+                  <p className="text-xs text-gray-500 mt-1 leading-relaxed">{step.desc}</p>
                 </div>
-                <div className="text-xs font-black text-stone-400 mb-2 tracking-widest group-hover:text-stone-600 transition-colors duration-300">{step.step}</div>
-                <h3 className="font-bold text-stone-900 mb-2 group-hover:text-orange-600 transition-colors duration-300">{step.title}</h3>
-                <p className="text-sm text-stone-500 leading-relaxed">{step.desc}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
