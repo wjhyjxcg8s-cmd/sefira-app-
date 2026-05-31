@@ -143,6 +143,11 @@ const translations = {
     ilanVerModal: "İlan vermek için lütfen giriş yapın veya kayıt olun.",
     girisYap: "Giriş Yap",
     kayitOl: "Kayıt Ol",
+    followTitle: "Bizi Takip Edin",
+    followBtn: "Takip Et →",
+    joinChannelBtn: "Kanala Katıl →",
+    igDesc: "Özel ev arkadaşı ipuçları ve gerçek eşleşme hikayeleri",
+    tgDesc: "Anlık bildirimler ve özel teklifler için kanalımıza katılın",
   },
   en: {
     navLinks: [
@@ -264,6 +269,11 @@ const translations = {
     ilanVerModal: "Please sign in or register to create a listing.",
     girisYap: "Sign In",
     kayitOl: "Register",
+    followTitle: "Follow Us",
+    followBtn: "Follow →",
+    joinChannelBtn: "Join Channel →",
+    igDesc: "Exclusive roommate tips and real match stories",
+    tgDesc: "Join our channel for instant notifications and special offers",
   },
   fa: {
     navLinks: [
@@ -385,6 +395,11 @@ const translations = {
     ilanVerModal: "برای ثبت آگهی لطفاً وارد شوید یا ثبت نام کنید.",
     girisYap: "ورود",
     kayitOl: "ثبت نام",
+    followTitle: "ما را دنبال کنید",
+    followBtn: "دنبال کردن →",
+    joinChannelBtn: "عضویت در کانال →",
+    igDesc: "نکات انحصاری هم‌خانه و داستان‌های واقعی",
+    tgDesc: "برای اعلان‌های فوری و پیشنهادات ویژه به کانال ما بپیوندید",
   },
   de: {
     navLinks: [
@@ -505,6 +520,11 @@ const translations = {
     ilanVerModal: "Bitte melden Sie sich an oder registrieren Sie sich, um ein Inserat aufzugeben.",
     girisYap: "Anmelden",
     kayitOl: "Registrieren",
+    followTitle: "Folge uns",
+    followBtn: "Folgen →",
+    joinChannelBtn: "Kanal beitreten →",
+    igDesc: "Exklusive Mitbewohner-Tipps und echte Match-Geschichten",
+    tgDesc: "Tritt unserem Kanal bei für Benachrichtigungen und Sonderangebote",
   },
   // Always add "ar" key when adding new translations
   ar: {
@@ -627,6 +647,11 @@ const translations = {
     ilanVerModal: "يرجى تسجيل الدخول أو التسجيل لنشر إعلان.",
     girisYap: "تسجيل الدخول",
     kayitOl: "إنشاء حساب",
+    followTitle: "تابعنا",
+    followBtn: "تابع →",
+    joinChannelBtn: "انضم إلى القناة →",
+    igDesc: "نصائح حصرية لشركاء السكن وقصص تطابق حقيقية",
+    tgDesc: "انضم إلى قناتنا للإشعارات الفورية والعروض الخاصة",
   },
   ru: {
     navLinks: [
@@ -747,6 +772,11 @@ const translations = {
     ilanVerModal: "Разместить объявление",
     girisYap: "Войти",
     kayitOl: "Регистрация",
+    followTitle: "Следите за нами",
+    followBtn: "Подписаться →",
+    joinChannelBtn: "Вступить в канал →",
+    igDesc: "Советы по поиску соседей и реальные истории",
+    tgDesc: "Присоединяйтесь к каналу для уведомлений и спецпредложений",
   },
 };
 type Lang = keyof typeof translations;
@@ -905,56 +935,6 @@ const trendingCities = [
   { name: "London",    country: "UK",          listings: "3,201", growth: "+8%",  glow: "bg-indigo-500/10", border: "border-indigo-500/20", emoji: "🎡" },
 ];
 
-const testimonialsByLang = {
-  tr: [
-    { name: "Ayşe Kaya",    role: "Öğrenci",             city: "İstanbul",  quote: "Sefira sayesinde 48 saatte mükemmel ev arkadaşımı buldum. Yapay zeka eşleştirmesi inanılmaz derecede doğru; aynı uyku düzeni, aynı temizlik anlayışı.",      rating: 5, gradient: "from-blue-500 to-indigo-600",    initials: "AK", avatar: "https://randomuser.me/api/portraits/women/32.jpg" },
-    { name: "Mehmet Demir", role: "Yazılım Mühendisi",   city: "Ankara",    quote: "Yurt dışından döndüğümde güvenli konut bulmak en büyük korkumdu. Sefira'nın doğrulama sistemi ve sıcak topluluğu beni hemen evimde hissettirdi.",            rating: 5, gradient: "from-emerald-500 to-teal-600",   initials: "MD", avatar: "https://randomuser.me/api/portraits/men/44.jpg"   },
-    { name: "Fatma Yıldız", role: "Tıp Öğrencisi",       city: "İzmir",     quote: "Uygulama çok bağımlılık yapıcı. Gerçekten evim gibi hissettiren bir yer bulana kadar profillere bakmaya devam ettim. Harika bir eşleşme!",                   rating: 5, gradient: "from-rose-500 to-pink-600",      initials: "FY", avatar: "https://randomuser.me/api/portraits/women/67.jpg" },
-    { name: "Emre Çelik",   role: "Yüksek Lisans Öğ.", city: "Bursa",     quote: "İzmir'e taşındığımda kimseyi tanımıyordum. Bir hafta içinde Sefira beni en yakın arkadaşlarım olacak ev arkadaşlarımla buluşturdu.",                         rating: 5, gradient: "from-yellow-500 to-orange-600",  initials: "EÇ", avatar: "https://randomuser.me/api/portraits/men/68.jpg"   },
-    { name: "Zeynep Arslan","role": "Uzaktan Tasarımcı", city: "Antalya",   quote: "Doğrulanmış ilanlar beni pek çok dolandırıcılıktan kurtardı. Gezdiğim her yer tam olarak anlatıldığı gibiydi. Hiç stressiz taşındım.",                      rating: 5, gradient: "from-cyan-500 to-blue-600",      initials: "ZA", avatar: "https://randomuser.me/api/portraits/women/75.jpg" },
-    { name: "Can Özdemir",  role: "Değişim Öğrencisi",  city: "İstanbul",  quote: "Yurt dışında oda bulmak bu kadar kolay olacağını hiç düşünmemiştim. Topluluk çok sıcakkanlıydı ve uygulama her şeyi şeffaf hale getirdi.",                   rating: 5, gradient: "from-violet-500 to-purple-600", initials: "CÖ", avatar: "https://randomuser.me/api/portraits/men/90.jpg"   },
-  ],
-  en: [
-    { name: "Alex Morrison", role: "Digital Nomad",     city: "Amsterdam", quote: "Found my perfect roommate in 48 hours. The AI matching is insanely accurate. Same sleep schedule, same cleaning habits.",                                              rating: 5, gradient: "from-blue-500 to-indigo-600",   initials: "AM", avatar: "https://randomuser.me/api/portraits/men/32.jpg"   },
-    { name: "Layla Hassan",  role: "Medical Student",   city: "Berlin",    quote: "As an expat I was terrified about finding safe housing. Sefiras verification system and warm community made me feel at home.",                                          rating: 5, gradient: "from-emerald-500 to-teal-600", initials: "LH", avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
-    { name: "Daniel Park",   role: "Tech Professional", city: "Dubai",     quote: "The UI is addictive. I kept swiping through profiles until I found a place that actually feels like home, not just a room.",                                            rating: 5, gradient: "from-rose-500 to-pink-600",    initials: "DP", avatar: "https://randomuser.me/api/portraits/men/67.jpg"   },
-    { name: "Sofia Reyes",   role: "Graduate Student",  city: "Barcelona", quote: "I moved to Spain knowing nobody. Within a week Sefira connected me with flatmates who became my closest friends here.",                                               rating: 5, gradient: "from-yellow-500 to-orange-600", initials: "SR", avatar: "https://randomuser.me/api/portraits/women/68.jpg" },
-    { name: "Marcus Webb",   role: "Remote Designer",   city: "Lisbon",    quote: "The verified listings saved me from so many scams. Every place I toured was exactly as described. Finally moved in stress-free.",                                      rating: 5, gradient: "from-cyan-500 to-blue-600",    initials: "MW", avatar: "https://randomuser.me/api/portraits/men/75.jpg"   },
-    { name: "Nina Okafor",   role: "Exchange Student",  city: "London",    quote: "Never thought finding a room abroad would be this smooth. The community was welcoming and the app made everything transparent.",                                        rating: 5, gradient: "from-violet-500 to-purple-600", initials: "NO", avatar: "https://randomuser.me/api/portraits/women/90.jpg" },
-  ],
-  fa: [
-    { name: "سارا محمدی",    role: "دانشجو",              city: "تهران",    quote: "بهترین هم‌خانه زندگیم رو از طریق سفیرا پیدا کردم!",                                                                                                rating: 5, gradient: "from-blue-500 to-indigo-600",    initials: "سم", avatar: "https://randomuser.me/api/portraits/women/32.jpg" },
-    { name: "علی رضایی",     role: "مهندس نرم‌افزار",    city: "مشهد",     quote: "سیستم هوش مصنوعی سفیرا واقعاً دقیقه. برنامه خواب و عادات تمیزکاری یکسانیم!",                                                                    rating: 5, gradient: "from-emerald-500 to-teal-600",   initials: "عر", avatar: "https://randomuser.me/api/portraits/men/44.jpg"   },
-    { name: "نیلوفر احمدی",  role: "دانشجو",              city: "اصفهان",   quote: "به عنوان دانشجو نگران بودم. سفیرا کمکم کرد خانه امنی پیدا کنم.",                                                                                 rating: 5, gradient: "from-rose-500 to-pink-600",      initials: "نا", avatar: "https://randomuser.me/api/portraits/women/67.jpg" },
-    { name: "محمد کریمی",    role: "فریلنسر",             city: "شیراز",    quote: "با سفیرا در ۴۸ ساعت هم‌خانه ایده‌آلم را پیدا کردم. سیستم تأیید هویت خیلی مطمئنه.",                                                              rating: 5, gradient: "from-yellow-500 to-orange-600",  initials: "مک", avatar: "https://randomuser.me/api/portraits/men/68.jpg"   },
-    { name: "زهرا حسینی",    role: "طراح گرافیک",         city: "تبریز",    quote: "آگهی‌های تأیید شده سفیرا مانع از بسیاری کلاهبرداری‌ها شد. هر خانه‌ای که بازدید کردم دقیقاً همانطور بود که توضیح داده شده بود.",               rating: 5, gradient: "from-cyan-500 to-blue-600",      initials: "زح", avatar: "https://randomuser.me/api/portraits/women/75.jpg" },
-    { name: "امیر صادقی",    role: "دانشجوی تبادلی",      city: "تهران",    quote: "هیچ‌وقت فکر نمی‌کردم پیدا کردن اتاق در خارج از کشور این‌قدر آسان باشد. جامعه سفیرا خیلی صمیمی بود.",                                         rating: 5, gradient: "from-violet-500 to-purple-600", initials: "اص", avatar: "https://randomuser.me/api/portraits/men/90.jpg"   },
-  ],
-  ar: [
-    { name: "سارة العلي",    role: "طالبة",               city: "دبي",       quote: "وجدتُ شريكة السكن المثالية عبر سفيرا في ٤٨ ساعة فقط. دقة المطابقة بالذكاء الاصطناعي مذهلة؛ نفس جدول النوم ونفس عادات النظافة.",              rating: 5, gradient: "from-blue-500 to-indigo-600",    initials: "سع", avatar: "https://randomuser.me/api/portraits/women/32.jpg" },
-    { name: "خالد المنصور",  role: "مهندس برمجيات",       city: "الرياض",    quote: "حين عُدتُ من الخارج، كان إيجاد سكن آمن هاجسي الأكبر. نظام التحقق الدقيق في سفيرا ومجتمعها الدافئ جعلاني أشعر بالانتماء فوراً.",        rating: 5, gradient: "from-emerald-500 to-teal-600",   initials: "خم", avatar: "https://randomuser.me/api/portraits/men/44.jpg"   },
-    { name: "نورا الحمدان",  role: "طالبة طب",             city: "القاهرة",   quote: "التطبيق رائع ولا يمكن الاستغناء عنه. واصلتُ تصفّح الملفات حتى وجدتُ مكاناً يشعرني بأنه بيتي الحقيقي.",                                   rating: 5, gradient: "from-rose-500 to-pink-600",      initials: "نح", avatar: "https://randomuser.me/api/portraits/women/67.jpg" },
-    { name: "عمر الشريف",    role: "طالب دراسات عليا",    city: "بيروت",     quote: "انتقلتُ إلى مدينة جديدة ولا أعرف فيها أحداً. في أسبوع واحد، وصلتني سفيرا بشركاء سكن أصبحوا أقرب أصدقائي.",                                rating: 5, gradient: "from-yellow-500 to-orange-600",  initials: "عش", avatar: "https://randomuser.me/api/portraits/men/68.jpg"   },
-    { name: "ريم السعيد",    role: "مصمّمة مستقلة",       city: "أبوظبي",    quote: "الإعلانات الموثَّقة أنقذتني من كثير من عمليات الاحتيال. كل مكان زرتُه كان مطابقاً تماماً لما هو موصوف. انتقلتُ دون أي توتر.",             rating: 5, gradient: "from-cyan-500 to-blue-600",      initials: "رس", avatar: "https://randomuser.me/api/portraits/women/75.jpg" },
-    { name: "فيصل الغامدي",  role: "طالب تبادل",          city: "عمّان",     quote: "لم أتخيّل قط أن إيجاد غرفة في الخارج سيكون بهذه السهولة. المجتمع كان مرحّباً جداً والتطبيق جعل كل شيء شفافاً.",                           rating: 5, gradient: "from-violet-500 to-purple-600", initials: "فغ", avatar: "https://randomuser.me/api/portraits/men/90.jpg"   },
-  ],
-  de: [
-    { name: "Lukas Bauer",    role: "Student",              city: "Berlin",    quote: "In 48 Stunden meinen perfekten Mitbewohner gefunden. Das KI-Matching ist unglaublich präzise – gleicher Schlafrhythmus, gleiche Sauberkeitsansprüche.",  rating: 5, gradient: "from-blue-500 to-indigo-600",    initials: "LB", avatar: "https://randomuser.me/api/portraits/men/32.jpg"   },
-    { name: "Lena Hoffmann",  role: "Softwareentwicklerin", city: "München",   quote: "Als Neuankömmling hatte ich Angst, sichere Wohnsituation zu finden. Sefiras Verifizierungssystem und die herzliche Community haben mich sofort willkommen geheißen.", rating: 5, gradient: "from-emerald-500 to-teal-600",   initials: "LH", avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
-    { name: "Tim Schreiber",  role: "Tech-Profi",           city: "Hamburg",   quote: "Die App macht süchtig. Ich habe so lange Profile durchgescrollt, bis ich einen Ort gefunden habe, der sich wirklich wie Zuhause anfühlt.",                    rating: 5, gradient: "from-rose-500 to-pink-600",      initials: "TS", avatar: "https://randomuser.me/api/portraits/men/67.jpg"   },
-    { name: "Julia Mayer",    role: "Masterstudentin",      city: "Frankfurt", quote: "Ich bin nach Deutschland gezogen und kannte niemanden. Innerhalb einer Woche verband mich Sefira mit Mitbewohnern, die meine engsten Freunde wurden.",          rating: 5, gradient: "from-yellow-500 to-orange-600",  initials: "JM", avatar: "https://randomuser.me/api/portraits/women/68.jpg" },
-    { name: "Max Müller",     role: "Remote-Designer",      city: "Köln",      quote: "Die verifizierten Inserate haben mich vor so vielen Betrügereien bewahrt. Jede besichtigte Wohnung war genau so wie beschrieben. Stressfreier Umzug.",         rating: 5, gradient: "from-cyan-500 to-blue-600",      initials: "MM", avatar: "https://randomuser.me/api/portraits/men/75.jpg"   },
-    { name: "Sarah König",    role: "Austauschstudentin",   city: "Stuttgart", quote: "Ich hätte nie gedacht, dass Zimmersuche im Ausland so reibungslos funktioniert. Die Community war so herzlich und die App sehr transparent.",                 rating: 5, gradient: "from-violet-500 to-purple-600", initials: "SK", avatar: "https://randomuser.me/api/portraits/women/90.jpg" },
-  ],
-  ru: [
-    { name: "Alex Morrison", role: "Digital Nomad",     city: "Amsterdam", quote: "Found my perfect roommate in 48 hours. The AI matching is insanely accurate. Same sleep schedule, same cleaning habits.",                                              rating: 5, gradient: "from-blue-500 to-indigo-600",   initials: "AM", avatar: "https://randomuser.me/api/portraits/men/32.jpg"   },
-    { name: "Layla Hassan",  role: "Medical Student",   city: "Berlin",    quote: "As an expat I was terrified about finding safe housing. Sefiras verification system and warm community made me feel at home.",                                          rating: 5, gradient: "from-emerald-500 to-teal-600", initials: "LH", avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
-    { name: "Daniel Park",   role: "Tech Professional", city: "Dubai",     quote: "The UI is addictive. I kept swiping through profiles until I found a place that actually feels like home, not just a room.",                                            rating: 5, gradient: "from-rose-500 to-pink-600",    initials: "DP", avatar: "https://randomuser.me/api/portraits/men/67.jpg"   },
-    { name: "Sofia Reyes",   role: "Graduate Student",  city: "Barcelona", quote: "I moved to Spain knowing nobody. Within a week Sefira connected me with flatmates who became my closest friends here.",                                               rating: 5, gradient: "from-yellow-500 to-orange-600", initials: "SR", avatar: "https://randomuser.me/api/portraits/women/68.jpg" },
-    { name: "Marcus Webb",   role: "Remote Designer",   city: "Lisbon",    quote: "The verified listings saved me from so many scams. Every place I toured was exactly as described. Finally moved in stress-free.",                                      rating: 5, gradient: "from-cyan-500 to-blue-600",    initials: "MW", avatar: "https://randomuser.me/api/portraits/men/75.jpg"   },
-    { name: "Nina Okafor",   role: "Exchange Student",  city: "London",    quote: "Never thought finding a room abroad would be this smooth. The community was welcoming and the app made everything transparent.",                                        rating: 5, gradient: "from-violet-500 to-purple-600", initials: "NO", avatar: "https://randomuser.me/api/portraits/women/90.jpg" },
-  ],
-};
 
 
 const PRIORITY_COUNTRIES = [
@@ -1279,7 +1259,6 @@ export default function Home() {
   }, [viewerOpen, viewerIndex, weeklyStories.length]);
 
   const t = translations[lang];
-  const testimonials = testimonialsByLang[lang];
 
   const [savedProfiles,  setSavedProfiles]  = useState<number[]>([]);
   const [animatingIds,   setAnimatingIds]   = useState<number[]>([]);
@@ -2640,42 +2619,91 @@ export default function Home() {
       {/* ── POPULAR CITIES ────────────────────────────────────────────────────── */}
       <PopularCities lang={lang} />
 
-      {/* ── TESTIMONIALS ──────────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-5 py-20">
-        <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-4 tracking-tight">{t.testiH2}</h2>
-          <div className="flex items-center justify-center gap-2">
-            <span className="text-amber-400 text-xl">★★★★★</span>
-            <span className="text-stone-900 font-black text-xl">4.9</span>
-            <span className="text-stone-500">{t.testiReviews}</span>
-          </div>
-        </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map((item) => (
-            <div key={item.name} className="bg-white border border-stone-200 rounded-2xl p-7 hover:border-orange-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-orange-500/5 hover:ring-1 hover:ring-stone-200 transition-all duration-200">
-              <div className="flex gap-1 mb-5">
-                {Array.from({ length: item.rating }).map((_, i) => (
-                  <span key={i} className="text-amber-400 text-sm">★</span>
-                ))}
+      {/* ── SOCIAL MEDIA ──────────────────────────────────────────────────────── */}
+      <section className="py-10 px-4">
+        <div className="max-w-sm mx-auto">
+
+          {/* Section title */}
+          <h2 className="text-xl font-black text-gray-900 text-center mb-6">
+            🌐 {t.followTitle}
+          </h2>
+
+          {/* Instagram Card */}
+          <motion.div
+            initial={{opacity:0, y:20}}
+            whileInView={{opacity:1, y:0}}
+            viewport={{once:true}}
+            className="rounded-3xl p-5 mb-4 text-white relative overflow-hidden"
+            style={{background:'linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045)'}}
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 bg-white/20 rounded-2xl flex items-center justify-center">
+                <svg viewBox="0 0 24 24" fill="white" className="w-6 h-6">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
               </div>
-              <p className="text-stone-700 text-sm leading-relaxed mb-6 italic">&ldquo;{item.quote}&rdquo;</p>
-              <div className="flex items-center gap-3">
-                <div className="relative w-11 h-11 rounded-full overflow-hidden flex-shrink-0 shadow-lg">
-                  <Image
-                    src={item.avatar}
-                    alt={item.name}
-                    fill
-                    sizes="44px"
-                    className="object-cover"
-                  />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-stone-900">{item.name}</p>
-                  <p className="text-xs text-stone-500">{item.role} · {item.city}</p>
-                </div>
+              <div>
+                <p className="font-bold text-base">Instagram</p>
+                <p className="text-white/70 text-xs">@sefira.app</p>
+              </div>
+              <div className="ml-auto bg-white/20 rounded-full px-2 py-0.5 text-xs">
+                12.4K takipçi
               </div>
             </div>
-          ))}
+
+            <p className="text-white/80 text-xs mb-3">{t.igDesc}</p>
+
+            <a
+              href="https://instagram.com/sefira.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full bg-white text-center py-2.5 rounded-2xl font-bold text-sm"
+              style={{color:'#fd1d1d'}}
+            >
+              {t.followBtn}
+            </a>
+          </motion.div>
+
+          {/* Telegram Card */}
+          <motion.div
+            initial={{opacity:0, y:20}}
+            whileInView={{opacity:1, y:0}}
+            viewport={{once:true}}
+            transition={{delay:0.15}}
+            className="rounded-3xl p-5 text-white relative overflow-hidden"
+            style={{background:'linear-gradient(135deg,#0088cc,#00b4ff)'}}
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 bg-white/20 rounded-2xl flex items-center justify-center">
+                <svg viewBox="0 0 24 24" fill="white" className="w-6 h-6">
+                  <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                </svg>
+              </div>
+              <div>
+                <p className="font-bold text-base">Telegram</p>
+                <p className="text-white/70 text-xs">@getsefira</p>
+              </div>
+              <div className="ml-auto bg-white/20 rounded-full px-2 py-0.5 text-xs">
+                Kanal
+              </div>
+            </div>
+
+            <p className="text-white/80 text-xs mb-3">{t.tgDesc}</p>
+
+            <a
+              href="https://t.me/getsefira"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full bg-white text-center py-2.5 rounded-2xl font-bold text-sm text-[#0088cc]"
+            >
+              {t.joinChannelBtn}
+            </a>
+          </motion.div>
+
         </div>
       </section>
 
