@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import InstagramCTA from "@/app/components/InstagramCTA";
 import WelcomePopup from "@/app/components/WelcomePopup";
 import PopularCities from "@/app/components/PopularCities";
 import PropertyFilters from "@/app/components/PropertyFilters";
@@ -2333,9 +2332,6 @@ export default function Home() {
           </div>
         </>
       )}
-
-      {/* ── INSTAGRAM CTA ─────────────────────────────────────────────────────── */}
-      <InstagramCTA lang={lang} />
 
       {/* ── LISTINGS ──────────────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-5 py-20">
