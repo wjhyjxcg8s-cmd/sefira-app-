@@ -1029,6 +1029,16 @@ export default function Home() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // ── Lock body scroll when profile drawer is open ──────────────────────────
+  useEffect(() => {
+    if (profileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [profileMenuOpen]);
+
   // ── Lang tooltip (one-time first-visit hint) ─────────────────────────────
   useEffect(() => {
     if (localStorage.getItem('lang_tooltip_shown')) return;
@@ -1601,23 +1611,6 @@ export default function Home() {
               <div style={{ position: "absolute", top: "-20px", right: "-20px", width: "120px", height: "120px", borderRadius: "50%", background: "rgba(255,255,255,0.08)", pointerEvents: "none" }} />
               <div style={{ position: "absolute", bottom: "-30px", left: "-10px", width: "90px", height: "90px", borderRadius: "50%", background: "rgba(255,255,255,0.06)", pointerEvents: "none" }} />
 
-              {/* X close button */}
-              <button
-                onClick={() => setProfileMenuOpen(false)}
-                style={{
-                  position: "absolute", top: "68px", right: "16px",
-                  width: "32px", height: "32px", borderRadius: "50%",
-                  background: "rgba(255,255,255,0.22)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  cursor: "pointer", border: "none",
-                }}
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" style={{ width: "16px", height: "16px" }}>
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </button>
-
               {/* Avatar */}
               <button
                 onClick={() => { setProfileMenuOpen(false); router.push("/profile"); }}
@@ -1749,14 +1742,11 @@ export default function Home() {
                   <polyline points="9 18 15 12 9 6" />
                 </svg>
               </Link>
-            </div>
 
-            {/* Sign Out */}
-            <div style={{ padding: "8px 16px", paddingBottom: "max(20px, env(safe-area-inset-bottom, 0px))", background: "#f3f4f6", flexShrink: 0, borderTop: "1px solid #e5e7eb" }}>
+              {/* Sign Out */}
               <button
                 onClick={() => { handleSignOut(); setProfileMenuOpen(false); }}
                 className="ps-item"
-                style={{ marginBottom: 0 }}
               >
                 <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "#fee2e2", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <svg viewBox="0 0 24 24" fill="#dc2626" style={{ width: "20px", height: "20px" }}>
