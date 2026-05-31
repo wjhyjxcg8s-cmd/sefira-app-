@@ -826,6 +826,15 @@ const matchProfiles = [
   },
 ];
 
+const MATCH_PHOTOS = [
+  "https://randomuser.me/api/portraits/women/44.jpg",
+  "https://randomuser.me/api/portraits/men/32.jpg",
+  "https://randomuser.me/api/portraits/women/68.jpg",
+  "https://randomuser.me/api/portraits/men/75.jpg",
+  "https://randomuser.me/api/portraits/women/90.jpg",
+  "https://randomuser.me/api/portraits/men/15.jpg",
+];
+
 const listings = [
   {
     id: 1, title: "Modern Studio near Alexanderplatz", city: "Berlin", country: "Germany",
@@ -2523,89 +2532,23 @@ export default function Home() {
             {t.viewAll}
           </button>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {matchProfiles.map((p) => (
-            <div
-              key={p.id}
-              className="group bg-white border border-stone-200 rounded-2xl overflow-hidden hover:border-orange-200 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/5 hover:-translate-y-1 cursor-pointer hover:ring-1 hover:ring-orange-500/15"
-            >
-              <div className={`h-44 bg-gradient-to-br ${p.gradient} relative flex items-center justify-center`}>
-                <div className="w-20 h-20 rounded-full bg-white/15 border-4 border-white/25 flex items-center justify-center text-2xl font-black shadow-xl">
-                  {p.initials}
+        <div className="grid grid-cols-2 gap-3">
+          {matchProfiles.map((p, idx) => (
+            <div key={p.id} className="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100">
+              <div className="p-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={MATCH_PHOTOS[idx] ?? MATCH_PHOTOS[0]}
+                  alt={p.name}
+                  className="w-14 h-14 rounded-full object-cover mx-auto mt-3"
+                />
+                <p className="text-sm font-bold text-center mt-2">{p.name}, {p.age}</p>
+                <p className="text-xs text-gray-400 text-center">{p.occupation}</p>
+                <div className="flex justify-center mt-1">
+                  <span className="bg-orange-100 text-orange-600 text-xs font-bold px-2 py-0.5 rounded-full">{p.match}%</span>
                 </div>
-                <div className="absolute top-3 right-3 bg-stone-900/75 backdrop-blur-md rounded-2xl px-3 py-1.5 text-center">
-                  <div className="text-lg font-black text-white">{p.match}%</div>
-                  <div className="text-xs text-white/70">{t.matchLabel}</div>
-                </div>
-                {p.verified && (
-                  <div className="absolute top-3 left-3 bg-orange-500/75 backdrop-blur-sm rounded-full px-2.5 py-0.5 text-xs font-bold text-white">
-                    {t.verifiedLabel}
-                  </div>
-                )}
-              </div>
-              <div className="p-5">
-                <div className="flex items-start justify-between mb-2">
-                  <div>
-                    <h3 className="font-bold text-stone-900">{p.name}, {p.age}</h3>
-                    <p className="text-xs text-stone-500">{p.occupation}</p>
-                  </div>
-                  <span className="text-xs text-stone-400">{p.nationality}</span>
-                </div>
-                <p className="text-xs text-stone-500 leading-relaxed mb-4">{lang === "tr" ? p.bioTr : lang === "fa" ? p.bioFa : lang === "ar" ? (p.bioAr ?? p.bio) : p.bio}</p>
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {p.lifestyle.map((tag) => (
-                    <span key={tag} className="text-xs bg-stone-100 border border-stone-200 rounded-full px-2.5 py-0.5 text-stone-600">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <div className="flex items-center gap-3 text-xs text-stone-500 mb-5">
-                  <span>{convertBudgetRange(p.budget, currency)}{t.perMonth}</span>
-                  <span>{p.pets ? t.petsOkShort : t.noPetsShort}</span>
-                  <span className="ml-auto text-stone-400">{p.city}</span>
-                </div>
-                {/* ── Three action buttons ── */}
-                <div className="flex items-center gap-2.5">
-
-                  {/* Reject / Skip */}
-                  <button
-                    onClick={(e) => e.stopPropagation()}
-                    aria-label="Skip"
-                    className="w-11 h-11 rounded-2xl border border-stone-200 bg-stone-50 flex items-center justify-center text-stone-300 hover:border-stone-300 hover:text-stone-500 hover:bg-white hover:shadow-sm transition-all duration-200 active:scale-90 flex-shrink-0"
-                  >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" />
-                    </svg>
-                  </button>
-
-                  {/* Message — primary gradient CTA */}
-                  <button
-                    onClick={(e) => e.stopPropagation()}
-                    aria-label="Message"
-                    className="flex-1 h-11 rounded-2xl bg-gradient-to-r from-orange-500 via-fuchsia-500 to-violet-600 flex items-center justify-center shadow-lg shadow-fuchsia-500/20 hover:opacity-95 hover:shadow-xl hover:shadow-fuchsia-500/30 hover:-translate-y-px transition-all duration-200 active:scale-[0.97] active:translate-y-0 group"
-                  >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 group-hover:scale-110 transition-transform duration-200">
-                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                    </svg>
-                  </button>
-
-                  {/* Save / Heart toggle */}
-                  <button
-                    onClick={(e) => { e.stopPropagation(); toggleSave(p.id); }}
-                    aria-label="Save"
-                    className={`w-11 h-11 rounded-2xl border-2 flex items-center justify-center transition-all duration-200 active:scale-90 flex-shrink-0 ${
-                      savedProfiles.includes(p.id)
-                        ? "border-rose-400 bg-rose-50 text-rose-500 shadow-md shadow-rose-500/15"
-                        : "border-stone-200 bg-white text-stone-300 hover:border-rose-300 hover:text-rose-400 hover:bg-rose-50/60 hover:shadow-sm"
-                    } ${animatingIds.includes(p.id) ? "animate-heart-pop" : ""}`}
-                  >
-                    <svg viewBox="0 0 24 24" fill={savedProfiles.includes(p.id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                    </svg>
-                  </button>
-
-                </div>
+                <p className="text-xs text-gray-500 text-center mt-1">{convertBudgetRange(p.budget, currency)}{t.perMonth}</p>
+                <p className="text-xs text-gray-400 text-center">{p.city}</p>
               </div>
             </div>
           ))}
