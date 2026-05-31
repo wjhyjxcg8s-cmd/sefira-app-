@@ -1581,7 +1581,7 @@ export default function Home() {
               zIndex: 1000,
               transform: profileMenuOpen ? "translateX(0)" : "translateX(100%)",
               transition: "transform 0.3s ease-out",
-              overflowY: "auto",
+              overflow: "hidden",
               boxShadow: "-4px 0 30px rgba(0,0,0,0.2)",
               display: "flex", flexDirection: "column",
             }}
@@ -1589,7 +1589,10 @@ export default function Home() {
             {/* Orange gradient header */}
             <div style={{
               background: "linear-gradient(135deg, #f97316 0%, #f59e0b 100%)",
-              padding: "48px 24px 28px",
+              paddingTop: "max(48px, calc(env(safe-area-inset-top, 0px) + 16px))",
+              paddingBottom: "28px",
+              paddingLeft: "24px",
+              paddingRight: "24px",
               display: "flex", flexDirection: "column", alignItems: "center", gap: "8px",
               position: "relative", overflow: "hidden", flexShrink: 0,
             }}>
@@ -1600,7 +1603,7 @@ export default function Home() {
               <button
                 onClick={() => setProfileMenuOpen(false)}
                 style={{
-                  position: "absolute", top: "12px", left: "12px",
+                  position: "absolute", top: "max(12px, calc(env(safe-area-inset-top, 0px) + 4px))", left: "12px",
                   width: "32px", height: "32px", borderRadius: "50%",
                   background: "rgba(255,255,255,0.2)",
                   display: "flex", alignItems: "center", justifyContent: "center",
@@ -1643,7 +1646,7 @@ export default function Home() {
             </div>
 
             {/* Menu items */}
-            <div style={{ flex: 1, padding: "12px 16px 8px", background: "#f8f8f8", display: "flex", flexDirection: "column", gap: "8px" }}>
+            <div style={{ flex: 1, padding: "12px 16px 8px", background: "#f8f8f8", display: "flex", flexDirection: "column", gap: "8px", overflowY: "auto" }}>
 
               {/* Edit Profile */}
               <Link href="/profile" onClick={() => setProfileMenuOpen(false)} className="ps-item">
@@ -1747,7 +1750,7 @@ export default function Home() {
             </div>
 
             {/* Sign Out */}
-            <div style={{ padding: "8px 16px 32px", background: "#f8f8f8", flexShrink: 0 }}>
+            <div style={{ padding: "8px 16px", paddingBottom: "max(32px, env(safe-area-inset-bottom, 0px))", background: "#f8f8f8", flexShrink: 0 }}>
               <div style={{ height: "1px", background: "#e5e7eb", marginBottom: "8px" }} />
               <button
                 onClick={() => { handleSignOut(); setProfileMenuOpen(false); }}

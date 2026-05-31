@@ -9,7 +9,8 @@
       "Bash(Get-ChildItem -Path \"e:\\\\sefıra-web\\\\sefira-app\\\\app\\\\admin-sefira-2026\\\\\" -Recurse -File | Select-Object FullName)",
       "Bash(Sort-Object)",
       "Bash(mkdir -p \"e:/sefıra-web/sefira-app/app/api/admin/channels/[id]\")",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(Get-ChildItem -Path \"e:\\\\sefıra-web\\\\sefira-app\\\\app\\\\components\" -Name)"
     ],
     "additionalDirectories": [
       "e:\\sefıra-web\\sefira-app\\app\\api\\admin\\channels"
