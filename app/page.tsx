@@ -2113,34 +2113,6 @@ export default function Home() {
               )}
             </div>
 
-            {/* Advanced property filters */}
-            <div className="w-full mb-8">
-              <PropertyFilters lang={lang} currency={currency} currencySymbol={sym} />
-            </div>
-
-            {/* Social proof */}
-            <div className="flex items-center gap-4">
-              <div className="flex -space-x-3">
-                {[
-                  ["SK", "from-pink-500 to-rose-600"],
-                  ["AM", "from-blue-500 to-indigo-600"],
-                  ["YT", "from-violet-500 to-purple-600"],
-                  ["JW", "from-emerald-500 to-teal-600"],
-                  ["PS", "from-amber-500 to-orange-600"],
-                ].map(([init, grad], i) => (
-                  <div
-                    key={i}
-                    className={`w-10 h-10 rounded-full bg-gradient-to-br ${grad} border-2 border-white/25 flex items-center justify-center text-xs font-bold shadow-lg`}
-                  >
-                    {init}
-                  </div>
-                ))}
-              </div>
-              <div className="text-left">
-                <div className="text-sm font-bold text-white">{t.matchesThisWeek}</div>
-                <div className="text-xs text-white/60">{t.reviewsLabel}</div>
-              </div>
-            </div>
 
             {/* İlan Ver — desktop hero button */}
             <button
@@ -2215,17 +2187,10 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="relative z-10 flex flex-col items-center gap-2 pb-10 select-none">
-          <span className="text-5xl leading-none animate-robot-bounce" aria-hidden="true">🤖</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-4 h-4 text-white/40 animate-bounce" style={{ animationDelay: "0.3s" }}>
-            <polyline points="6 9 12 15 18 9" />
-          </svg>
-        </div>
       </section>
 
       {/* ── STATS ─────────────────────────────────────────────────────────────── */}
-      <div className="border-y border-orange-100 bg-orange-50/60 backdrop-blur-sm">
+      <div className="mt-4 border-y border-orange-100 bg-orange-50/60 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-5 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
           {t.stats.map((s) => (
             <div key={s.label} className="text-center group cursor-default hover:scale-105 transition-transform duration-200">
