@@ -172,12 +172,14 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
       <div
         onClick={e => e.stopPropagation()}
         style={{
-          background: 'linear-gradient(180deg, #ffffff 0%, #fff7ed 100%)',
-          borderRadius: '24px',
-          padding: '28px 24px',
+          background: '#FFF8F0',
+          borderRadius: '12px',
+          padding: '16px',
           zIndex: 9999,
           width: '100%',
           maxWidth: '384px',
+          maxHeight: '85vh',
+          overflowY: 'auto',
           boxShadow: '0 8px 40px rgba(0,0,0,0.25)',
           animation: 'scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
           direction: isRTL ? 'rtl' : 'ltr',
@@ -189,8 +191,8 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
         <div style={{
           display: 'flex',
           justifyContent: 'center',
-          gap: '8px',
-          padding: '16px 16px 0',
+          gap: '6px',
+          marginBottom: '8px',
           flexWrap: 'wrap',
         }}>
           {languages.map(l => (
@@ -200,19 +202,19 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '4px',
-                padding: '6px 12px',
+                gap: '3px',
+                padding: '4px 8px',
                 borderRadius: '50px',
                 border: currentLang === l.code ? '2px solid #f97316' : '2px solid #eee',
                 background: currentLang === l.code ? '#fff7ed' : 'white',
                 cursor: 'pointer',
-                fontSize: '13px',
+                fontSize: '12px',
                 fontWeight: currentLang === l.code ? '700' : '500',
                 color: currentLang === l.code ? '#f97316' : '#666',
                 transition: 'all 0.2s ease',
               }}
             >
-              <span style={{ fontSize: '16px' }}>{l.flag}</span>
+              <span style={{ fontSize: '14px' }}>{l.flag}</span>
               <span>{l.label}</span>
             </button>
           ))}
@@ -220,16 +222,16 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
 
         {/* Handle bar */}
         <div style={{
-          width: '40px', height: '4px',
+          width: '32px', height: '3px',
           background: '#e0e0e0', borderRadius: '2px',
-          margin: '20px auto 20px',
+          margin: '4px auto 8px',
         }} />
 
         {/* Hero decoration */}
         <div style={{
-          fontSize: '48px',
+          fontSize: '28px',
           lineHeight: 1,
-          marginBottom: '16px',
+          marginBottom: '6px',
           textAlign: 'center',
         }}>
           🏠✨
@@ -240,19 +242,19 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
           display: 'inline-block',
           background: 'linear-gradient(135deg, #f97316, #fb923c)',
           color: 'white',
-          padding: '6px 16px',
+          padding: '3px 12px',
           borderRadius: '50px',
-          fontSize: '13px',
+          fontSize: '12px',
           fontWeight: '700',
-          marginBottom: '14px',
+          marginBottom: '6px',
         }}>
           {t.badge}
         </div>
 
         {/* Title */}
         <h2 style={{
-          fontSize: '28px', fontWeight: '900',
-          color: '#1a1a1a', margin: '0 0 10px',
+          fontSize: '20px', fontWeight: '900',
+          color: '#1a1a1a', margin: '0 0 4px',
           lineHeight: 1.25,
         }}>
           {t.title}
@@ -260,18 +262,18 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
 
         {/* Subtitle */}
         <p style={{
-          fontSize: '15px', color: '#666',
-          margin: '0 0 18px', lineHeight: 1.6,
+          fontSize: '13px', color: '#666',
+          margin: '0 0 8px', lineHeight: 1.5,
         }}>
           {t.subtitle}
         </p>
 
         {/* Benefits */}
-        <div style={{ marginBottom: '22px' }}>
+        <div style={{ marginBottom: '10px' }}>
           {t.benefits.map((b, i) => (
             <div key={i} style={{
-              fontSize: '14px', color: '#333',
-              padding: '5px 0', fontWeight: '500',
+              fontSize: '13px', color: '#333',
+              padding: '3px 0', fontWeight: '500',
             }}>
               {b}
             </div>
@@ -286,12 +288,12 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
             background: 'linear-gradient(135deg, #f97316, #ea580c)',
             color: 'white',
             border: 'none',
-            borderRadius: '14px',
-            padding: '16px',
-            fontSize: '16px',
+            borderRadius: '10px',
+            padding: '10px',
+            fontSize: '14px',
             fontWeight: '800',
             cursor: 'pointer',
-            marginBottom: '12px',
+            marginBottom: '8px',
             animation: 'ctaPulse 2s infinite',
             transition: 'transform 0.1s',
           }}
@@ -308,13 +310,13 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
             width: '100%',
             background: 'transparent',
             border: '2px solid #f97316',
-            borderRadius: '14px',
-            padding: '14px',
-            fontSize: '15px',
+            borderRadius: '10px',
+            padding: '8px',
+            fontSize: '13px',
             fontWeight: '600',
             color: '#f97316',
             cursor: 'pointer',
-            marginBottom: '12px',
+            marginBottom: '6px',
           }}
         >
           {t.login}
@@ -328,9 +330,9 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
             background: 'transparent',
             border: 'none',
             color: '#999',
-            fontSize: '14px',
+            fontSize: '13px',
             cursor: 'pointer',
-            padding: '8px',
+            padding: '4px',
           }}
         >
           {t.close}
