@@ -836,6 +836,12 @@ const COOKIE_TEXTS = new Set([
   "ملفات تعريف الارتباط", "Cookies",
 ]);
 
+const PRIVACY_TEXTS = new Set([
+  "Gizlilik", "Privacy", "Datenschutz",
+  "حریم خصوصی", "الخصوصية", "Конфиденциальность",
+  "Политика конфиденциальности",
+]);
+
 const MATCH_PHOTOS = [
   "https://randomuser.me/api/portraits/women/44.jpg",
   "https://randomuser.me/api/portraits/men/32.jpg",
@@ -2774,7 +2780,9 @@ export default function Home() {
                         ? <Link href="/messages" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
                         : COOKIE_TEXTS.has(link)
                           ? <Link href="/cookies" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
-                          : <a href="#" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</a>
+                          : PRIVACY_TEXTS.has(link)
+                            ? <Link href="/privacy" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
+                            : <a href="#" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</a>
                       }
                     </li>
                   ))}
@@ -2788,7 +2796,9 @@ export default function Home() {
               {t.footerLegal.map((l) => (
                 COOKIE_TEXTS.has(l)
                   ? <Link key={l} href="/cookies" className="text-xs text-stone-500 hover:text-stone-300 transition-colors duration-200">{l}</Link>
-                  : <a key={l} href="#" className="text-xs text-stone-500 hover:text-stone-300 transition-colors duration-200">{l}</a>
+                  : PRIVACY_TEXTS.has(l)
+                    ? <Link key={l} href="/privacy" className="text-xs text-stone-500 hover:text-stone-300 transition-colors duration-200">{l}</Link>
+                    : <a key={l} href="#" className="text-xs text-stone-500 hover:text-stone-300 transition-colors duration-200">{l}</a>
               ))}
             </div>
           </div>
