@@ -17,7 +17,7 @@ const CITIES = [
     countryAr: "تركيا",
     countryRu: "Турция",
     listings: "2,847",
-    image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=800&q=80",
+    image: "/images/istnbul.jpg",
     accent: "from-orange-500 to-red-600",
   },
   {
@@ -47,7 +47,7 @@ const CITIES = [
     countryAr: "الولايات المتحدة",
     countryRu: "США",
     listings: "3,241",
-    image: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=800&q=80",
+    image: "/images/newyourk.jpg",
     accent: "from-violet-500 to-indigo-600",
   },
   {
@@ -137,7 +137,7 @@ const CITIES = [
     countryAr: "إيران",
     countryRu: "Иран",
     listings: "987",
-    image: "https://images.unsplash.com/photo-1590736969596-4dc46c7dc481?w=400&q=80",
+    image: "/images/TEHRAN.jpg",
     accent: "from-emerald-600 to-teal-700",
   },
   {
