@@ -1805,19 +1805,88 @@ export default function Home() {
                   </div>
 
                   {/* CTA buttons */}
-                  <div className="flex flex-wrap gap-3">
-                    <button
+                  <div className="flex flex-col gap-3">
+                    {/* Card 1 — I have a place */}
+                    <motion.button
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5 }}
+                      whileHover={{ scale: 1.03, y: -3 }}
+                      whileTap={{ scale: 0.97 }}
                       onClick={() => { setWizardMode("seeking"); setWizardStep(1); }}
-                      className="bg-orange-500 text-white px-6 py-3 rounded-2xl font-bold hover:bg-orange-600 transition-colors duration-200 active:scale-95"
+                      className="w-full relative overflow-hidden rounded-3xl p-5 text-left shadow-xl"
+                      style={{ background: "linear-gradient(135deg, #FF6B35 0%, #FF8E53 50%, #FFA07A 100%)" }}
                     >
-                      {t.optionSeekingTitle}
-                    </button>
-                    <button
+                      <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full" />
+                      <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white/10 rounded-full" />
+                      <div className="flex items-center gap-4 relative z-10">
+                        <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-4xl flex-shrink-0 backdrop-blur-sm border border-white/30">
+                          🏠
+                        </div>
+                        <div className="flex-1">
+                          <span className="inline-block bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-1 backdrop-blur-sm">
+                            🔑 EV SAHİBİ
+                          </span>
+                          <p className="text-white font-black text-base leading-tight">{t.optionSeekingTitle}</p>
+                          <p className="text-white/70 text-xs mt-1">Güvenli housemate bul →</p>
+                        </div>
+                        <motion.div
+                          animate={{ x: [0, 5, 0] }}
+                          transition={{ duration: 1.5, repeat: Infinity }}
+                          className="text-white text-xl flex-shrink-0"
+                        >
+                          →
+                        </motion.div>
+                      </div>
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                        className="absolute top-3 right-16 text-white/40 text-lg"
+                      >
+                        ✦
+                      </motion.div>
+                    </motion.button>
+
+                    {/* Card 2 — I need a place */}
+                    <motion.button
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.15 }}
+                      whileHover={{ scale: 1.03, y: -3 }}
+                      whileTap={{ scale: 0.97 }}
                       onClick={() => { setWizardMode("offering"); setWizardStep(1); }}
-                      className="border-2 border-orange-500 text-orange-500 px-6 py-3 rounded-2xl font-bold hover:bg-orange-50 transition-colors duration-200 active:scale-95"
+                      className="w-full relative overflow-hidden rounded-3xl p-5 text-left shadow-xl"
+                      style={{ background: "linear-gradient(135deg, #667EEA 0%, #764BA2 50%, #8B5CF6 100%)" }}
                     >
-                      {t.optionOfferingTitle}
-                    </button>
+                      <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full" />
+                      <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white/10 rounded-full" />
+                      <div className="flex items-center gap-4 relative z-10">
+                        <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-4xl flex-shrink-0 backdrop-blur-sm border border-white/30">
+                          🔍
+                        </div>
+                        <div className="flex-1">
+                          <span className="inline-block bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-1 backdrop-blur-sm">
+                            🎒 KİRACİ
+                          </span>
+                          <p className="text-white font-black text-base leading-tight">{t.optionOfferingTitle}</p>
+                          <p className="text-white/70 text-xs mt-1">İdeal evinizi bul →</p>
+                        </div>
+                        <motion.div
+                          animate={{ x: [0, 5, 0] }}
+                          transition={{ duration: 1.5, repeat: Infinity, delay: 0.3 }}
+                          className="text-white text-xl flex-shrink-0"
+                        >
+                          →
+                        </motion.div>
+                      </div>
+                      <motion.div
+                        animate={{ rotate: -360 }}
+                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                        className="absolute top-3 right-16 text-white/40 text-lg"
+                      >
+                        ✦
+                      </motion.div>
+                    </motion.button>
                   </div>
                 </>
 
