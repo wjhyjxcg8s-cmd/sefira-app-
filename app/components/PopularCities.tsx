@@ -175,7 +175,7 @@ function CityCard({ city, lang, inView, delay, className = "", imgSizes, t, feat
       initial={{ opacity: 0, y: 44 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ delay, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`group relative overflow-hidden rounded-3xl cursor-pointer shadow-xl hover:shadow-2xl hover:shadow-stone-900/25 transition-shadow duration-500 ${className}`}
+      className={`group relative overflow-hidden rounded-2xl cursor-pointer shadow-xl hover:shadow-2xl hover:shadow-stone-900/25 transition-shadow duration-500 ${className}`}
     >
       {/* Image — zoom on hover */}
       <motion.div
@@ -201,7 +201,7 @@ function CityCard({ city, lang, inView, delay, className = "", imgSizes, t, feat
 
       {/* Country chip — top start */}
       <div className="absolute top-4 start-4">
-        <span className="text-xs font-bold bg-white/15 backdrop-blur-md text-white border border-white/20 rounded-full px-3 py-1.5">
+        <span className="text-xs font-bold bg-white/15 backdrop-blur-md text-white border border-white/20 rounded-full px-2 py-0.5">
           {lang === "tr" ? city.countryTr : lang === "fa" ? city.countryFa : lang === "ar" ? city.countryAr : lang === "ru" ? city.countryRu : city.country}
         </span>
       </div>
@@ -229,17 +229,13 @@ function CityCard({ city, lang, inView, delay, className = "", imgSizes, t, feat
 
       {/* Bottom content */}
       <div className="absolute inset-x-0 bottom-0 p-5">
-        <h3
-          className={`font-black text-white tracking-tight drop-shadow-lg mb-0.5 ${
-            featured ? "text-3xl sm:text-4xl" : "text-2xl"
-          }`}
-        >
+        <h3 className="text-base font-bold text-white tracking-tight drop-shadow-lg mb-0.5">
           {lang === "tr" ? city.nameTr : lang === "fa" ? city.nameFa : lang === "ar" ? city.nameAr : city.name}
         </h3>
 
         <div className="flex items-center justify-between mt-2">
           <div className="flex items-baseline gap-1.5">
-            <span className="text-xl font-black text-white drop-shadow">{city.listings}</span>
+            <span className="text-sm font-black text-white drop-shadow">{city.listings}</span>
             <span className="text-xs text-white/60 font-medium">{t.listings}</span>
           </div>
 
@@ -315,14 +311,14 @@ export default function PopularCities({ lang }: { lang: "tr" | "en" | "fa" | "ar
       ──────────────────────────────────────────────────────────────────── */}
 
       {/* Mobile / SM layout */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:hidden">
-        <CityCard city={istanbul}     lang={lang} inView={inView} delay={0.06} className="h-72 sm:h-80 sm:col-span-2" imgSizes="(max-width: 640px) 100vw, 100vw" t={t} featured />
-        <CityCard city={washingtonDc} lang={lang} inView={inView} delay={0.12} className="h-56 sm:h-64" imgSizes="(max-width: 640px) 100vw, 50vw" t={t} />
-        <CityCard city={newYork}      lang={lang} inView={inView} delay={0.18} className="h-56 sm:h-64" imgSizes="(max-width: 640px) 100vw, 50vw" t={t} />
-        <CityCard city={paris}        lang={lang} inView={inView} delay={0.24} className="h-56 sm:h-64" imgSizes="(max-width: 640px) 100vw, 50vw" t={t} />
-        <CityCard city={barcelona}    lang={lang} inView={inView} delay={0.30} className="h-56 sm:h-64" imgSizes="(max-width: 640px) 100vw, 50vw" t={t} />
-        <CityCard city={berlin}       lang={lang} inView={inView} delay={0.36} className="h-56 sm:h-64" imgSizes="(max-width: 640px) 100vw, 50vw" t={t} />
-        <CityCard city={dubai}        lang={lang} inView={inView} delay={0.42} className="h-56 sm:h-64 sm:col-span-2" imgSizes="(max-width: 640px) 100vw, 100vw" t={t} />
+      <div className="grid grid-cols-2 gap-3 lg:hidden">
+        <CityCard city={istanbul}     lang={lang} inView={inView} delay={0.06} className="h-40" imgSizes="50vw" t={t} featured />
+        <CityCard city={washingtonDc} lang={lang} inView={inView} delay={0.12} className="h-40" imgSizes="50vw" t={t} />
+        <CityCard city={newYork}      lang={lang} inView={inView} delay={0.18} className="h-40" imgSizes="50vw" t={t} />
+        <CityCard city={paris}        lang={lang} inView={inView} delay={0.24} className="h-40" imgSizes="50vw" t={t} />
+        <CityCard city={barcelona}    lang={lang} inView={inView} delay={0.30} className="h-40" imgSizes="50vw" t={t} />
+        <CityCard city={berlin}       lang={lang} inView={inView} delay={0.36} className="h-40" imgSizes="50vw" t={t} />
+        <CityCard city={dubai}        lang={lang} inView={inView} delay={0.42} className="h-40" imgSizes="50vw" t={t} />
       </div>
 
       {/* LG+ bento layout */}
