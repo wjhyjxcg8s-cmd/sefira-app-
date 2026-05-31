@@ -1332,9 +1332,13 @@ export default function Home() {
 
           {/* Logo */}
           <div className="flex items-center gap-2 flex-shrink-0 group cursor-pointer">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-sm shadow-lg shadow-orange-500/30 group-hover:scale-110 group-hover:shadow-orange-500/50 transition-all duration-300">
-              S
-            </div>
+            <Image
+              src="/images/sefira-logo.png"
+              alt="Sefira"
+              width={36}
+              height={36}
+              className="rounded-xl object-contain"
+            />
             <span className="text-xl font-black tracking-tight bg-gradient-to-r from-orange-500 to-amber-600 bg-clip-text text-transparent">
               Sefira
             </span>
