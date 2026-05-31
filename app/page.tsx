@@ -2664,19 +2664,21 @@ export default function Home() {
       </section>
 
       {/* ── PROMO IMAGE ───────────────────────────────────────────────────────── */}
-      <section className="bg-gradient-to-b from-orange-50 to-white py-12 px-4">
-        <div className="flex flex-col items-center">
-          <div className="w-full max-w-xs sm:max-w-sm drop-shadow-2xl hover:scale-105 transition-transform duration-500">
-            <Image
-              src="/images/sefira-promo.jpeg"
-              alt="Sefira App"
-              width={300}
-              height={380}
-              style={{ objectFit: "contain" }}
-              className="w-full h-auto"
-            />
+      <section className="relative py-16 px-4 overflow-hidden">
+        {/* Background gradient blobs */}
+        <div className="absolute top-0 left-0 w-72 h-72 bg-orange-200 rounded-full blur-3xl opacity-30 -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 right-0 w-72 h-72 bg-orange-300 rounded-full blur-3xl opacity-20 translate-x-1/2 translate-y-1/2" />
+
+        <div className="relative max-w-sm mx-auto">
+          {/* Top label */}
+          <div className="flex justify-center mb-4">
+            <span className="bg-orange-100 text-orange-600 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">
+              🏠 Sefira App
+            </span>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 text-center mt-4">
+
+          {/* Title */}
+          <h2 className="text-2xl font-black text-gray-900 text-center mb-2 leading-tight">
             {lang === "tr" ? "Güvenli Ev Arkadaşı Bulmanın En Kolay Yolu"
               : lang === "en" ? "The Easiest Way to Find a Safe Roommate"
               : lang === "fa" ? "آسان‌ترین راه برای پیدا کردن هم‌خانه مطمئن"
@@ -2684,7 +2686,7 @@ export default function Home() {
               : lang === "de" ? "Der einfachste Weg, einen sicheren Mitbewohner zu finden"
               : "Самый простой способ найти надёжного соседа"}
           </h2>
-          <p className="text-sm text-gray-500 text-center mt-1">
+          <p className="text-sm text-gray-400 text-center mb-8">
             {lang === "tr" ? "Binlerce doğrulanmış ilan, tek platformda"
               : lang === "en" ? "Thousands of verified listings, one platform"
               : lang === "fa" ? "هزاران آگهی تأیید شده، یک پلتفرم"
@@ -2692,6 +2694,50 @@ export default function Home() {
               : lang === "de" ? "Tausende verifizierte Anzeigen, eine Plattform"
               : "Тысячи проверенных объявлений на одной платформе"}
           </p>
+
+          {/* Image with frame */}
+          <div className="relative mx-auto w-fit">
+            {/* Glow ring behind image */}
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-pink-500 rounded-3xl blur-2xl opacity-25 scale-105" />
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
+              <Image
+                src="/images/sefira-promo.jpeg"
+                alt="Sefira App"
+                width={320}
+                height={400}
+                style={{ objectFit: "cover" }}
+                className="rounded-3xl"
+              />
+            </div>
+            {/* Floating badge top-right */}
+            <div className="absolute -top-3 -right-3 bg-orange-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
+              ✨ #1 Platform
+            </div>
+          </div>
+
+          {/* Stats row below image */}
+          <div className="flex justify-between mt-8 bg-white rounded-2xl shadow-md p-4 border border-orange-100">
+            <div className="text-center">
+              <p className="text-lg font-black text-orange-500">10K+</p>
+              <p className="text-xs text-gray-400">
+                {lang === "tr" ? "Kullanıcı" : lang === "en" ? "Users" : lang === "fa" ? "کاربر" : lang === "ar" ? "مستخدم" : lang === "de" ? "Nutzer" : "Пользователей"}
+              </p>
+            </div>
+            <div className="w-px bg-gray-100" />
+            <div className="text-center">
+              <p className="text-lg font-black text-orange-500">2.8K</p>
+              <p className="text-xs text-gray-400">
+                {lang === "tr" ? "İlan" : lang === "en" ? "Listings" : lang === "fa" ? "آگهی" : lang === "ar" ? "إعلان" : lang === "de" ? "Inserate" : "Объявлений"}
+              </p>
+            </div>
+            <div className="w-px bg-gray-100" />
+            <div className="text-center">
+              <p className="text-lg font-black text-orange-500">4.9⭐</p>
+              <p className="text-xs text-gray-400">
+                {lang === "tr" ? "Puan" : lang === "en" ? "Rating" : lang === "fa" ? "امتیاز" : lang === "ar" ? "تقييم" : lang === "de" ? "Bewertung" : "Рейтинг"}
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
