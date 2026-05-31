@@ -2123,20 +2123,6 @@ export default function Home() {
 
       </section>
 
-      {/* ── STATS ─────────────────────────────────────────────────────────────── */}
-      <div className="mt-4 border-y border-orange-100 bg-orange-50/60 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-5 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
-          {t.stats.map((s) => (
-            <div key={s.label} className="text-center group cursor-default hover:scale-105 transition-transform duration-200">
-              <div className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent mb-1 group-hover:from-orange-400 group-hover:to-amber-400 transition-all duration-300">
-                {s.value}
-              </div>
-              <div className="text-sm text-stone-500 group-hover:text-stone-600 transition-colors duration-200">{s.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* ── WEEKLY STORIES ────────────────────────────────────────────────────── */}
       {weeklyStories.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 sm:px-5 pt-6 sm:pt-8 pb-4">
