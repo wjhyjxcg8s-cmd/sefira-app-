@@ -45,10 +45,10 @@ const translations = {
     heroP: "Yapay zeka destekli ev arkadaşı eşleştirme ve premium paylaşım ilanı keşfi. Yurt dışında yaşayanlar, öğrenciler ve modern profesyoneller için tasarlandı.",
     // ── Wizard ──
     wizardTitle: "Ne arıyorsunuz?",
-    optionSeekingTitle: "Oda / Ev Arkadaşı Arıyorum",
-    optionSeekingSubtitle: "Oda veya ev arkadaşı arıyorum",
-    optionOfferingTitle: "Ev Arkadaşı Arıyorum",
-    optionOfferingSubtitle: "Odaya sahibim, ev arkadaşı arıyorum",
+    optionSeekingTitle: "Evim var, iyi bir ev arkadaşı arıyorum",
+    optionSeekingSubtitle: "Evim var, iyi bir ev arkadaşı arıyorum",
+    optionOfferingTitle: "Evim yok, oda veya ev arıyorum (ev arkadaşı)",
+    optionOfferingSubtitle: "Evim yok, oda veya ev arıyorum (ev arkadaşı)",
     genderStep: "Tercih Edilen Cinsiyet",
     genderStepSub: "Tercih edilen cinsiyet",
     genderMale: "Erkek",
@@ -172,10 +172,10 @@ const translations = {
     heroP: "AI-powered roommate matching meets premium sharing discovery. Built for expats, students, and modern professionals.",
     // ── Wizard ──
     wizardTitle: "What are you looking for?",
-    optionSeekingTitle: "I'm looking for a room / housemate",
-    optionSeekingSubtitle: "Looking for a room or housemate",
-    optionOfferingTitle: "I have a room and need a housemate",
-    optionOfferingSubtitle: "I have a room and need a housemate",
+    optionSeekingTitle: "I have a place and I'm looking for a good roommate",
+    optionSeekingSubtitle: "I have a place and I'm looking for a good roommate",
+    optionOfferingTitle: "I need a place – looking for a room or apartment",
+    optionOfferingSubtitle: "I need a place – looking for a room or apartment",
     genderStep: "Preferred Housemate Gender",
     genderStepSub: "Preferred gender",
     genderMale: "Male",
@@ -299,10 +299,10 @@ const translations = {
     heroP: "اتصال هوشمند هم‌خانه و کشف آگهی‌های مشترک ممتاز. طراحی شده برای مهاجران، دانشجویان و متخصصان مدرن.",
     // ── Wizard ──
     wizardTitle: "دنبال چه می‌گردید؟",
-    optionSeekingTitle: "دنبال اتاق یا هم‌خانه می‌گردم",
-    optionSeekingSubtitle: "دنبال اتاق یا هم‌خانه می‌گردم",
-    optionOfferingTitle: "اتاق دارم و دنبال هم‌خانه می‌گردم",
-    optionOfferingSubtitle: "اتاق دارم و دنبال هم‌خانه می‌گردم",
+    optionSeekingTitle: "خونه یا اتاق دارم و دنبال هم‌خونه خوب می‌گردم",
+    optionSeekingSubtitle: "خونه یا اتاق دارم و دنبال هم‌خونه خوب می‌گردم",
+    optionOfferingTitle: "خونه ندارم، دنبال خونه یا اتاق می‌گردم (هم‌خونه)",
+    optionOfferingSubtitle: "خونه ندارم، دنبال خونه یا اتاق می‌گردم (هم‌خونه)",
     genderStep: "جنسیت مورد نظر هم‌خانه",
     genderStepSub: "جنسیت مورد نظر",
     genderMale: "مرد",
@@ -425,10 +425,10 @@ const translations = {
     heroLine3: "perfekten Mitbewohner.",
     heroP: "KI-gestütztes Mitbewohner-Matching trifft auf erstklassige WG-Suche. Entwickelt für Expats, Studierende und moderne Berufstätige.",
     wizardTitle: "Was suchen Sie?",
-    optionSeekingTitle: "Ich suche ein Zimmer / einen Mitbewohner",
-    optionSeekingSubtitle: "Ich suche ein Zimmer oder einen Mitbewohner",
-    optionOfferingTitle: "Ich habe ein Zimmer und suche einen Mitbewohner",
-    optionOfferingSubtitle: "Ich habe ein Zimmer und suche einen Mitbewohner",
+    optionSeekingTitle: "Ich habe ein Zimmer und suche einen guten Mitbewohner",
+    optionSeekingSubtitle: "Ich habe ein Zimmer und suche einen guten Mitbewohner",
+    optionOfferingTitle: "Ich suche ein Zimmer oder eine Wohnung",
+    optionOfferingSubtitle: "Ich suche ein Zimmer oder eine Wohnung",
     genderStep: "Bevorzugtes Geschlecht des Mitbewohners",
     genderStepSub: "Bevorzugtes Geschlecht",
     genderMale: "Männlich",
@@ -553,10 +553,10 @@ const translations = {
     heroP: "مطابقة ذكية لشركاء السكن واكتشاف إعلانات المشاركة المميزة. مصمَّم للمغتربين والطلاب والمحترفين العصريين.",
     // ── Wizard ──
     wizardTitle: "ماذا تبحث عن؟",
-    optionSeekingTitle: "أبحث عن غرفة أو شريك سكن",
-    optionSeekingSubtitle: "أبحث عن غرفة أو شريك للسكن",
-    optionOfferingTitle: "لديَّ غرفة وأبحث عن شريك سكن",
-    optionOfferingSubtitle: "لديَّ غرفة وأبحث عن شريك سكن",
+    optionSeekingTitle: "لدي غرفة وأبحث عن شريك سكن جيد",
+    optionSeekingSubtitle: "لدي غرفة وأبحث عن شريك سكن جيد",
+    optionOfferingTitle: "لا أملك غرفة، أبحث عن منزل أو غرفة",
+    optionOfferingSubtitle: "لا أملك غرفة، أبحث عن منزل أو غرفة",
     genderStep: "الجنس المفضَّل لشريك السكن",
     genderStepSub: "الجنس المفضَّل",
     genderMale: "ذكر",
@@ -679,10 +679,10 @@ const translations = {
     heroLine3: "соседа",
     heroP: "Найди надёжного соседа по комнате или идеальное жильё. Безопасно, быстро и удобно.",
     wizardTitle: "Что вы ищете?",
-    optionSeekingTitle: "Ищу жильё",
-    optionSeekingSubtitle: "Ищу комнату или квартиру",
-    optionOfferingTitle: "Сдаю жильё",
-    optionOfferingSubtitle: "Ищу соседа по комнате",
+    optionSeekingTitle: "У меня есть комната, ищу хорошего соседа",
+    optionSeekingSubtitle: "У меня есть комната, ищу хорошего соседа",
+    optionOfferingTitle: "Ищу комнату или квартиру",
+    optionOfferingSubtitle: "Ищу комнату или квартиру",
     genderStep: "Предпочтение по полу",
     genderStepSub: "Какой пол соседа вы предпочитаете?",
     genderMale: "Мужской",
@@ -1829,51 +1829,51 @@ export default function Home() {
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
-                    {/* Option A: Seeking */}
+                    {/* Card 1: Has room, looking for roommate */}
                     <button
                       onClick={() => { setWizardMode("seeking"); setWizardStep(1); }}
-                      className="group relative text-left p-5 rounded-2xl border-2 border-stone-200 bg-white hover:border-orange-300 hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-0.5 transition-all duration-300 active:scale-[0.98] overflow-hidden"
+                      className="relative text-left p-5 rounded-2xl shadow-lg hover:scale-[1.02] transition-transform duration-200 active:scale-[0.98] overflow-hidden"
+                      style={{ background: "linear-gradient(135deg, #FF6B35, #FF8E53)" }}
                     >
-                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-orange-500/0 via-amber-500/0 to-fuchsia-500/0 group-hover:from-orange-500/5 group-hover:via-amber-500/3 group-hover:to-fuchsia-500/5 transition-all duration-500" />
-                      <div className="relative z-10">
-                        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-xl mb-4 shadow-lg shadow-orange-500/30 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-orange-500/40 transition-all duration-300">
-                          🔍
+                      <div className={`flex ${lang === "fa" || lang === "ar" ? "flex-row-reverse" : "flex-row"} items-start gap-4`}>
+                        <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center text-3xl flex-shrink-0">
+                          🏠
                         </div>
-                        <p className="font-black text-stone-900 text-sm leading-snug mb-1.5">
-                          {t.optionSeekingTitle}
-                        </p>
-                        <p className="text-xs text-stone-400 font-medium leading-relaxed" dir="rtl">
-                          {t.optionSeekingSubtitle}
-                        </p>
+                        <div className="flex-1">
+                          <p className="font-bold text-lg text-white leading-snug mb-1">
+                            {t.optionSeekingTitle}
+                          </p>
+                          <p className="text-sm text-white/80 leading-snug">
+                            {t.optionSeekingSubtitle}
+                          </p>
+                        </div>
                       </div>
-                      <div className="absolute top-4 right-4 w-5 h-5 rounded-full border-2 border-stone-200 group-hover:border-orange-400 group-hover:bg-orange-50 transition-all duration-300 flex items-center justify-center">
-                        <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <polyline points="9 18 15 12 9 6" />
-                        </svg>
+                      <div className={`flex ${lang === "fa" || lang === "ar" ? "justify-start" : "justify-end"} mt-3`}>
+                        <span className="text-white/70 text-xl">→</span>
                       </div>
                     </button>
 
-                    {/* Option B: Offering */}
+                    {/* Card 2: No room, looking for place */}
                     <button
                       onClick={() => { setWizardMode("offering"); setWizardStep(1); }}
-                      className="group relative text-left p-5 rounded-2xl border-2 border-stone-200 bg-white hover:border-violet-300 hover:shadow-2xl hover:shadow-violet-500/10 hover:-translate-y-0.5 transition-all duration-300 active:scale-[0.98] overflow-hidden"
+                      className="relative text-left p-5 rounded-2xl shadow-lg hover:scale-[1.02] transition-transform duration-200 active:scale-[0.98] overflow-hidden"
+                      style={{ background: "linear-gradient(135deg, #667EEA, #764BA2)" }}
                     >
-                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-violet-500/0 via-fuchsia-500/0 to-pink-500/0 group-hover:from-violet-500/5 group-hover:via-fuchsia-500/3 group-hover:to-pink-500/5 transition-all duration-500" />
-                      <div className="relative z-10">
-                        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center text-xl mb-4 shadow-lg shadow-violet-500/30 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-violet-500/40 transition-all duration-300">
-                          🏠
+                      <div className={`flex ${lang === "fa" || lang === "ar" ? "flex-row-reverse" : "flex-row"} items-start gap-4`}>
+                        <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center text-3xl flex-shrink-0">
+                          🔍
                         </div>
-                        <p className="font-black text-stone-900 text-sm leading-snug mb-1.5">
-                          {t.optionOfferingTitle}
-                        </p>
-                        <p className="text-xs text-stone-400 font-medium leading-relaxed" dir="rtl">
-                          {t.optionOfferingSubtitle}
-                        </p>
+                        <div className="flex-1">
+                          <p className="font-bold text-lg text-white leading-snug mb-1">
+                            {t.optionOfferingTitle}
+                          </p>
+                          <p className="text-sm text-white/80 leading-snug">
+                            {t.optionOfferingSubtitle}
+                          </p>
+                        </div>
                       </div>
-                      <div className="absolute top-4 right-4 w-5 h-5 rounded-full border-2 border-stone-200 group-hover:border-violet-400 group-hover:bg-violet-50 transition-all duration-300 flex items-center justify-center">
-                        <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="text-violet-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <polyline points="9 18 15 12 9 6" />
-                        </svg>
+                      <div className={`flex ${lang === "fa" || lang === "ar" ? "justify-start" : "justify-end"} mt-3`}>
+                        <span className="text-white/70 text-xl">→</span>
                       </div>
                     </button>
                   </div>
