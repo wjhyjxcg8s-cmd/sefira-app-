@@ -117,12 +117,6 @@ const translations = {
     trendingH2: "Popüler Şehirler",
     trendingP: "Modern insanların 2025'te taşındığı yerler",
     activeListings: "aktif ilan",
-    communityBadge: "Topluluk Akışı",
-    communityH2: "Gerçek Hikayeler. Gerçek İnsanlar.",
-    communityP: "127.000'den fazla üyenin yolculuğunu paylaştığı topluluğa katılın",
-    likesLabel: "beğeni",
-    commentsLabel: "yorum",
-    shareLabel: "Paylaş",
     testiH2: "Binlerce Kişi Tarafından Seviliyor",
     testiReviews: "12.000'den fazla değerlendirmeden",
     appH2a: "Sefira cebinizde.",
@@ -244,12 +238,6 @@ const translations = {
     trendingH2: "Trending Cities",
     trendingP: "Where modern people are moving in 2025",
     activeListings: "active listings",
-    communityBadge: "Community Feed",
-    communityH2: "Real Stories. Real People.",
-    communityP: "Join 127,000+ members sharing their journey",
-    likesLabel: "likes",
-    commentsLabel: "comments",
-    shareLabel: "Share",
     testiH2: "Loved by Thousands",
     testiReviews: "from 12,000+ reviews",
     appH2a: "Sefira in your pocket.",
@@ -371,12 +359,6 @@ const translations = {
     trendingH2: "شهرهای محبوب",
     trendingP: "جایی که مردم مدرن در ۲۰۲۵ نقل مکان می‌کنند",
     activeListings: "آگهی فعال",
-    communityBadge: "فید جامعه",
-    communityH2: "داستان‌های واقعی. مردم واقعی.",
-    communityP: "به جامعه‌ای با بیش از ۱۲۷,۰۰۰ عضو بپیوندید که سفر خود را به اشتراک می‌گذارند",
-    likesLabel: "لایک",
-    commentsLabel: "نظر",
-    shareLabel: "اشتراک‌گذاری",
     testiH2: "محبوب هزاران نفر",
     testiReviews: "از بیش از ۱۲,۰۰۰ نظر",
     appH2a: "سفیرا در جیب شما.",
@@ -497,12 +479,6 @@ const translations = {
     trendingH2: "Angesagte Städte",
     trendingP: "Wohin moderne Menschen 2025 ziehen",
     activeListings: "aktive Inserate",
-    communityBadge: "Community-Feed",
-    communityH2: "Echte Geschichten. Echte Menschen.",
-    communityP: "Schließen Sie sich über 127.000 Mitgliedern an, die ihre Reise teilen",
-    likesLabel: "Gefällt mir",
-    commentsLabel: "Kommentare",
-    shareLabel: "Teilen",
     testiH2: "Von Tausenden geliebt",
     testiReviews: "aus über 12.000 Bewertungen",
     appH2a: "Sefira in Ihrer Tasche.",
@@ -625,12 +601,6 @@ const translations = {
     trendingH2: "المدن الرائجة",
     trendingP: "أين ينتقل الناس المعاصرون في ٢٠٢٥",
     activeListings: "إعلان نشط",
-    communityBadge: "تغذية المجتمع",
-    communityH2: "قصص حقيقية. أشخاص حقيقيون.",
-    communityP: "انضم إلى مجتمع يضم أكثر من ١٢٧,٠٠٠ عضو يتشاركون رحلتهم",
-    likesLabel: "إعجاب",
-    commentsLabel: "تعليق",
-    shareLabel: "مشاركة",
     testiH2: "يحبّه الآلاف",
     testiReviews: "من أكثر من ١٢,٠٠٠ تقييم",
     appH2a: "سفيرا في جيبك.",
@@ -751,12 +721,6 @@ const translations = {
     trendingH2: "Популярные объявления",
     trendingP: "Самые просматриваемые объявления этой недели",
     activeListings: "Активные объявления",
-    communityBadge: "Сообщество",
-    communityH2: "Присоединяйтесь к нашему сообществу",
-    communityP: "Тысячи людей уже нашли идеального соседа",
-    likesLabel: "лайков",
-    commentsLabel: "комментариев",
-    shareLabel: "Поделиться",
     testiH2: "Отзывы пользователей",
     testiReviews: "отзывов",
     appH2a: "Скачайте",
@@ -927,38 +891,6 @@ const testimonialsByLang = {
   ],
 };
 
-const communityPostsByLang = {
-  tr: [
-    { id: 1, user: "Ahmet Y.", location: "İstanbul, Türkiye", content: "Sefira aracılığıyla en harika ev arkadaşlarımı buldum! Gelecek hafta taşınıyorum. Bu şehir artık gerçekten ev gibi geliyor.",                                       likes: 312, comments: 24, gradient: "from-pink-500 to-rose-600",    initials: "AY", time: "2 saat önce" },
-    { id: 2, user: "Selin K.", location: "Ankara, Türkiye",   content: "Ev arkadaşı tavsiyesi: uyku düzeniniz konusunda dürüst olun! Benimki gece kuşu; mükemmel eşleştik. 6 aydır sıfır sorun.",                                         likes: 198, comments: 38, gradient: "from-blue-500 to-indigo-600",  initials: "SK", time: "5 saat önce" },
-    { id: 3, user: "Berk M.",  location: "İzmir, Türkiye",    content: "Yeni dairemde ilk haftam. Sefira beni minimalist tasarımı ve sabah rutinlerini seven 3 kişiyle eşleştirdi. Rüya takım.",                                          likes: 421, comments: 59, gradient: "from-violet-500 to-purple-600",initials: "BM", time: "1 gün önce" },
-  ],
-  en: [
-    { id: 1, user: "Sarah K.", location: "Berlin, Germany", content: "Just found the most amazing flatmates through Sefira! Moving in next weekend. This city finally feels like home.",                               likes: 342, comments: 28, gradient: "from-pink-500 to-rose-600",    initials: "SK", time: "2h ago" },
-    { id: 2, user: "Ahmed M.", location: "Dubai, UAE",      content: "Roommate tip: be honest about your sleep schedule! Mine is a night owl and we matched perfectly. 6 months in, zero issues.",                    likes: 218, comments: 45, gradient: "from-blue-500 to-indigo-600",  initials: "AM", time: "5h ago" },
-    { id: 3, user: "Yuki T.",  location: "Amsterdam, NL",   content: "First week in my new flat. Sefira matched me with 3 others who love minimalist design and early mornings. Dream team.",                          likes: 456, comments: 67, gradient: "from-violet-500 to-purple-600",initials: "YT", time: "1d ago" },
-  ],
-  fa: [
-    { id: 1, user: "سارا م.",   location: "تهران، ایران",   content: "هفته اول تو خونه جدیدم. سفیرا منو با ۳ نفر که عاشق سکوت و صبح‌های زود هستن متصل کرد!",                      likes: 342, comments: 28, gradient: "from-pink-500 to-rose-600",    initials: "سم", time: "۲ ساعت پیش" },
-    { id: 2, user: "علی ر.",    location: "مشهد، ایران",    content: "نکته هم‌خانه‌یابی: در مورد برنامه خوابت صادق باش! هم‌خانه‌ام شب‌زنده‌دار و ما کاملاً مچ شدیم.",              likes: 218, comments: 45, gradient: "from-blue-500 to-indigo-600",  initials: "عر", time: "۵ ساعت پیش" },
-    { id: 3, user: "نیلوفر ا.", location: "اصفهان، ایران",  content: "اولین هفتم تو آپارتمان جدیدم. سفیرا منو با ۳ نفر که طراحی مینیمالیستی و صبح‌های زود رو دوست دارن آشنا کرد.", likes: 456, comments: 67, gradient: "from-violet-500 to-purple-600",initials: "نا", time: "۱ روز پیش" },
-  ],
-  ar: [
-    { id: 1, user: "سارة ع.",  location: "دبي، الإمارات",  content: "وجدتُ للتو أروع شركاء السكن عبر سفيرا! سأنتقل إليهم الأسبوع القادم. بدأت هذه المدينة تشعرني بأنها بيتي الحقيقي.",          likes: 342, comments: 28, gradient: "from-pink-500 to-rose-600",    initials: "سع", time: "منذ ساعتين" },
-    { id: 2, user: "خالد م.",  location: "الرياض، السعودية", content: "نصيحة لشريك السكن: كن صادقاً بشأن جدول نومك! شريكي سهراني وتطابقنا بشكل مثالي. ٦ أشهر مضت ولا مشاكل أبداً.",             likes: 218, comments: 45, gradient: "from-blue-500 to-indigo-600",  initials: "خم", time: "منذ ٥ ساعات" },
-    { id: 3, user: "نورا ح.",  location: "القاهرة، مصر",    content: "أسبوعي الأول في شقتي الجديدة. وصلتني سفيرا بثلاثة أشخاص يحبون التصميم البسيط والصباح الباكر. فريق الأحلام!",              likes: 456, comments: 67, gradient: "from-violet-500 to-purple-600",initials: "نح", time: "منذ يوم" },
-  ],
-  de: [
-    { id: 1, user: "Lena B.", location: "Berlin, Deutschland", content: "Habe gerade die tollsten Mitbewohner über Sefira gefunden! Ziehe nächstes Wochenende ein. Diese Stadt fühlt sich endlich wie Zuhause an.",      likes: 342, comments: 28, gradient: "from-pink-500 to-rose-600",    initials: "LB", time: "vor 2 Std." },
-    { id: 2, user: "Max M.",  location: "München, Deutschland", content: "Tipp für die WG-Suche: Seid ehrlich bei eurem Schlafrhythmus! Meiner ist ein Nachtmensch und wir passen perfekt zusammen. 6 Monate, null Probleme.", likes: 218, comments: 45, gradient: "from-blue-500 to-indigo-600",  initials: "MM", time: "vor 5 Std." },
-    { id: 3, user: "Julia K.", location: "Hamburg, Deutschland", content: "Erste Woche in meiner neuen Wohnung. Sefira hat mich mit 3 Leuten zusammengebracht, die minimalistisches Design und frühe Morgen lieben. Traumteam!", likes: 456, comments: 67, gradient: "from-violet-500 to-purple-600",initials: "JK", time: "vor 1 Tag" },
-  ],
-  ru: [
-    { id: 1, user: "Sarah K.", location: "Berlin, Germany", content: "Just found the most amazing flatmates through Sefira! Moving in next weekend. This city finally feels like home.",                               likes: 342, comments: 28, gradient: "from-pink-500 to-rose-600",    initials: "SK", time: "2h ago" },
-    { id: 2, user: "Ahmed M.", location: "Dubai, UAE",      content: "Roommate tip: be honest about your sleep schedule! Mine is a night owl and we matched perfectly. 6 months in, zero issues.",                    likes: 218, comments: 45, gradient: "from-blue-500 to-indigo-600",  initials: "AM", time: "5h ago" },
-    { id: 3, user: "Yuki T.",  location: "Amsterdam, NL",   content: "First week in my new flat. Sefira matched me with 3 others who love minimalist design and early mornings. Dream team.",                          likes: 456, comments: 67, gradient: "from-violet-500 to-purple-600",initials: "YT", time: "1d ago" },
-  ],
-};
 
 const PRIORITY_COUNTRIES = [
   "Turkey", "Germany", "United States", "Spain", "Brazil",
@@ -1272,8 +1204,7 @@ export default function Home() {
   }, [viewerOpen, viewerIndex, weeklyStories.length]);
 
   const t = translations[lang];
-  const testimonials   = testimonialsByLang[lang];
-  const communityPosts = communityPostsByLang[lang];
+  const testimonials = testimonialsByLang[lang];
 
   const [savedProfiles,  setSavedProfiles]  = useState<number[]>([]);
   const [animatingIds,   setAnimatingIds]   = useState<number[]>([]);
@@ -2595,41 +2526,6 @@ export default function Home() {
 
       {/* ── POPULAR CITIES ────────────────────────────────────────────────────── */}
       <PopularCities lang={lang} />
-
-      {/* ── COMMUNITY FEED ────────────────────────────────────────────────────── */}
-      <section className="bg-orange-50/60 border-y border-orange-100 py-20">
-        <div className="max-w-7xl mx-auto px-5">
-          <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 text-xs font-bold text-orange-600 bg-orange-500/10 border border-orange-500/20 rounded-full px-4 py-2 mb-6">
-              {t.communityBadge}
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-4 tracking-tight">{t.communityH2}</h2>
-            <p className="text-stone-600">{t.communityP}</p>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {communityPosts.map((post) => (
-              <div key={post.id} className="bg-white border border-stone-200 rounded-2xl p-6 hover:border-stone-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-orange-500/5 transition-all duration-200">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${post.gradient} flex items-center justify-center text-sm font-bold flex-shrink-0`}>
-                    {post.initials}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-stone-900 truncate">{post.user}</p>
-                    <p className="text-xs text-stone-500">{post.location}</p>
-                  </div>
-                  <span className="text-xs text-stone-400 flex-shrink-0">{post.time}</span>
-                </div>
-                <p className="text-sm text-stone-700 leading-relaxed mb-5">{post.content}</p>
-                <div className="flex items-center gap-5 text-xs text-stone-500">
-                  <button className="hover:text-rose-500 transition-colors">{post.likes} {t.likesLabel}</button>
-                  <button className="hover:text-orange-500 transition-colors">{post.comments} {t.commentsLabel}</button>
-                  <button className="hover:text-amber-600 transition-colors ml-auto">{t.shareLabel}</button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ── TESTIMONIALS ──────────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-5 py-20">
