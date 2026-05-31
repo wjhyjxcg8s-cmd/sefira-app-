@@ -1544,14 +1544,16 @@ export default function Home() {
         <>
           <style>{`
             .ps-item {
-              display: flex; align-items: center; gap: 14px;
-              padding: 14px 16px; background: white; border-radius: 14px;
+              display: flex; align-items: center; gap: 12px;
+              padding: 14px 16px; background: white; border-radius: 16px;
               text-decoration: none; width: 100%;
               cursor: pointer; border: none; text-align: left;
               transition: background 0.15s ease, transform 0.1s ease;
               box-sizing: border-box; color: inherit;
+              box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+              margin-bottom: 8px;
             }
-            .ps-item:hover  { background: #f0f0f0; }
+            .ps-item:hover  { background: #fafafa; }
             .ps-item:active { transform: scale(0.97); }
           `}</style>
 
@@ -1576,24 +1578,24 @@ export default function Home() {
             dir="ltr"
             style={{
               position: "fixed", top: 0, right: 0,
-              width: "80%", maxWidth: "350px", height: "100%",
-              background: "white",
+              width: "320px", height: "100%",
+              background: "#f3f4f6",
               zIndex: 1000,
               transform: profileMenuOpen ? "translateX(0)" : "translateX(100%)",
               transition: "transform 0.3s ease-out",
               overflow: "hidden",
-              boxShadow: "-4px 0 30px rgba(0,0,0,0.2)",
+              boxShadow: "-4px 0 40px rgba(0,0,0,0.18)",
               display: "flex", flexDirection: "column",
             }}
           >
             {/* Orange gradient header */}
             <div style={{
-              background: "linear-gradient(135deg, #f97316 0%, #f59e0b 100%)",
-              paddingTop: "max(48px, calc(env(safe-area-inset-top, 0px) + 16px))",
+              background: "linear-gradient(135deg, #f97316 0%, #fb923c 60%, #f59e0b 100%)",
+              paddingTop: "64px",
               paddingBottom: "28px",
               paddingLeft: "24px",
               paddingRight: "24px",
-              display: "flex", flexDirection: "column", alignItems: "center", gap: "8px",
+              display: "flex", flexDirection: "column", alignItems: "center", gap: "6px",
               position: "relative", overflow: "hidden", flexShrink: 0,
             }}>
               <div style={{ position: "absolute", top: "-20px", right: "-20px", width: "120px", height: "120px", borderRadius: "50%", background: "rgba(255,255,255,0.08)", pointerEvents: "none" }} />
@@ -1603,11 +1605,11 @@ export default function Home() {
               <button
                 onClick={() => setProfileMenuOpen(false)}
                 style={{
-                  position: "absolute", top: "max(12px, calc(env(safe-area-inset-top, 0px) + 4px))", left: "12px",
+                  position: "absolute", top: "68px", right: "16px",
                   width: "32px", height: "32px", borderRadius: "50%",
-                  background: "rgba(255,255,255,0.2)",
+                  background: "rgba(255,255,255,0.22)",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  cursor: "pointer", border: "none", flexShrink: 0,
+                  cursor: "pointer", border: "none",
                 }}
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" style={{ width: "16px", height: "16px" }}>
@@ -1622,7 +1624,7 @@ export default function Home() {
                 style={{
                   width: "80px", height: "80px", borderRadius: "50%",
                   background: "linear-gradient(135deg, #ea580c, #d97706)",
-                  border: "3px solid rgba(255,255,255,0.6)",
+                  border: "4px solid white",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   fontWeight: 900, fontSize: "28px", color: "white",
                   overflow: "hidden", cursor: "pointer", flexShrink: 0,
@@ -1637,16 +1639,16 @@ export default function Home() {
                 )}
               </button>
 
-              <p style={{ fontWeight: 800, fontSize: "20px", color: "white", margin: 0, textAlign: "center" }}>
+              <p style={{ fontWeight: 700, fontSize: "18px", color: "white", margin: "4px 0 0", textAlign: "center" }}>
                 {user.user_metadata?.full_name ?? user.email?.split("@")[0] ?? "User"}
               </p>
-              <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.8)", margin: 0, textAlign: "center" }}>
+              <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.82)", margin: 0, textAlign: "center" }}>
                 {user.email}
               </p>
             </div>
 
             {/* Menu items */}
-            <div style={{ flex: 1, padding: "12px 16px 8px", background: "#f8f8f8", display: "flex", flexDirection: "column", gap: "8px", overflowY: "auto" }}>
+            <div style={{ flex: 1, padding: "16px 16px 8px", display: "flex", flexDirection: "column", overflowY: "auto" }}>
 
               {/* Edit Profile */}
               <Link href="/profile" onClick={() => setProfileMenuOpen(false)} className="ps-item">
@@ -1750,11 +1752,11 @@ export default function Home() {
             </div>
 
             {/* Sign Out */}
-            <div style={{ padding: "8px 16px", paddingBottom: "max(32px, env(safe-area-inset-bottom, 0px))", background: "#f8f8f8", flexShrink: 0 }}>
-              <div style={{ height: "1px", background: "#e5e7eb", marginBottom: "8px" }} />
+            <div style={{ padding: "8px 16px", paddingBottom: "max(20px, env(safe-area-inset-bottom, 0px))", background: "#f3f4f6", flexShrink: 0, borderTop: "1px solid #e5e7eb" }}>
               <button
                 onClick={() => { handleSignOut(); setProfileMenuOpen(false); }}
                 className="ps-item"
+                style={{ marginBottom: 0 }}
               >
                 <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "#fee2e2", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <svg viewBox="0 0 24 24" fill="#dc2626" style={{ width: "20px", height: "20px" }}>
