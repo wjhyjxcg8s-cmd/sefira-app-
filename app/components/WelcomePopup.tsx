@@ -152,7 +152,7 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
 
   return (
     <>
-      {/* Backdrop */}
+      {/* Backdrop + centered layout */}
       <div
         onClick={handleClose}
         style={{
@@ -160,25 +160,30 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
           background: 'rgba(0,0,0,0.6)',
           backdropFilter: 'blur(4px)',
           zIndex: 9998,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '16px',
           animation: 'fadeIn 0.3s ease',
         }}
-      />
+      >
 
-      {/* Popup */}
-      <div style={{
-        position: 'fixed',
-        bottom: 0, left: 0, right: 0,
-        background: 'linear-gradient(180deg, #ffffff 0%, #fff7ed 100%)',
-        borderRadius: '24px 24px 0 0',
-        padding: '28px 24px 40px',
-        zIndex: 9999,
-        maxWidth: '480px',
-        margin: '0 auto',
-        boxShadow: '0 -8px 40px rgba(0,0,0,0.2)',
-        animation: 'slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
-        direction: isRTL ? 'rtl' : 'ltr',
-        textAlign: isRTL ? 'right' : 'left',
-      }}>
+      {/* Popup card */}
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          background: 'linear-gradient(180deg, #ffffff 0%, #fff7ed 100%)',
+          borderRadius: '24px',
+          padding: '28px 24px',
+          zIndex: 9999,
+          width: '100%',
+          maxWidth: '384px',
+          boxShadow: '0 8px 40px rgba(0,0,0,0.25)',
+          animation: 'scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+          direction: isRTL ? 'rtl' : 'ltr',
+          textAlign: isRTL ? 'right' : 'left',
+        }}
+      >
 
         {/* Language selector */}
         <div style={{
@@ -331,11 +336,12 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
           {t.close}
         </button>
       </div>
+      </div>
 
       <style>{`
-        @keyframes slideUp {
-          from { transform: translateY(100%); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
+        @keyframes scaleIn {
+          from { transform: scale(0.85); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
         }
         @keyframes fadeIn {
           from { opacity: 0; }
