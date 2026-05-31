@@ -2663,78 +2663,35 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── DOWNLOAD APP ──────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden border-y border-amber-200 py-20 bg-gradient-to-br from-amber-100 via-orange-50 to-stone-50">
-        <div className="absolute top-0 left-1/4 w-72 h-72 bg-orange-400/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative max-w-7xl mx-auto px-5 grid lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-5 tracking-tight leading-tight">
-              {t.appH2a}
-              <br />
-              <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">{t.appH2b}</span>
-            </h2>
-            <p className="text-lg text-stone-600 leading-relaxed mb-9">{t.appP}</p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button className="flex items-center gap-4 bg-stone-900 text-white px-6 py-4 rounded-2xl font-bold hover:bg-stone-800 transition-all duration-200 shadow-2xl shadow-stone-900/25 hover:-translate-y-0.5 active:scale-95">
-                <span className="text-3xl leading-none">🍎</span>
-                <div className="text-left">
-                  <div className="text-xs text-stone-400 font-normal">{t.appStoreLabel}</div>
-                  <div className="text-sm font-black">{t.appStoreName}</div>
-                </div>
-              </button>
-              <button className="flex items-center gap-4 bg-orange-500 text-white px-6 py-4 rounded-2xl font-bold hover:bg-orange-600 border border-orange-400 transition-all duration-200 shadow-lg shadow-orange-500/25 hover:-translate-y-0.5 hover:shadow-xl active:scale-95">
-                <span className="text-3xl leading-none">▶</span>
-                <div className="text-left">
-                  <div className="text-xs text-orange-100 font-normal">{t.googlePlayLabel}</div>
-                  <div className="text-sm font-black">{t.googlePlayName}</div>
-                </div>
-              </button>
-            </div>
+      {/* ── PROMO IMAGE ───────────────────────────────────────────────────────── */}
+      <section className="bg-gradient-to-b from-orange-50 to-white py-12 px-4">
+        <div className="flex flex-col items-center">
+          <div className="w-full max-w-xs sm:max-w-sm drop-shadow-2xl hover:scale-105 transition-transform duration-500">
+            <Image
+              src="/images/sefira-promo.jpeg"
+              alt="Sefira App"
+              width={300}
+              height={380}
+              style={{ objectFit: "contain" }}
+              className="w-full h-auto"
+            />
           </div>
-          <div className="flex justify-center lg:justify-end">
-            <div className="relative w-60 h-[500px] animate-float">
-              <div className="absolute inset-0 bg-stone-800 rounded-[2.5rem] border-4 border-stone-700/50 shadow-2xl overflow-hidden">
-                <div className="absolute inset-2 bg-stone-900 rounded-[2rem] overflow-hidden">
-                  <div className="flex items-center justify-between px-4 pt-3 pb-2">
-                    <span className="text-xs text-white font-medium">9:41</span>
-                    <span className="text-xs text-white/40">● ● ● ●</span>
-                  </div>
-                  <div className="px-3 py-2 space-y-3">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-black bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">Sefira</span>
-                      <div className="w-6 h-6 bg-gradient-to-br from-orange-500 to-amber-500 rounded-full shadow-lg" />
-                    </div>
-                    <div className="bg-gradient-to-r from-orange-500/20 to-amber-500/20 border border-orange-400/20 rounded-xl p-3">
-                      <div className="text-xs text-orange-400 font-bold mb-1">{t.newMatch}</div>
-                      <div className="text-xs text-white">{t.likedProfile}</div>
-                      <div className="text-xs text-white/50">{t.compatibility}</div>
-                    </div>
-                    <div className="text-xs text-white/40 font-medium px-1">{t.suggested}</div>
-                    {[
-                      { init: "KT", name: "Kai T.",   match: 94, grad: "from-cyan-500 to-blue-600" },
-                      { init: "SR", name: "Sofia R.", match: 91, grad: "from-rose-500 to-pink-600" },
-                      { init: "LM", name: "Lena M.",  match: 89, grad: "from-violet-500 to-purple-600" },
-                    ].map((c) => (
-                      <div key={c.init} className="flex items-center gap-2 bg-white/10 rounded-xl p-2">
-                        <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${c.grad} flex items-center justify-center text-xs font-black flex-shrink-0`}>
-                          {c.init}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-xs text-white font-medium">{c.name}</div>
-                          <div className="text-xs text-white/40">{c.match}% {t.matchLabel.toLowerCase()}</div>
-                        </div>
-                        <div className="w-6 h-6 bg-gradient-to-br from-orange-500 to-amber-500 rounded-full flex items-center justify-center text-xs text-white flex-shrink-0">→</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <div className="absolute right-[-3px] top-28 w-1 h-14 bg-stone-600 rounded-full" />
-              <div className="absolute left-[-3px] top-20 w-1 h-8 bg-stone-600 rounded-full" />
-              <div className="absolute left-[-3px] top-32 w-1 h-14 bg-stone-600 rounded-full" />
-            </div>
-          </div>
+          <h2 className="text-2xl font-bold text-gray-900 text-center mt-4">
+            {lang === "tr" ? "Güvenli Ev Arkadaşı Bulmanın En Kolay Yolu"
+              : lang === "en" ? "The Easiest Way to Find a Safe Roommate"
+              : lang === "fa" ? "آسان‌ترین راه برای پیدا کردن هم‌خانه مطمئن"
+              : lang === "ar" ? "أسهل طريقة لإيجاد شريك سكن آمن"
+              : lang === "de" ? "Der einfachste Weg, einen sicheren Mitbewohner zu finden"
+              : "Самый простой способ найти надёжного соседа"}
+          </h2>
+          <p className="text-sm text-gray-500 text-center mt-1">
+            {lang === "tr" ? "Binlerce doğrulanmış ilan, tek platformda"
+              : lang === "en" ? "Thousands of verified listings, one platform"
+              : lang === "fa" ? "هزاران آگهی تأیید شده، یک پلتفرم"
+              : lang === "ar" ? "آلاف الإعلانات الموثقة في منصة واحدة"
+              : lang === "de" ? "Tausende verifizierte Anzeigen, eine Plattform"
+              : "Тысячи проверенных объявлений на одной платформе"}
+          </p>
         </div>
       </section>
 
