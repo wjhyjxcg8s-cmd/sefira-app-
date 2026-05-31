@@ -826,6 +826,11 @@ const matchProfiles = [
   },
 ];
 
+const HELP_CENTER_TEXTS = new Set([
+  "Yardım Merkezi", "Help Center", "Hilfe-Center",
+  "مرکز کمک", "مركز المساعدة", "Центр помощи",
+]);
+
 const MATCH_PHOTOS = [
   "https://randomuser.me/api/portraits/women/44.jpg",
   "https://randomuser.me/api/portraits/men/32.jpg",
@@ -2770,7 +2775,10 @@ export default function Home() {
                 <ul className="space-y-3">
                   {col.links.map((link) => (
                     <li key={link}>
-                      <a href="#" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</a>
+                      {HELP_CENTER_TEXTS.has(link)
+                        ? <Link href="/messages" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
+                        : <a href="#" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</a>
+                      }
                     </li>
                   ))}
                 </ul>
