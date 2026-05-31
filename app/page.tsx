@@ -829,6 +829,70 @@ const listings = [
     tagColor: "from-rose-500 to-pink-600", gender: "Female",
     image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
   },
+  {
+    id: 5, title: "Cozy Flat in Shoreditch", city: "London", country: "United Kingdom",
+    price: 1100, sym: "GBP" as const, rating: 4.8, reviews: 73, type: "Private Room",
+    available: "Now", gradient: "from-indigo-500 via-blue-600 to-sky-700",
+    verified: true, amenities: ["WiFi", "Garden", "Desk"], tag: "New",
+    tagColor: "from-indigo-500 to-blue-600", gender: "Any",
+    image: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: 6, title: "Canal-Side Studio, Jordaan", city: "Amsterdam", country: "Netherlands",
+    price: 920, sym: "EUR" as const, rating: 4.9, reviews: 112, type: "Studio",
+    available: "Jun 5", gradient: "from-red-500 via-rose-600 to-pink-700",
+    verified: true, amenities: ["WiFi", "Bike", "Terrace"], tag: "Most Popular",
+    tagColor: "from-red-500 to-rose-600", gender: "Any",
+    image: "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: 7, title: "Bright Room in Le Marais", city: "Paris", country: "France",
+    price: 990, sym: "EUR" as const, rating: 4.7, reviews: 88, type: "Private Room",
+    available: "Jun 10", gradient: "from-violet-500 via-purple-600 to-fuchsia-700",
+    verified: false, amenities: ["WiFi", "A/C", "Metro"], tag: "Best Value",
+    tagColor: "from-violet-500 to-purple-600", gender: "Female",
+    image: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: 8, title: "Trastevere Apartment with Terrace", city: "Rome", country: "Italy",
+    price: 720, sym: "EUR" as const, rating: 4.8, reviews: 61, type: "Entire Flat",
+    available: "Now", gradient: "from-orange-500 via-amber-600 to-yellow-600",
+    verified: true, amenities: ["WiFi", "Terrace", "Kitchen"], tag: "Top Rated",
+    tagColor: "from-orange-500 to-amber-500", gender: "Any",
+    image: "https://images.unsplash.com/photo-1529260830199-42c24126f198?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: 9, title: "Minimalist Room in Alfama", city: "Lisbon", country: "Portugal",
+    price: 580, sym: "EUR" as const, rating: 4.6, reviews: 95, type: "Private Room",
+    available: "Jun 20", gradient: "from-teal-500 via-cyan-600 to-sky-700",
+    verified: true, amenities: ["WiFi", "Balcony", "Tram"], tag: "New",
+    tagColor: "from-teal-500 to-cyan-600", gender: "Male",
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: 10, title: "Elegant Room in 1st District", city: "Vienna", country: "Austria",
+    price: 860, sym: "EUR" as const, rating: 4.9, reviews: 44, type: "Private Room",
+    available: "Now", gradient: "from-slate-500 via-gray-600 to-zinc-700",
+    verified: true, amenities: ["WiFi", "Piano", "Library"], tag: "Most Popular",
+    tagColor: "from-slate-500 to-gray-600", gender: "Any",
+    image: "https://images.unsplash.com/photo-1509749837427-ac94a2553d0e?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: 11, title: "Studio in Beyoğlu Art District", city: "Istanbul", country: "Turkey",
+    price: 380, sym: "USD" as const, rating: 4.7, reviews: 138, type: "Studio",
+    available: "Jun 8", gradient: "from-cyan-500 via-teal-600 to-emerald-700",
+    verified: false, amenities: ["WiFi", "Kitchen", "Art"], tag: "Best Value",
+    tagColor: "from-cyan-500 to-teal-600", gender: "Any",
+    image: "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: 12, title: "Penthouse Suite, Downtown Dubai", city: "Dubai", country: "UAE",
+    price: 1800, sym: "USD" as const, rating: 5.0, reviews: 29, type: "Entire Flat",
+    available: "Now", gradient: "from-yellow-500 via-amber-500 to-orange-600",
+    verified: true, amenities: ["Pool", "Gym", "Valet"], tag: "Top Rated",
+    tagColor: "from-yellow-500 to-orange-500", gender: "Any",
+    image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80",
+  },
 ];
 
 const trendingCities = [
@@ -2323,29 +2387,29 @@ export default function Home() {
             ))}
           </div>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-3 gap-3">
           {listings.map((listing) => (
             <div
               key={listing.id}
               className="group bg-white border border-stone-200 rounded-2xl overflow-hidden hover:border-orange-200 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/5 hover:-translate-y-1 cursor-pointer hover:ring-1 hover:ring-orange-200"
             >
-              <div className="relative h-52 overflow-hidden">
+              <div className="relative h-32 overflow-hidden">
                 <div className={`absolute inset-0 bg-gradient-to-br ${listing.gradient}`} />
                 <Image
                   src={listing.image}
                   alt={listing.title}
                   fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  sizes="(max-width: 1280px) 33vw, 25vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   quality={80}
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-stone-900/25 via-transparent to-stone-900/30" />
-                <div className={`absolute top-3 left-3 bg-gradient-to-r ${listing.tagColor} text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg`}>
+                <div className={`absolute top-2 left-2 bg-gradient-to-r ${listing.tagColor} text-white text-xs font-bold px-1.5 py-0.5 rounded-full shadow`}>
                   {lang === "ru" ? (TAG_RU[listing.tag] ?? listing.tag) : listing.tag}
                 </div>
                 <button
                   onClick={() => toggleListing(listing.id)}
-                  className={`absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 font-bold active:scale-90 ${
+                  className={`absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 font-bold active:scale-90 text-xs ${
                     likedListings.includes(listing.id)
                       ? "bg-rose-500 text-white shadow-lg shadow-rose-500/40 scale-110"
                       : "bg-stone-900/25 backdrop-blur-sm text-white/60 hover:text-white hover:bg-stone-900/50 hover:scale-110"
@@ -2353,40 +2417,23 @@ export default function Home() {
                 >
                   ♥
                 </button>
-                {listing.verified && (
-                  <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-stone-900/50 backdrop-blur-sm rounded-full px-2.5 py-1">
-                    <span className="w-2.5 h-2.5 rounded-full bg-orange-400" />
-                    <span className="text-xs text-white font-medium">{t.listingVerified}</span>
-                  </div>
-                )}
-                {/* Dynamic currency price */}
-                <div className="absolute bottom-3 right-3 bg-stone-900/60 backdrop-blur-sm rounded-xl px-3 py-1.5">
-                  <span className="text-white font-black text-sm">
+                <div className="absolute bottom-2 right-2 bg-stone-900/60 backdrop-blur-sm rounded-lg px-2 py-0.5">
+                  <span className="text-white font-black text-xs">
                     {displayPrice(listing.price, listing.sym, currency)}
                   </span>
-                  <span className="text-white/50 text-xs">{t.perMonth}</span>
                 </div>
               </div>
-              <div className="p-4">
-                <h3 className="font-bold text-stone-900 mb-1.5 group-hover:text-orange-600 transition-colors text-sm leading-snug">
+              <div className="p-2">
+                <h3 className="text-xs font-bold text-stone-900 group-hover:text-orange-600 transition-colors truncate">
                   {listing.title}
                 </h3>
-                <p className="text-xs text-stone-500 mb-3">
-                  {listing.city}, {lang === "ru" ? (COUNTRY_RU[listing.country] ?? listing.country) : listing.country}
+                <p className="text-xs text-gray-400 truncate">
+                  {listing.city}
                 </p>
-                <div className="flex items-center gap-2 mb-3">
+                <div className="flex items-center gap-1 mt-1">
                   <span className="text-amber-500 text-xs">★</span>
                   <span className="text-stone-900 text-xs font-bold">{listing.rating}</span>
                   <span className="text-stone-400 text-xs">({listing.reviews})</span>
-                  <span className="ml-auto text-xs text-stone-500">{lang === "ru" && listing.available === "Now" ? "Сейчас" : listing.available}</span>
-                </div>
-                <div className="flex gap-1.5 flex-wrap items-center">
-                  {listing.amenities.map((a) => (
-                    <span key={a} className="text-xs bg-stone-100 rounded-md px-2 py-0.5 text-stone-500">
-                      {a}
-                    </span>
-                  ))}
-                  <span className="text-xs text-stone-400 ml-auto">{listing.gender === "Male" ? t.genderMale : listing.gender === "Female" ? t.genderFemale : t.genderAny}</span>
                 </div>
               </div>
             </div>
