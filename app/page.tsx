@@ -2400,27 +2400,52 @@ export default function Home() {
       </section>
 
       {/* ── HOW IT WORKS ──────────────────────────────────────────────────────── */}
+      <style jsx>{`
+        @keyframes fadeSlideUp {
+          from { opacity: 0; transform: translateY(12px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .hiw-card { animation: fadeSlideUp 0.45s ease both; }
+        .hiw-card:nth-child(1) { animation-delay: 0ms; }
+        .hiw-card:nth-child(2) { animation-delay: 100ms; }
+        .hiw-card:nth-child(3) { animation-delay: 200ms; }
+        .hiw-card:nth-child(4) { animation-delay: 300ms; }
+      `}</style>
       <section className="bg-amber-50/80 border-y border-amber-100 py-20">
-        <div className="max-w-7xl mx-auto px-5">
-          <div className="text-center mb-16">
+        <div className="max-w-4xl mx-auto px-5">
+          <div className="text-center mb-14">
             <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-4 tracking-tight">{t.howH2}</h2>
             <p className="text-stone-600 text-lg max-w-xl mx-auto">{t.howP}</p>
           </div>
-          <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
-            {t.howItWorks.map((step, i) => {
-              const emojis = ["📝", "🤖", "💬", "🏡"];
-              const bgs    = ["bg-blue-50", "bg-purple-50", "bg-pink-50", "bg-green-50"];
-              return (
-                <div key={step.step} className="bg-white rounded-2xl p-5 shadow-md border border-gray-100 text-center flex flex-col items-center hover:shadow-xl hover:-translate-y-1 transition-all">
-                  <div className={`w-16 h-16 ${bgs[i]} rounded-2xl flex items-center justify-center mb-3 text-4xl`}>
-                    {emojis[i]}
+          <div className="relative">
+            {/* Connecting line — desktop only */}
+            <div className="hidden md:block absolute top-8 left-[calc(12.5%+2rem)] right-[calc(12.5%+2rem)] h-px -z-10"
+                 style={{ background: "linear-gradient(to right, transparent, #FF6B35 20%, #FF6B35 80%, transparent)", opacity: 0.25, borderTop: "1px dashed #FF6B35" }} />
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+              {t.howItWorks.map((step, i) => {
+                const emojis    = ["📝", "🤖", "💬", "🏡"];
+                const iconBgs   = [
+                  "bg-gradient-to-br from-blue-100 to-blue-50",
+                  "bg-gradient-to-br from-purple-100 to-purple-50",
+                  "bg-gradient-to-br from-pink-100 to-pink-50",
+                  "bg-gradient-to-br from-green-100 to-green-50",
+                ];
+                return (
+                  <div key={step.step} className="hiw-card bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center flex flex-col items-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <div className="relative mb-3">
+                      <div className={`w-16 h-16 ${iconBgs[i]} rounded-2xl flex items-center justify-center text-4xl`}>
+                        {emojis[i]}
+                      </div>
+                      <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-orange-500 text-white text-[10px] font-bold flex items-center justify-center leading-none">
+                        {i + 1}
+                      </span>
+                    </div>
+                    <h3 className="text-base md:text-lg font-bold text-gray-900 mt-1">{step.title}</h3>
+                    <p className="text-xs md:text-sm text-gray-500 mt-1.5 leading-relaxed">{step.desc}</p>
                   </div>
-                  <span className="text-xs font-bold text-orange-500">{step.step}</span>
-                  <h3 className="text-base font-bold text-gray-900 mt-2">{step.title}</h3>
-                  <p className="text-xs text-gray-500 mt-1 leading-relaxed">{step.desc}</p>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
