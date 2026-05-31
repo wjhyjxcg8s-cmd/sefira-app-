@@ -831,7 +831,7 @@ const listings = [
   },
   {
     id: 5, title: "Cozy Flat in Shoreditch", city: "London", country: "United Kingdom",
-    price: 1100, sym: "GBP" as const, rating: 4.8, reviews: 73, type: "Private Room",
+    price: 1100, sym: "EUR" as const, rating: 4.8, reviews: 73, type: "Private Room",
     available: "Now", gradient: "from-indigo-500 via-blue-600 to-sky-700",
     verified: true, amenities: ["WiFi", "Garden", "Desk"], tag: "New",
     tagColor: "from-indigo-500 to-blue-600", gender: "Any",
