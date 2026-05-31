@@ -1768,15 +1768,14 @@ export default function Home() {
       )}
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex flex-col justify-center pt-16 overflow-hidden bg-[#0f1729]">
+      <section className="relative min-h-screen flex flex-col justify-center pt-16 overflow-hidden bg-[#0D1B2A]">
 
         {/* Animated dark gradient background */}
         <div className="absolute inset-0 hero-dark-bg" />
 
-        {/* Animated gradient orbs */}
-        <div className="hero-orb-1 absolute -top-24 -left-16 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-orange-500/30 via-amber-400/15 to-transparent blur-3xl pointer-events-none" />
-        <div className="hero-orb-2 absolute top-1/2 left-1/2 w-80 h-80 rounded-full bg-purple-700/20 blur-3xl pointer-events-none -translate-x-1/2 -translate-y-1/2" />
-        <div className="hero-orb-3 absolute -bottom-20 -right-16 w-[560px] h-[560px] rounded-full bg-indigo-700/22 blur-3xl pointer-events-none" />
+        {/* Ambient glow orbs */}
+        <div className="absolute top-0 left-0 w-64 h-64 bg-blue-500 rounded-full blur-3xl opacity-10 pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-64 h-64 bg-blue-400 rounded-full blur-3xl opacity-10 pointer-events-none" />
 
         {/* CSS particle system */}
         {Array.from({ length: 25 }, (_, i) => (
@@ -1797,7 +1796,7 @@ export default function Home() {
           <div className="flex flex-col items-start order-last lg:order-first lg:col-start-1">
 
             {/* Trust badge */}
-            <div className="inline-flex items-center gap-2.5 bg-white/10 border border-white/20 rounded-full px-5 py-2 mb-8 text-sm text-orange-300 hover:bg-white/15 hover:border-white/30 transition-all duration-300 cursor-default shadow-lg shadow-orange-500/15 animate-fade-in-up backdrop-blur-sm">
+            <div className="inline-flex items-center gap-2.5 bg-white/10 backdrop-blur-sm border border-white/10 rounded-full px-5 py-2 mb-8 text-sm text-orange-300 hover:bg-white/15 hover:border-white/20 transition-all duration-300 cursor-default shadow-lg shadow-orange-500/15 animate-fade-in-up">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
               {t.heroBadge}
             </div>
@@ -1806,7 +1805,7 @@ export default function Home() {
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-[1.08] tracking-tighter mb-6 animate-fade-in-up stagger-2 hero-title-glow">
               <span className="text-white">{t.heroLine1}</span>
               <br />
-              <span className="bg-gradient-to-r from-orange-400 via-fuchsia-400 to-violet-400 bg-clip-text text-transparent">
+              <span className="text-orange-400">
                 {t.heroLine2}
               </span>
               <br />
