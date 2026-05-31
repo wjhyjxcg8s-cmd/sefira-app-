@@ -831,6 +831,11 @@ const HELP_CENTER_TEXTS = new Set([
   "مرکز کمک", "مركز المساعدة", "Центр помощи",
 ]);
 
+const COOKIE_TEXTS = new Set([
+  "Çerezler", "Cookies", "کوکی‌ها",
+  "ملفات تعريف الارتباط", "Cookies",
+]);
+
 const MATCH_PHOTOS = [
   "https://randomuser.me/api/portraits/women/44.jpg",
   "https://randomuser.me/api/portraits/men/32.jpg",
@@ -2767,7 +2772,9 @@ export default function Home() {
                     <li key={link}>
                       {HELP_CENTER_TEXTS.has(link)
                         ? <Link href="/messages" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
-                        : <a href="#" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</a>
+                        : COOKIE_TEXTS.has(link)
+                          ? <Link href="/cookies" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
+                          : <a href="#" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</a>
                       }
                     </li>
                   ))}
@@ -2779,7 +2786,9 @@ export default function Home() {
             <p className="text-xs text-stone-500">{t.footerCopy}</p>
             <div className="flex items-center gap-6">
               {t.footerLegal.map((l) => (
-                <a key={l} href="#" className="text-xs text-stone-500 hover:text-stone-300 transition-colors duration-200">{l}</a>
+                COOKIE_TEXTS.has(l)
+                  ? <Link key={l} href="/cookies" className="text-xs text-stone-500 hover:text-stone-300 transition-colors duration-200">{l}</Link>
+                  : <a key={l} href="#" className="text-xs text-stone-500 hover:text-stone-300 transition-colors duration-200">{l}</a>
               ))}
             </div>
           </div>
