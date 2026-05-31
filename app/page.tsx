@@ -1755,119 +1755,71 @@ export default function Home() {
       )}
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
-      <section
-        className="relative min-h-screen flex flex-col justify-center pt-16 overflow-hidden bg-[#0A0E27]"
-        style={{background:'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(255,107,53,0.15), transparent), radial-gradient(ellipse 60% 50% at 80% 50%, rgba(99,102,241,0.12), transparent), radial-gradient(ellipse 60% 50% at 20% 80%, rgba(236,72,153,0.10), transparent), #0A0E27'}}
-      >
+      <section className="relative overflow-hidden bg-white pt-16">
 
-        {/* Floating glow orbs */}
-        <div className="absolute top-20 left-10 w-72 h-72 rounded-full blur-[100px] opacity-40 pointer-events-none" style={{background:'#FF6B35'}} />
-        <div className="absolute bottom-40 right-10 w-80 h-80 rounded-full blur-[120px] opacity-30 pointer-events-none" style={{background:'#6366F1'}} />
-        <div className="absolute top-1/2 left-1/3 w-64 h-64 rounded-full blur-[100px] opacity-25 pointer-events-none" style={{background:'#EC4899'}} />
+        {/* Decorative blur circles */}
+        <div className="absolute w-96 h-96 rounded-full bg-orange-50 blur-3xl opacity-60 -top-20 -right-20 pointer-events-none" />
+        <div className="absolute w-72 h-72 rounded-full bg-blue-50 blur-3xl opacity-40 bottom-0 -left-10 pointer-events-none" />
 
-        {/* Subtle dot grid overlay */}
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{backgroundImage:'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize:'32px 32px'}} />
-
-        {/* CSS particle system */}
-        {Array.from({ length: 25 }, (_, i) => (
-          <div
-            key={i}
-            className={`hero-particle hero-particle-${(i % 6) + 1}`}
-            style={{
-              left: `${((i * 37 + 5) % 89) + 3}%`,
-              top: `${((i * 29 + 8) % 82) + 5}%`,
-              animationDelay: `${((i * 35) % 800) / 100}s`,
-            }}
-          />
-        ))}
-
-        <div className="relative z-10 max-w-7xl mx-auto px-5 py-16 grid lg:grid-cols-[1.1fr_1fr] gap-12 xl:gap-16 items-center w-full">
+        <div className="relative z-10 max-w-7xl mx-auto px-5 py-16 md:grid md:grid-cols-2 gap-8 items-center w-full">
 
           {/* ── LEFT: Typography + Wizard ───────────────────────────────────── */}
-          <div className="flex flex-col items-start order-last lg:order-first lg:col-start-1">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col items-start"
+          >
 
-            {/* Trust badge */}
-            <div className="inline-flex items-center gap-2.5 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl px-5 py-2 mb-8 text-sm text-orange-300 hover:bg-white/10 transition-all duration-300 cursor-default shadow-2xl animate-fade-in-up">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
-              {t.heroBadge}
-            </div>
+            {/* Pill badge */}
+            <span className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 text-xs font-bold px-4 py-1.5 rounded-full">
+              🏠 #1 Ev Arkadaşı Platformu
+            </span>
 
             {/* Headline */}
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-[1.08] tracking-tighter mb-6 animate-fade-in-up stagger-2 hero-title-glow">
-              <span className="text-white">{t.heroLine1}</span>
+            <h1 className="text-4xl md:text-5xl font-black text-gray-900 leading-tight mt-4">
+              <span>{t.heroLine1}</span>
               <br />
-              <span className="bg-gradient-to-r from-orange-400 to-pink-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">
                 {t.heroLine2}
               </span>
               <br />
-              <span className="text-white">{t.heroLine3}</span>
+              <span>{t.heroLine3}</span>
             </h1>
 
             {/* Subtitle */}
-            <p className="text-lg sm:text-xl text-white/75 max-w-xl mb-8 leading-relaxed animate-fade-in-up stagger-3">
+            <p className="text-gray-500 text-base mt-3 leading-relaxed max-w-xl">
               {t.heroP}
             </p>
 
             {/* ── SEARCH WIZARD ─────────────────────────────────────────────── */}
-            <div className="w-full mb-10 animate-fade-in-up stagger-4">
+            <div className="w-full mt-6">
 
               {wizardMode === null ? (
-                /* ── Mode selector ── */
-                <div>
-                  <p className="text-[11px] font-black text-white/50 uppercase tracking-widest mb-3.5">
-                    {t.wizardTitle}
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <>
+                  {/* Inline trust stats */}
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    <span className="bg-gray-50 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700">✅ 127K+ Kullanıcı</span>
+                    <span className="bg-gray-50 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700">⭐ 4.9 Puan</span>
+                    <span className="bg-gray-50 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700">🏙️ 52 Şehir</span>
+                  </div>
 
-                    {/* Card 1: Has room, looking for roommate */}
+                  {/* CTA buttons */}
+                  <div className="flex flex-wrap gap-3">
                     <button
                       onClick={() => { setWizardMode("seeking"); setWizardStep(1); }}
-                      className="relative text-left p-5 rounded-2xl shadow-lg hover:scale-[1.02] transition-transform duration-200 active:scale-[0.98] overflow-hidden"
-                      style={{ background: "linear-gradient(135deg, #FF6B35, #FF8E53)" }}
+                      className="bg-orange-500 text-white px-6 py-3 rounded-2xl font-bold hover:bg-orange-600 transition-colors duration-200 active:scale-95"
                     >
-                      <div className={`flex ${lang === "fa" || lang === "ar" ? "flex-row-reverse" : "flex-row"} items-start gap-4`}>
-                        <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center text-3xl flex-shrink-0">
-                          🏠
-                        </div>
-                        <div className="flex-1">
-                          <p className="font-bold text-lg text-white leading-snug mb-1">
-                            {t.optionSeekingTitle}
-                          </p>
-                          <p className="text-sm text-white/80 leading-snug">
-                            {t.optionSeekingSubtitle}
-                          </p>
-                        </div>
-                      </div>
-                      <div className={`flex ${lang === "fa" || lang === "ar" ? "justify-start" : "justify-end"} mt-3`}>
-                        <span className="text-white/70 text-xl">→</span>
-                      </div>
+                      {t.optionSeekingTitle}
                     </button>
-
-                    {/* Card 2: No room, looking for place */}
                     <button
                       onClick={() => { setWizardMode("offering"); setWizardStep(1); }}
-                      className="relative text-left p-5 rounded-2xl shadow-lg hover:scale-[1.02] transition-transform duration-200 active:scale-[0.98] overflow-hidden"
-                      style={{ background: "linear-gradient(135deg, #667EEA, #764BA2)" }}
+                      className="border-2 border-orange-500 text-orange-500 px-6 py-3 rounded-2xl font-bold hover:bg-orange-50 transition-colors duration-200 active:scale-95"
                     >
-                      <div className={`flex ${lang === "fa" || lang === "ar" ? "flex-row-reverse" : "flex-row"} items-start gap-4`}>
-                        <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center text-3xl flex-shrink-0">
-                          🔍
-                        </div>
-                        <div className="flex-1">
-                          <p className="font-bold text-lg text-white leading-snug mb-1">
-                            {t.optionOfferingTitle}
-                          </p>
-                          <p className="text-sm text-white/80 leading-snug">
-                            {t.optionOfferingSubtitle}
-                          </p>
-                        </div>
-                      </div>
-                      <div className={`flex ${lang === "fa" || lang === "ar" ? "justify-start" : "justify-end"} mt-3`}>
-                        <span className="text-white/70 text-xl">→</span>
-                      </div>
+                      {t.optionOfferingTitle}
                     </button>
                   </div>
-                </div>
+                </>
 
               ) : (
                 /* ── Wizard container ── */
@@ -2125,66 +2077,48 @@ export default function Home() {
               </svg>
               {t.ilanVer}
             </button>
-          </div>
+          </motion.div>
 
-          {/* ── RIGHT: Floating cat with glow & sparkles ──────────────────── */}
-          <div className="flex items-center justify-center relative py-4 lg:py-12 order-first lg:order-last lg:col-start-2">
-            {/* Pulsing glow orb behind cat */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="hero-orb-glow w-80 h-80 lg:w-[520px] lg:h-[520px] rounded-full bg-gradient-to-br from-orange-500/35 via-purple-600/22 to-indigo-700/28 blur-3xl" />
-            </div>
-            {/* Subtle ring */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-60 h-60 lg:w-[380px] lg:h-[380px] rounded-full border border-orange-400/20 bg-gradient-to-br from-orange-500/8 via-purple-600/6 to-indigo-700/8" />
-            </div>
-            {/* Cat wrapper */}
-            <div className="relative animate-cat-float z-10 w-[85vw] max-w-[360px] sm:max-w-[420px] lg:w-full lg:max-w-none">
-              {/* Ground shadow glow */}
-              <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-3/4 h-12 bg-gradient-to-r from-orange-500/50 via-purple-600/40 to-indigo-700/40 blur-2xl rounded-full pointer-events-none" />
-              {/* Sparkles */}
-              <span className="hero-sparkle text-xl"  style={{ top: '6%',  right: '10%', animationDelay: '0s'    }}>✦</span>
-              <span className="hero-sparkle text-base" style={{ top: '22%', left:  '4%',  animationDelay: '0.65s' }}>✦</span>
-              <span className="hero-sparkle text-sm"  style={{ top: '52%', right: '4%',  animationDelay: '1.4s'  }}>✦</span>
-              <span className="hero-sparkle text-xs"  style={{ top: '72%', left:  '8%',  animationDelay: '2.1s'  }}>✦</span>
-              <span className="hero-sparkle text-lg"  style={{ top: '38%', right: '1%',  animationDelay: '0.35s' }}>✦</span>
-              <span className="hero-sparkle"           style={{ top: '14%', left:  '16%', animationDelay: '1.75s', fontSize: '10px' }}>✦</span>
-              <span className="hero-sparkle text-sm"  style={{ top: '62%', right: '14%', animationDelay: '1.05s' }}>✦</span>
-              <span className="hero-sparkle text-xs"  style={{ top: '44%', left:  '1%',  animationDelay: '2.45s' }}>✦</span>
-              {/* Cat image */}
+          {/* ── RIGHT: Sefira promo image ──────────────────────────────────── */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            whileHover={{ y: -5 }}
+            className="relative flex items-center justify-center py-8 order-first md:order-last"
+          >
+            {/* Orange glow behind image */}
+            <div className="absolute inset-0 bg-orange-200 blur-2xl rounded-3xl opacity-20 scale-105 pointer-events-none" />
+
+            {/* Image wrapper */}
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl w-full">
               <Image
-                src="/images/hero-cat.png"
-                alt="Sefira mascot"
-                width={560}
-                height={620}
-                className="w-full h-auto object-contain"
-                style={{ filter: 'drop-shadow(0 0 55px rgba(255,140,66,0.5)) drop-shadow(0 24px 64px rgba(80,60,180,0.35))' }}
+                src="/images/sefira-promo.jpeg"
+                alt="Sefira - Find Your Perfect Home"
+                width={600}
+                height={500}
+                className="w-full h-auto object-cover"
                 priority
               />
-              {/* Floating badges */}
-              <div className="absolute -top-5 -left-5 sm:-left-10 bg-white/95 border border-stone-100 rounded-2xl px-3 py-2.5 sm:px-4 sm:py-3 shadow-2xl shadow-stone-900/10 backdrop-blur-md animate-fade-in-up stagger-2 z-20">
-                <div className="flex items-center gap-2 sm:gap-2.5">
-                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-black text-sm shadow-lg shadow-emerald-500/30">
-                    ✓
-                  </div>
-                  <div>
-                    <div className="text-xs font-black text-stone-900 leading-none mb-0.5">127K+</div>
-                    <div className="text-xs text-stone-400">Verified Users</div>
-                  </div>
-                </div>
+            </div>
+
+            {/* Floating badge top-left */}
+            <div className="absolute -top-3 -left-3 bg-white rounded-2xl shadow-lg px-3 py-2 flex items-center gap-2 z-10">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-black text-sm shadow-lg shadow-emerald-500/30">
+                ✓
               </div>
-              <div className="absolute -bottom-5 -right-5 sm:-right-10 bg-white/95 border border-stone-100 rounded-2xl px-3 py-2.5 sm:px-4 sm:py-3 shadow-2xl shadow-stone-900/10 backdrop-blur-md animate-fade-in-up stagger-4 z-20">
-                <div className="flex items-center gap-2 sm:gap-2.5">
-                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-orange-500 via-fuchsia-500 to-violet-600 flex items-center justify-center text-white font-black text-sm shadow-lg shadow-orange-500/30">
-                    ★
-                  </div>
-                  <div>
-                    <div className="text-xs font-black text-stone-900 leading-none mb-0.5">4.9 Stars</div>
-                    <div className="text-xs text-stone-400">12K+ Reviews</div>
-                  </div>
-                </div>
+              <div>
+                <div className="text-xs font-bold text-stone-900 leading-none mb-0.5">127K+</div>
+                <div className="text-xs text-stone-400">Verified Users</div>
               </div>
             </div>
-          </div>
+
+            {/* Floating badge bottom-right */}
+            <div className="absolute -bottom-3 -right-3 bg-white rounded-2xl shadow-lg px-3 py-2 z-10">
+              <span className="text-xs font-bold text-gray-800">⭐ 4.9 Stars · 12K+ Reviews</span>
+            </div>
+          </motion.div>
+
         </div>
 
       </section>
