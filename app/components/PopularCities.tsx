@@ -110,6 +110,81 @@ const CITIES = [
     image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80",
     accent: "from-amber-500 to-yellow-600",
   },
+  {
+    key: "moscow",
+    name: "Moscow",
+    nameTr: "Moskova",
+    nameFa: "مسکو",
+    nameAr: "موسكو",
+    country: "Russia",
+    countryTr: "Rusya",
+    countryFa: "روسیه",
+    countryAr: "روسيا",
+    countryRu: "Россия",
+    listings: "1,823",
+    image: "https://images.unsplash.com/photo-1513326738677-b964603b136d?w=400&q=80",
+    accent: "from-red-600 to-rose-700",
+  },
+  {
+    key: "tehran",
+    name: "Tehran",
+    nameTr: "Tahran",
+    nameFa: "تهران",
+    nameAr: "طهران",
+    country: "Iran",
+    countryTr: "İran",
+    countryFa: "ایران",
+    countryAr: "إيران",
+    countryRu: "Иран",
+    listings: "987",
+    image: "https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=400&q=80",
+    accent: "from-emerald-600 to-teal-700",
+  },
+  {
+    key: "manchester",
+    name: "Manchester",
+    nameTr: "Manchester",
+    nameFa: "منچستر",
+    nameAr: "مانشستر",
+    country: "UK",
+    countryTr: "İngiltere",
+    countryFa: "بریتانیا",
+    countryAr: "المملكة المتحدة",
+    countryRu: "Великобритания",
+    listings: "1,234",
+    image: "https://images.unsplash.com/photo-1543872084-c7bd3822856f?w=400&q=80",
+    accent: "from-sky-500 to-blue-600",
+  },
+  {
+    key: "london",
+    name: "London",
+    nameTr: "Londra",
+    nameFa: "لندن",
+    nameAr: "لندن",
+    country: "UK",
+    countryTr: "İngiltere",
+    countryFa: "بریتانیا",
+    countryAr: "المملكة المتحدة",
+    countryRu: "Великобритания",
+    listings: "3,456",
+    image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&q=80",
+    accent: "from-indigo-500 to-blue-600",
+  },
+  {
+    key: "frankfurt",
+    name: "Frankfurt",
+    nameTr: "Frankfurt",
+    nameFa: "فرانکفورت",
+    nameAr: "فرانكفورت",
+    country: "Germany",
+    countryTr: "Almanya",
+    countryFa: "آلمان",
+    countryAr: "ألمانيا",
+    countryRu: "Германия",
+    listings: "1,678",
+    image: "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=400&q=80",
+    accent: "from-zinc-500 to-gray-600",
+  },
 ];
 
 const copy = {
@@ -268,7 +343,7 @@ export default function PopularCities({ lang }: { lang: "tr" | "en" | "fa" | "ar
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const t = copy[lang];
 
-  const [istanbul, washingtonDc, newYork, paris, barcelona, berlin, dubai] = CITIES;
+  const [istanbul, washingtonDc, newYork, paris, barcelona, berlin, dubai, moscow, tehran, manchester, london, frankfurt] = CITIES;
 
   return (
     <section ref={ref} className="max-w-7xl mx-auto px-5 py-20">
@@ -319,6 +394,11 @@ export default function PopularCities({ lang }: { lang: "tr" | "en" | "fa" | "ar
         <CityCard city={barcelona}    lang={lang} inView={inView} delay={0.30} className="h-40" imgSizes="50vw" t={t} />
         <CityCard city={berlin}       lang={lang} inView={inView} delay={0.36} className="h-40" imgSizes="50vw" t={t} />
         <CityCard city={dubai}        lang={lang} inView={inView} delay={0.42} className="h-40" imgSizes="50vw" t={t} />
+        <CityCard city={moscow}       lang={lang} inView={inView} delay={0.48} className="h-40" imgSizes="50vw" t={t} />
+        <CityCard city={tehran}       lang={lang} inView={inView} delay={0.54} className="h-40" imgSizes="50vw" t={t} />
+        <CityCard city={manchester}   lang={lang} inView={inView} delay={0.60} className="h-40" imgSizes="50vw" t={t} />
+        <CityCard city={london}       lang={lang} inView={inView} delay={0.66} className="h-40" imgSizes="50vw" t={t} />
+        <CityCard city={frankfurt}    lang={lang} inView={inView} delay={0.72} className="h-40" imgSizes="50vw" t={t} />
       </div>
 
       {/* LG+ bento layout */}
@@ -355,6 +435,15 @@ export default function PopularCities({ lang }: { lang: "tr" | "en" | "fa" | "ar
             </div>
           </div>
         </div>
+      </div>
+
+      {/* LG+ additional row for new cities */}
+      <div className="hidden lg:grid lg:grid-cols-5 gap-4 mt-4 h-44">
+        <CityCard city={moscow}     lang={lang} inView={inView} delay={0.50} className="h-full" imgSizes="18vw" t={t} />
+        <CityCard city={tehran}     lang={lang} inView={inView} delay={0.56} className="h-full" imgSizes="18vw" t={t} />
+        <CityCard city={manchester} lang={lang} inView={inView} delay={0.62} className="h-full" imgSizes="18vw" t={t} />
+        <CityCard city={london}     lang={lang} inView={inView} delay={0.68} className="h-full" imgSizes="18vw" t={t} />
+        <CityCard city={frankfurt}  lang={lang} inView={inView} delay={0.74} className="h-full" imgSizes="18vw" t={t} />
       </div>
     </section>
   );
