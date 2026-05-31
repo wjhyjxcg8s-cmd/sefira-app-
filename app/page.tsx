@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -2447,17 +2448,6 @@ export default function Home() {
       </section>
 
       {/* ── HOW IT WORKS ──────────────────────────────────────────────────────── */}
-      <style jsx>{`
-        @keyframes fadeSlideUp {
-          from { opacity: 0; transform: translateY(12px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-        .hiw-card { animation: fadeSlideUp 0.45s ease both; }
-        .hiw-card:nth-child(1) { animation-delay: 0ms; }
-        .hiw-card:nth-child(2) { animation-delay: 100ms; }
-        .hiw-card:nth-child(3) { animation-delay: 200ms; }
-        .hiw-card:nth-child(4) { animation-delay: 300ms; }
-      `}</style>
       <section className="bg-amber-50/80 border-y border-amber-100 py-20">
         <div className="max-w-4xl mx-auto px-5">
           <div className="text-center mb-14">
@@ -2465,31 +2455,86 @@ export default function Home() {
             <p className="text-stone-600 text-lg max-w-xl mx-auto">{t.howP}</p>
           </div>
           <div className="relative">
-            {/* Connecting line — desktop only */}
-            <div className="hidden md:block absolute top-8 left-[calc(12.5%+2rem)] right-[calc(12.5%+2rem)] h-px -z-10"
-                 style={{ background: "linear-gradient(to right, transparent, #FF6B35 20%, #FF6B35 80%, transparent)", opacity: 0.25, borderTop: "1px dashed #FF6B35" }} />
+            {/* Connecting line — desktop only, aligned to icon center (~top-10 + half of w-20) */}
+            <div
+              className="hidden md:block absolute top-10 left-[calc(12.5%+2.5rem)] right-[calc(12.5%+2.5rem)] h-px -z-10"
+              style={{ background: "linear-gradient(to right, transparent, #FF6B35 20%, #FF6B35 80%, transparent)", opacity: 0.3, borderTop: "1px dashed #FF6B35" }}
+            />
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
               {t.howItWorks.map((step, i) => {
-                const emojis    = ["📝", "🤖", "💬", "🏡"];
-                const iconBgs   = [
-                  "bg-gradient-to-br from-blue-100 to-blue-50",
-                  "bg-gradient-to-br from-purple-100 to-purple-50",
-                  "bg-gradient-to-br from-pink-100 to-pink-50",
-                  "bg-gradient-to-br from-green-100 to-green-50",
+                const iconGradients = [
+                  "bg-gradient-to-br from-blue-400 to-blue-600",
+                  "bg-gradient-to-br from-violet-400 to-purple-600",
+                  "bg-gradient-to-br from-pink-400 to-rose-500",
+                  "bg-gradient-to-br from-emerald-400 to-green-600",
+                ];
+                const glowColors = [
+                  "bg-blue-400/30",
+                  "bg-violet-400/30",
+                  "bg-pink-400/30",
+                  "bg-emerald-400/30",
+                ];
+                const icons = [
+                  /* Step 1 — person silhouette + sparkle */
+                  <svg key="1" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
+                    <circle cx="12" cy="8" r="3.5" />
+                    <path d="M5 21c0-3.87 3.13-7 7-7s7 3.13 7 7" />
+                    <path d="M20 2l.6 1.4L22 4l-1.4.6L20 6l-.6-1.4L18 4l1.4-.6z" fill="white" stroke="none" />
+                  </svg>,
+                  /* Step 2 — neural network nodes */
+                  <svg key="2" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" className="w-10 h-10">
+                    <circle cx="12" cy="12" r="2.5" />
+                    <circle cx="4.5" cy="5.5" r="1.5" />
+                    <circle cx="19.5" cy="5.5" r="1.5" />
+                    <circle cx="4.5" cy="18.5" r="1.5" />
+                    <circle cx="19.5" cy="18.5" r="1.5" />
+                    <path d="M12 9.5L5.5 7" strokeOpacity={0.5} strokeWidth={1} />
+                    <path d="M12 9.5L18.5 7" strokeOpacity={0.5} strokeWidth={1} />
+                    <path d="M12 14.5L5.5 17" strokeOpacity={0.5} strokeWidth={1} />
+                    <path d="M12 14.5L18.5 17" strokeOpacity={0.5} strokeWidth={1} />
+                    <path d="M4.5 7v10" strokeOpacity={0.25} strokeWidth={1} />
+                    <path d="M19.5 7v10" strokeOpacity={0.25} strokeWidth={1} />
+                  </svg>,
+                  /* Step 3 — two speech bubbles with heart */
+                  <svg key="3" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
+                    <path d="M4 5a2 2 0 012-2h8a2 2 0 012 2v5a2 2 0 01-2 2H9l-3 3V12H6a2 2 0 01-2-2V5z" />
+                    <path d="M16 9h1a2 2 0 012 2v4a2 2 0 01-2 2h-1l-2 2v-2h-1" />
+                    <path d="M9.5 7c0-.83.67-1.5 1.5-1.5.41 0 .78.16 1.05.43.27-.27.64-.43 1.05-.43.83 0 1.5.67 1.5 1.5 0 1.5-2.55 2.7-2.55 2.7S9.5 8.5 9.5 7z" fill="white" strokeWidth={0} />
+                  </svg>,
+                  /* Step 4 — house with keyhole */
+                  <svg key="4" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
+                    <path d="M3 11.5L12 3l9 8.5" />
+                    <path d="M5 10v10h5v-5h4v5h5V10" />
+                    <circle cx="12" cy="15.5" r="1.2" fill="white" strokeWidth={0} />
+                    <line x1="12" y1="16.7" x2="12" y2="18.5" />
+                  </svg>,
                 ];
                 return (
-                  <div key={step.step} className="hiw-card bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center flex flex-col items-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                    <div className="relative mb-3">
-                      <div className={`w-16 h-16 ${iconBgs[i]} rounded-2xl flex items-center justify-center text-4xl`}>
-                        {emojis[i]}
-                      </div>
-                      <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-orange-500 text-white text-[10px] font-bold flex items-center justify-center leading-none">
+                  <motion.div
+                    key={step.step}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: i * 0.15 }}
+                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                    className="bg-white rounded-3xl p-6 shadow-md border border-gray-100 text-center flex flex-col items-center"
+                  >
+                    <div className="relative mb-2">
+                      {/* Pulse glow behind icon */}
+                      <div className={`absolute inset-0 rounded-3xl ${glowColors[i]} animate-pulse scale-110`} />
+                      <motion.div
+                        whileHover={{ scale: 1.1, rotate: 5, transition: { type: "spring", stiffness: 300 } }}
+                        className={`relative w-20 h-20 rounded-3xl ${iconGradients[i]} flex items-center justify-center shadow-lg`}
+                      >
+                        {icons[i]}
+                      </motion.div>
+                      <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-orange-500 text-white text-xs font-bold flex items-center justify-center shadow-md z-10">
                         {i + 1}
                       </span>
                     </div>
-                    <h3 className="text-base md:text-lg font-bold text-gray-900 mt-1">{step.title}</h3>
-                    <p className="text-xs md:text-sm text-gray-500 mt-1.5 leading-relaxed">{step.desc}</p>
-                  </div>
+                    <h3 className="text-base font-bold text-gray-900 mt-4">{step.title}</h3>
+                    <p className="text-xs text-gray-400 mt-1 leading-relaxed text-center">{step.desc}</p>
+                  </motion.div>
                 );
               })}
             </div>
