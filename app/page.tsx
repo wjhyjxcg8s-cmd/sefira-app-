@@ -1772,14 +1772,18 @@ export default function Home() {
       )}
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex flex-col justify-center pt-16 overflow-hidden bg-[#0D1B2A]">
+      <section
+        className="relative min-h-screen flex flex-col justify-center pt-16 overflow-hidden bg-[#0A0E27]"
+        style={{background:'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(255,107,53,0.15), transparent), radial-gradient(ellipse 60% 50% at 80% 50%, rgba(99,102,241,0.12), transparent), radial-gradient(ellipse 60% 50% at 20% 80%, rgba(236,72,153,0.10), transparent), #0A0E27'}}
+      >
 
-        {/* Animated dark gradient background */}
-        <div className="absolute inset-0 hero-dark-bg" />
+        {/* Floating glow orbs */}
+        <div className="absolute top-20 left-10 w-72 h-72 rounded-full blur-[100px] opacity-40 pointer-events-none" style={{background:'#FF6B35'}} />
+        <div className="absolute bottom-40 right-10 w-80 h-80 rounded-full blur-[120px] opacity-30 pointer-events-none" style={{background:'#6366F1'}} />
+        <div className="absolute top-1/2 left-1/3 w-64 h-64 rounded-full blur-[100px] opacity-25 pointer-events-none" style={{background:'#EC4899'}} />
 
-        {/* Ambient glow orbs */}
-        <div className="absolute top-0 left-0 w-64 h-64 bg-blue-500 rounded-full blur-3xl opacity-10 pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-64 h-64 bg-blue-400 rounded-full blur-3xl opacity-10 pointer-events-none" />
+        {/* Subtle dot grid overlay */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{backgroundImage:'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize:'32px 32px'}} />
 
         {/* CSS particle system */}
         {Array.from({ length: 25 }, (_, i) => (
@@ -1800,7 +1804,7 @@ export default function Home() {
           <div className="flex flex-col items-start order-last lg:order-first lg:col-start-1">
 
             {/* Trust badge */}
-            <div className="inline-flex items-center gap-2.5 bg-white/10 backdrop-blur-sm border border-white/10 rounded-full px-5 py-2 mb-8 text-sm text-orange-300 hover:bg-white/15 hover:border-white/20 transition-all duration-300 cursor-default shadow-lg shadow-orange-500/15 animate-fade-in-up">
+            <div className="inline-flex items-center gap-2.5 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl px-5 py-2 mb-8 text-sm text-orange-300 hover:bg-white/10 transition-all duration-300 cursor-default shadow-2xl animate-fade-in-up">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
               {t.heroBadge}
             </div>
@@ -1809,7 +1813,7 @@ export default function Home() {
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-[1.08] tracking-tighter mb-6 animate-fade-in-up stagger-2 hero-title-glow">
               <span className="text-white">{t.heroLine1}</span>
               <br />
-              <span className="text-orange-400">
+              <span className="bg-gradient-to-r from-orange-400 to-pink-500 bg-clip-text text-transparent">
                 {t.heroLine2}
               </span>
               <br />
