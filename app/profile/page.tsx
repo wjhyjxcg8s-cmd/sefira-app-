@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
@@ -1056,36 +1057,14 @@ export default function ProfilePage() {
       {/* Page content */}
       <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
         {/* Back to home */}
-        <button
-          onClick={() => router.push('/')}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            background: 'white',
-            border: '2px solid #f97316',
-            borderRadius: '50px',
-            padding: '10px 20px',
-            fontSize: '15px',
-            fontWeight: '700',
-            color: '#f97316',
-            cursor: 'pointer',
-            boxShadow: '0 2px 12px rgba(249,115,22,0.2)',
-            marginBottom: '20px',
-            transition: 'all 0.2s ease',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.background = '#f97316'
-            e.currentTarget.style.color = 'white'
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.background = 'white'
-            e.currentTarget.style.color = '#f97316'
-          }}
-        >
-          <span style={{ fontSize: '18px' }}>←</span>
-          <span>{t.backHome || 'Ana Sayfa'}</span>
-        </button>
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block mb-5">
+          <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            <span>Ana Sayfa</span>
+          </Link>
+        </motion.div>
 
         <h1 className="text-2xl font-black text-stone-900 mb-6">{t.title}</h1>
 
