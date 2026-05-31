@@ -2334,7 +2334,7 @@ export default function Home() {
       )}
 
       {/* ── LISTINGS ──────────────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-5 py-20">
+      <section className="max-w-7xl mx-auto px-5 mt-2 pt-2 pb-20">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
           <div>
             <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-2 tracking-tight">
