@@ -2101,7 +2101,7 @@ export default function Home() {
                 className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white"
               >
                 <Image
-                  src="/images/sefira-cat.jpg"
+                  src="/images/hero-cat.png"
                   alt="Sefira"
                   width={320}
                   height={400}
