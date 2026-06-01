@@ -42,7 +42,7 @@ const translations = {
     heroLine1: "İdeal Evinizi",
     heroLine2: "ve Ev Arkadaşınızı",
     heroLine3: "Bulun.",
-    heroP: "Yapay zeka destekli ev arkadaşı eşleştirme ve premium paylaşım ilanı keşfi. Yurt dışında yaşayanlar, öğrenciler ve modern profesyoneller için tasarlandı.",
+    heroP: "Binlerce ilan arasında kaybolmayın. Size uygun ev ve ev arkadaşlarını keşfedin.",
     // ── Wizard ──
     wizardTitle: "Ne arıyorsunuz?",
     optionSeekingTitle: "Evim var, iyi bir ev arkadaşı arıyorum",
@@ -172,7 +172,7 @@ const translations = {
     heroLine1: "Find Your",
     heroLine2: "Perfect Home",
     heroLine3: "and Roommate.",
-    heroP: "AI-powered roommate matching meets premium sharing discovery. Built for expats, students, and modern professionals.",
+    heroP: "Don't get lost among thousands of listings. Discover the home and roommate that suits you.",
     // ── Wizard ──
     wizardTitle: "What are you looking for?",
     optionSeekingTitle: "I have a place and I'm looking for a good roommate",
@@ -302,7 +302,7 @@ const translations = {
     heroLine1: "خانه ایده‌آل",
     heroLine2: "و هم‌خانه خود را",
     heroLine3: "پیدا کنید.",
-    heroP: "اتصال هوشمند هم‌خانه و کشف آگهی‌های مشترک ممتاز. طراحی شده برای مهاجران، دانشجویان و متخصصان مدرن.",
+    heroP: "میان هزاران آگهی گم نشوید؛ خانه و هم‌خانه مناسب خود را پیدا کنید.",
     // ── Wizard ──
     wizardTitle: "دنبال چه می‌گردید؟",
     optionSeekingTitle: "خونه یا اتاق دارم و دنبال هم‌خونه خوب می‌گردم",
@@ -432,7 +432,7 @@ const translations = {
     heroLine1: "Finde dein ideales",
     heroLine2: "Zuhause und deinen",
     heroLine3: "perfekten Mitbewohner.",
-    heroP: "KI-gestütztes Mitbewohner-Matching trifft auf erstklassige WG-Suche. Entwickelt für Expats, Studierende und moderne Berufstätige.",
+    heroP: "Verlieren Sie sich nicht zwischen tausenden Anzeigen. Entdecken Sie das passende Zuhause und den richtigen Mitbewohner.",
     wizardTitle: "Was suchen Sie?",
     optionSeekingTitle: "Ich habe ein Zimmer und suche einen guten Mitbewohner",
     optionSeekingSubtitle: "Ich habe ein Zimmer und suche einen guten Mitbewohner",
@@ -562,7 +562,7 @@ const translations = {
     heroLine1: "اعثر على",
     heroLine2: "شريك السكن",
     heroLine3: "المثالي.",
-    heroP: "مطابقة ذكية لشركاء السكن واكتشاف إعلانات المشاركة المميزة. مصمَّم للمغتربين والطلاب والمحترفين العصريين.",
+    heroP: "لا تضيع بين آلاف الإعلانات. اكتشف المنزل وشريك السكن المناسب لك.",
     // ── Wizard ──
     wizardTitle: "ماذا تبحث عن؟",
     optionSeekingTitle: "لدي غرفة وأبحث عن شريك سكن جيد",
@@ -692,7 +692,7 @@ const translations = {
     heroLine1: "Найди своего",
     heroLine2: "идеального",
     heroLine3: "соседа",
-    heroP: "Найди надёжного соседа по комнате или идеальное жильё. Безопасно, быстро и удобно.",
+    heroP: "Не теряйтесь среди тысяч объявлений. Найдите подходящее жильё и соседа.",
     wizardTitle: "Что вы ищете?",
     optionSeekingTitle: "У меня есть комната, ищу хорошего соседа",
     optionSeekingSubtitle: "У меня есть комната, ищу хорошего соседа",
