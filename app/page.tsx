@@ -1768,6 +1768,82 @@ export default function Home() {
 
         <div className="relative z-10 max-w-7xl mx-auto px-5 py-16 md:grid md:grid-cols-2 gap-8 items-center w-full">
 
+          {/* ── RIGHT: Sefira promo image ──────────────────────────────────── */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="relative flex items-center justify-center py-8 md:order-last"
+          >
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="relative mx-auto max-w-xs"
+            >
+              {/* Background glow */}
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-300 via-pink-300 to-purple-300 rounded-3xl blur-2xl opacity-40 scale-110" />
+
+              {/* Image */}
+              <motion.div
+                whileHover={{ scale: 1.03 }}
+                transition={{ duration: 0.3 }}
+                className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white"
+              >
+                <Image
+                  src="/images/hero-cat.png"
+                  alt="Sefira"
+                  width={320}
+                  height={400}
+                  className="object-cover w-full"
+                  style={{ objectFit: "cover" }}
+                  priority
+                />
+                {/* Shimmer overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+              </motion.div>
+
+              {/* Floating badge top-left */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5 }}
+                className="absolute -top-4 -left-4 bg-white rounded-2xl shadow-xl px-3 py-2 flex items-center gap-2 border border-orange-100"
+              >
+                <div className="w-8 h-8 bg-green-500 rounded-xl flex items-center justify-center text-white text-sm">✓</div>
+                <div>
+                  <p className="text-xs font-black text-gray-900">127K+</p>
+                  <p className="text-[10px] text-gray-400">Verified Users</p>
+                </div>
+              </motion.div>
+
+              {/* Floating badge bottom-right */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.7 }}
+                className="absolute -bottom-4 -right-4 bg-white rounded-2xl shadow-xl px-3 py-2 flex items-center gap-2 border border-orange-100"
+              >
+                <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-pink-500 rounded-xl flex items-center justify-center text-white text-sm">⭐</div>
+                <div>
+                  <p className="text-xs font-black text-gray-900">4.9 Stars</p>
+                  <p className="text-[10px] text-gray-400">12K+ Reviews</p>
+                </div>
+              </motion.div>
+
+              {/* Decorative dots */}
+              <motion.div
+                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="absolute top-1/4 -right-3 w-3 h-3 bg-orange-400 rounded-full"
+              />
+              <motion.div
+                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+                className="absolute bottom-1/4 -left-3 w-2 h-2 bg-pink-400 rounded-full"
+              />
+            </motion.div>
+          </motion.div>
+
           {/* ── LEFT: Typography + Wizard ───────────────────────────────────── */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -1781,34 +1857,11 @@ export default function Home() {
               🏠 #1 Ev Arkadaşı Platformu
             </span>
 
-            {/* Headline */}
-            <h1 className="text-4xl md:text-5xl font-black text-gray-900 leading-tight mt-4">
-              <span>{t.heroLine1}</span>
-              <br />
-              <span className="bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">
-                {t.heroLine2}
-              </span>
-              <br />
-              <span>{t.heroLine3}</span>
-            </h1>
-
-            {/* Subtitle */}
-            <p className="text-gray-500 text-base mt-3 leading-relaxed max-w-xl">
-              {t.heroP}
-            </p>
-
             {/* ── SEARCH WIZARD ─────────────────────────────────────────────── */}
             <div className="w-full mt-6">
 
               {wizardMode === null ? (
                 <>
-                  {/* Inline trust stats */}
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    <span className="bg-gray-50 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700">✅ 127K+ Kullanıcı</span>
-                    <span className="bg-gray-50 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700">⭐ 4.9 Puan</span>
-                    <span className="bg-gray-50 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700">🏙️ 52 Şehir</span>
-                  </div>
-
                   {/* CTA buttons */}
                   <div className="flex flex-col gap-4 max-w-md mx-auto px-4 my-6">
                     {/* Card 1 — Landlord */}
@@ -1896,6 +1949,29 @@ export default function Home() {
                         >→</motion.span>
                       </div>
                     </motion.button>
+                  </div>
+
+                  {/* Headline */}
+                  <h1 className="text-4xl md:text-5xl font-black text-gray-900 leading-tight mt-4">
+                    <span>{t.heroLine1}</span>
+                    <br />
+                    <span className="bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">
+                      {t.heroLine2}
+                    </span>
+                    <br />
+                    <span>{t.heroLine3}</span>
+                  </h1>
+
+                  {/* Subtitle */}
+                  <p className="text-gray-500 text-base mt-3 leading-relaxed max-w-xl">
+                    {t.heroP}
+                  </p>
+
+                  {/* Inline trust stats */}
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    <span className="bg-gray-50 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700">✅ 127K+ Kullanıcı</span>
+                    <span className="bg-gray-50 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700">⭐ 4.9 Puan</span>
+                    <span className="bg-gray-50 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700">🏙️ 52 Şehir</span>
                   </div>
                 </>
 
@@ -2157,81 +2233,6 @@ export default function Home() {
             </button>
           </motion.div>
 
-          {/* ── RIGHT: Sefira promo image ──────────────────────────────────── */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative flex items-center justify-center py-8 order-first md:order-last"
-          >
-            <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="relative mx-auto max-w-xs"
-            >
-              {/* Background glow */}
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-300 via-pink-300 to-purple-300 rounded-3xl blur-2xl opacity-40 scale-110" />
-
-              {/* Image */}
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                transition={{ duration: 0.3 }}
-                className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white"
-              >
-                <Image
-                  src="/images/hero-cat.png"
-                  alt="Sefira"
-                  width={320}
-                  height={400}
-                  className="object-cover w-full"
-                  style={{ objectFit: "cover" }}
-                  priority
-                />
-                {/* Shimmer overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-              </motion.div>
-
-              {/* Floating badge top-left */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 }}
-                className="absolute -top-4 -left-4 bg-white rounded-2xl shadow-xl px-3 py-2 flex items-center gap-2 border border-orange-100"
-              >
-                <div className="w-8 h-8 bg-green-500 rounded-xl flex items-center justify-center text-white text-sm">✓</div>
-                <div>
-                  <p className="text-xs font-black text-gray-900">127K+</p>
-                  <p className="text-[10px] text-gray-400">Verified Users</p>
-                </div>
-              </motion.div>
-
-              {/* Floating badge bottom-right */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.7 }}
-                className="absolute -bottom-4 -right-4 bg-white rounded-2xl shadow-xl px-3 py-2 flex items-center gap-2 border border-orange-100"
-              >
-                <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-pink-500 rounded-xl flex items-center justify-center text-white text-sm">⭐</div>
-                <div>
-                  <p className="text-xs font-black text-gray-900">4.9 Stars</p>
-                  <p className="text-[10px] text-gray-400">12K+ Reviews</p>
-                </div>
-              </motion.div>
-
-              {/* Decorative dots */}
-              <motion.div
-                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="absolute top-1/4 -right-3 w-3 h-3 bg-orange-400 rounded-full"
-              />
-              <motion.div
-                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 2, repeat: Infinity, delay: 1 }}
-                className="absolute bottom-1/4 -left-3 w-2 h-2 bg-pink-400 rounded-full"
-              />
-            </motion.div>
-          </motion.div>
 
         </div>
 
