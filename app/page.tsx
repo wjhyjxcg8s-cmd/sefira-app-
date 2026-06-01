@@ -147,6 +147,10 @@ const translations = {
     joinChannelBtn: "Kanala Katıl →",
     igDesc: "Özel ev arkadaşı ipuçları ve gerçek eşleşme hikayeleri",
     tgDesc: "Anlık bildirimler ve özel teklifler için kanalımıza katılın",
+    landlordBadge: "EV SAHİBİ",
+    tenantBadge: "KİRACI",
+    landlordSubtext: "Güvenli housemate bul",
+    tenantSubtext: "İdeal evinizi bul",
   },
   en: {
     navLinks: [
@@ -273,6 +277,10 @@ const translations = {
     joinChannelBtn: "Join Channel →",
     igDesc: "Exclusive roommate tips and real match stories",
     tgDesc: "Join our channel for instant notifications and special offers",
+    landlordBadge: "LANDLORD",
+    tenantBadge: "TENANT",
+    landlordSubtext: "Find a verified roommate",
+    tenantSubtext: "Find your ideal home",
   },
   fa: {
     navLinks: [
@@ -399,6 +407,10 @@ const translations = {
     joinChannelBtn: "عضویت در کانال →",
     igDesc: "نکات انحصاری هم‌خانه و داستان‌های واقعی",
     tgDesc: "برای اعلان‌های فوری و پیشنهادات ویژه به کانال ما بپیوندید",
+    landlordBadge: "صاحب‌خانه",
+    tenantBadge: "مستاجر",
+    landlordSubtext: "هم‌خانه معتبر پیدا کن",
+    tenantSubtext: "خانه ایده‌آلت را بیاب",
   },
   de: {
     navLinks: [
@@ -524,6 +536,10 @@ const translations = {
     joinChannelBtn: "Kanal beitreten →",
     igDesc: "Exklusive Mitbewohner-Tipps und echte Match-Geschichten",
     tgDesc: "Tritt unserem Kanal bei für Benachrichtigungen und Sonderangebote",
+    landlordBadge: "VERMIETER",
+    tenantBadge: "MIETER",
+    landlordSubtext: "Mitbewohner finden",
+    tenantSubtext: "Traumzuhause finden",
   },
   // Always add "ar" key when adding new translations
   ar: {
@@ -651,6 +667,10 @@ const translations = {
     joinChannelBtn: "انضم إلى القناة →",
     igDesc: "نصائح حصرية لشركاء السكن وقصص تطابق حقيقية",
     tgDesc: "انضم إلى قناتنا للإشعارات الفورية والعروض الخاصة",
+    landlordBadge: "صاحب المنزل",
+    tenantBadge: "المستأجر",
+    landlordSubtext: "ابحث عن شريك سكن موثَّق",
+    tenantSubtext: "ابحث عن منزلك المثالي",
   },
   ru: {
     navLinks: [
@@ -776,6 +796,10 @@ const translations = {
     joinChannelBtn: "Вступить в канал →",
     igDesc: "Советы по поиску соседей и реальные истории",
     tgDesc: "Присоединяйтесь к каналу для уведомлений и спецпредложений",
+    landlordBadge: "ХОЗЯИН",
+    tenantBadge: "АРЕНДАТОР",
+    landlordSubtext: "Найди проверенного соседа",
+    tenantSubtext: "Найди своё идеальное жильё",
   },
 };
 type Lang = keyof typeof translations;
@@ -1826,87 +1850,91 @@ export default function Home() {
                   </div>
 
                   {/* CTA buttons */}
-                  <div className="flex flex-col gap-3">
-                    {/* Card 1 — I have a place */}
+                  <div className="flex flex-col gap-4 max-w-md mx-auto px-4 my-6">
+                    {/* Card 1 — Landlord */}
                     <motion.button
-                      initial={{ opacity: 0, y: 20 }}
+                      initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5 }}
-                      whileHover={{ scale: 1.03, y: -3 }}
+                      transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
                       whileTap={{ scale: 0.97 }}
+                      whileHover={{ y: -4 }}
                       onClick={() => { setWizardMode("seeking"); setWizardStep(1); }}
-                      className="w-full relative overflow-hidden rounded-3xl p-5 text-left shadow-xl"
-                      style={{ background: "linear-gradient(135deg, #FF6B35 0%, #FF8E53 50%, #FFA07A 100%)" }}
+                      className="w-full relative overflow-hidden rounded-3xl p-6 text-left shadow-[0_12px_40px_-12px_rgba(255,107,53,0.6)]"
+                      style={{ background: 'linear-gradient(135deg,#FF8A3D 0%,#FF6B35 55%,#F7501E 100%)' }}
                     >
-                      <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full" />
-                      <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white/10 rounded-full" />
-                      <div className="flex items-center gap-4 relative z-10">
-                        <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-4xl flex-shrink-0 backdrop-blur-sm border border-white/30">
-                          🏠
-                        </div>
-                        <div className="flex-1">
-                          <span className="inline-block bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-1 backdrop-blur-sm">
-                            🔑 EV SAHİBİ
-                          </span>
-                          <p className="text-white font-black text-base leading-tight">{t.optionSeekingTitle}</p>
-                          <p className="text-white/70 text-xs mt-1">Güvenli housemate bul →</p>
-                        </div>
+                      <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/15 rounded-full blur-xl" />
+                      <div className="absolute right-8 bottom-2 w-20 h-20 bg-white/10 rounded-full blur-md" />
+
+                      <div className="relative z-10 flex items-center gap-4">
                         <motion.div
-                          animate={{ x: [0, 5, 0] }}
-                          transition={{ duration: 1.5, repeat: Infinity }}
-                          className="text-white text-xl flex-shrink-0"
+                          animate={{ y: [0, -6, 0] }}
+                          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                          className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-4xl shrink-0 shadow-inner"
                         >
-                          →
+                          🏡
                         </motion.div>
+
+                        <div className="flex-1 min-w-0">
+                          <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full mb-2 tracking-wide">
+                            🔑 {t.landlordBadge}
+                          </span>
+                          <p className="text-white font-black text-lg leading-snug">
+                            {t.optionSeekingTitle}
+                          </p>
+                          <p className="text-white/80 text-sm mt-1 font-medium">
+                            {t.landlordSubtext}
+                          </p>
+                        </div>
+
+                        <motion.span
+                          animate={{ x: [0, 6, 0] }}
+                          transition={{ duration: 1.4, repeat: Infinity }}
+                          className="text-white text-2xl shrink-0"
+                        >→</motion.span>
                       </div>
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                        className="absolute top-3 right-16 text-white/40 text-lg"
-                      >
-                        ✦
-                      </motion.div>
                     </motion.button>
 
-                    {/* Card 2 — I need a place */}
+                    {/* Card 2 — Tenant */}
                     <motion.button
-                      initial={{ opacity: 0, y: 20 }}
+                      initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.15 }}
-                      whileHover={{ scale: 1.03, y: -3 }}
+                      transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.25 }}
                       whileTap={{ scale: 0.97 }}
+                      whileHover={{ y: -4 }}
                       onClick={() => { setWizardMode("offering"); setWizardStep(1); }}
-                      className="w-full relative overflow-hidden rounded-3xl p-5 text-left shadow-xl"
-                      style={{ background: "linear-gradient(135deg, #667EEA 0%, #764BA2 50%, #8B5CF6 100%)" }}
+                      className="w-full relative overflow-hidden rounded-3xl p-6 text-left shadow-[0_12px_40px_-12px_rgba(79,70,229,0.6)]"
+                      style={{ background: 'linear-gradient(135deg,#7C8CF8 0%,#5B6EE8 55%,#4F46E5 100%)' }}
                     >
-                      <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full" />
-                      <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white/10 rounded-full" />
-                      <div className="flex items-center gap-4 relative z-10">
-                        <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-4xl flex-shrink-0 backdrop-blur-sm border border-white/30">
-                          🔍
-                        </div>
-                        <div className="flex-1">
-                          <span className="inline-block bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-1 backdrop-blur-sm">
-                            🎒 KİRACİ
-                          </span>
-                          <p className="text-white font-black text-base leading-tight">{t.optionOfferingTitle}</p>
-                          <p className="text-white/70 text-xs mt-1">İdeal evinizi bul →</p>
-                        </div>
+                      <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/15 rounded-full blur-xl" />
+                      <div className="absolute right-8 bottom-2 w-20 h-20 bg-white/10 rounded-full blur-md" />
+
+                      <div className="relative z-10 flex items-center gap-4">
                         <motion.div
-                          animate={{ x: [0, 5, 0] }}
-                          transition={{ duration: 1.5, repeat: Infinity, delay: 0.3 }}
-                          className="text-white text-xl flex-shrink-0"
+                          animate={{ y: [0, -6, 0] }}
+                          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
+                          className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-4xl shrink-0 shadow-inner"
                         >
-                          →
+                          🔍
                         </motion.div>
+
+                        <div className="flex-1 min-w-0">
+                          <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full mb-2 tracking-wide">
+                            🎒 {t.tenantBadge}
+                          </span>
+                          <p className="text-white font-black text-lg leading-snug">
+                            {t.optionOfferingTitle}
+                          </p>
+                          <p className="text-white/80 text-sm mt-1 font-medium">
+                            {t.tenantSubtext}
+                          </p>
+                        </div>
+
+                        <motion.span
+                          animate={{ x: [0, 6, 0] }}
+                          transition={{ duration: 1.4, repeat: Infinity, delay: 0.3 }}
+                          className="text-white text-2xl shrink-0"
+                        >→</motion.span>
                       </div>
-                      <motion.div
-                        animate={{ rotate: -360 }}
-                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                        className="absolute top-3 right-16 text-white/40 text-lg"
-                      >
-                        ✦
-                      </motion.div>
                     </motion.button>
                   </div>
                 </>
