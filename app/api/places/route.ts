@@ -12,7 +12,8 @@ export async function GET(req: NextRequest) {
     type === "city"
       ? "city,town,village"
       : "district,suburb,neighbourhood,locality";
-  const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=7&lang=${lang}&layer=${layer}`;
+  const photonLang = ['de', 'en', 'fr'].includes(lang) ? lang : 'en'
+  const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=7&lang=${photonLang}&layer=${layer}`;
 
   try {
     const res = await fetch(url, {
