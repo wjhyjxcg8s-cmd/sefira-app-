@@ -33,32 +33,19 @@ const getCountryName = (countryCode: string, lang: string): string => {
   }
 };
 
-interface PhotonSuggestion {
+interface PlaceSuggestion {
   name: string;
-  city: string;
-  country: string;
-  display: string;
+  subtitle: string;
 }
 
-const searchPlaces = async (query: string, lang: string, type: "city" | "neighborhood"): Promise<PhotonSuggestion[]> => {
-  if (query.length < 2) return [];
-  const layer = type === "city" ? "city,town" : "district,suburb,neighbourhood";
-  const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=6&lang=${LANG_MAP[lang] || "en"}&layer=${layer}`;
+const searchPlaces = async (query: string, lang: string, type: "city" | "neighborhood"): Promise<PlaceSuggestion[]> => {
+  if (query.length < 1) return [];
   try {
-    const res = await fetch(url);
+    const res = await fetch(
+      `/api/places?q=${encodeURIComponent(query)}&lang=${LANG_MAP[lang] || "en"}&type=${type}`
+    );
     const data = await res.json();
-    return data.features.map((f: { properties: { name?: string; city?: string; town?: string; country?: string } }) => {
-      const cityVal = f.properties.city || f.properties.town || "";
-      return {
-        name: f.properties.name || "",
-        city: cityVal,
-        country: f.properties.country || "",
-        display:
-          (f.properties.name || "") +
-          (cityVal ? `, ${cityVal}` : "") +
-          (f.properties.country ? `, ${f.properties.country}` : ""),
-      };
-    });
+    return data.results || [];
   } catch {
     return [];
   }
@@ -996,179 +983,6 @@ function CountrySelect({
   );
 }
 
-function CityAutocomplete({
-  value,
-  onChange,
-  lang,
-  label,
-  placeholder,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-  countryCode: string;
-  lang: string;
-  label: string;
-  placeholder: string;
-}) {
-  const [cityInput, setCityInput] = useState(value);
-  const [citySuggestions, setCitySuggestions] = useState<PhotonSuggestion[]>([]);
-  const [showCitySuggestions, setShowCitySuggestions] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const wrapperRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => { setCityInput(value); }, [value]);
-
-  useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node))
-        setShowCitySuggestions(false);
-    };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
-
-  const handleChange = (val: string) => {
-    setCityInput(val);
-    onChange(val);
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (val.length < 2) { setCitySuggestions([]); setShowCitySuggestions(false); setLoading(false); return; }
-    setLoading(true);
-    debounceRef.current = setTimeout(async () => {
-      const results = await searchPlaces(val, lang, "city");
-      setCitySuggestions(results);
-      setShowCitySuggestions(results.length > 0);
-      setLoading(false);
-    }, 300);
-  };
-
-  return (
-    <div className="relative" ref={wrapperRef}>
-      <label className="block text-sm font-semibold text-stone-700 mb-2">{label}</label>
-      <div className="relative">
-        <input
-          type="text"
-          value={cityInput}
-          onChange={(e) => handleChange(e.target.value)}
-          placeholder={placeholder}
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 pr-9 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
-        />
-        {loading && (
-          <div className="absolute right-3 top-3 w-4 h-4 border-2 border-orange-400 border-t-transparent rounded-full animate-spin" />
-        )}
-      </div>
-      {showCitySuggestions && citySuggestions.length > 0 && (
-        <div className="absolute top-full left-0 right-0 z-50 bg-white border border-gray-200 rounded-2xl shadow-xl overflow-hidden mt-1">
-          {citySuggestions.map((s, i) => (
-            <button
-              key={i}
-              type="button"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => {
-                setCityInput(s.name);
-                onChange(s.name);
-                setShowCitySuggestions(false);
-              }}
-              className="w-full text-left px-4 py-3 hover:bg-orange-50 border-b border-gray-100 last:border-0 transition-colors"
-            >
-              <p className="font-medium text-gray-900 text-sm">{s.name}</p>
-              <p className="text-xs text-gray-400">{s.city} {s.country}</p>
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function NeighborhoodAutocomplete({
-  value,
-  onChange,
-  city,
-  lang,
-  label,
-  placeholder,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-  city: string;
-  countryCode: string;
-  lang: string;
-  label: string;
-  placeholder: string;
-}) {
-  const [hoodInput, setHoodInput] = useState(value);
-  const [hoodSuggestions, setHoodSuggestions] = useState<PhotonSuggestion[]>([]);
-  const [showHoodSuggestions, setShowHoodSuggestions] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const wrapperRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => { setHoodInput(value); }, [value]);
-
-  useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node))
-        setShowHoodSuggestions(false);
-    };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
-
-  const handleChange = (val: string) => {
-    setHoodInput(val);
-    onChange(val);
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (val.length < 2) { setHoodSuggestions([]); setShowHoodSuggestions(false); setLoading(false); return; }
-    setLoading(true);
-    debounceRef.current = setTimeout(async () => {
-      const query = city ? `${val} ${city}` : val;
-      const results = await searchPlaces(query, lang, "neighborhood");
-      setHoodSuggestions(results);
-      setShowHoodSuggestions(results.length > 0);
-      setLoading(false);
-    }, 300);
-  };
-
-  return (
-    <div className="relative" ref={wrapperRef}>
-      <label className="block text-sm font-semibold text-stone-700 mb-2">{label}</label>
-      <div className="relative">
-        <input
-          type="text"
-          value={hoodInput}
-          onChange={(e) => handleChange(e.target.value)}
-          placeholder={placeholder}
-          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 pr-9 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
-        />
-        {loading && (
-          <div className="absolute right-3 top-3 w-4 h-4 border-2 border-orange-400 border-t-transparent rounded-full animate-spin" />
-        )}
-      </div>
-      {showHoodSuggestions && hoodSuggestions.length > 0 && (
-        <div className="absolute top-full left-0 right-0 z-50 bg-white border border-gray-200 rounded-2xl shadow-xl overflow-hidden mt-1">
-          {hoodSuggestions.map((s, i) => (
-            <button
-              key={i}
-              type="button"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => {
-                setHoodInput(s.name);
-                onChange(s.name);
-                setShowHoodSuggestions(false);
-              }}
-              className="w-full text-left px-4 py-3 hover:bg-orange-50 border-b border-gray-100 last:border-0 transition-colors"
-            >
-              <p className="font-medium text-gray-900 text-sm">{s.name}</p>
-              <p className="text-xs text-gray-400">{s.city} {s.country}</p>
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
 // ── Main component ────────────────────────────────────────────────────────────
 export default function CreateListingPage() {
   const { user, loading } = useAuth();
@@ -1198,6 +1012,31 @@ export default function CreateListingPage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
+
+  // City autocomplete
+  const [cityInput, setCityInput] = useState("");
+  const [citySuggestions, setCitySuggestions] = useState<PlaceSuggestion[]>([]);
+  const [showCity, setShowCity] = useState(false);
+  const [cityLoading, setCityLoading] = useState(false);
+  const cityDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Neighborhood autocomplete
+  const [hoodInput, setHoodInput] = useState("");
+  const [hoodSuggestions, setHoodSuggestions] = useState<PlaceSuggestion[]>([]);
+  const [showHood, setShowHood] = useState(false);
+  const [hoodLoading, setHoodLoading] = useState(false);
+  const hoodDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (!(e.target as HTMLElement).closest(".place-autocomplete")) {
+        setShowCity(false);
+        setShowHood(false);
+      }
+    };
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
+  }, []);
 
   const photoInputRef = useRef<HTMLInputElement>(null);
 
@@ -1642,23 +1481,112 @@ export default function CreateListingPage() {
                 label={t.countryLabel}
                 placeholder={t.countryPlaceholder}
               />
-              <CityAutocomplete
-                value={form.city}
-                onChange={(v) => set("city", v)}
-                countryCode={form.countryCode}
-                lang={lang}
-                label={t.cityLabel}
-                placeholder={t.cityPlaceholder}
-              />
-              <NeighborhoodAutocomplete
-                value={form.neighborhood}
-                onChange={(v) => set("neighborhood", v)}
-                city={form.city}
-                countryCode={form.countryCode}
-                lang={lang}
-                label={t.neighborhoodLabel}
-                placeholder={t.neighborhoodPlaceholder}
-              />
+              {/* City */}
+              <div className="relative place-autocomplete">
+                <label className="block text-sm font-semibold text-stone-700 mb-2">{t.cityLabel}</label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={cityInput}
+                    placeholder={t.cityPlaceholder}
+                    className="w-full border border-gray-200 rounded-xl px-3 py-2.5 pr-9 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+                    onFocus={() => citySuggestions.length > 0 && setShowCity(true)}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      setCityInput(v);
+                      set("city", v);
+                      if (cityDebounce.current) clearTimeout(cityDebounce.current);
+                      if (v.length >= 1) {
+                        setCityLoading(true);
+                        cityDebounce.current = setTimeout(async () => {
+                          const r = await searchPlaces(v, lang, "city");
+                          setCitySuggestions(r);
+                          setShowCity(true);
+                          setCityLoading(false);
+                        }, 250);
+                      } else {
+                        setShowCity(false);
+                      }
+                    }}
+                  />
+                  {cityLoading && (
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-orange-400 border-t-transparent rounded-full animate-spin" />
+                  )}
+                </div>
+                {showCity && citySuggestions.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 z-[100] bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden mt-2 max-h-72 overflow-y-auto">
+                    {citySuggestions.map((s, i) => (
+                      <button
+                        type="button"
+                        key={i}
+                        onClick={() => {
+                          setCityInput(s.name);
+                          set("city", s.name);
+                          setShowCity(false);
+                        }}
+                        className="w-full text-left px-4 py-3 hover:bg-orange-50 border-b border-gray-100 last:border-0 transition-colors flex flex-col items-start"
+                      >
+                        <span className="font-semibold text-gray-900 text-sm">{s.name}</span>
+                        {s.subtitle && <span className="text-xs text-gray-400 mt-0.5">{s.subtitle}</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Neighborhood */}
+              <div className="relative place-autocomplete">
+                <label className="block text-sm font-semibold text-stone-700 mb-2">{t.neighborhoodLabel}</label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={hoodInput}
+                    placeholder={t.neighborhoodPlaceholder}
+                    className="w-full border border-gray-200 rounded-xl px-3 py-2.5 pr-9 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+                    onFocus={() => hoodSuggestions.length > 0 && setShowHood(true)}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      setHoodInput(v);
+                      set("neighborhood", v);
+                      if (hoodDebounce.current) clearTimeout(hoodDebounce.current);
+                      if (v.length >= 1) {
+                        setHoodLoading(true);
+                        hoodDebounce.current = setTimeout(async () => {
+                          const q = form.city ? `${v} ${form.city}` : v;
+                          const r = await searchPlaces(q, lang, "neighborhood");
+                          setHoodSuggestions(r);
+                          setShowHood(true);
+                          setHoodLoading(false);
+                        }, 250);
+                      } else {
+                        setShowHood(false);
+                      }
+                    }}
+                  />
+                  {hoodLoading && (
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-orange-400 border-t-transparent rounded-full animate-spin" />
+                  )}
+                </div>
+                {showHood && hoodSuggestions.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 z-[100] bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden mt-2 max-h-72 overflow-y-auto">
+                    {hoodSuggestions.map((s, i) => (
+                      <button
+                        type="button"
+                        key={i}
+                        onClick={() => {
+                          setHoodInput(s.name);
+                          set("neighborhood", s.name);
+                          setShowHood(false);
+                        }}
+                        className="w-full text-left px-4 py-3 hover:bg-orange-50 border-b border-gray-100 last:border-0 transition-colors flex flex-col items-start"
+                      >
+                        <span className="font-semibold text-gray-900 text-sm">{s.name}</span>
+                        {s.subtitle && <span className="text-xs text-gray-400 mt-0.5">{s.subtitle}</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* 7. Monthly cost */}
