@@ -137,7 +137,7 @@ const CITIES = [
     countryAr: "إيران",
     countryRu: "Иран",
     listings: "987",
-    image: "https://images.unsplash.com/photo-1580502304784-8985b7eb7260?w=400&q=80",
+    image: "/images/tehran.jpg",
     accent: "from-emerald-600 to-teal-700",
   },
   {
