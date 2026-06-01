@@ -43,6 +43,8 @@ const translations = {
     occAny: "Fark Etmez",
     descLabel: "Kendinizi ve Aradığınız Ev Arkadaşını Tanıtın",
     descPlaceholder: "Örn: Düzenli ve saygılı biriyim. Sessiz, temiz ve çalışkan bir ev arkadaşı arıyorum...",
+    step2Heading: "Aradığınız Ev Arkadaşını Tanımlayın",
+    step2Sub: "Bize istediklerinizi söyleyin, size en uygun eşleşmeyi bulalım 🎯",
     neededRoommates: "Aranan Ev Arkadaşı Sayısı",
     rooms: "Oda Sayısı",
     rent: "Aylık Paylaşım Ücreti",
@@ -116,6 +118,8 @@ const translations = {
     occAny: "No Preference",
     descLabel: "Introduce Yourself and Describe Your Ideal Housemate",
     descPlaceholder: "E.g: I'm tidy and respectful. Looking for a quiet, clean and hardworking housemate...",
+    step2Heading: "Describe Your Ideal Housemate",
+    step2Sub: "Tell us what you're looking for and we'll find the perfect match for you 🎯",
     neededRoommates: "Number of Roommates Needed",
     rooms: "Number of Rooms",
     rent: "Monthly Sharing Cost",
@@ -189,6 +193,8 @@ const translations = {
     occAny: "فرقی نمیکنه",
     descLabel: "خودتون رو معرفی کنید و بگید دنبال چه هم‌خانه‌ای می‌گردید",
     descPlaceholder: "مثلاً: من آدم منظم و محترمی هستم. دنبال هم‌خانه‌ای آرام، تمیز و پرتلاش می‌گردم...",
+    step2Heading: "مشخصات هم‌خانه مورد نظرتون رو بدید",
+    step2Sub: "مشخصات بدید، ما بهترین هم‌خانه رو براتون پیدا می‌کنیم 🎯",
     neededRoommates: "تعداد هم‌خانه مورد نیاز",
     rooms: "تعداد اتاق‌ها",
     rent: "هزینه مشترک",
@@ -260,6 +266,8 @@ const translations = {
     occAny: "Egal",
     descLabel: "Stellen Sie sich vor und beschreiben Sie Ihren idealen Mitbewohner",
     descPlaceholder: "Z.B: Ich bin ordentlich und respektvoll. Suche einen ruhigen, sauberen und fleißigen Mitbewohner...",
+    step2Heading: "Beschreiben Sie Ihren idealen Mitbewohner",
+    step2Sub: "Sagen Sie uns, was Sie suchen, und wir finden den perfekten Match für Sie 🎯",
     neededRoommates: "Benötigte Anzahl Mitbewohner",
     rooms: "Anzahl der Zimmer",
     rent: "Monatliche WG-Kosten",
@@ -331,6 +339,8 @@ const translations = {
     occAny: "لا يهم",
     descLabel: "عرّف بنفسك واشرح شريك السكن المثالي لك",
     descPlaceholder: "مثلاً: أنا شخص منظم ومحترم. أبحث عن شريك سكن هادئ ونظيف ومجتهد...",
+    step2Heading: "حدد مواصفات شريك السكن المطلوب",
+    step2Sub: "أخبرنا بما تريد وسنجد لك أفضل شريك سكن 🎯",
     neededRoommates: "عدد شركاء السكن المطلوبين",
     rooms: "عدد الغرف",
     rent: "تكلفة المشاركة الشهرية",
@@ -404,6 +414,8 @@ const translations = {
     occAny: "Не важно",
     descLabel: "Расскажите о себе и опишите идеального соседа",
     descPlaceholder: "Напр: Я аккуратный и уважительный человек. Ищу тихого, чистоплотного и трудолюбивого соседа...",
+    step2Heading: "Опишите желаемого соседа",
+    step2Sub: "Расскажите нам, что вы ищете, и мы найдём идеального соседа для вас 🎯",
     neededRoommates: "Нужное количество соседей",
     rooms: "Количество комнат",
     rent: "Стоимость совместного проживания в месяц",
@@ -976,6 +988,16 @@ export default function CreateListingPage() {
           <ProgressBar />
           <h1 className="text-2xl font-black text-stone-900 mb-2">{t.pageTitle}</h1>
           <p className="text-stone-500 mb-8 text-sm">{t.step2Title}</p>
+
+          <div className="bg-gradient-to-r from-orange-50 to-orange-100 border border-orange-200 rounded-2xl p-4 mb-6">
+            <div className="flex items-start gap-3">
+              <div className="text-2xl">🏠</div>
+              <div>
+                <p className="font-black text-gray-900 text-base">{t.step2Heading}</p>
+                <p className="text-gray-500 text-sm mt-1">{t.step2Sub}</p>
+              </div>
+            </div>
+          </div>
 
           <div className="bg-white rounded-2xl border border-stone-100 shadow-sm divide-y divide-stone-100">
             {/* 1. Gender preference */}
