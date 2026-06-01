@@ -20,6 +20,7 @@ const translations = {
     needsPlaceSub: "Uygun bir ev bulmak için eşleşin",
     next: "İleri",
     back: "Geri",
+    home: "Ana Sayfa",
     submit: "İlanı Yayınla",
     submitting: "Yayınlanıyor...",
     edit: "Düzenle",
@@ -82,6 +83,7 @@ const translations = {
     needsPlaceSub: "Match with others to find a home together",
     next: "Next",
     back: "Back",
+    home: "Home",
     submit: "Publish Listing",
     submitting: "Publishing...",
     edit: "Edit",
@@ -144,6 +146,7 @@ const translations = {
     needsPlaceSub: "با دیگران برای پیدا کردن خانه همکاری کنید",
     next: "بعدی",
     back: "برگشت",
+    home: "صفحه اصلی",
     submit: "ثبت آگهی",
     submitting: "در حال ثبت...",
     edit: "ویرایش",
@@ -205,6 +208,7 @@ const translations = {
     needsPlaceSub: "Gemeinsam mit anderen eine Wohnung finden",
     next: "Weiter",
     back: "Zurück",
+    home: "Startseite",
     submit: "Inserat veröffentlichen",
     submitting: "Wird veröffentlicht...",
     edit: "Bearbeiten",
@@ -264,6 +268,7 @@ const translations = {
     needsPlaceSub: "تعاون مع الآخرين لإيجاد منزل معاً",
     next: "التالي",
     back: "رجوع",
+    home: "الصفحة الرئيسية",
     submit: "نشر الإعلان",
     submitting: "جارٍ النشر...",
     edit: "تعديل",
@@ -326,6 +331,7 @@ const translations = {
     needsPlaceSub: "Найдите жильё вместе с другими",
     next: "Далее",
     back: "Назад",
+    home: "Главная",
     submit: "Опубликовать",
     submitting: "Публикация...",
     edit: "Редактировать",
@@ -760,7 +766,7 @@ export default function CreateListingPage() {
               <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
-              <span>Ana Sayfa</span>
+              <span>{t.home}</span>
             </Link>
           </motion.div>
 
@@ -863,7 +869,7 @@ export default function CreateListingPage() {
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                <span>Ana Sayfa</span>
+                <span>{t.home}</span>
               </Link>
             </motion.div>
           </div>
@@ -1092,7 +1098,7 @@ export default function CreateListingPage() {
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                <span>Ana Sayfa</span>
+                <span>{t.home}</span>
               </Link>
             </motion.div>
           </div>
