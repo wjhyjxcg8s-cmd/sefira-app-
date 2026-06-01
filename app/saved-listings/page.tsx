@@ -47,7 +47,7 @@ const translations = {
     notLoggedIn: "Bitte melden Sie sich an, um gespeicherte Inserate anzuzeigen.",
     goHome: "Zur Startseite",
     address: "Adresse",
-    sharingCost: "Monatliche Mietkosten",
+    sharingCost: "Monatliche WG-Kosten",
     roommates: "Mitbewohner",
     rooms: "Zimmer",
   },

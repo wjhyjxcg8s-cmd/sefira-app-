@@ -25,7 +25,7 @@ const TERMS_CONTENT: Record<string, {
       {
         heading: "2. Platformun Niteliği",
         content:
-          "Sefira, kiracıların uygun ev arkadaşları ve kiralık konutlar bulmasını kolaylaştıran bir çevrimiçi ilan ve eşleştirme platformudur. Sefira; bir emlak acentesi, kiralama şirketi veya taşınmaz danışmanı değildir. Platform üzerindeki ilanlar üçüncü şahıslara aittir; Sefira bu ilanların doğruluğunu, gerçekliğini veya güvenilirliğini garanti etmez.",
+          "Sefira, ev arayanların uygun ev arkadaşları ve paylaşımlı konutlar bulmasını kolaylaştıran bir çevrimiçi ilan ve eşleştirme platformudur. Sefira; bir emlak acentesi, paylaşım şirketi veya taşınmaz danışmanı değildir. Platform üzerindeki ilanlar üçüncü şahıslara aittir; Sefira bu ilanların doğruluğunu, gerçekliğini veya güvenilirliğini garanti etmez.",
       },
       {
         heading: "3. Üyelik ve Hesap Güvenliği",
@@ -45,7 +45,7 @@ const TERMS_CONTENT: Record<string, {
       {
         heading: "6. Sorumluluğun Sınırlandırılması",
         content:
-          "Sefira, kullanıcılar arasında gerçekleşen anlaşmazlıklarda taraf değildir ve bunlara ilişkin herhangi bir sorumluluk üstlenmez. Platform üzerinden tanışan kullanıcılar arasındaki kira sözleşmeleri, ödeme anlaşmazlıkları veya güvenlik sorunlarından Sefira sorumlu tutulamaz. Sefira, platforma yüklenen içeriklerin doğruluğu, yasallığı veya üçüncü şahıs haklarını ihlal edip etmediği konusunda garanti vermez. Platformun kesintisiz ve hatasız çalışacağı garanti edilmez.",
+          "Sefira, kullanıcılar arasında gerçekleşen anlaşmazlıklarda taraf değildir ve bunlara ilişkin herhangi bir sorumluluk üstlenmez. Platform üzerinden tanışan kullanıcılar arasındaki ev arkadaşlığı anlaşmaları, ödeme anlaşmazlıkları veya güvenlik sorunlarından Sefira sorumlu tutulamaz. Sefira, platforma yüklenen içeriklerin doğruluğu, yasallığı veya üçüncü şahıs haklarını ihlal edip etmediği konusunda garanti vermez. Platformun kesintisiz ve hatasız çalışacağı garanti edilmez.",
       },
       {
         heading: "7. Fikri Mülkiyet Hakları",
@@ -90,7 +90,7 @@ const TERMS_CONTENT: Record<string, {
       {
         heading: "2. Nature of the Platform",
         content:
-          "Sefira is an online listing and matching platform that helps tenants find suitable roommates and rental properties. Sefira is not a real estate agency, rental company or property consultant. Listings on the platform belong to third parties; Sefira does not guarantee the accuracy, authenticity or reliability of these listings.",
+          "Sefira is an online listing and matching platform that helps room seekers find suitable roommates and shared living spaces. Sefira is not a real estate agency, shared living company or property consultant. Listings on the platform belong to third parties; Sefira does not guarantee the accuracy, authenticity or reliability of these listings.",
       },
       {
         heading: "3. Registration and Account Security",
@@ -110,7 +110,7 @@ const TERMS_CONTENT: Record<string, {
       {
         heading: "6. Limitation of Liability",
         content:
-          "Sefira is not a party to disputes between users and assumes no responsibility for them. Sefira cannot be held responsible for rental agreements, payment disputes or security issues between users who have met through the platform. Sefira makes no warranty as to the accuracy, legality or non-infringement of third-party rights regarding content uploaded to the platform. Sefira does not guarantee that the platform will operate without interruption or errors.",
+          "Sefira is not a party to disputes between users and assumes no responsibility for them. Sefira cannot be held responsible for roommate agreements, payment disputes or security issues between users who have met through the platform. Sefira makes no warranty as to the accuracy, legality or non-infringement of third-party rights regarding content uploaded to the platform. Sefira does not guarantee that the platform will operate without interruption or errors.",
       },
       {
         heading: "7. Intellectual Property Rights",
@@ -155,7 +155,7 @@ const TERMS_CONTENT: Record<string, {
       {
         heading: "۲. ماهیت پلتفرم",
         content:
-          "سفیرا یک پلتفرم آنلاین آگهی و تطبیق است که به مستأجران در یافتن هم‌اتاقی‌های مناسب و اجاره مسکن کمک می‌کند. سفیرا آژانس مسکن، شرکت اجاره یا مشاور ملک نیست. آگهی‌های موجود در پلتفرم متعلق به اشخاص ثالث هستند؛ سفیرا صحت، اصالت یا قابلیت اطمینان این آگهی‌ها را تضمین نمی‌کند.",
+          "سفیرا یک پلتفرم آنلاین آگهی و تطبیق است که به هم‌خانه‌یابان در یافتن هم‌اتاقی‌های مناسب و هم‌خانگی کمک می‌کند. سفیرا آژانس مسکن، شرکت هم‌خانگی یا مشاور ملک نیست. آگهی‌های موجود در پلتفرم متعلق به اشخاص ثالث هستند؛ سفیرا صحت، اصالت یا قابلیت اطمینان این آگهی‌ها را تضمین نمی‌کند.",
       },
       {
         heading: "۳. ثبت‌نام و امنیت حساب",
@@ -175,7 +175,7 @@ const TERMS_CONTENT: Record<string, {
       {
         heading: "۶. محدودیت مسئولیت",
         content:
-          "سفیرا طرف اختلافات بین کاربران نیست و هیچ مسئولیتی در قبال آن‌ها نمی‌پذیرد. سفیرا در قبال قراردادهای اجاره، اختلافات پرداختی یا مسائل امنیتی بین کاربرانی که از طریق پلتفرم با هم آشنا شده‌اند مسئول نیست. سفیرا پیوستگی بدون وقفه یا بدون خطای پلتفرم را تضمین نمی‌کند.",
+          "سفیرا طرف اختلافات بین کاربران نیست و هیچ مسئولیتی در قبال آن‌ها نمی‌پذیرد. سفیرا در قبال توافقنامه‌های هم‌خانگی، اختلافات پرداختی یا مسائل امنیتی بین کاربرانی که از طریق پلتفرم با هم آشنا شده‌اند مسئول نیست. سفیرا پیوستگی بدون وقفه یا بدون خطای پلتفرم را تضمین نمی‌کند.",
       },
       {
         heading: "۷. حقوق مالکیت معنوی",
@@ -220,7 +220,7 @@ const TERMS_CONTENT: Record<string, {
       {
         heading: "٢. طبيعة المنصة",
         content:
-          "سفيرا منصة إعلانات ومطابقة إلكترونية تساعد المستأجرين في إيجاد شركاء سكن مناسبين وعقارات مؤجَّرة. سفيرا ليست وكالة عقارية ولا شركة تأجير ولا مستشاراً للعقارات. تنتمي الإعلانات الموجودة في المنصة إلى أطراف ثالثة؛ ولا تضمن سفيرا دقتها أو أصالتها أو موثوقيتها.",
+          "سفيرا منصة إعلانات ومطابقة إلكترونية تساعد الباحثين عن شريك سكن في إيجاد شركاء سكن مناسبين ومساكن مشتركة. سفيرا ليست وكالة عقارية ولا شركة مشاركة سكنية ولا مستشاراً للعقارات. تنتمي الإعلانات الموجودة في المنصة إلى أطراف ثالثة؛ ولا تضمن سفيرا دقتها أو أصالتها أو موثوقيتها.",
       },
       {
         heading: "٣. التسجيل وأمان الحساب",
@@ -240,7 +240,7 @@ const TERMS_CONTENT: Record<string, {
       {
         heading: "٦. تحديد المسؤولية",
         content:
-          "سفيرا ليست طرفًا في النزاعات بين المستخدمين ولا تتحمل أي مسؤولية عنها. لا تُسأل سفيرا عن عقود الإيجار أو نزاعات الدفع أو مشكلات الأمان بين المستخدمين الذين تقابلوا عبر المنصة. لا تضمن سفيرا عمل المنصة بشكل مستمر وخالٍ من الأخطاء.",
+          "سفيرا ليست طرفًا في النزاعات بين المستخدمين ولا تتحمل أي مسؤولية عنها. لا تُسأل سفيرا عن اتفاقيات المشاركة السكنية أو نزاعات الدفع أو مشكلات الأمان بين المستخدمين الذين تقابلوا عبر المنصة. لا تضمن سفيرا عمل المنصة بشكل مستمر وخالٍ من الأخطاء.",
       },
       {
         heading: "٧. حقوق الملكية الفكرية",
@@ -285,7 +285,7 @@ const TERMS_CONTENT: Record<string, {
       {
         heading: "2. Art der Plattform",
         content:
-          "Sefira ist eine Online-Listing- und Matching-Plattform, die Mietern hilft, geeignete Mitbewohner und Mietobjekte zu finden. Sefira ist weder eine Immobilienagentur noch ein Mietunternehmen noch ein Immobilienberater. Inserate auf der Plattform gehören Dritten; Sefira garantiert nicht die Richtigkeit, Echtheit oder Zuverlässigkeit dieser Inserate.",
+          "Sefira ist eine Online-Listing- und Matching-Plattform, die WG-Suchenden hilft, geeignete Mitbewohner und WG-Zimmer zu finden. Sefira ist weder eine Immobilienagentur noch ein WG-Vermittlungsunternehmen noch ein Immobilienberater. Inserate auf der Plattform gehören Dritten; Sefira garantiert nicht die Richtigkeit, Echtheit oder Zuverlässigkeit dieser Inserate.",
       },
       {
         heading: "3. Registrierung und Kontosicherheit",
@@ -305,7 +305,7 @@ const TERMS_CONTENT: Record<string, {
       {
         heading: "6. Haftungsbeschränkung",
         content:
-          "Sefira ist keine Partei bei Streitigkeiten zwischen Benutzern und übernimmt dafür keine Haftung. Sefira haftet nicht für Mietverträge, Zahlungsstreitigkeiten oder Sicherheitsprobleme zwischen Benutzern, die sich über die Plattform kennengelernt haben. Sefira garantiert keinen ununterbrochenen und fehlerfreien Betrieb der Plattform.",
+          "Sefira ist keine Partei bei Streitigkeiten zwischen Benutzern und übernimmt dafür keine Haftung. Sefira haftet nicht für Mitbewohner-Vereinbarungen, Zahlungsstreitigkeiten oder Sicherheitsprobleme zwischen Benutzern, die sich über die Plattform kennengelernt haben. Sefira garantiert keinen ununterbrochenen und fehlerfreien Betrieb der Plattform.",
       },
       {
         heading: "7. Geistige Eigentumsrechte",
@@ -350,7 +350,7 @@ const TERMS_CONTENT: Record<string, {
       {
         heading: "2. Характер платформы",
         content:
-          "Sefira — это онлайн-платформа для размещения объявлений и подбора, которая помогает арендаторам найти подходящих соседей и жильё для аренды. Sefira не является риелторским агентством, арендной компанией или консультантом по недвижимости. Объявления на платформе принадлежат третьим лицам; Sefira не гарантирует их точность, подлинность или достоверность.",
+          "Sefira — это онлайн-платформа для размещения объявлений и подбора, которая помогает ищущим соседей найти подходящих соседей и жильё для совместного проживания. Sefira не является риелторским агентством, компанией по совместному проживанию или консультантом по недвижимости. Объявления на платформе принадлежат третьим лицам; Sefira не гарантирует их точность, подлинность или достоверность.",
       },
       {
         heading: "3. Регистрация и безопасность учётной записи",
@@ -370,7 +370,7 @@ const TERMS_CONTENT: Record<string, {
       {
         heading: "6. Ограничение ответственности",
         content:
-          "Sefira не является стороной в спорах между пользователями и не несёт за них никакой ответственности. Sefira не несёт ответственности за договоры аренды, платёжные споры или проблемы безопасности между пользователями, познакомившимися через платформу. Sefira не гарантирует бесперебойную и безошибочную работу платформы.",
+          "Sefira не является стороной в спорах между пользователями и не несёт за них никакой ответственности. Sefira не несёт ответственности за соглашения о совместном проживании, платёжные споры или проблемы безопасности между пользователями, познакомившимися через платформу. Sefira не гарантирует бесперебойную и безошибочную работу платформы.",
       },
       {
         heading: "7. Права интеллектуальной собственности",
