@@ -7,6 +7,40 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
 
+// ── Countries ─────────────────────────────────────────────────────────────────
+const TOP_COUNTRIES = [
+  "Turkey", "Iran", "Germany", "United Arab Emirates", "United Kingdom",
+  "Russia", "United States", "France", "Spain",
+];
+const OTHER_COUNTRIES = [
+  "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Argentina",
+  "Armenia", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh",
+  "Belarus", "Belgium", "Bolivia", "Bosnia and Herzegovina", "Brazil",
+  "Bulgaria", "Cambodia", "Canada", "Chile", "China", "Colombia",
+  "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Egypt",
+  "Estonia", "Ethiopia", "Finland", "Georgia", "Ghana", "Greece",
+  "Hungary", "India", "Indonesia", "Iraq", "Ireland", "Israel", "Italy",
+  "Japan", "Jordan", "Kazakhstan", "Kenya", "Kuwait", "Kyrgyzstan",
+  "Latvia", "Lebanon", "Libya", "Lithuania", "Luxembourg", "Malaysia",
+  "Mexico", "Moldova", "Mongolia", "Morocco", "Netherlands", "New Zealand",
+  "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palestine",
+  "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania",
+  "Saudi Arabia", "Serbia", "Singapore", "Slovakia", "Slovenia",
+  "South Africa", "South Korea", "Sweden", "Switzerland", "Syria",
+  "Tajikistan", "Thailand", "Tunisia", "Turkmenistan", "Ukraine",
+  "Uzbekistan", "Venezuela", "Vietnam", "Yemen",
+];
+const COUNTRIES = [...TOP_COUNTRIES, ...OTHER_COUNTRIES.slice().sort()];
+
+const CURRENCY_OPTIONS = [
+  { value: "USD", label: "$ USD" },
+  { value: "EUR", label: "€ EUR" },
+  { value: "TRY", label: "₺ TRY" },
+  { value: "AED", label: "د.إ AED" },
+  { value: "IRR", label: "﷼ IRR" },
+  { value: "RUB", label: "₽ RUB" },
+];
+
 // ── i18n ─────────────────────────────────────────────────────────────────────
 const translations = {
   tr: {
@@ -24,7 +58,33 @@ const translations = {
     submit: "İlanı Yayınla",
     submitting: "Yayınlanıyor...",
     edit: "Düzenle",
-    // Step 2
+    // Step 2 – House Details (NEW)
+    step2HouseTitle: "Konut Detayları",
+    step2HouseHeading: "Evinizin Özelliklerini Belirtin",
+    step2HouseSub: "Ne kadar detay verirseniz, o kadar doğru eşleşme bulursunuz 🏡",
+    houseTypeLabel: "Konut Tipi",
+    houseTypeApartment: "Daire",
+    houseTypeVilla: "Villa",
+    houseTypeResidence: "Rezidans",
+    houseTypeDormitory: "Yurt",
+    houseTypeIndependent: "Müstakil Ev",
+    floorLabel: "Kat",
+    floorNote: "(0 = Giriş Katı)",
+    elevatorLabel: "Asansör",
+    elevatorYes: "Var",
+    elevatorNo: "Yok",
+    furnishedLabel: "Eşyalı mı?",
+    furnishedYes: "Eşyalı",
+    furnishedNo: "Eşyasız",
+    countryLabel: "Ülke",
+    countryPlaceholder: "Ülke ara...",
+    cityLabel: "Şehir / İlçe",
+    cityPlaceholder: "İstanbul, Berlin...",
+    neighborhoodLabel: "Mahalle / Semt",
+    neighborhoodPlaceholder: "Kadıköy, Beşiktaş...",
+    pricingLabel: "Aylık Beklenen Paylaşım Ücreti",
+    pricingSub: "Her bir ev arkadaşı için beklediğiniz ücret",
+    // Step 3 – Housemate Prefs
     step2Title: "Evinizin detayları",
     smoking: "Evde Sigara İçilebilir mi?",
     smokingYes: "İzin Var",
@@ -54,7 +114,7 @@ const translations = {
     addMorePhotos: "Daha Fazla Ekle",
     address: "Adres",
     addressPlaceholder: "Mahalle, sokak, şehir, ülke",
-    // Step 3
+    // Step 4 – Review
     step3Title: "İlanınızı Onaylayın",
     typeLabel: "İlan Türü",
     hasPlaceLabel: "Ev sahibi — ev arkadaşı arıyor",
@@ -67,6 +127,12 @@ const translations = {
     rentLabel: "Aylık Paylaşım Ücreti",
     addressLabel: "Adres",
     photosLabel: "Fotoğraflar",
+    houseTypeReviewLabel: "Konut Tipi",
+    floorReviewLabel: "Kat",
+    elevatorReviewLabel: "Asansör",
+    furnishedReviewLabel: "Eşyalı",
+    locationReviewLabel: "Konum",
+    priceReviewLabel: "Aylık Ücret",
     yes: "Var",
     no: "Yok",
     person: "kişi",
@@ -99,7 +165,33 @@ const translations = {
     submit: "Publish Listing",
     submitting: "Publishing...",
     edit: "Edit",
-    // Step 2
+    // Step 2 – House Details (NEW)
+    step2HouseTitle: "House Details",
+    step2HouseHeading: "Tell Us About Your Home",
+    step2HouseSub: "The more details you provide, the better match we find 🏡",
+    houseTypeLabel: "Property Type",
+    houseTypeApartment: "Apartment",
+    houseTypeVilla: "Villa",
+    houseTypeResidence: "Residence",
+    houseTypeDormitory: "Dormitory",
+    houseTypeIndependent: "Independent House",
+    floorLabel: "Floor",
+    floorNote: "(0 = Ground Floor)",
+    elevatorLabel: "Elevator",
+    elevatorYes: "Yes",
+    elevatorNo: "No",
+    furnishedLabel: "Furnished?",
+    furnishedYes: "Furnished",
+    furnishedNo: "Unfurnished",
+    countryLabel: "Country",
+    countryPlaceholder: "Search country...",
+    cityLabel: "City / District",
+    cityPlaceholder: "Istanbul, Berlin...",
+    neighborhoodLabel: "Neighborhood",
+    neighborhoodPlaceholder: "Kadıköy, Beşiktaş...",
+    pricingLabel: "Expected Monthly Cost",
+    pricingSub: "Expected cost per housemate",
+    // Step 3 – Housemate Prefs
     step2Title: "Details about your place",
     smoking: "Is Smoking Allowed at Home?",
     smokingYes: "Allowed",
@@ -129,7 +221,7 @@ const translations = {
     addMorePhotos: "Add More",
     address: "Address",
     addressPlaceholder: "Street, neighbourhood, city, country",
-    // Step 3
+    // Step 4 – Review
     step3Title: "Confirm Your Listing",
     typeLabel: "Listing Type",
     hasPlaceLabel: "Has a place — looking for roommate(s)",
@@ -142,6 +234,12 @@ const translations = {
     rentLabel: "Monthly Sharing Cost",
     addressLabel: "Address",
     photosLabel: "Photos",
+    houseTypeReviewLabel: "Property Type",
+    floorReviewLabel: "Floor",
+    elevatorReviewLabel: "Elevator",
+    furnishedReviewLabel: "Furnished",
+    locationReviewLabel: "Location",
+    priceReviewLabel: "Monthly Cost",
     yes: "Yes",
     no: "No",
     person: "person",
@@ -174,7 +272,33 @@ const translations = {
     submit: "ثبت آگهی",
     submitting: "در حال ثبت...",
     edit: "ویرایش",
-    // Step 2
+    // Step 2 – House Details (NEW)
+    step2HouseTitle: "مشخصات خانه",
+    step2HouseHeading: "ویژگی‌های خونه‌تون رو بگید",
+    step2HouseSub: "هر چقدر جزئیات بیشتری بدید، هم‌خانه بهتری پیدا می‌کنیم 🏡",
+    houseTypeLabel: "نوع خانه",
+    houseTypeApartment: "آپارتمان",
+    houseTypeVilla: "ویلا",
+    houseTypeResidence: "رزیدانس",
+    houseTypeDormitory: "خوابگاه",
+    houseTypeIndependent: "خانه مستقل",
+    floorLabel: "طبقه",
+    floorNote: "(۰ = همکف)",
+    elevatorLabel: "آسانسور",
+    elevatorYes: "هست",
+    elevatorNo: "نیست",
+    furnishedLabel: "با امکانات؟",
+    furnishedYes: "با امکانات",
+    furnishedNo: "خالی",
+    countryLabel: "کشور",
+    countryPlaceholder: "جستجوی کشور...",
+    cityLabel: "شهر / منطقه",
+    cityPlaceholder: "تهران، برلین...",
+    neighborhoodLabel: "محله",
+    neighborhoodPlaceholder: "ونک، نیاوران...",
+    pricingLabel: "هزینه ماهانه مورد انتظار",
+    pricingSub: "هزینه مورد انتظار برای هر هم‌خانه",
+    // Step 3 – Housemate Prefs
     step2Title: "جزئیات خانه شما",
     smoking: "در خانه سیگار کشیدن مجاز است؟",
     smokingYes: "بله",
@@ -204,7 +328,7 @@ const translations = {
     addMorePhotos: "افزودن بیشتر",
     address: "آدرس",
     addressPlaceholder: "خیابان، محله، شهر، کشور",
-    // Step 3
+    // Step 4 – Review
     step3Title: "تأیید نهایی",
     typeLabel: "نوع آگهی",
     hasPlaceLabel: "خانه دارد — دنبال هم‌خانه",
@@ -217,6 +341,12 @@ const translations = {
     rentLabel: "هزینه مشترک ماهانه",
     addressLabel: "آدرس",
     photosLabel: "عکس‌ها",
+    houseTypeReviewLabel: "نوع خانه",
+    floorReviewLabel: "طبقه",
+    elevatorReviewLabel: "آسانسور",
+    furnishedReviewLabel: "با امکانات",
+    locationReviewLabel: "موقعیت",
+    priceReviewLabel: "هزینه ماهانه",
     yes: "بله",
     no: "خیر",
     person: "نفر",
@@ -248,6 +378,33 @@ const translations = {
     submit: "Inserat veröffentlichen",
     submitting: "Wird veröffentlicht...",
     edit: "Bearbeiten",
+    // Step 2 – House Details (NEW)
+    step2HouseTitle: "Wohnungsdetails",
+    step2HouseHeading: "Beschreiben Sie Ihr Zuhause",
+    step2HouseSub: "Je mehr Details Sie angeben, desto besser finden wir einen passenden Mitbewohner 🏡",
+    houseTypeLabel: "Immobilientyp",
+    houseTypeApartment: "Wohnung",
+    houseTypeVilla: "Villa",
+    houseTypeResidence: "Residenz",
+    houseTypeDormitory: "Wohnheim",
+    houseTypeIndependent: "Einfamilienhaus",
+    floorLabel: "Stockwerk",
+    floorNote: "(0 = Erdgeschoss)",
+    elevatorLabel: "Aufzug",
+    elevatorYes: "Vorhanden",
+    elevatorNo: "Nicht vorhanden",
+    furnishedLabel: "Möbliert?",
+    furnishedYes: "Möbliert",
+    furnishedNo: "Unmöbliert",
+    countryLabel: "Land",
+    countryPlaceholder: "Land suchen...",
+    cityLabel: "Stadt / Bezirk",
+    cityPlaceholder: "Istanbul, Berlin...",
+    neighborhoodLabel: "Stadtteil",
+    neighborhoodPlaceholder: "Kadıköy, Beşiktaş...",
+    pricingLabel: "Erwartete monatliche Kosten",
+    pricingSub: "Erwartete Kosten pro Mitbewohner",
+    // Step 3 – Housemate Prefs
     step2Title: "Details zu Ihrer Wohnung",
     smoking: "Ist Rauchen zu Hause erlaubt?",
     smokingYes: "Erlaubt",
@@ -277,6 +434,7 @@ const translations = {
     addMorePhotos: "Weitere hinzufügen",
     address: "Adresse",
     addressPlaceholder: "Straße, Stadtteil, Stadt, Land",
+    // Step 4 – Review
     step3Title: "Inserat bestätigen",
     typeLabel: "Inseratstyp",
     hasPlaceLabel: "Hat Wohnung — sucht Mitbewohner",
@@ -289,6 +447,12 @@ const translations = {
     rentLabel: "Monatliche WG-Kosten",
     addressLabel: "Adresse",
     photosLabel: "Fotos",
+    houseTypeReviewLabel: "Immobilientyp",
+    floorReviewLabel: "Stockwerk",
+    elevatorReviewLabel: "Aufzug",
+    furnishedReviewLabel: "Möbliert",
+    locationReviewLabel: "Standort",
+    priceReviewLabel: "Monatliche Kosten",
     yes: "Ja",
     no: "Nein",
     person: "Person",
@@ -304,7 +468,6 @@ const translations = {
     selectType: "Bitte wählen Sie einen Inseratstyp.",
     fillRequired: "Bitte füllen Sie alle Pflichtfelder aus.",
   },
-  // Always add "ar" key when adding new translations
   ar: {
     pageTitle: "نشر إعلان",
     stepOf: (current: number, total: number) => `الخطوة ${current} من ${total}`,
@@ -320,7 +483,33 @@ const translations = {
     submit: "نشر الإعلان",
     submitting: "جارٍ النشر...",
     edit: "تعديل",
-    // Step 2
+    // Step 2 – House Details (NEW)
+    step2HouseTitle: "تفاصيل المنزل",
+    step2HouseHeading: "أخبرنا عن منزلك",
+    step2HouseSub: "كلما أعطيت تفاصيل أكثر، وجدنا تطابقاً أفضل 🏡",
+    houseTypeLabel: "نوع العقار",
+    houseTypeApartment: "شقة",
+    houseTypeVilla: "فيلا",
+    houseTypeResidence: "ريزيدانس",
+    houseTypeDormitory: "سكن طلابي",
+    houseTypeIndependent: "بيت مستقل",
+    floorLabel: "الطابق",
+    floorNote: "(0 = الطابق الأرضي)",
+    elevatorLabel: "مصعد",
+    elevatorYes: "يوجد",
+    elevatorNo: "لا يوجد",
+    furnishedLabel: "مفروش؟",
+    furnishedYes: "مفروش",
+    furnishedNo: "غير مفروش",
+    countryLabel: "البلد",
+    countryPlaceholder: "ابحث عن البلد...",
+    cityLabel: "المدينة / المنطقة",
+    cityPlaceholder: "إسطنبول، برلين...",
+    neighborhoodLabel: "الحي",
+    neighborhoodPlaceholder: "كاديكوي، بيشيكتاش...",
+    pricingLabel: "التكلفة الشهرية المتوقعة",
+    pricingSub: "التكلفة المتوقعة لكل شريك سكن",
+    // Step 3 – Housemate Prefs
     step2Title: "تفاصيل المكان",
     smoking: "هل التدخين مسموح به في المنزل؟",
     smokingYes: "مسموح",
@@ -350,7 +539,7 @@ const translations = {
     addMorePhotos: "إضافة المزيد",
     address: "العنوان",
     addressPlaceholder: "الشارع، الحي، المدينة، البلد",
-    // Step 3
+    // Step 4 – Review
     step3Title: "تأكيد الإعلان",
     typeLabel: "نوع الإعلان",
     hasPlaceLabel: "لديه مكان — يبحث عن شريك سكن",
@@ -363,6 +552,12 @@ const translations = {
     rentLabel: "تكلفة المشاركة الشهرية",
     addressLabel: "العنوان",
     photosLabel: "الصور",
+    houseTypeReviewLabel: "نوع العقار",
+    floorReviewLabel: "الطابق",
+    elevatorReviewLabel: "مصعد",
+    furnishedReviewLabel: "مفروش",
+    locationReviewLabel: "الموقع",
+    priceReviewLabel: "التكلفة الشهرية",
     yes: "نعم",
     no: "لا",
     person: "شخص",
@@ -395,7 +590,33 @@ const translations = {
     submit: "Опубликовать",
     submitting: "Публикация...",
     edit: "Редактировать",
-    // Step 2
+    // Step 2 – House Details (NEW)
+    step2HouseTitle: "Детали жилья",
+    step2HouseHeading: "Расскажите о вашем жилье",
+    step2HouseSub: "Чем больше деталей вы укажете, тем лучше мы найдём соседа 🏡",
+    houseTypeLabel: "Тип жилья",
+    houseTypeApartment: "Квартира",
+    houseTypeVilla: "Вилла",
+    houseTypeResidence: "Резиденция",
+    houseTypeDormitory: "Общежитие",
+    houseTypeIndependent: "Частный дом",
+    floorLabel: "Этаж",
+    floorNote: "(0 = Первый этаж)",
+    elevatorLabel: "Лифт",
+    elevatorYes: "Есть",
+    elevatorNo: "Нет",
+    furnishedLabel: "Меблированная?",
+    furnishedYes: "Меблированная",
+    furnishedNo: "Без мебели",
+    countryLabel: "Страна",
+    countryPlaceholder: "Поиск страны...",
+    cityLabel: "Город / Район",
+    cityPlaceholder: "Стамбул, Берлин...",
+    neighborhoodLabel: "Район",
+    neighborhoodPlaceholder: "Кадыкёй, Бешикташ...",
+    pricingLabel: "Ожидаемые ежемесячные расходы",
+    pricingSub: "Ожидаемые расходы на каждого соседа",
+    // Step 3 – Housemate Prefs
     step2Title: "Детали вашего жилья",
     smoking: "Разрешено ли курение дома?",
     smokingYes: "Разрешено",
@@ -425,7 +646,7 @@ const translations = {
     addMorePhotos: "Добавить ещё",
     address: "Адрес",
     addressPlaceholder: "Улица, район, город, страна",
-    // Step 3
+    // Step 4 – Review
     step3Title: "Подтвердите объявление",
     typeLabel: "Тип объявления",
     hasPlaceLabel: "Есть жильё — ищет соседа",
@@ -438,6 +659,12 @@ const translations = {
     rentLabel: "Стоимость совместного проживания в месяц",
     addressLabel: "Адрес",
     photosLabel: "Фото",
+    houseTypeReviewLabel: "Тип жилья",
+    floorReviewLabel: "Этаж",
+    elevatorReviewLabel: "Лифт",
+    furnishedReviewLabel: "Меблированность",
+    locationReviewLabel: "Расположение",
+    priceReviewLabel: "Ежемесячные расходы",
     yes: "Да",
     no: "Нет",
     person: "чел.",
@@ -458,20 +685,29 @@ const translations = {
 };
 
 type ListingType = "has_place" | "needs_place";
-type Currency = "USD" | "EUR" | "TRY";
-
+type Currency = "USD" | "EUR" | "TRY" | "AED" | "IRR" | "RUB";
 type GenderPref = "male" | "female" | "any";
 type OccupationPref = "student" | "working" | "any";
 
 interface ListingForm {
   type: ListingType | null;
-  smoking: boolean;
+  // House details (step 2)
+  houseType: string;
+  floor: number;
+  elevator: boolean;
   parking: boolean;
+  furnished: boolean;
+  country: string;
+  city: string;
+  neighborhood: string;
+  price: string;
+  currency: Currency;
+  // Housemate prefs (step 3)
+  smoking: boolean;
   current_residents: number;
   needed_roommates: number;
   rooms: number;
   rent: string;
-  currency: Currency;
   photos: File[];
   photoPreviews: string[];
   address: string;
@@ -482,13 +718,21 @@ interface ListingForm {
 
 const initialForm: ListingForm = {
   type: null,
-  smoking: false,
+  houseType: "",
+  floor: 1,
+  elevator: false,
   parking: false,
+  furnished: false,
+  country: "",
+  city: "",
+  neighborhood: "",
+  price: "",
+  currency: "USD",
+  smoking: false,
   current_residents: 1,
   needed_roommates: 1,
   rooms: 2,
   rent: "",
-  currency: "USD",
   photos: [],
   photoPreviews: [],
   address: "",
@@ -501,6 +745,9 @@ const CURRENCY_SYMBOLS: Record<Currency, string> = {
   USD: "$",
   EUR: "€",
   TRY: "₺",
+  AED: "د.إ",
+  IRR: "﷼",
+  RUB: "₽",
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -604,6 +851,99 @@ function OptionGroup({
   );
 }
 
+function PillGroup({
+  options,
+  value,
+  onChange,
+}: {
+  options: { label: string; value: string }[];
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {options.map((opt) => (
+        <button
+          key={opt.value}
+          type="button"
+          onClick={() => onChange(opt.value)}
+          className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+            value === opt.value
+              ? "bg-orange-500 text-white shadow-md shadow-orange-500/30"
+              : "bg-gray-100 text-stone-600 hover:bg-gray-200"
+          }`}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function CountrySelect({
+  value,
+  onChange,
+  label,
+  placeholder,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  label: string;
+  placeholder: string;
+}) {
+  const [inputVal, setInputVal] = useState(value);
+  const [isOpen, setIsOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => { setInputVal(value); }, [value]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+        if (!COUNTRIES.includes(inputVal)) setInputVal(value);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [inputVal, value]);
+
+  const filtered = inputVal.trim() === ""
+    ? COUNTRIES
+    : COUNTRIES.filter((c) => c.toLowerCase().includes(inputVal.toLowerCase()));
+
+  return (
+    <div className="relative" ref={wrapperRef}>
+      <label className="block text-sm font-semibold text-stone-700 mb-2">{label}</label>
+      <input
+        type="text"
+        value={inputVal}
+        placeholder={placeholder}
+        onFocus={() => setIsOpen(true)}
+        onChange={(e) => { setInputVal(e.target.value); setIsOpen(true); }}
+        className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+      />
+      {isOpen && filtered.length > 0 && (
+        <div className="absolute z-50 w-full mt-1 bg-white border border-stone-200 rounded-xl shadow-lg max-h-48 overflow-y-auto">
+          {filtered.map((country) => (
+            <button
+              key={country}
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => { onChange(country); setInputVal(country); setIsOpen(false); }}
+              className={`w-full text-left px-4 py-2.5 text-sm hover:bg-orange-50 transition-colors ${
+                value === country ? "text-orange-500 font-semibold" : "text-stone-700"
+              }`}
+            >
+              {country}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Main component ────────────────────────────────────────────────────────────
 export default function CreateListingPage() {
   const { user, loading } = useAuth();
@@ -636,8 +976,6 @@ export default function CreateListingPage() {
 
   const photoInputRef = useRef<HTMLInputElement>(null);
 
-  const totalSteps = form.type === "has_place" ? 3 : 2;
-
   const set = <K extends keyof ListingForm>(key: K, val: ListingForm[K]) =>
     setForm((f) => ({ ...f, [key]: val }));
 
@@ -658,28 +996,24 @@ export default function CreateListingPage() {
     set("photoPreviews", form.photoPreviews.filter((_, i) => i !== idx));
   };
 
-  // Navigation
+  // Navigation — 4 steps total for has_place, 2 for needs_place
   const goNext = () => {
     setValidationError(null);
     if (step === 1) {
       if (!form.type) { setValidationError(t.selectType); return; }
-      if (form.type === "needs_place") {
-        setStep(form.type === "needs_place" ? 3 : 2);
-        return;
-      }
-      setStep(2);
+      setStep(form.type === "needs_place" ? 4 : 2);
       return;
     }
-    if (step === 2) {
-      setStep(3);
-    }
+    if (step === 2) { setStep(3); return; }
+    if (step === 3) { setStep(4); }
   };
 
   const goBack = () => {
     setValidationError(null);
-    if (step === 3 && form.type === "needs_place") { setStep(1); return; }
+    if (step === 4 && form.type === "needs_place") { setStep(1); return; }
+    if (step === 4) { setStep(3); return; }
     if (step === 3) { setStep(2); return; }
-    if (step === 2) { setStep(1); return; }
+    if (step === 2) { setStep(1); }
   };
 
   // Submit
@@ -688,7 +1022,6 @@ export default function CreateListingPage() {
     setSubmitting(true);
     setSubmitError(null);
 
-    // Upload photos
     const photoUrls: string[] = [];
     for (const file of form.photos) {
       const ext = file.name.split(".").pop();
@@ -711,13 +1044,22 @@ export default function CreateListingPage() {
     };
 
     if (form.type === "has_place") {
-      payload.smoking = form.smoking;
+      // House details (step 2)
+      payload.house_type = form.houseType || null;
+      payload.floor = form.floor;
+      payload.elevator = form.elevator;
       payload.parking = form.parking;
+      payload.furnished = form.furnished;
+      payload.country = form.country || null;
+      payload.city = form.city || null;
+      payload.neighborhood = form.neighborhood || null;
+      payload.rent = parseFloat(form.price) || null;
+      payload.currency = form.currency;
+      // Housemate prefs (step 3)
+      payload.smoking = form.smoking;
       payload.current_residents = form.current_residents;
       payload.needed_roommates = form.needed_roommates;
       payload.rooms = form.rooms;
-      payload.rent = parseFloat(form.rent) || null;
-      payload.currency = form.currency;
       payload.photos = photoUrls;
       payload.address = form.address;
       payload.gender_preference = form.gender_preference;
@@ -759,7 +1101,6 @@ export default function CreateListingPage() {
     );
   }
 
-  // ── Loading ───────────────────────────────────────────────────────────────
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-stone-50">
@@ -768,7 +1109,6 @@ export default function CreateListingPage() {
     );
   }
 
-  // ── Success ───────────────────────────────────────────────────────────────
   if (submitted) {
     return (
       <div dir={dir} className="min-h-screen flex flex-col items-center justify-center bg-stone-50 gap-6 p-6">
@@ -847,8 +1187,8 @@ export default function CreateListingPage() {
 
   // ── Progress bar ──────────────────────────────────────────────────────────
   const ProgressBar = () => {
-    const displayTotal = form.type === "needs_place" ? 2 : form.type === "has_place" ? 3 : 3;
-    const displayStep = step === 3 && form.type === "needs_place" ? 2 : step;
+    const displayTotal = form.type === "needs_place" ? 2 : 4;
+    const displayStep = form.type === "needs_place" && step === 4 ? 2 : step;
     return (
       <div className="mb-8">
         <div className="flex items-center justify-between mb-2">
@@ -871,7 +1211,6 @@ export default function CreateListingPage() {
       <div dir={dir} className="min-h-screen bg-stone-50">
         <Navbar />
         <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
-          {/* Back to home */}
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block mb-5">
             <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
               <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -957,17 +1296,214 @@ export default function CreateListingPage() {
     );
   }
 
-  // ── STEP 2: Place details (only for has_place) ────────────────────────────
+  // ── STEP 2: House details (NEW, only for has_place) ───────────────────────
   if (step === 2 && form.type === "has_place") {
+    const houseTypeOptions = [
+      { label: t.houseTypeApartment, value: "apartment" },
+      { label: t.houseTypeVilla, value: "villa" },
+      { label: t.houseTypeResidence, value: "residence" },
+      { label: t.houseTypeDormitory, value: "dormitory" },
+      { label: t.houseTypeIndependent, value: "independent" },
+    ];
+
     return (
       <div dir={dir} className="min-h-screen bg-stone-50">
         <Navbar />
         <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
-          {/* Back buttons */}
           <div className="flex items-center gap-3 mb-6">
             <motion.button
               whileTap={{ scale: 0.97 }}
-              onClick={() => setStep(step - 1)}
+              onClick={goBack}
+              className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-5 py-2.5 rounded-2xl transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              {t.back}
+            </motion.button>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
+              <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span>{t.home}</span>
+              </Link>
+            </motion.div>
+          </div>
+
+          <ProgressBar />
+          <h1 className="text-2xl font-black text-stone-900 mb-2">{t.pageTitle}</h1>
+          <p className="text-stone-500 mb-8 text-sm">{t.step2HouseTitle}</p>
+
+          {/* Header banner */}
+          <div className="bg-gradient-to-r from-orange-50 to-orange-100 border border-orange-200 rounded-2xl p-4 mb-6">
+            <div className="flex items-start gap-3">
+              <div className="text-2xl">🏡</div>
+              <div>
+                <p className="font-black text-gray-900 text-base">{t.step2HouseHeading}</p>
+                <p className="text-gray-500 text-sm mt-1">{t.step2HouseSub}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl border border-stone-100 shadow-sm divide-y divide-stone-100">
+
+            {/* 1. House type */}
+            <div className="p-5">
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.houseTypeLabel}</label>
+              <PillGroup
+                options={houseTypeOptions}
+                value={form.houseType}
+                onChange={(v) => set("houseType", v)}
+              />
+            </div>
+
+            {/* 2. Floor */}
+            <div className="p-5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="text-sm font-semibold text-stone-700">{t.floorLabel}</label>
+                  <span className="text-xs text-stone-400 ml-2">{t.floorNote}</span>
+                </div>
+                <NumberStepper
+                  value={form.floor}
+                  onChange={(v) => set("floor", v)}
+                  min={0}
+                  max={40}
+                />
+              </div>
+            </div>
+
+            {/* 3. Elevator */}
+            <div className="p-5">
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.elevatorLabel}</label>
+              <Toggle
+                value={form.elevator}
+                labelOn={t.elevatorYes}
+                labelOff={t.elevatorNo}
+                onChange={(v) => set("elevator", v)}
+              />
+            </div>
+
+            {/* 4. Parking */}
+            <div className="p-5">
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.parking}</label>
+              <Toggle
+                value={form.parking}
+                labelOn={t.parkingYes}
+                labelOff={t.parkingNo}
+                onChange={(v) => set("parking", v)}
+              />
+            </div>
+
+            {/* 5. Furnished */}
+            <div className="p-5">
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.furnishedLabel}</label>
+              <Toggle
+                value={form.furnished}
+                labelOn={t.furnishedYes}
+                labelOff={t.furnishedNo}
+                onChange={(v) => set("furnished", v)}
+              />
+            </div>
+
+            {/* 6. Location */}
+            <div className="p-5 flex flex-col gap-4">
+              <CountrySelect
+                value={form.country}
+                onChange={(v) => set("country", v)}
+                label={t.countryLabel}
+                placeholder={t.countryPlaceholder}
+              />
+              <div>
+                <label className="block text-sm font-semibold text-stone-700 mb-2">{t.cityLabel}</label>
+                <input
+                  type="text"
+                  value={form.city}
+                  onChange={(e) => set("city", e.target.value)}
+                  placeholder={t.cityPlaceholder}
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-stone-700 mb-2">{t.neighborhoodLabel}</label>
+                <input
+                  type="text"
+                  value={form.neighborhood}
+                  onChange={(e) => set("neighborhood", e.target.value)}
+                  placeholder={t.neighborhoodPlaceholder}
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+                />
+              </div>
+            </div>
+
+            {/* 7. Monthly cost */}
+            <div className="p-5">
+              <label className="block text-sm font-semibold text-stone-700 mb-1">{t.pricingLabel}</label>
+              <p className="text-xs text-stone-400 mb-3">{t.pricingSub}</p>
+              {/* Currency pills */}
+              <div className="flex gap-2 overflow-x-auto pb-1 mb-3">
+                {CURRENCY_OPTIONS.map((c) => (
+                  <button
+                    key={c.value}
+                    type="button"
+                    onClick={() => set("currency", c.value as Currency)}
+                    className={`flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-bold transition-all duration-200 ${
+                      form.currency === c.value
+                        ? "bg-orange-500 text-white shadow-md shadow-orange-500/30"
+                        : "bg-gray-100 text-stone-600 hover:bg-gray-200"
+                    }`}
+                  >
+                    {c.label}
+                  </button>
+                ))}
+              </div>
+              <input
+                type="number"
+                min={0}
+                value={form.price}
+                onChange={(e) => set("price", e.target.value)}
+                placeholder="0"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+              />
+            </div>
+          </div>
+
+          {validationError && (
+            <p className="mt-4 text-sm text-rose-500 bg-rose-50 border border-rose-100 rounded-xl px-4 py-3">
+              {validationError}
+            </p>
+          )}
+
+          <div className="flex gap-3 mt-8">
+            <button
+              onClick={goBack}
+              className="flex-1 py-3.5 rounded-xl font-bold text-stone-700 border border-stone-200 bg-white hover:bg-stone-50 active:scale-95 transition-all duration-200 text-sm"
+            >
+              {t.back}
+            </button>
+            <button
+              onClick={goNext}
+              className="flex-[2] py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg shadow-orange-500/25 hover:opacity-90 active:scale-95 transition-all duration-200 text-sm"
+            >
+              {t.next}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── STEP 3: Housemate preferences (was step 2) ────────────────────────────
+  if (step === 3 && form.type === "has_place") {
+    return (
+      <div dir={dir} className="min-h-screen bg-stone-50">
+        <Navbar />
+        <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
+          <div className="flex items-center gap-3 mb-6">
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={goBack}
               className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-5 py-2.5 rounded-2xl transition-colors"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -1088,29 +1624,39 @@ export default function CreateListingPage() {
     );
   }
 
-  // ── STEP 3: Confirmation ──────────────────────────────────────────────────
-  if (step === 3 || (step === 3 && form.type === "needs_place")) {
+  // ── STEP 4: Confirmation (was step 3) ─────────────────────────────────────
+  if (step === 4) {
     const isHasPlace = form.type === "has_place";
 
+    const locationParts = [form.neighborhood, form.city, form.country].filter(Boolean);
+    const locationStr = locationParts.join(", ") || "—";
+
+    const houseTypeLabels: Record<string, string> = {
+      apartment: t.houseTypeApartment,
+      villa: t.houseTypeVilla,
+      residence: t.houseTypeResidence,
+      dormitory: t.houseTypeDormitory,
+      independent: t.houseTypeIndependent,
+    };
+
     const rows: { label: string; value: string }[] = [
-      {
-        label: t.typeLabel,
-        value: isHasPlace ? t.hasPlaceLabel : t.needsPlaceLabel,
-      },
+      { label: t.typeLabel, value: isHasPlace ? t.hasPlaceLabel : t.needsPlaceLabel },
       ...(isHasPlace
         ? [
-            { label: t.smokingLabel, value: form.smoking ? t.yes : t.no },
+            { label: t.houseTypeReviewLabel, value: houseTypeLabels[form.houseType] || "—" },
+            { label: t.floorReviewLabel, value: `${form.floor}` },
+            { label: t.elevatorReviewLabel, value: form.elevator ? t.yes : t.no },
             { label: t.parkingLabel, value: form.parking ? t.yes : t.no },
-            { label: t.residentsLabel, value: `${form.current_residents} ${t.person}` },
-            { label: t.roommatesLabel, value: `${form.needed_roommates} ${t.person}` },
-            { label: t.roomsLabel, value: `${form.rooms}` },
+            { label: t.furnishedReviewLabel, value: form.furnished ? t.furnishedYes : t.furnishedNo },
+            { label: t.locationReviewLabel, value: locationStr },
             {
-              label: t.rentLabel,
-              value: form.rent
-                ? `${CURRENCY_SYMBOLS[form.currency]}${form.rent} / ${lang === "tr" ? "ay" : lang === "fa" ? "ماه" : lang === "ar" ? "شهر" : "mo"}`
+              label: t.priceReviewLabel,
+              value: form.price
+                ? `${CURRENCY_SYMBOLS[form.currency]}${form.price} / ${lang === "tr" ? "ay" : lang === "fa" ? "ماه" : lang === "ar" ? "شهر" : lang === "de" ? "Mo." : lang === "ru" ? "мес." : "mo"}`
                 : "—",
             },
-            { label: t.addressLabel, value: form.address || "—" },
+            { label: t.smokingLabel, value: form.smoking ? t.smokingYes : t.smokingNo },
+            { label: t.residentsLabel, value: `${form.current_residents} ${t.person}` },
           ]
         : []),
     ];
@@ -1119,11 +1665,10 @@ export default function CreateListingPage() {
       <div dir={dir} className="min-h-screen bg-stone-50">
         <Navbar />
         <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
-          {/* Back buttons */}
           <div className="flex items-center gap-3 mb-6">
             <motion.button
               whileTap={{ scale: 0.97 }}
-              onClick={() => setStep(step - 1)}
+              onClick={goBack}
               className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-5 py-2.5 rounded-2xl transition-colors"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -1146,7 +1691,6 @@ export default function CreateListingPage() {
           <p className="text-stone-500 mb-8 text-sm">{t.step3Title}</p>
 
           <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden">
-            {/* Photos preview */}
             {form.photoPreviews.length > 0 && (
               <div className="flex gap-1">
                 {form.photoPreviews.map((src, i) => (
@@ -1162,7 +1706,6 @@ export default function CreateListingPage() {
               </div>
             )}
 
-            {/* Detail rows */}
             <div className="divide-y divide-stone-100">
               {rows.map(({ label, value }) => (
                 <div key={label} className="flex items-start justify-between px-5 py-4 gap-4">
