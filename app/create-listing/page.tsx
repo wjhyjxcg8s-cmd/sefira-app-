@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
+import PlacesAutocomplete from './PlacesAutocomplete'
 
 // ── Countries ─────────────────────────────────────────────────────────────────
 const TOP_COUNTRY_CODES = ["TR", "IR", "DE", "AE", "GB", "RU", "US", "FR", "ES"];
@@ -30,24 +31,6 @@ const getCountryName = (countryCode: string, lang: string): string => {
     return displayNames.of(countryCode) || countryCode;
   } catch {
     return countryCode;
-  }
-};
-
-interface PlaceSuggestion {
-  name: string;
-  subtitle: string;
-}
-
-const searchPlaces = async (query: string, lang: string, type: "city" | "neighborhood"): Promise<PlaceSuggestion[]> => {
-  if (query.length < 1) return [];
-  try {
-    const res = await fetch(
-      `/api/places?q=${encodeURIComponent(query)}&lang=${LANG_MAP[lang] || "en"}&type=${type}`
-    );
-    const data = await res.json();
-    return data.results || [];
-  } catch {
-    return [];
   }
 };
 
@@ -1013,31 +996,6 @@ export default function CreateListingPage() {
   const [submitted, setSubmitted] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  // City autocomplete
-  const [cityInput, setCityInput] = useState("");
-  const [citySuggestions, setCitySuggestions] = useState<PlaceSuggestion[]>([]);
-  const [showCity, setShowCity] = useState(false);
-  const [cityLoading, setCityLoading] = useState(false);
-  const cityDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Neighborhood autocomplete
-  const [hoodInput, setHoodInput] = useState("");
-  const [hoodSuggestions, setHoodSuggestions] = useState<PlaceSuggestion[]>([]);
-  const [showHood, setShowHood] = useState(false);
-  const [hoodLoading, setHoodLoading] = useState(false);
-  const hoodDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (!(e.target as HTMLElement).closest(".place-autocomplete")) {
-        setShowCity(false);
-        setShowHood(false);
-      }
-    };
-    document.addEventListener("click", handler);
-    return () => document.removeEventListener("click", handler);
-  }, []);
-
   const photoInputRef = useRef<HTMLInputElement>(null);
 
   const set = <K extends keyof ListingForm>(key: K, val: ListingForm[K]) =>
@@ -1482,111 +1440,26 @@ export default function CreateListingPage() {
                 placeholder={t.countryPlaceholder}
               />
               {/* City */}
-              <div className="relative place-autocomplete">
-                <label className="block text-sm font-semibold text-stone-700 mb-2">{t.cityLabel}</label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={cityInput}
-                    placeholder={t.cityPlaceholder}
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2.5 pr-9 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
-                    onFocus={() => citySuggestions.length > 0 && setShowCity(true)}
-                    onChange={(e) => {
-                      const v = e.target.value;
-                      setCityInput(v);
-                      set("city", v);
-                      if (cityDebounce.current) clearTimeout(cityDebounce.current);
-                      if (v.length >= 1) {
-                        setCityLoading(true);
-                        cityDebounce.current = setTimeout(async () => {
-                          const r = await searchPlaces(v, lang, "city");
-                          setCitySuggestions(r);
-                          setShowCity(true);
-                          setCityLoading(false);
-                        }, 250);
-                      } else {
-                        setShowCity(false);
-                      }
-                    }}
-                  />
-                  {cityLoading && (
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-orange-400 border-t-transparent rounded-full animate-spin" />
-                  )}
-                </div>
-                {showCity && citySuggestions.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 z-[100] bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden mt-2 max-h-72 overflow-y-auto">
-                    {citySuggestions.map((s, i) => (
-                      <button
-                        type="button"
-                        key={i}
-                        onClick={() => {
-                          setCityInput(s.name);
-                          set("city", s.name);
-                          setShowCity(false);
-                        }}
-                        className="w-full text-left px-4 py-3 hover:bg-orange-50 border-b border-gray-100 last:border-0 transition-colors flex flex-col items-start"
-                      >
-                        <span className="font-semibold text-gray-900 text-sm">{s.name}</span>
-                        {s.subtitle && <span className="text-xs text-gray-400 mt-0.5">{s.subtitle}</span>}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <PlacesAutocomplete
+                value={form.city || ''}
+                onChange={(v) => setForm(prev => ({ ...prev, city: v }))}
+                placeholder="İstanbul, Berlin, Tehran..."
+                lang={lang}
+                type="city"
+                label={t.cityLabel || 'Şehir / İlçe'}
+                isRTL={lang === 'fa' || lang === 'ar'}
+              />
 
               {/* Neighborhood */}
-              <div className="relative place-autocomplete">
-                <label className="block text-sm font-semibold text-stone-700 mb-2">{t.neighborhoodLabel}</label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={hoodInput}
-                    placeholder={t.neighborhoodPlaceholder}
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2.5 pr-9 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
-                    onFocus={() => hoodSuggestions.length > 0 && setShowHood(true)}
-                    onChange={(e) => {
-                      const v = e.target.value;
-                      setHoodInput(v);
-                      set("neighborhood", v);
-                      if (hoodDebounce.current) clearTimeout(hoodDebounce.current);
-                      if (v.length >= 1) {
-                        setHoodLoading(true);
-                        hoodDebounce.current = setTimeout(async () => {
-                          const q = form.city ? `${v} ${form.city}` : v;
-                          const r = await searchPlaces(q, lang, "neighborhood");
-                          setHoodSuggestions(r);
-                          setShowHood(true);
-                          setHoodLoading(false);
-                        }, 250);
-                      } else {
-                        setShowHood(false);
-                      }
-                    }}
-                  />
-                  {hoodLoading && (
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-orange-400 border-t-transparent rounded-full animate-spin" />
-                  )}
-                </div>
-                {showHood && hoodSuggestions.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 z-[100] bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden mt-2 max-h-72 overflow-y-auto">
-                    {hoodSuggestions.map((s, i) => (
-                      <button
-                        type="button"
-                        key={i}
-                        onClick={() => {
-                          setHoodInput(s.name);
-                          set("neighborhood", s.name);
-                          setShowHood(false);
-                        }}
-                        className="w-full text-left px-4 py-3 hover:bg-orange-50 border-b border-gray-100 last:border-0 transition-colors flex flex-col items-start"
-                      >
-                        <span className="font-semibold text-gray-900 text-sm">{s.name}</span>
-                        {s.subtitle && <span className="text-xs text-gray-400 mt-0.5">{s.subtitle}</span>}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <PlacesAutocomplete
+                value={form.neighborhood || ''}
+                onChange={(v) => setForm(prev => ({ ...prev, neighborhood: v }))}
+                placeholder="Kadıköy, Beşiktaş..."
+                lang={lang}
+                type="neighborhood"
+                label={t.neighborhoodLabel || 'Mahalle / Semt'}
+                isRTL={lang === 'fa' || lang === 'ar'}
+              />
             </div>
 
             {/* 7. Monthly cost */}
