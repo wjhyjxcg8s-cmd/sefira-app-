@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
@@ -8,36 +8,72 @@ import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
 
 // ── Countries ─────────────────────────────────────────────────────────────────
-const TOP_COUNTRIES = [
-  "Turkey", "Iran", "Germany", "United Arab Emirates", "United Kingdom",
-  "Russia", "United States", "France", "Spain",
+const TOP_COUNTRY_CODES = ["TR", "IR", "DE", "AE", "GB", "RU", "US", "FR", "ES"];
+const OTHER_COUNTRY_CODES = [
+  "AF","AL","DZ","AD","AO","AR","AM","AU","AT","AZ","BH","BD",
+  "BY","BE","BO","BA","BR","BG","KH","CA","CL","CN","CO","HR",
+  "CU","CY","CZ","DK","EG","EE","ET","FI","GE","GH","GR","HU",
+  "IN","ID","IQ","IE","IL","IT","JP","JO","KZ","KE","KW","KG",
+  "LV","LB","LY","LT","LU","MY","MX","MD","MN","MA","NL","NZ",
+  "NG","MK","NO","OM","PK","PS","PE","PH","PL","PT","QA","RO",
+  "SA","RS","SG","SK","SI","ZA","KR","SE","CH","SY","TJ","TH",
+  "TN","TM","UA","UZ","VE","VN","YE",
 ];
-const OTHER_COUNTRIES = [
-  "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Argentina",
-  "Armenia", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh",
-  "Belarus", "Belgium", "Bolivia", "Bosnia and Herzegovina", "Brazil",
-  "Bulgaria", "Cambodia", "Canada", "Chile", "China", "Colombia",
-  "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Egypt",
-  "Estonia", "Ethiopia", "Finland", "Georgia", "Ghana", "Greece",
-  "Hungary", "India", "Indonesia", "Iraq", "Ireland", "Israel", "Italy",
-  "Japan", "Jordan", "Kazakhstan", "Kenya", "Kuwait", "Kyrgyzstan",
-  "Latvia", "Lebanon", "Libya", "Lithuania", "Luxembourg", "Malaysia",
-  "Mexico", "Moldova", "Mongolia", "Morocco", "Netherlands", "New Zealand",
-  "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palestine",
-  "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania",
-  "Saudi Arabia", "Serbia", "Singapore", "Slovakia", "Slovenia",
-  "South Africa", "South Korea", "Sweden", "Switzerland", "Syria",
-  "Tajikistan", "Thailand", "Tunisia", "Turkmenistan", "Ukraine",
-  "Uzbekistan", "Venezuela", "Vietnam", "Yemen",
-];
-const COUNTRIES = [...TOP_COUNTRIES, ...OTHER_COUNTRIES.slice().sort()];
+
+const LANG_MAP: Record<string, string> = {
+  tr: "tr", en: "en", fa: "fa", ar: "ar", de: "de", ru: "ru",
+};
+
+const getCountryName = (countryCode: string, lang: string): string => {
+  try {
+    const displayNames = new Intl.DisplayNames([LANG_MAP[lang] || "en"], { type: "region" });
+    return displayNames.of(countryCode) || countryCode;
+  } catch {
+    return countryCode;
+  }
+};
+
+const searchCities = async (query: string, countryCode: string, lang: string): Promise<string[]> => {
+  if (query.length < 2) return [];
+  try {
+    const url =
+      `https://nominatim.openstreetmap.org/search?` +
+      `q=${encodeURIComponent(query)}&` +
+      `countrycodes=${countryCode.toLowerCase()}&` +
+      `featureType=city&` +
+      `accept-language=${LANG_MAP[lang] || "en"}&` +
+      `format=json&limit=6`;
+    const res = await fetch(url, { headers: { "Accept-Language": LANG_MAP[lang] || "en" } });
+    const data = await res.json();
+    return data.map((item: { display_name: string }) => item.display_name.split(",")[0]);
+  } catch {
+    return [];
+  }
+};
+
+const searchNeighborhoods = async (query: string, city: string, countryCode: string, lang: string): Promise<string[]> => {
+  if (query.length < 2) return [];
+  try {
+    const url =
+      `https://nominatim.openstreetmap.org/search?` +
+      `q=${encodeURIComponent(query + " " + city)}&` +
+      `countrycodes=${countryCode.toLowerCase()}&` +
+      `accept-language=${LANG_MAP[lang] || "en"}&` +
+      `format=json&limit=6`;
+    const res = await fetch(url, { headers: { "Accept-Language": LANG_MAP[lang] || "en" } });
+    const data = await res.json();
+    return data.map((item: { display_name: string }) => item.display_name.split(",")[0]);
+  } catch {
+    return [];
+  }
+};
 
 const CURRENCY_OPTIONS = [
   { value: "USD", label: "$ USD" },
   { value: "EUR", label: "€ EUR" },
   { value: "TRY", label: "₺ TRY" },
   { value: "AED", label: "د.إ AED" },
-  { value: "IRR", label: "﷼ IRR" },
+  { value: "TOMAN", label: "🇮🇷 ت تومان" },
   { value: "RUB", label: "₽ RUB" },
 ];
 
@@ -685,7 +721,7 @@ const translations = {
 };
 
 type ListingType = "has_place" | "needs_place";
-type Currency = "USD" | "EUR" | "TRY" | "AED" | "IRR" | "RUB";
+type Currency = "USD" | "EUR" | "TRY" | "AED" | "TOMAN" | "RUB";
 type GenderPref = "male" | "female" | "any";
 type OccupationPref = "student" | "working" | "any";
 
@@ -697,6 +733,7 @@ interface ListingForm {
   elevator: boolean;
   parking: boolean;
   furnished: boolean;
+  countryCode: string;
   country: string;
   city: string;
   neighborhood: string;
@@ -723,6 +760,7 @@ const initialForm: ListingForm = {
   elevator: false,
   parking: false,
   furnished: false,
+  countryCode: "",
   country: "",
   city: "",
   neighborhood: "",
@@ -746,7 +784,7 @@ const CURRENCY_SYMBOLS: Record<Currency, string> = {
   EUR: "€",
   TRY: "₺",
   AED: "د.إ",
-  IRR: "﷼",
+  TOMAN: "ت",
   RUB: "₽",
 };
 
@@ -881,36 +919,51 @@ function PillGroup({
 }
 
 function CountrySelect({
-  value,
-  onChange,
+  countryCode,
+  lang,
+  onSelect,
   label,
   placeholder,
 }: {
-  value: string;
-  onChange: (v: string) => void;
+  countryCode: string;
+  lang: string;
+  onSelect: (code: string, name: string) => void;
   label: string;
   placeholder: string;
 }) {
-  const [inputVal, setInputVal] = useState(value);
+  const [inputVal, setInputVal] = useState(() => countryCode ? getCountryName(countryCode, lang) : "");
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { setInputVal(value); }, [value]);
+  useEffect(() => {
+    setInputVal(countryCode ? getCountryName(countryCode, lang) : "");
+  }, [countryCode, lang]);
+
+  const sortedOthers = useMemo(() =>
+    [...OTHER_COUNTRY_CODES].sort((a, b) =>
+      getCountryName(a, lang).localeCompare(getCountryName(b, lang))
+    ),
+    [lang]
+  );
+
+  const allCodes = useMemo(() => [...TOP_COUNTRY_CODES, ...sortedOthers], [sortedOthers]);
+
+  const filtered = useMemo(() => {
+    if (!inputVal.trim()) return allCodes;
+    const q = inputVal.toLowerCase();
+    return allCodes.filter((code) => getCountryName(code, lang).toLowerCase().includes(q));
+  }, [inputVal, allCodes, lang]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
         setIsOpen(false);
-        if (!COUNTRIES.includes(inputVal)) setInputVal(value);
+        setInputVal(countryCode ? getCountryName(countryCode, lang) : "");
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [inputVal, value]);
-
-  const filtered = inputVal.trim() === ""
-    ? COUNTRIES
-    : COUNTRIES.filter((c) => c.toLowerCase().includes(inputVal.toLowerCase()));
+  }, [countryCode, lang]);
 
   return (
     <div className="relative" ref={wrapperRef}>
@@ -924,18 +977,175 @@ function CountrySelect({
         className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
       />
       {isOpen && filtered.length > 0 && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-stone-200 rounded-xl shadow-lg max-h-48 overflow-y-auto">
-          {filtered.map((country) => (
+        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto">
+          {filtered.map((code) => {
+            const name = getCountryName(code, lang);
+            return (
+              <button
+                key={code}
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => { onSelect(code, name); setInputVal(name); setIsOpen(false); }}
+                className={`w-full text-left px-4 py-2.5 text-sm hover:bg-orange-50 transition-colors ${
+                  countryCode === code ? "text-orange-500 font-semibold" : "text-stone-700"
+                }`}
+              >
+                {name}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CityAutocomplete({
+  value,
+  onChange,
+  countryCode,
+  lang,
+  label,
+  placeholder,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  countryCode: string;
+  lang: string;
+  label: string;
+  placeholder: string;
+}) {
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) setIsOpen(false);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleInput = (val: string) => {
+    onChange(val);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (val.length < 2) { setSuggestions([]); setIsOpen(false); setLoading(false); return; }
+    setLoading(true);
+    debounceRef.current = setTimeout(async () => {
+      const results = await searchCities(val, countryCode, lang);
+      setSuggestions(results);
+      setIsOpen(results.length > 0);
+      setLoading(false);
+    }, 300);
+  };
+
+  return (
+    <div className="relative" ref={wrapperRef}>
+      <label className="block text-sm font-semibold text-stone-700 mb-2">{label}</label>
+      <div className="relative">
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => handleInput(e.target.value)}
+          placeholder={placeholder}
+          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 pr-9 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+        />
+        {loading && (
+          <div className="absolute right-3 top-3 w-4 h-4 border-2 border-orange-400 border-t-transparent rounded-full animate-spin" />
+        )}
+      </div>
+      {isOpen && suggestions.length > 0 && (
+        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+          {suggestions.map((city, i) => (
             <button
-              key={country}
+              key={i}
               type="button"
               onMouseDown={(e) => e.preventDefault()}
-              onClick={() => { onChange(country); setInputVal(country); setIsOpen(false); }}
-              className={`w-full text-left px-4 py-2.5 text-sm hover:bg-orange-50 transition-colors ${
-                value === country ? "text-orange-500 font-semibold" : "text-stone-700"
-              }`}
+              onClick={() => { onChange(city); setIsOpen(false); setSuggestions([]); }}
+              className="w-full text-left px-4 py-2 hover:bg-orange-50 cursor-pointer text-sm text-stone-700"
             >
-              {country}
+              {city}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function NeighborhoodAutocomplete({
+  value,
+  onChange,
+  city,
+  countryCode,
+  lang,
+  label,
+  placeholder,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  city: string;
+  countryCode: string;
+  lang: string;
+  label: string;
+  placeholder: string;
+}) {
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) setIsOpen(false);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleInput = (val: string) => {
+    onChange(val);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (val.length < 2) { setSuggestions([]); setIsOpen(false); setLoading(false); return; }
+    setLoading(true);
+    debounceRef.current = setTimeout(async () => {
+      const results = await searchNeighborhoods(val, city, countryCode, lang);
+      setSuggestions(results);
+      setIsOpen(results.length > 0);
+      setLoading(false);
+    }, 300);
+  };
+
+  return (
+    <div className="relative" ref={wrapperRef}>
+      <label className="block text-sm font-semibold text-stone-700 mb-2">{label}</label>
+      <div className="relative">
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => handleInput(e.target.value)}
+          placeholder={placeholder}
+          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 pr-9 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+        />
+        {loading && (
+          <div className="absolute right-3 top-3 w-4 h-4 border-2 border-orange-400 border-t-transparent rounded-full animate-spin" />
+        )}
+      </div>
+      {isOpen && suggestions.length > 0 && (
+        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+          {suggestions.map((hood, i) => (
+            <button
+              key={i}
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => { onChange(hood); setIsOpen(false); setSuggestions([]); }}
+              className="w-full text-left px-4 py-2 hover:bg-orange-50 cursor-pointer text-sm text-stone-700"
+            >
+              {hood}
             </button>
           ))}
         </div>
@@ -1050,6 +1260,7 @@ export default function CreateListingPage() {
       payload.elevator = form.elevator;
       payload.parking = form.parking;
       payload.furnished = form.furnished;
+      payload.country_code = form.countryCode || null;
       payload.country = form.country || null;
       payload.city = form.city || null;
       payload.neighborhood = form.neighborhood || null;
@@ -1410,31 +1621,29 @@ export default function CreateListingPage() {
             {/* 6. Location */}
             <div className="p-5 flex flex-col gap-4">
               <CountrySelect
-                value={form.country}
-                onChange={(v) => set("country", v)}
+                countryCode={form.countryCode}
+                lang={lang}
+                onSelect={(code, name) => { set("countryCode", code); set("country", name); }}
                 label={t.countryLabel}
                 placeholder={t.countryPlaceholder}
               />
-              <div>
-                <label className="block text-sm font-semibold text-stone-700 mb-2">{t.cityLabel}</label>
-                <input
-                  type="text"
-                  value={form.city}
-                  onChange={(e) => set("city", e.target.value)}
-                  placeholder={t.cityPlaceholder}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-stone-700 mb-2">{t.neighborhoodLabel}</label>
-                <input
-                  type="text"
-                  value={form.neighborhood}
-                  onChange={(e) => set("neighborhood", e.target.value)}
-                  placeholder={t.neighborhoodPlaceholder}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
-                />
-              </div>
+              <CityAutocomplete
+                value={form.city}
+                onChange={(v) => set("city", v)}
+                countryCode={form.countryCode}
+                lang={lang}
+                label={t.cityLabel}
+                placeholder={t.cityPlaceholder}
+              />
+              <NeighborhoodAutocomplete
+                value={form.neighborhood}
+                onChange={(v) => set("neighborhood", v)}
+                city={form.city}
+                countryCode={form.countryCode}
+                lang={lang}
+                label={t.neighborhoodLabel}
+                placeholder={t.neighborhoodPlaceholder}
+              />
             </div>
 
             {/* 7. Monthly cost */}
@@ -1652,7 +1861,12 @@ export default function CreateListingPage() {
             {
               label: t.priceReviewLabel,
               value: form.price
-                ? `${CURRENCY_SYMBOLS[form.currency]}${form.price} / ${lang === "tr" ? "ay" : lang === "fa" ? "ماه" : lang === "ar" ? "شهر" : lang === "de" ? "Mo." : lang === "ru" ? "мес." : "mo"}`
+                ? (() => {
+                    const per = lang === "tr" ? "ay" : lang === "fa" ? "ماه" : lang === "ar" ? "شهر" : lang === "de" ? "Mo." : lang === "ru" ? "мес." : "mo";
+                    return form.currency === "TOMAN"
+                      ? `${form.price} تومان / ${per}`
+                      : `${CURRENCY_SYMBOLS[form.currency]}${form.price} / ${per}`;
+                  })()
                 : "—",
             },
             { label: t.smokingLabel, value: form.smoking ? t.smokingYes : t.smokingNo },
