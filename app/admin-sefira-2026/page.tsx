@@ -430,27 +430,33 @@ export default function AdminPage() {
     setDataLoading(true);
 
     const fetchUsers = async () => {
-      const [authUsersRes, bannedRes, announcementsRes] = await Promise.all([
+      const [authUsersRes, profilesRes, bannedRes, announcementsRes] = await Promise.all([
         supabaseAdmin.auth.admin.listUsers({ perPage: 100000 }),
+        supabaseAdmin.from("profiles").select("*"),
         supabase.from("banned_emails").select("email"),
         supabaseAdmin.from("admin_messages").select("*", { count: "exact", head: true }).eq("is_global", true),
       ]);
       const authUsers = authUsersRes.data?.users ?? [];
+      const profiles = profilesRes.data ?? [];
 
       if (active) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const rawUsers: UserRecord[] = authUsers.map((u: any) => ({
-          id: u.id,
-          user_id: u.id,
-          email: u.email ?? "N/A",
-          display_name: u.user_metadata?.display_name ?? null,
-          avatar_url: u.user_metadata?.avatar_url ?? null,
-          gender: u.user_metadata?.gender ?? null,
-          birth_date: u.user_metadata?.birth_date ?? null,
-          country: u.user_metadata?.country ?? null,
-          city: u.user_metadata?.city ?? null,
-          created_at: u.created_at,
-        }));
+        const rawUsers: UserRecord[] = authUsers.map((u: any) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const profile = profiles.find((p: any) => p.user_id === u.id);
+          return {
+            id: u.id,
+            user_id: u.id,
+            email: u.email ?? "N/A",
+            display_name: profile?.display_name ?? null,
+            avatar_url: profile?.avatar_url ?? null,
+            gender: profile?.gender ?? null,
+            birth_date: profile?.birth_date ?? null,
+            country: profile?.country ?? null,
+            city: profile?.city ?? null,
+            created_at: u.created_at,
+          };
+        });
 
         setUsersAll(rawUsers);
         setAnnouncementCount(announcementsRes.count ?? 0);
