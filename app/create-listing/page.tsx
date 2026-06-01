@@ -846,15 +846,27 @@ export default function CreateListingPage() {
       <div dir={dir} className="min-h-screen bg-stone-50">
         <Navbar />
         <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
-          {/* Back to home */}
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block mb-5">
-            <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          {/* Back buttons */}
+          <div className="flex items-center gap-3 mb-6">
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setStep(step - 1)}
+              className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-5 py-2.5 rounded-2xl transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
-              <span>Ana Sayfa</span>
-            </Link>
-          </motion.div>
+              {t.back}
+            </motion.button>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
+              <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span>Ana Sayfa</span>
+              </Link>
+            </motion.div>
+          </div>
 
           <ProgressBar />
           <h1 className="text-2xl font-black text-stone-900 mb-2">{t.pageTitle}</h1>
@@ -1063,15 +1075,27 @@ export default function CreateListingPage() {
       <div dir={dir} className="min-h-screen bg-stone-50">
         <Navbar />
         <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
-          {/* Back to home */}
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block mb-5">
-            <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          {/* Back buttons */}
+          <div className="flex items-center gap-3 mb-6">
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setStep(step - 1)}
+              className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-5 py-2.5 rounded-2xl transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
-              <span>Ana Sayfa</span>
-            </Link>
-          </motion.div>
+              {t.back}
+            </motion.button>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
+              <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span>Ana Sayfa</span>
+              </Link>
+            </motion.div>
+          </div>
 
           <ProgressBar />
           <h1 className="text-2xl font-black text-stone-900 mb-2">{t.pageTitle}</h1>
