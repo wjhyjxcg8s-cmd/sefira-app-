@@ -817,38 +817,6 @@ const stories = [
   { id: 9, name: "Lena M.",  isAdd: false, gradient: "from-purple-500 to-violet-600",  initials: "LM", city: "Paris",  online: false },
 ];
 
-const matchProfiles = [
-  {
-    id: 1, name: "Emma Wilson", age: 26, occupation: "UX Designer", nationality: "British",
-    match: 97, city: "Berlin", gradient: "from-violet-600 via-purple-700 to-indigo-800",
-    initials: "EW", lifestyle: ["Night owl", "Minimalist", "Yoga"],
-    bio: "Creative designer looking for a quiet, tidy flatmate who appreciates good aesthetics.",
-    bioTr: "Sessiz, düzenli ve estetiği önemseyen bir ev arkadaşı arayan yaratıcı tasarımcı.",
-    bioFa: "طراح خلاق به دنبال هم‌خانه‌ای آرام و مرتب که زیبایی‌شناسی خوب را ارزشمند بداند.",
-    bioAr: "مصمّمة مبدعة تبحث عن شريك سكن هادئ ومنظَّم يقدّر الذوق الجمالي الرفيع.",
-    verified: true, pets: false, smoking: false, budget: "700-1000",
-  },
-  {
-    id: 2, name: "Kai Tanaka", age: 29, occupation: "Software Engineer", nationality: "Japanese",
-    match: 94, city: "Berlin", gradient: "from-cyan-600 via-blue-700 to-indigo-800",
-    initials: "KT", lifestyle: ["Early bird", "Gamer", "Coffee lover"],
-    bio: "Remote dev who values clean spaces and good coffee. Lets build a calm, focused home.",
-    bioTr: "Temiz alanları ve güzel kahveyi önemseyen uzaktan geliştirici. Sakin, odaklı bir ev kuralım.",
-    bioFa: "توسعه‌دهنده از راه دور که فضاهای تمیز و قهوه خوب را می‌پسندد. بیایید خانه‌ای آرام و متمرکز بسازیم.",
-    bioAr: "مطوّر عن بُعد يقدّر المساحات النظيفة والقهوة الجيدة. لنبني معاً بيتاً هادئاً ومركَّزاً.",
-    verified: true, pets: true, smoking: false, budget: "800-1100",
-  },
-  {
-    id: 3, name: "Sofia Ramirez", age: 24, occupation: "Medical Student", nationality: "Spanish",
-    match: 91, city: "Berlin", gradient: "from-rose-500 via-pink-600 to-fuchsia-700",
-    initials: "SR", lifestyle: ["Student", "Active", "Social"],
-    bio: "Med student, tidy and friendly. Latin music on weekends, focused on weeknights.",
-    bioTr: "Tıp öğrencisi, düzenli ve arkadaş canlısı. Hafta sonları Latin müzik, hafta içi çalışma modu.",
-    bioFa: "دانشجوی پزشکی، مرتب و دوستانه. آخر هفته‌ها موسیقی لاتین، شب‌های هفته مطالعه.",
-    bioAr: "طالبة طب، منظَّمة وودودة. موسيقى لاتينية في عطل نهاية الأسبوع، تركيز تام في أيام الدراسة.",
-    verified: false, pets: false, smoking: false, budget: "500-750",
-  },
-];
 
 const HELP_CENTER_TEXTS = new Set([
   "Yardım Merkezi", "Help Center", "Hilfe-Center",
@@ -876,14 +844,6 @@ const SECURITY_TEXTS = new Set([
   "امنیت", "الأمان", "Безопасность",
 ]);
 
-const MATCH_PHOTOS = [
-  "https://randomuser.me/api/portraits/women/44.jpg",
-  "https://randomuser.me/api/portraits/men/32.jpg",
-  "https://randomuser.me/api/portraits/women/68.jpg",
-  "https://randomuser.me/api/portraits/men/75.jpg",
-  "https://randomuser.me/api/portraits/women/90.jpg",
-  "https://randomuser.me/api/portraits/men/15.jpg",
-];
 
 const listings = [
   {
@@ -2562,40 +2522,6 @@ export default function Home() {
               })}
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* ── ROOMMATES ─────────────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-5 py-20">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-2 tracking-tight">{t.roommatesH2}</h2>
-            <p className="text-stone-500">{t.roommatesP}</p>
-          </div>
-          <button className="text-sm text-orange-500 hover:text-orange-600 transition-all duration-200 hidden sm:block font-medium hover:underline underline-offset-2">
-            {t.viewAll}
-          </button>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          {matchProfiles.map((p, idx) => (
-            <div key={p.id} className="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100">
-              <div className="p-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={MATCH_PHOTOS[idx] ?? MATCH_PHOTOS[0]}
-                  alt={p.name}
-                  className="w-14 h-14 rounded-full object-cover mx-auto mt-3"
-                />
-                <p className="text-sm font-bold text-center mt-2">{p.name}, {p.age}</p>
-                <p className="text-xs text-gray-400 text-center">{p.occupation}</p>
-                <div className="flex justify-center mt-1">
-                  <span className="bg-orange-100 text-orange-600 text-xs font-bold px-2 py-0.5 rounded-full">{p.match}%</span>
-                </div>
-                <p className="text-xs text-gray-500 text-center mt-1">{convertBudgetRange(p.budget, currency)}{t.perMonth}</p>
-                <p className="text-xs text-gray-400 text-center">{p.city}</p>
-              </div>
-            </div>
-          ))}
         </div>
       </section>
 
