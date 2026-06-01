@@ -20,7 +20,7 @@ const TERMS_CONTENT: Record<string, {
       {
         heading: "1. Taraflar",
         content:
-          "Bu Kullanım Koşulları ("Koşullar"), Sefira Technologies ("Sefira", "biz" veya "platform") ile Sefira web sitesini ve mobil uygulamasını kullanan gerçek kişiler ("Kullanıcı" veya "siz") arasındaki hukuki ilişkiyi düzenler. Platforma erişerek veya hesap oluşturarak bu Koşulları okuduğunuzu, anladığınızı ve kabul ettiğinizi beyan etmiş olursunuz.",
+          "Bu Kullanım Koşulları (\"Koşullar\"), Sefira Technologies (\"Sefira\", \"biz\" veya \"platform\") ile Sefira web sitesini ve mobil uygulamasını kullanan gerçek kişiler (\"Kullanıcı\" veya \"siz\") arasındaki hukuki ilişkiyi düzenler. Platforma erişerek veya hesap oluşturarak bu Koşulları okuduğunuzu, anladığınızı ve kabul ettiğinizi beyan etmiş olursunuz.",
       },
       {
         heading: "2. Platformun Niteliği",
@@ -85,7 +85,7 @@ const TERMS_CONTENT: Record<string, {
       {
         heading: "1. Parties",
         content:
-          "These Terms of Use ("Terms") govern the legal relationship between Sefira Technologies ("Sefira", "we" or "platform") and individuals who use the Sefira website and mobile application ("User" or "you"). By accessing the platform or creating an account, you declare that you have read, understood and accepted these Terms.",
+          "These Terms of Use (\"Terms\") govern the legal relationship between Sefira Technologies (\"Sefira\", \"we\" or \"platform\") and individuals who use the Sefira website and mobile application (\"User\" or \"you\"). By accessing the platform or creating an account, you declare that you have read, understood and accepted these Terms.",
       },
       {
         heading: "2. Nature of the Platform",

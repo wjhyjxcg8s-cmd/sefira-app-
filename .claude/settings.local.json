@@ -13,7 +13,9 @@
       "Bash(Get-ChildItem -Path \"e:\\\\sefıra-web\\\\sefira-app\\\\app\\\\components\" -Name)",
       "Bash(Get-ChildItem -Path \"e:\\\\sefıra-web\\\\sefira-app\\\\app\\\\admin-sefira-2026\\\\\" -Recurse | Select-Object FullName, PSIsContainer | Sort-Object FullName)",
       "PowerShell(Get-ChildItem -Path 'e:\\\\sefıra-web\\\\sefira-app\\\\app\\\\admin-sefira-2026' -Recurse | Where-Object {-not $_.PSIsContainer} | Select-Object FullName, @{Name='FileSize';Expression={$_.Length}} | Sort-Object FullName)",
-      "Bash(xargs grep -l \"Kullanım Koşulları\")"
+      "Bash(xargs grep -l \"Kullanım Koşulları\")",
+      "Bash(python3 -c ' *)",
+      "Bash(node -e ' *)"
     ],
     "additionalDirectories": [
       "e:\\sefıra-web\\sefira-app\\app\\api\\admin\\channels"
