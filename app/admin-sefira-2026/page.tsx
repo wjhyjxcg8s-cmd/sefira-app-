@@ -366,6 +366,17 @@ export default function AdminPage() {
   const [deleteGlobalMsgsConfirm, setDeleteGlobalMsgsConfirm] = useState(false);
   const [deleteGlobalMsgsResult, setDeleteGlobalMsgsResult] = useState<string | null>(null);
 
+  const [dashboardRefresh, setDashboardRefresh] = useState(0);
+  const [usersRefresh, setUsersRefresh] = useState(0);
+  const [listingsRefresh, setListingsRefresh] = useState(0);
+  const [feedbackRefresh, setFeedbackRefresh] = useState(0);
+  const [reviewsRefresh, setReviewsRefresh] = useState(0);
+  const [statsLastUpdated, setStatsLastUpdated] = useState<string | null>(null);
+  const [usersLastUpdated, setUsersLastUpdated] = useState<string | null>(null);
+  const [listingsLastUpdated, setListingsLastUpdated] = useState<string | null>(null);
+  const [feedbackLastUpdated, setFeedbackLastUpdated] = useState<string | null>(null);
+  const [reviewsLastUpdated, setReviewsLastUpdated] = useState<string | null>(null);
+
   useEffect(() => {
     if (!loading && (!user || user.email !== ADMIN_EMAIL)) {
       router.replace("/");
@@ -375,52 +386,51 @@ export default function AdminPage() {
   // Dashboard stats
   useEffect(() => {
     if (activeSection !== "dashboard" || !user || user.email !== ADMIN_EMAIL) return;
-    let cancelled = false;
+    let active = true;
     setDataLoading(true);
 
     const fetchStats = async () => {
       const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
-      const { count: usersCount, error: e1 } = await supabase
+      const { count: usersCount } = await supabase
         .from("profiles")
         .select("*", { count: "exact", head: true });
-      console.log("[Admin] profiles count:", usersCount, e1);
 
-      const { count: listingsCount, error: e2 } = await supabase
+      const { count: listingsCount } = await supabase
         .from("listings")
         .select("*", { count: "exact", head: true });
-      console.log("[Admin] listings count:", listingsCount, e2);
 
-      const { count: feedbackCount, error: e3 } = await supabaseAdmin
+      const { count: feedbackCount } = await supabaseAdmin
         .from("deletion_feedback")
         .select("*", { count: "exact", head: true });
-      console.log("[Admin] feedback count:", feedbackCount, e3);
 
-      const { count: newUsersCount, error: e4 } = await supabase
+      const { count: newUsersCount } = await supabase
         .from("profiles")
         .select("*", { count: "exact", head: true })
         .gte("created_at", oneWeekAgo);
-      console.log("[Admin] new users this week:", newUsersCount, e4);
 
-      if (!cancelled) {
+      if (active) {
         setStats({
           totalUsers: usersCount ?? 0,
           totalListings: listingsCount ?? 0,
           totalDeletionFeedback: feedbackCount ?? 0,
           newUsersThisWeek: newUsersCount ?? 0,
         });
+        setStatsLastUpdated(new Date().toLocaleTimeString('tr-TR'));
         setDataLoading(false);
       }
     };
 
     fetchStats();
-    return () => { cancelled = true; };
-  }, [activeSection, user]);
+    const interval = setInterval(fetchStats, 30000);
+    return () => { active = false; clearInterval(interval); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSection, user, dashboardRefresh]);
 
   // Users
   useEffect(() => {
     if (activeSection !== "users" || !user || user.email !== ADMIN_EMAIL) return;
-    let cancelled = false;
+    let active = true;
     setDataLoading(true);
 
     const fetchUsers = async () => {
@@ -430,10 +440,9 @@ export default function AdminPage() {
         supabaseAdmin.from("admin_messages").select("*", { count: "exact", head: true }).eq("is_global", true),
       ]);
       const profiles = profilesRes.data;
-      const error = profilesRes.error;
-      console.log("[Admin] profiles:", profiles, error);
+      console.log("[Admin] profiles:", profiles, profilesRes.error);
 
-      if (!cancelled) {
+      if (active) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const rawUsers: UserRecord[] = (profiles ?? []).map((p: any) => ({
           id: p.id,
@@ -464,18 +473,21 @@ export default function AdminPage() {
         setBannedEmails(new Set((bannedRes.data ?? []).map((b: { email: string }) => b.email)));
         setUsersTotal(allUsers.length);
         setUsers(allUsers.slice((usersPage - 1) * PAGE_SIZE, usersPage * PAGE_SIZE));
+        setUsersLastUpdated(new Date().toLocaleTimeString('tr-TR'));
         setDataLoading(false);
       }
     };
 
     fetchUsers();
-    return () => { cancelled = true; };
-  }, [activeSection, usersPage, usersSearch, user]);
+    const interval = setInterval(fetchUsers, 30000);
+    return () => { active = false; clearInterval(interval); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSection, usersPage, usersSearch, user, usersRefresh]);
 
   // Listings
   useEffect(() => {
     if (activeSection !== "listings" || !user || user.email !== ADMIN_EMAIL) return;
-    let cancelled = false;
+    let active = true;
     setDataLoading(true);
 
     const fetchListings = async () => {
@@ -485,7 +497,7 @@ export default function AdminPage() {
         .order("created_at", { ascending: false });
       console.log("[Admin] listings:", listingsData, error);
 
-      if (!cancelled) {
+      if (active) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const allListings: ListingRecord[] = (listingsData ?? []).map((l: any) => ({
           ...l,
@@ -494,18 +506,21 @@ export default function AdminPage() {
 
         setListingsTotal(allListings.length);
         setListings(allListings.slice((listingsPage - 1) * PAGE_SIZE, listingsPage * PAGE_SIZE));
+        setListingsLastUpdated(new Date().toLocaleTimeString('tr-TR'));
         setDataLoading(false);
       }
     };
 
     fetchListings();
-    return () => { cancelled = true; };
-  }, [activeSection, listingsPage, user]);
+    const interval = setInterval(fetchListings, 30000);
+    return () => { active = false; clearInterval(interval); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSection, listingsPage, user, listingsRefresh]);
 
   // Feedback
   useEffect(() => {
-    if (!user || user.email !== ADMIN_EMAIL) return;
-    let cancelled = false;
+    if (activeSection !== "feedback" || !user || user.email !== ADMIN_EMAIL) return;
+    let active = true;
     setDataLoading(true);
 
     const fetchFeedback = async () => {
@@ -515,7 +530,7 @@ export default function AdminPage() {
         .order('deleted_at', { ascending: false });
       console.log('FEEDBACK RESULT:', feedbackData?.length, feedbackError?.message);
 
-      if (!cancelled) {
+      if (active) {
         const allFeedback: FeedbackRecord[] = feedbackData || [];
         const rated = allFeedback.filter((f) => f.rating !== null);
         const avg =
@@ -527,18 +542,21 @@ export default function AdminPage() {
         setFeedbackAll(allFeedback);
         setFeedbackTotal(allFeedback.length);
         setFeedback(allFeedback.slice((feedbackPage - 1) * PAGE_SIZE, feedbackPage * PAGE_SIZE));
+        setFeedbackLastUpdated(new Date().toLocaleTimeString('tr-TR'));
         setDataLoading(false);
       }
     };
 
     fetchFeedback();
-    return () => { cancelled = true; };
-  }, [feedbackPage, user]);
+    const interval = setInterval(fetchFeedback, 30000);
+    return () => { active = false; clearInterval(interval); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSection, feedbackPage, user, feedbackRefresh]);
 
   // Reviews
   useEffect(() => {
     if (activeSection !== "reviews" || !user || user.email !== ADMIN_EMAIL) return;
-    let cancelled = false;
+    let active = true;
     setDataLoading(true);
 
     const fetchReviews = async () => {
@@ -548,17 +566,20 @@ export default function AdminPage() {
         .order("deleted_at", { ascending: false });
       console.log('deletion_feedback:', reviewsData?.length, error);
 
-      if (!cancelled) {
+      if (active) {
         const allReviews: FeedbackRecord[] = reviewsData ?? [];
         setReviewsTotal(allReviews.length);
         setReviews(allReviews.slice((reviewsPage - 1) * PAGE_SIZE, reviewsPage * PAGE_SIZE));
+        setReviewsLastUpdated(new Date().toLocaleTimeString('tr-TR'));
         setDataLoading(false);
       }
     };
 
     fetchReviews();
-    return () => { cancelled = true; };
-  }, [activeSection, reviewsPage, user]);
+    const interval = setInterval(fetchReviews, 30000);
+    return () => { active = false; clearInterval(interval); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSection, reviewsPage, user, reviewsRefresh]);
 
   const handleDelete = async () => {
     if (!deleteConfirm) return;
@@ -689,57 +710,65 @@ export default function AdminPage() {
 
   const renderDashboard = () => (
     <div>
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Dashboard</h2>
+      <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
+        <h2 className="text-2xl font-bold text-gray-800">Dashboard</h2>
+        <button onClick={() => setDashboardRefresh(n => n + 1)} className="bg-orange-500 text-white px-4 py-2 rounded-xl text-sm font-bold">
+          🔄 Yenile
+        </button>
+      </div>
       {stats ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          {[
-            {
-              label: "Total Users",
-              value: stats.totalUsers,
-              icon: "👥",
-              bg: "#eff6ff",
-              color: "#2563eb",
-            },
-            {
-              label: "Total Listings",
-              value: stats.totalListings,
-              icon: "🏠",
-              bg: "#f0fdf4",
-              color: "#16a34a",
-            },
-            {
-              label: "Deletion Feedback",
-              value: stats.totalDeletionFeedback,
-              icon: "💬",
-              bg: "#faf5ff",
-              color: "#9333ea",
-            },
-            {
-              label: "New This Week",
-              value: stats.newUsersThisWeek,
-              icon: "🆕",
-              bg: "#fff7ed",
-              color: "#f97316",
-            },
-          ].map((card) => (
-            <div
-              key={card.label}
-              className="bg-white rounded-2xl p-6 border border-gray-100"
-              style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
-            >
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            {[
+              {
+                label: "Total Users",
+                value: stats.totalUsers,
+                icon: "👥",
+                bg: "#eff6ff",
+                color: "#2563eb",
+              },
+              {
+                label: "Total Listings",
+                value: stats.totalListings,
+                icon: "🏠",
+                bg: "#f0fdf4",
+                color: "#16a34a",
+              },
+              {
+                label: "Deletion Feedback",
+                value: stats.totalDeletionFeedback,
+                icon: "💬",
+                bg: "#faf5ff",
+                color: "#9333ea",
+              },
+              {
+                label: "New This Week",
+                value: stats.newUsersThisWeek,
+                icon: "🆕",
+                bg: "#fff7ed",
+                color: "#f97316",
+              },
+            ].map((card) => (
               <div
-                className="inline-flex items-center justify-center w-12 h-12 rounded-xl text-2xl mb-4"
-                style={{ backgroundColor: card.bg }}
+                key={card.label}
+                className="bg-white rounded-2xl p-6 border border-gray-100"
+                style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
               >
-                {card.icon}
+                <div
+                  className="inline-flex items-center justify-center w-12 h-12 rounded-xl text-2xl mb-4"
+                  style={{ backgroundColor: card.bg }}
+                >
+                  {card.icon}
+                </div>
+                <p className="text-3xl font-bold text-gray-800">
+                  {card.value.toLocaleString()}
+                </p>
+                <p className="text-sm text-gray-500 mt-1">{card.label}</p>
               </div>
-              <p className="text-3xl font-bold text-gray-800">
-                {card.value.toLocaleString()}
-              </p>
-              <p className="text-sm text-gray-500 mt-1">{card.label}</p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+          {statsLastUpdated && <p className="text-xs text-gray-400 mt-4">Son güncelleme: {statsLastUpdated}</p>}
+        </>
       ) : (
         <div className="text-gray-400 text-sm">Loading stats…</div>
       )}
@@ -807,7 +836,13 @@ export default function AdminPage() {
 
     return (
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-gray-800">Users</h2>
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <h2 className="text-2xl font-bold text-gray-800">Users</h2>
+          <button onClick={() => setUsersRefresh(n => n + 1)} className="bg-orange-500 text-white px-4 py-2 rounded-xl text-sm font-bold">
+            🔄 Yenile
+          </button>
+        </div>
+        {usersLastUpdated && <p className="text-xs text-gray-400 -mt-2">Son güncelleme: {usersLastUpdated}</p>}
 
         {/* ── Row 1: Summary cards ──────────────────────────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -1107,7 +1142,13 @@ export default function AdminPage() {
 
   const renderListings = () => (
     <div>
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Listings</h2>
+      <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
+        <h2 className="text-2xl font-bold text-gray-800">Listings</h2>
+        <button onClick={() => setListingsRefresh(n => n + 1)} className="bg-orange-500 text-white px-4 py-2 rounded-xl text-sm font-bold">
+          🔄 Yenile
+        </button>
+      </div>
+      {listingsLastUpdated && <p className="text-xs text-gray-400 mb-4">Son güncelleme: {listingsLastUpdated}</p>}
       <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden" style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -1237,7 +1278,13 @@ export default function AdminPage() {
 
     return (
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-gray-800">Deletion Feedback</h2>
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <h2 className="text-2xl font-bold text-gray-800">Deletion Feedback</h2>
+          <button onClick={() => setFeedbackRefresh(n => n + 1)} className="bg-orange-500 text-white px-4 py-2 rounded-xl text-sm font-bold">
+            🔄 Yenile
+          </button>
+        </div>
+        {feedbackLastUpdated && <p className="text-xs text-gray-400 -mt-2">Son güncelleme: {feedbackLastUpdated}</p>}
 
         {/* ── Row 1: Summary cards ──────────────────────────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -1444,7 +1491,13 @@ export default function AdminPage() {
 
   const renderReviews = () => (
     <div>
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Reviews</h2>
+      <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
+        <h2 className="text-2xl font-bold text-gray-800">Reviews</h2>
+        <button onClick={() => setReviewsRefresh(n => n + 1)} className="bg-orange-500 text-white px-4 py-2 rounded-xl text-sm font-bold">
+          🔄 Yenile
+        </button>
+      </div>
+      {reviewsLastUpdated && <p className="text-xs text-gray-400 mb-4">Son güncelleme: {reviewsLastUpdated}</p>}
       <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden" style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">

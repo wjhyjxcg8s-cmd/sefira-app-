@@ -29,6 +29,7 @@ export default function BannedPage() {
   const [pageLoading, setPageLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<BannedUser | null>(null);
+  const [bannedLastUpdated, setBannedLastUpdated] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && (!user || user.email !== ADMIN_EMAIL)) {
@@ -39,6 +40,8 @@ export default function BannedPage() {
   useEffect(() => {
     if (!user || user.email !== ADMIN_EMAIL) return;
     fetchBanned();
+    const interval = setInterval(fetchBanned, 30000);
+    return () => clearInterval(interval);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -50,6 +53,7 @@ export default function BannedPage() {
       .order("banned_at", { ascending: false });
     console.log("Banned list:", data, error);
     setBannedList(data ?? []);
+    setBannedLastUpdated(new Date().toLocaleTimeString('tr-TR'));
     setPageLoading(false);
   };
 
@@ -135,6 +139,9 @@ export default function BannedPage() {
             ←
           </button>
           <h1 className="text-xl font-bold text-gray-800">🚫 Engelliler</h1>
+          <button onClick={fetchBanned} className="bg-orange-500 text-white px-4 py-2 rounded-xl text-sm font-bold">
+            🔄 Yenile
+          </button>
           <span
             className="ml-auto px-3 py-1 rounded-full text-sm font-semibold"
             style={{ backgroundColor: "#fef2f2", color: "#ef4444" }}
@@ -146,9 +153,10 @@ export default function BannedPage() {
 
       <div className="max-w-4xl mx-auto p-4 sm:p-6">
         {/* Count */}
-        <p className="text-sm text-gray-500 mb-4 font-medium">
+        <p className="text-sm text-gray-500 mb-2 font-medium">
           {bannedList.length} kullanıcı engellendi
         </p>
+        {bannedLastUpdated && <p className="text-xs text-gray-400 mb-4">Son güncelleme: {bannedLastUpdated}</p>}
 
         {pageLoading ? (
           <div className="flex items-center justify-center h-64">
