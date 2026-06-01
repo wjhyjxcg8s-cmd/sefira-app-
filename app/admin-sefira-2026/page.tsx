@@ -392,9 +392,8 @@ export default function AdminPage() {
     const fetchStats = async () => {
       const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
-      const { count: usersCount } = await supabase
-        .from("profiles")
-        .select("*", { count: "exact", head: true });
+      const { data: { users: allAuthUsers } } = await supabaseAdmin.auth.admin.listUsers({ perPage: 100000 });
+      const usersCount = allAuthUsers.length;
 
       const { count: listingsCount } = await supabase
         .from("listings")
@@ -404,17 +403,14 @@ export default function AdminPage() {
         .from("deletion_feedback")
         .select("*", { count: "exact", head: true });
 
-      const { count: newUsersCount } = await supabase
-        .from("profiles")
-        .select("*", { count: "exact", head: true })
-        .gte("created_at", oneWeekAgo);
+      const newUsersCount = allAuthUsers.filter((u: any) => u.created_at >= oneWeekAgo).length;
 
       if (active) {
         setStats({
           totalUsers: usersCount ?? 0,
           totalListings: listingsCount ?? 0,
           totalDeletionFeedback: feedbackCount ?? 0,
-          newUsersThisWeek: newUsersCount ?? 0,
+          newUsersThisWeek: newUsersCount,
         });
         setStatsLastUpdated(new Date().toLocaleTimeString('tr-TR'));
         setDataLoading(false);
@@ -434,27 +430,26 @@ export default function AdminPage() {
     setDataLoading(true);
 
     const fetchUsers = async () => {
-      const [profilesRes, bannedRes, announcementsRes] = await Promise.all([
-        supabase.from("profiles").select("*").order("created_at", { ascending: false }),
+      const [authUsersRes, bannedRes, announcementsRes] = await Promise.all([
+        supabaseAdmin.auth.admin.listUsers({ perPage: 100000 }),
         supabase.from("banned_emails").select("email"),
         supabaseAdmin.from("admin_messages").select("*", { count: "exact", head: true }).eq("is_global", true),
       ]);
-      const profiles = profilesRes.data;
-      console.log("[Admin] profiles:", profiles, profilesRes.error);
+      const authUsers = authUsersRes.data?.users ?? [];
 
       if (active) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const rawUsers: UserRecord[] = (profiles ?? []).map((p: any) => ({
-          id: p.id,
-          user_id: p.user_id,
-          email: p.email ?? "N/A",
-          display_name: p.display_name ?? null,
-          avatar_url: p.avatar_url ?? null,
-          gender: p.gender ?? null,
-          birth_date: p.birth_date ?? null,
-          country: p.country ?? null,
-          city: p.city ?? null,
-          created_at: p.created_at,
+        const rawUsers: UserRecord[] = authUsers.map((u: any) => ({
+          id: u.id,
+          user_id: u.id,
+          email: u.email ?? "N/A",
+          display_name: u.user_metadata?.display_name ?? null,
+          avatar_url: u.user_metadata?.avatar_url ?? null,
+          gender: u.user_metadata?.gender ?? null,
+          birth_date: u.user_metadata?.birth_date ?? null,
+          country: u.user_metadata?.country ?? null,
+          city: u.user_metadata?.city ?? null,
+          created_at: u.created_at,
         }));
 
         setUsersAll(rawUsers);
