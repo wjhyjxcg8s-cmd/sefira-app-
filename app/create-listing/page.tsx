@@ -26,13 +26,23 @@ const translations = {
     edit: "Düzenle",
     // Step 2
     step2Title: "Evinizin detayları",
-    smoking: "Sigara İzni",
+    smoking: "Evde Sigara İçilebilir mi?",
     smokingYes: "İzin Var",
     smokingNo: "İzin Yok",
     parking: "Otopark",
     parkingYes: "Mevcut",
     parkingNo: "Yok",
-    currentResidents: "Mevcut Ev Arkadaşı Sayısı",
+    currentResidents: "Şu An Kaç Kişisiniz?",
+    genderPref: "Tercih Ettiğiniz Ev Arkadaşı Cinsiyeti",
+    genderMale: "Erkek",
+    genderFemale: "Kadın",
+    genderAny: "Fark Etmez",
+    occupationPref: "Ev Arkadaşının Mesleği",
+    occStudent: "Öğrenci",
+    occWorking: "Çalışan",
+    occAny: "Fark Etmez",
+    descLabel: "Kendinizi ve Aradığınız Ev Arkadaşını Tanıtın",
+    descPlaceholder: "Örn: Düzenli ve saygılı biriyim. Sessiz, temiz ve çalışkan bir ev arkadaşı arıyorum...",
     neededRoommates: "Aranan Ev Arkadaşı Sayısı",
     rooms: "Oda Sayısı",
     rent: "Aylık Paylaşım Ücreti",
@@ -89,13 +99,23 @@ const translations = {
     edit: "Edit",
     // Step 2
     step2Title: "Details about your place",
-    smoking: "Smoking",
+    smoking: "Is Smoking Allowed at Home?",
     smokingYes: "Allowed",
     smokingNo: "Not Allowed",
     parking: "Parking",
     parkingYes: "Available",
     parkingNo: "Not Available",
-    currentResidents: "Current Number of Residents",
+    currentResidents: "How Many People Currently Live There?",
+    genderPref: "Preferred Housemate Gender",
+    genderMale: "Male",
+    genderFemale: "Female",
+    genderAny: "No Preference",
+    occupationPref: "Housemate Occupation",
+    occStudent: "Student",
+    occWorking: "Working",
+    occAny: "No Preference",
+    descLabel: "Introduce Yourself and Describe Your Ideal Housemate",
+    descPlaceholder: "E.g: I'm tidy and respectful. Looking for a quiet, clean and hardworking housemate...",
     neededRoommates: "Number of Roommates Needed",
     rooms: "Number of Rooms",
     rent: "Monthly Sharing Cost",
@@ -152,13 +172,23 @@ const translations = {
     edit: "ویرایش",
     // Step 2
     step2Title: "جزئیات خانه شما",
-    smoking: "سیگار مجاز است؟",
+    smoking: "در خانه سیگار کشیدن مجاز است؟",
     smokingYes: "بله",
     smokingNo: "خیر",
     parking: "پارکینگ دارد؟",
     parkingYes: "بله",
     parkingNo: "خیر",
-    currentResidents: "تعداد ساکنان فعلی",
+    currentResidents: "الان چند نفر هستید؟",
+    genderPref: "جنسیت هم‌خانه مورد نظر",
+    genderMale: "مرد",
+    genderFemale: "زن",
+    genderAny: "فرقی نمیکنه",
+    occupationPref: "شغل هم‌خانه",
+    occStudent: "دانشجو",
+    occWorking: "شاغل",
+    occAny: "فرقی نمیکنه",
+    descLabel: "خودتون رو معرفی کنید و بگید دنبال چه هم‌خانه‌ای می‌گردید",
+    descPlaceholder: "مثلاً: من آدم منظم و محترمی هستم. دنبال هم‌خانه‌ای آرام، تمیز و پرتلاش می‌گردم...",
     neededRoommates: "تعداد هم‌خانه مورد نیاز",
     rooms: "تعداد اتاق‌ها",
     rent: "هزینه مشترک",
@@ -213,13 +243,23 @@ const translations = {
     submitting: "Wird veröffentlicht...",
     edit: "Bearbeiten",
     step2Title: "Details zu Ihrer Wohnung",
-    smoking: "Rauchen erlaubt?",
+    smoking: "Ist Rauchen zu Hause erlaubt?",
     smokingYes: "Erlaubt",
     smokingNo: "Nicht erlaubt",
     parking: "Parkplatz vorhanden?",
     parkingYes: "Vorhanden",
     parkingNo: "Nicht vorhanden",
-    currentResidents: "Aktuelle Anzahl der Bewohner",
+    currentResidents: "Wie viele Personen wohnen aktuell dort?",
+    genderPref: "Bevorzugtes Geschlecht des Mitbewohners",
+    genderMale: "Mann",
+    genderFemale: "Frau",
+    genderAny: "Egal",
+    occupationPref: "Beruf des Mitbewohners",
+    occStudent: "Student",
+    occWorking: "Berufstätig",
+    occAny: "Egal",
+    descLabel: "Stellen Sie sich vor und beschreiben Sie Ihren idealen Mitbewohner",
+    descPlaceholder: "Z.B: Ich bin ordentlich und respektvoll. Suche einen ruhigen, sauberen und fleißigen Mitbewohner...",
     neededRoommates: "Benötigte Anzahl Mitbewohner",
     rooms: "Anzahl der Zimmer",
     rent: "Monatliche WG-Kosten",
@@ -274,13 +314,23 @@ const translations = {
     edit: "تعديل",
     // Step 2
     step2Title: "تفاصيل المكان",
-    smoking: "التدخين مسموح؟",
+    smoking: "هل التدخين مسموح به في المنزل؟",
     smokingYes: "مسموح",
     smokingNo: "غير مسموح",
     parking: "مواقف سيارات؟",
     parkingYes: "متوفر",
     parkingNo: "غير متوفر",
-    currentResidents: "عدد السكان الحاليين",
+    currentResidents: "كم عدد الساكنين حالياً؟",
+    genderPref: "الجنس المفضل لشريك السكن",
+    genderMale: "ذكر",
+    genderFemale: "أنثى",
+    genderAny: "لا يهم",
+    occupationPref: "مهنة شريك السكن",
+    occStudent: "طالب",
+    occWorking: "موظف",
+    occAny: "لا يهم",
+    descLabel: "عرّف بنفسك واشرح شريك السكن المثالي لك",
+    descPlaceholder: "مثلاً: أنا شخص منظم ومحترم. أبحث عن شريك سكن هادئ ونظيف ومجتهد...",
     neededRoommates: "عدد شركاء السكن المطلوبين",
     rooms: "عدد الغرف",
     rent: "تكلفة المشاركة الشهرية",
@@ -337,13 +387,23 @@ const translations = {
     edit: "Редактировать",
     // Step 2
     step2Title: "Детали вашего жилья",
-    smoking: "Курение разрешено?",
+    smoking: "Разрешено ли курение дома?",
     smokingYes: "Разрешено",
     smokingNo: "Не разрешено",
     parking: "Есть парковка?",
     parkingYes: "Есть",
     parkingNo: "Нет",
-    currentResidents: "Текущее количество жильцов",
+    currentResidents: "Сколько человек сейчас проживает?",
+    genderPref: "Предпочтительный пол соседа",
+    genderMale: "Мужчина",
+    genderFemale: "Женщина",
+    genderAny: "Не важно",
+    occupationPref: "Профессия соседа",
+    occStudent: "Студент",
+    occWorking: "Работающий",
+    occAny: "Не важно",
+    descLabel: "Расскажите о себе и опишите идеального соседа",
+    descPlaceholder: "Напр: Я аккуратный и уважительный человек. Ищу тихого, чистоплотного и трудолюбивого соседа...",
     neededRoommates: "Нужное количество соседей",
     rooms: "Количество комнат",
     rent: "Стоимость совместного проживания в месяц",
@@ -388,6 +448,9 @@ const translations = {
 type ListingType = "has_place" | "needs_place";
 type Currency = "USD" | "EUR" | "TRY";
 
+type GenderPref = "male" | "female" | "any";
+type OccupationPref = "student" | "working" | "any";
+
 interface ListingForm {
   type: ListingType | null;
   smoking: boolean;
@@ -400,6 +463,9 @@ interface ListingForm {
   photos: File[];
   photoPreviews: string[];
   address: string;
+  gender_preference: GenderPref;
+  occupation_preference: OccupationPref;
+  description: string;
 }
 
 const initialForm: ListingForm = {
@@ -414,6 +480,9 @@ const initialForm: ListingForm = {
   photos: [],
   photoPreviews: [],
   address: "",
+  gender_preference: "any",
+  occupation_preference: "any",
+  description: "",
 };
 
 const CURRENCY_SYMBOLS: Record<Currency, string> = {
@@ -494,6 +563,35 @@ function NumberStepper({
   );
 }
 
+function OptionGroup({
+  options,
+  value,
+  onChange,
+}: {
+  options: { label: string; value: string }[];
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div className="flex rounded-xl border border-stone-200 overflow-hidden text-sm font-semibold">
+      {options.map((opt) => (
+        <button
+          key={opt.value}
+          type="button"
+          onClick={() => onChange(opt.value)}
+          className={`flex-1 py-2.5 transition-all duration-200 ${
+            value === opt.value
+              ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-inner"
+              : "bg-white text-stone-500 hover:bg-stone-50"
+          }`}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 // ── Main component ────────────────────────────────────────────────────────────
 export default function CreateListingPage() {
   const { user, loading } = useAuth();
@@ -561,8 +659,6 @@ export default function CreateListingPage() {
       return;
     }
     if (step === 2) {
-      if (!form.address.trim()) { setValidationError(t.requiredField + " (" + t.addressLabel + ")"); return; }
-      if (!form.rent.trim()) { setValidationError(t.requiredField + " (" + t.rentLabel + ")"); return; }
       setStep(3);
     }
   };
@@ -612,6 +708,9 @@ export default function CreateListingPage() {
       payload.currency = form.currency;
       payload.photos = photoUrls;
       payload.address = form.address;
+      payload.gender_preference = form.gender_preference;
+      payload.occupation_preference = form.occupation_preference;
+      payload.description = form.description;
     }
 
     const { error: dbErr } = await supabase.from("listings").insert(payload);
@@ -879,7 +978,46 @@ export default function CreateListingPage() {
           <p className="text-stone-500 mb-8 text-sm">{t.step2Title}</p>
 
           <div className="bg-white rounded-2xl border border-stone-100 shadow-sm divide-y divide-stone-100">
-            {/* Smoking */}
+            {/* 1. Gender preference */}
+            <div className="p-5">
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.genderPref}</label>
+              <OptionGroup
+                value={form.gender_preference}
+                onChange={(v) => set("gender_preference", v as GenderPref)}
+                options={[
+                  { label: t.genderMale, value: "male" },
+                  { label: t.genderFemale, value: "female" },
+                  { label: t.genderAny, value: "any" },
+                ]}
+              />
+            </div>
+
+            {/* 2. Occupation preference */}
+            <div className="p-5">
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.occupationPref}</label>
+              <OptionGroup
+                value={form.occupation_preference}
+                onChange={(v) => set("occupation_preference", v as OccupationPref)}
+                options={[
+                  { label: t.occStudent, value: "student" },
+                  { label: t.occWorking, value: "working" },
+                  { label: t.occAny, value: "any" },
+                ]}
+              />
+            </div>
+
+            {/* 3. Current residents */}
+            <div className="p-5 flex items-center justify-between">
+              <label className="text-sm font-semibold text-stone-700">{t.currentResidents}</label>
+              <NumberStepper
+                value={form.current_residents}
+                onChange={(v) => set("current_residents", v)}
+                min={1}
+                max={10}
+              />
+            </div>
+
+            {/* 4. Smoking */}
             <div className="p-5">
               <label className="block text-sm font-semibold text-stone-700 mb-3">{t.smoking}</label>
               <Toggle
@@ -890,137 +1028,15 @@ export default function CreateListingPage() {
               />
             </div>
 
-            {/* Parking */}
+            {/* 5. Description */}
             <div className="p-5">
-              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.parking}</label>
-              <Toggle
-                value={form.parking}
-                labelOn={t.parkingYes}
-                labelOff={t.parkingNo}
-                onChange={(v) => set("parking", v)}
-              />
-            </div>
-
-            {/* Current residents */}
-            <div className="p-5 flex items-center justify-between">
-              <label className="text-sm font-semibold text-stone-700">{t.currentResidents}</label>
-              <NumberStepper
-                value={form.current_residents}
-                onChange={(v) => set("current_residents", v)}
-                min={0}
-                max={20}
-              />
-            </div>
-
-            {/* Needed roommates */}
-            <div className="p-5 flex items-center justify-between">
-              <label className="text-sm font-semibold text-stone-700">{t.neededRoommates}</label>
-              <NumberStepper
-                value={form.needed_roommates}
-                onChange={(v) => set("needed_roommates", v)}
-                min={1}
-                max={20}
-              />
-            </div>
-
-            {/* Rooms */}
-            <div className="p-5 flex items-center justify-between">
-              <label className="text-sm font-semibold text-stone-700">{t.rooms}</label>
-              <NumberStepper
-                value={form.rooms}
-                onChange={(v) => set("rooms", v)}
-                min={1}
-                max={50}
-              />
-            </div>
-
-            {/* Rent + Currency */}
-            <div className="p-5">
-              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.rent}</label>
-              <div className="flex gap-2">
-                <div className="flex bg-stone-100 border border-stone-200 rounded-xl p-0.5 gap-0.5 flex-shrink-0">
-                  {(["USD", "EUR", "TRY"] as Currency[]).map((cur) => (
-                    <button
-                      key={cur}
-                      type="button"
-                      onClick={() => set("currency", cur)}
-                      className={`px-2.5 py-2 rounded-lg text-xs font-black transition-all duration-200 ${
-                        form.currency === cur
-                          ? "bg-white text-stone-900 shadow-sm"
-                          : "text-stone-400 hover:text-stone-700"
-                      }`}
-                    >
-                      {CURRENCY_SYMBOLS[cur]}&thinsp;{cur}
-                    </button>
-                  ))}
-                </div>
-                <input
-                  type="number"
-                  min={0}
-                  value={form.rent}
-                  onChange={(e) => set("rent", e.target.value)}
-                  placeholder="0"
-                  className="flex-1 border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm min-w-0"
-                />
-              </div>
-            </div>
-
-            {/* Address */}
-            <div className="p-5">
-              <label className="block text-sm font-semibold text-stone-700 mb-1.5">{t.address}</label>
-              <input
-                type="text"
-                value={form.address}
-                onChange={(e) => set("address", e.target.value)}
-                placeholder={t.addressPlaceholder}
-                className="w-full border border-stone-200 rounded-xl px-4 py-3 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
-              />
-            </div>
-
-            {/* Photos */}
-            <div className="p-5">
-              <label className="block text-sm font-semibold text-stone-700 mb-3">
-                {t.photos}
-                <span className="ml-2 text-xs font-normal text-stone-400">{form.photos.length}/3</span>
-              </label>
-              <div className="flex flex-wrap gap-3">
-                {form.photoPreviews.map((src, idx) => (
-                  <div key={idx} className="relative w-24 h-24 rounded-xl overflow-hidden shadow-sm border border-stone-200">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={src} alt="" className="w-full h-full object-cover" />
-                    <button
-                      type="button"
-                      onClick={() => removePhoto(idx)}
-                      className="absolute top-1 right-1 w-5 h-5 bg-black/60 rounded-full flex items-center justify-center text-white hover:bg-black/80 transition-all"
-                    >
-                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3">
-                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                      </svg>
-                    </button>
-                  </div>
-                ))}
-                {form.photos.length < 3 && (
-                  <button
-                    type="button"
-                    onClick={() => photoInputRef.current?.click()}
-                    className="w-24 h-24 rounded-xl border-2 border-dashed border-stone-300 flex flex-col items-center justify-center gap-1 text-stone-400 hover:border-orange-400 hover:text-orange-400 transition-all"
-                  >
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                      <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-                    </svg>
-                    <span className="text-[10px] font-semibold leading-none">
-                      {form.photos.length === 0 ? t.uploadPhotos : t.addMorePhotos}
-                    </span>
-                  </button>
-                )}
-              </div>
-              <input
-                ref={photoInputRef}
-                type="file"
-                accept="image/*"
-                multiple
-                className="hidden"
-                onChange={handlePhotos}
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.descLabel}</label>
+              <textarea
+                rows={4}
+                value={form.description}
+                onChange={(e) => set("description", e.target.value)}
+                placeholder={t.descPlaceholder}
+                className="w-full border border-gray-200 rounded-2xl p-3 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm resize-none"
               />
             </div>
           </div>
