@@ -1760,7 +1760,7 @@ export default function Home() {
       )}
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-white pt-16">
+      <section className="relative overflow-hidden bg-white pt-16 mb-0 pb-0">
 
         {/* Decorative blur circles */}
         <div className="absolute w-96 h-96 rounded-full bg-orange-50 blur-3xl opacity-60 -top-20 -right-20 pointer-events-none" />
@@ -2239,7 +2239,7 @@ export default function Home() {
 
       {/* ── WEEKLY STORIES ────────────────────────────────────────────────────── */}
       {weeklyStories.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-5 pt-6 sm:pt-8 pb-4">
+        <section className="max-w-7xl mx-auto px-4 sm:px-5 mt-2 pt-0 pb-4">
           <p className="text-sm font-bold text-stone-800 mb-3 sm:mb-4">
             {weeklyStories[0]?.week_label ?? "Bu Hafta"}
           </p>
