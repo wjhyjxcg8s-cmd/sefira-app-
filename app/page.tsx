@@ -847,6 +847,11 @@ const TERMS_TEXTS = new Set([
   "شرایط استفاده", "شروط الاستخدام", "Условия использования", "Условия",
 ]);
 
+const SECURITY_TEXTS = new Set([
+  "Güvenlik", "Safety", "Sicherheit",
+  "امنیت", "الأمان", "Безопасность",
+]);
+
 const MATCH_PHOTOS = [
   "https://randomuser.me/api/portraits/women/44.jpg",
   "https://randomuser.me/api/portraits/men/32.jpg",
@@ -2789,7 +2794,9 @@ export default function Home() {
                             ? <Link href="/privacy" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
                             : TERMS_TEXTS.has(link)
                               ? <Link href="/terms" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
-                              : <a href="#" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</a>
+                              : SECURITY_TEXTS.has(link)
+                                ? <Link href="/security" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
+                                : <a href="#" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</a>
                       }
                     </li>
                   ))}
@@ -2807,7 +2814,9 @@ export default function Home() {
                     ? <Link key={l} href="/privacy" className="text-xs text-stone-500 hover:text-stone-300 transition-colors duration-200">{l}</Link>
                     : TERMS_TEXTS.has(l)
                       ? <Link key={l} href="/terms" className="text-xs text-stone-500 hover:text-stone-300 transition-colors duration-200">{l}</Link>
-                      : <a key={l} href="#" className="text-xs text-stone-500 hover:text-stone-300 transition-colors duration-200">{l}</a>
+                      : SECURITY_TEXTS.has(l)
+                        ? <Link key={l} href="/security" className="text-xs text-stone-500 hover:text-stone-300 transition-colors duration-200">{l}</Link>
+                        : <a key={l} href="#" className="text-xs text-stone-500 hover:text-stone-300 transition-colors duration-200">{l}</a>
               ))}
             </div>
           </div>
