@@ -1549,21 +1549,6 @@ export default function Home() {
       {/* PROFILE RIGHT DRAWER */}
       {user && (
         <>
-          <style>{`
-            .ps-item {
-              display: flex; align-items: center; gap: 12px;
-              padding: 14px 16px; background: white; border-radius: 16px;
-              text-decoration: none; width: 100%;
-              cursor: pointer; border: none; text-align: left;
-              transition: background 0.15s ease, transform 0.1s ease;
-              box-sizing: border-box; color: inherit;
-              box-shadow: 0 1px 3px rgba(0,0,0,0.07);
-              margin-bottom: 8px;
-            }
-            .ps-item:hover  { background: #fafafa; }
-            .ps-item:active { transform: scale(0.97); }
-          `}</style>
-
           {/* Overlay */}
           <div
             onClick={() => setProfileMenuOpen(false)}
@@ -1586,7 +1571,7 @@ export default function Home() {
             style={{
               position: "fixed", top: 0, right: 0,
               width: "320px", height: "100%",
-              background: "#f3f4f6",
+              background: "#f9fafb",
               zIndex: 1000,
               transform: profileMenuOpen ? "translateX(0)" : "translateX(100%)",
               transition: "transform 0.3s ease-out",
@@ -1595,18 +1580,21 @@ export default function Home() {
               display: "flex", flexDirection: "column",
             }}
           >
-            {/* Orange gradient header */}
-            <div style={{
-              background: "linear-gradient(135deg, #f97316 0%, #fb923c 60%, #f59e0b 100%)",
-              paddingTop: "64px",
-              paddingBottom: "28px",
-              paddingLeft: "24px",
-              paddingRight: "24px",
-              display: "flex", flexDirection: "column", alignItems: "center", gap: "6px",
-              position: "relative", overflow: "hidden", flexShrink: 0,
-            }}>
-              <div style={{ position: "absolute", top: "-20px", right: "-20px", width: "120px", height: "120px", borderRadius: "50%", background: "rgba(255,255,255,0.08)", pointerEvents: "none" }} />
-              <div style={{ position: "absolute", bottom: "-30px", left: "-10px", width: "90px", height: "90px", borderRadius: "50%", background: "rgba(255,255,255,0.06)", pointerEvents: "none" }} />
+            {/* Gradient header */}
+            <div
+              className="bg-gradient-to-br from-orange-400 via-orange-500 to-pink-500"
+              style={{
+                paddingTop: "64px", paddingBottom: "28px",
+                paddingLeft: "24px", paddingRight: "24px",
+                display: "flex", flexDirection: "column", alignItems: "center", gap: "6px",
+                position: "relative", overflow: "hidden", flexShrink: 0,
+              }}
+            >
+              <motion.div
+                animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.6, 0.3] }}
+                transition={{ duration: 3, repeat: Infinity }}
+                className="absolute w-24 h-24 rounded-full bg-white/20 blur-xl"
+              />
 
               {/* Avatar */}
               <button
@@ -1614,11 +1602,12 @@ export default function Home() {
                 style={{
                   width: "80px", height: "80px", borderRadius: "50%",
                   background: "linear-gradient(135deg, #ea580c, #d97706)",
-                  border: "4px solid white",
+                  border: "4px solid rgba(255,255,255,0.4)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   fontWeight: 900, fontSize: "28px", color: "white",
                   overflow: "hidden", cursor: "pointer", flexShrink: 0,
-                  boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
+                  position: "relative", zIndex: 1,
                 }}
               >
                 {profileAvatarUrl ? (
@@ -1629,131 +1618,206 @@ export default function Home() {
                 )}
               </button>
 
-              <p style={{ fontWeight: 700, fontSize: "18px", color: "white", margin: "4px 0 0", textAlign: "center" }}>
+              <p style={{ fontWeight: 900, fontSize: "20px", color: "white", margin: "12px 0 0", textAlign: "center" }}>
                 {user.user_metadata?.full_name ?? user.email?.split("@")[0] ?? "User"}
               </p>
-              <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.82)", margin: 0, textAlign: "center" }}>
+              <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.7)", margin: 0, textAlign: "center" }}>
                 {user.email}
               </p>
             </div>
 
             {/* Menu items */}
-            <div style={{ flex: 1, padding: "16px 16px 8px", display: "flex", flexDirection: "column", overflowY: "auto" }}>
+            <div style={{ flex: 1, overflowY: "auto" }} className="px-3 py-4 flex flex-col gap-1.5">
 
               {/* Edit Profile */}
-              <Link href="/profile" onClick={() => setProfileMenuOpen(false)} className="ps-item">
-                <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "#ede9fe", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: "20px", height: "20px" }}>
+              <motion.button
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0 * 0.07, type: "spring", stiffness: 300 }}
+                whileHover={{ x: 4, backgroundColor: "#FFF7F0" }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => { setProfileMenuOpen(false); router.push("/profile"); }}
+                className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 group"
+              >
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-violet-400 to-purple-500">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                   </svg>
                 </div>
-                <span style={{ fontWeight: 700, fontSize: "15px", color: "#111", flex: 1 }}>
+                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-600 transition-colors">
                   {lang === "tr" ? "Profilimi Düzenle" : lang === "fa" ? "ویرایش پروفایل" : lang === "ar" ? "تعدیل الملف الشخصی" : lang === "de" ? "Profil bearbeiten" : lang === "ru" ? "Редактировать профиль" : "Edit Profile"}
                 </span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: "16px", height: "16px", flexShrink: 0 }}>
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </Link>
+                <motion.span
+                  animate={{ x: [0, 3, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, delay: 0 * 0.3 }}
+                  className="text-gray-300 group-hover:text-orange-400 text-lg"
+                >›</motion.span>
+              </motion.button>
 
               {/* Saved */}
-              <Link href="/saved-listings" onClick={() => setProfileMenuOpen(false)} className="ps-item">
-                <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "#dbeafe", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: "20px", height: "20px" }}>
+              <motion.button
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 1 * 0.07, type: "spring", stiffness: 300 }}
+                whileHover={{ x: 4, backgroundColor: "#FFF7F0" }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => { setProfileMenuOpen(false); router.push("/saved-listings"); }}
+                className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 group"
+              >
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-blue-400 to-blue-500">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
                     <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
                   </svg>
                 </div>
-                <span style={{ fontWeight: 700, fontSize: "15px", color: "#111", flex: 1 }}>
+                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-600 transition-colors">
                   {lang === "tr" ? "Kaydedilenler" : lang === "fa" ? "ذخیره‌ها" : lang === "ar" ? "المحفوظات" : lang === "de" ? "Gespeichert" : lang === "ru" ? "Сохранённые" : "Saved"}
                 </span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: "16px", height: "16px", flexShrink: 0 }}>
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </Link>
+                <motion.span
+                  animate={{ x: [0, 3, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, delay: 1 * 0.3 }}
+                  className="text-gray-300 group-hover:text-orange-400 text-lg"
+                >›</motion.span>
+              </motion.button>
 
               {/* Post Listing */}
-              <button onClick={() => { handleCreateListing(); setProfileMenuOpen(false); }} className="ps-item">
-                <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "#dcfce7", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" style={{ width: "20px", height: "20px" }}>
+              <motion.button
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 2 * 0.07, type: "spring", stiffness: 300 }}
+                whileHover={{ x: 4, backgroundColor: "#FFF7F0" }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => { handleCreateListing(); setProfileMenuOpen(false); }}
+                className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 group"
+              >
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-green-400 to-emerald-500">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" className="w-5 h-5">
                     <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
                   </svg>
                 </div>
-                <span style={{ fontWeight: 700, fontSize: "15px", color: "#111", flex: 1 }}>
+                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-600 transition-colors">
                   {lang === "tr" ? "İlan Ver" : lang === "fa" ? "ثبت آگهی" : lang === "ar" ? "نشر إعلان" : lang === "de" ? "Inserat aufgeben" : lang === "ru" ? "Разместить объявление" : "Post Listing"}
                 </span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: "16px", height: "16px", flexShrink: 0 }}>
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </button>
+                <motion.span
+                  animate={{ x: [0, 3, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, delay: 2 * 0.3 }}
+                  className="text-gray-300 group-hover:text-orange-400 text-lg"
+                >›</motion.span>
+              </motion.button>
 
               {/* My Listings */}
-              <Link href="/my-listings" onClick={() => setProfileMenuOpen(false)} className="ps-item">
-                <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "#ffedd5", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: "20px", height: "20px" }}>
+              <motion.button
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 3 * 0.07, type: "spring", stiffness: 300 }}
+                whileHover={{ x: 4, backgroundColor: "#FFF7F0" }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => { setProfileMenuOpen(false); router.push("/my-listings"); }}
+                className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 group"
+              >
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-orange-400 to-orange-500">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
                     <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
                     <rect x="9" y="3" width="6" height="4" rx="1" />
                     <line x1="9" y1="12" x2="15" y2="12" /><line x1="9" y1="16" x2="13" y2="16" />
                   </svg>
                 </div>
-                <span style={{ fontWeight: 700, fontSize: "15px", color: "#111", flex: 1 }}>
+                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-600 transition-colors">
                   {lang === "tr" ? "İlanlarım" : lang === "fa" ? "آگهی‌های من" : lang === "ar" ? "إعلاناتی" : lang === "de" ? "Meine Inserate" : lang === "ru" ? "Мои объявления" : "My Listings"}
                 </span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: "16px", height: "16px", flexShrink: 0 }}>
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </Link>
+                <motion.span
+                  animate={{ x: [0, 3, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, delay: 3 * 0.3 }}
+                  className="text-gray-300 group-hover:text-orange-400 text-lg"
+                >›</motion.span>
+              </motion.button>
 
               {/* My Messages */}
-              <Link href="/messages" onClick={() => setProfileMenuOpen(false)} className="ps-item">
-                <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "#ccfbf1", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, position: "relative" }}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#0d9488" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: "20px", height: "20px" }}>
+              <motion.button
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 4 * 0.07, type: "spring", stiffness: 300 }}
+                whileHover={{ x: 4, backgroundColor: "#FFF7F0" }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => { setProfileMenuOpen(false); router.push("/messages"); }}
+                className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 group"
+              >
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-teal-400 to-cyan-500" style={{ position: "relative" }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                   </svg>
                   {unreadSupportCount > 0 && (
-                    <div style={{ position: "absolute", top: "0", right: "0", minWidth: "18px", height: "18px", borderRadius: "9999px", background: "#ef4444", border: "2px solid white", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 3px" }}>
+                    <div style={{ position: "absolute", top: "-2px", right: "-2px", minWidth: "18px", height: "18px", borderRadius: "9999px", background: "#ef4444", border: "2px solid white", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 3px" }}>
                       <span style={{ color: "white", fontWeight: 700, fontSize: "10px", lineHeight: 1 }}>
                         {unreadSupportCount > 9 ? "9+" : unreadSupportCount}
                       </span>
                     </div>
                   )}
                 </div>
-                <span style={{ fontWeight: 700, fontSize: "15px", color: "#111", flex: 1 }}>
+                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-600 transition-colors">
                   {lang === "tr" ? "Mesajlarım" : lang === "fa" ? "پیام‌های من" : lang === "ar" ? "رسائلی" : lang === "de" ? "Meine Nachrichten" : lang === "ru" ? "Мои сооبщения" : "My Messages"}
                 </span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: "16px", height: "16px", flexShrink: 0 }}>
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </Link>
+                <motion.span
+                  animate={{ x: [0, 3, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, delay: 4 * 0.3 }}
+                  className="text-gray-300 group-hover:text-orange-400 text-lg"
+                >›</motion.span>
+              </motion.button>
 
               {/* Reviews & Ratings */}
-              <Link href="/my-reviews" onClick={() => setProfileMenuOpen(false)} className="ps-item">
-                <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "#fef9c3", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#ca8a04" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: "20px", height: "20px" }}>
+              <motion.button
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 5 * 0.07, type: "spring", stiffness: 300 }}
+                whileHover={{ x: 4, backgroundColor: "#FFF7F0" }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => { setProfileMenuOpen(false); router.push("/my-reviews"); }}
+                className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 group"
+              >
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-yellow-400 to-amber-500">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                   </svg>
                 </div>
-                <span style={{ fontWeight: 700, fontSize: "15px", color: "#111", flex: 1 }}>
+                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-600 transition-colors">
                   {lang === "tr" ? "Yorumlarım ve Puanım" : lang === "fa" ? "کامنت‌ها و امتیازهای من" : lang === "ar" ? "تعلیقاتی وتقییماتی" : lang === "de" ? "Meine Bewertungen" : lang === "ru" ? "Мои отзывы и оценки" : "Reviews & Ratings"}
                 </span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: "16px", height: "16px", flexShrink: 0 }}>
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </Link>
+                <motion.span
+                  animate={{ x: [0, 3, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, delay: 5 * 0.3 }}
+                  className="text-gray-300 group-hover:text-orange-400 text-lg"
+                >›</motion.span>
+              </motion.button>
+
+              {/* Divider */}
+              <div className="h-px bg-gray-200 mx-4 my-2" />
 
               {/* Sign Out */}
-              <button
+              <motion.button
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 6 * 0.07, type: "spring", stiffness: 300 }}
+                whileHover={{ x: 4, backgroundColor: "#FFF7F0" }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => { handleSignOut(); setProfileMenuOpen(false); }}
-                className="ps-item"
+                className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 group"
               >
-                <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "#fee2e2", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <svg viewBox="0 0 24 24" fill="#dc2626" style={{ width: "20px", height: "20px" }}>
-                    <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-red-400 to-rose-500">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
                   </svg>
                 </div>
-                <span style={{ fontWeight: 700, fontSize: "15px", color: "#dc2626", flex: 1 }}>
+                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-600 transition-colors">
                   {t.signOut}
                 </span>
-              </button>
+                <motion.span
+                  animate={{ x: [0, 3, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, delay: 6 * 0.3 }}
+                  className="text-gray-300 group-hover:text-orange-400 text-lg"
+                >›</motion.span>
+              </motion.button>
             </div>
           </div>
         </>
