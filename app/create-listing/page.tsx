@@ -1086,6 +1086,8 @@ export default function CreateListingPage() {
   const [mahalleSug, setMahalleSug] = useState<string[]>([])
   const [mahalleOpen, setMahalleOpen] = useState(false)
 
+  const [isFloor20Plus, setIsFloor20Plus] = useState(false)
+
   useEffect(() => {
     if (countryIso === 'TR') {
       fetch('/turkiye-data.json')
@@ -1489,21 +1491,39 @@ export default function CreateListingPage() {
                   <span className="text-xs text-stone-400 ml-2">{t.floorNote}</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <NumberStepper
-                    value={Math.min(form.floor, 20)}
-                    onChange={(v) => set("floor", v)}
-                    min={0}
-                    max={20}
-                  />
-                  {form.floor >= 20 && (
-                    <button
-                      type="button"
-                      onClick={() => setForm(f => ({...f, floor: 21}))}
-                      className={`px-3 py-1.5 rounded-lg text-sm font-medium border-2 transition-colors ${form.floor === 21 ? 'border-orange-400 bg-orange-50 text-orange-600' : 'border-gray-200 text-gray-500'}`}
-                    >
-                      20+
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => set("floor", Math.max(0, form.floor - 1))}
+                    disabled={isFloor20Plus}
+                    className={`w-9 h-9 rounded-xl border border-stone-200 flex items-center justify-center text-stone-600 hover:border-orange-400 hover:text-orange-500 transition-all active:scale-90 font-bold text-lg ${isFloor20Plus ? 'opacity-40 cursor-not-allowed' : ''}`}
+                  >
+                    −
+                  </button>
+                  <span className="w-10 text-center text-lg font-black text-stone-900">
+                    {isFloor20Plus ? '20+' : form.floor}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => set("floor", Math.min(20, form.floor + 1))}
+                    disabled={isFloor20Plus}
+                    className={`w-9 h-9 rounded-xl border border-stone-200 flex items-center justify-center text-stone-600 hover:border-orange-400 hover:text-orange-500 transition-all active:scale-90 font-bold text-lg ${isFloor20Plus ? 'opacity-40 cursor-not-allowed' : ''}`}
+                  >
+                    +
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsFloor20Plus(prev => {
+                        const next = !prev
+                        if (next) setForm(f => ({...f, floor: 21}))
+                        else setForm(f => ({...f, floor: 0}))
+                        return next
+                      })
+                    }}
+                    className={`px-4 py-2 rounded-xl text-sm font-semibold border-2 transition-colors ${isFloor20Plus ? 'border-orange-400 bg-orange-50 text-orange-600' : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'}`}
+                  >
+                    20+
+                  </button>
                 </div>
               </div>
             </div>
