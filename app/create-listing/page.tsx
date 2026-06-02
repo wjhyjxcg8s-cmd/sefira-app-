@@ -87,6 +87,7 @@ const translations = {
     city: "Şehir",
     district: "İlçe",
     neighborhood: "Mahalle / Semt",
+    il: "İl",
     pricingLabel: "Aylık Beklenen Paylaşım Ücreti",
     pricingSub: "Her bir ev arkadaşı için beklediğiniz ücret",
     // Step 3 – Housemate Prefs
@@ -197,6 +198,7 @@ const translations = {
     city: "City",
     district: "District",
     neighborhood: "Neighborhood / Area",
+    il: "City / Province",
     pricingLabel: "Expected Monthly Cost",
     pricingSub: "Expected cost per housemate",
     // Step 3 – Housemate Prefs
@@ -307,6 +309,7 @@ const translations = {
     city: "شهر",
     district: "منطقه",
     neighborhood: "محله",
+    il: "استان / شهر",
     pricingLabel: "هزینه ماهانه مورد انتظار",
     pricingSub: "هزینه مورد انتظار برای هر هم‌خانه",
     // Step 3 – Housemate Prefs
@@ -416,6 +419,7 @@ const translations = {
     city: "Stadt",
     district: "Bezirk",
     neighborhood: "Stadtteil / Viertel",
+    il: "Stadt / Provinz",
     pricingLabel: "Erwartete monatliche Kosten",
     pricingSub: "Erwartete Kosten pro Mitbewohner",
     // Step 3 – Housemate Prefs
@@ -524,6 +528,7 @@ const translations = {
     city: "المدينة",
     district: "الحي",
     neighborhood: "الحارة / المنطقة",
+    il: "المحافظة / المدينة",
     pricingLabel: "التكلفة الشهرية المتوقعة",
     pricingSub: "التكلفة المتوقعة لكل شريك سكن",
     // Step 3 – Housemate Prefs
@@ -634,6 +639,7 @@ const translations = {
     city: "Город",
     district: "Район",
     neighborhood: "Микрорайон / Квартал",
+    il: "Город / Провинция",
     pricingLabel: "Ожидаемые ежемесячные расходы",
     pricingSub: "Ожидаемые расходы на каждого соседа",
     // Step 3 – Housemate Prefs
@@ -1501,10 +1507,10 @@ export default function CreateListingPage() {
                 label={t.countryLabel}
                 placeholder={t.countryPlaceholder}
               />
-              {/* Şehir */}
+              {/* Şehir / İl */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  {t.city}
+                  {countryIso === 'TR' ? t.il : t.city}
                 </label>
                 <div className="relative">
                   <input
@@ -1589,8 +1595,8 @@ export default function CreateListingPage() {
                 </div>
               </div>
 
-              {/* İlçe */}
-              <div>
+              {/* İlçe — Turkey only */}
+              {countryIso === 'TR' && <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   {t.district}
                 </label>
@@ -1672,7 +1678,7 @@ export default function CreateListingPage() {
                     </div>
                   )}
                 </div>
-              </div>
+              </div>}
 
               {/* Mahalle */}
               <div>
