@@ -1488,12 +1488,23 @@ export default function CreateListingPage() {
                   <label className="text-sm font-semibold text-stone-700">{t.floorLabel}</label>
                   <span className="text-xs text-stone-400 ml-2">{t.floorNote}</span>
                 </div>
-                <NumberStepper
-                  value={form.floor}
-                  onChange={(v) => set("floor", v)}
-                  min={0}
-                  max={40}
-                />
+                <div className="flex items-center gap-3">
+                  <NumberStepper
+                    value={Math.min(form.floor, 20)}
+                    onChange={(v) => set("floor", v)}
+                    min={0}
+                    max={20}
+                  />
+                  {form.floor >= 20 && (
+                    <button
+                      type="button"
+                      onClick={() => setForm(f => ({...f, floor: 21}))}
+                      className={`px-3 py-1.5 rounded-lg text-sm font-medium border-2 transition-colors ${form.floor === 21 ? 'border-orange-400 bg-orange-50 text-orange-600' : 'border-gray-200 text-gray-500'}`}
+                    >
+                      20+
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -1988,7 +1999,7 @@ export default function CreateListingPage() {
       ...(isHasPlace
         ? [
             { label: t.houseTypeReviewLabel, value: houseTypeLabels[form.houseType] || "—" },
-            { label: t.floorReviewLabel, value: `${form.floor}` },
+            { label: t.floorReviewLabel, value: form.floor === 21 ? '20+' : `${form.floor}` },
             { label: t.elevatorReviewLabel, value: form.elevator ? t.yes : t.no },
             { label: t.parkingLabel, value: form.parking ? t.yes : t.no },
             { label: t.furnishedReviewLabel, value: form.furnished ? t.furnishedYes : t.furnishedNo },
