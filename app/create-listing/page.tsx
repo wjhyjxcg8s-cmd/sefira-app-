@@ -1742,7 +1742,7 @@ export default function CreateListingPage() {
                     type="text"
                     value={form.neighborhood || ''}
                     onChange={(e) => setForm(f => ({ ...f, neighborhood: e.target.value }))}
-                    placeholder="Zafer Mh., Cumhuriyet Mh..."
+                    placeholder={countryIso === 'TR' ? "Zafer Mh., Cumhuriyet Mh..." : ""}
                     className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-gray-900 bg-white text-sm"
                   />
                 )}
