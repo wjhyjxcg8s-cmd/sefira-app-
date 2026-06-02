@@ -84,6 +84,9 @@ const translations = {
     cityPlaceholder: "İstanbul, Berlin...",
     neighborhoodLabel: "Mahalle / Semt",
     neighborhoodPlaceholder: "Kadıköy, Beşiktaş...",
+    city: "Şehir",
+    district: "İlçe",
+    neighborhood: "Mahalle / Semt",
     pricingLabel: "Aylık Beklenen Paylaşım Ücreti",
     pricingSub: "Her bir ev arkadaşı için beklediğiniz ücret",
     // Step 3 – Housemate Prefs
@@ -191,6 +194,9 @@ const translations = {
     cityPlaceholder: "Istanbul, Berlin...",
     neighborhoodLabel: "Neighborhood",
     neighborhoodPlaceholder: "Kadıköy, Beşiktaş...",
+    city: "City",
+    district: "District",
+    neighborhood: "Neighborhood / Area",
     pricingLabel: "Expected Monthly Cost",
     pricingSub: "Expected cost per housemate",
     // Step 3 – Housemate Prefs
@@ -298,6 +304,9 @@ const translations = {
     cityPlaceholder: "تهران، برلین...",
     neighborhoodLabel: "محله",
     neighborhoodPlaceholder: "ونک، نیاوران...",
+    city: "شهر",
+    district: "منطقه",
+    neighborhood: "محله",
     pricingLabel: "هزینه ماهانه مورد انتظار",
     pricingSub: "هزینه مورد انتظار برای هر هم‌خانه",
     // Step 3 – Housemate Prefs
@@ -404,6 +413,9 @@ const translations = {
     cityPlaceholder: "Istanbul, Berlin...",
     neighborhoodLabel: "Stadtteil",
     neighborhoodPlaceholder: "Kadıköy, Beşiktaş...",
+    city: "Stadt",
+    district: "Bezirk",
+    neighborhood: "Stadtteil / Viertel",
     pricingLabel: "Erwartete monatliche Kosten",
     pricingSub: "Erwartete Kosten pro Mitbewohner",
     // Step 3 – Housemate Prefs
@@ -509,6 +521,9 @@ const translations = {
     cityPlaceholder: "إسطنبول، برلين...",
     neighborhoodLabel: "الحي",
     neighborhoodPlaceholder: "كاديكوي، بيشيكتاش...",
+    city: "المدينة",
+    district: "الحي",
+    neighborhood: "الحارة / المنطقة",
     pricingLabel: "التكلفة الشهرية المتوقعة",
     pricingSub: "التكلفة المتوقعة لكل شريك سكن",
     // Step 3 – Housemate Prefs
@@ -616,6 +631,9 @@ const translations = {
     cityPlaceholder: "Стамбул, Берлин...",
     neighborhoodLabel: "Район",
     neighborhoodPlaceholder: "Кадыкёй, Бешикташ...",
+    city: "Город",
+    district: "Район",
+    neighborhood: "Микрорайон / Квартал",
     pricingLabel: "Ожидаемые ежемесячные расходы",
     pricingSub: "Ожидаемые расходы на каждого соседа",
     // Step 3 – Housemate Prefs
@@ -1486,7 +1504,7 @@ export default function CreateListingPage() {
               {/* Şehir */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Şehir
+                  {t.city}
                 </label>
                 <div className="relative">
                   <input
@@ -1574,7 +1592,7 @@ export default function CreateListingPage() {
               {/* İlçe */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  İlçe
+                  {t.district}
                 </label>
                 <div className="relative">
                   <input
@@ -1659,7 +1677,7 @@ export default function CreateListingPage() {
               {/* Mahalle */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Mahalle / Semt
+                  {t.neighborhood}
                 </label>
                 {countryIso === 'TR' && selectedIl && selectedIlce ? (
                   <div className="relative">
