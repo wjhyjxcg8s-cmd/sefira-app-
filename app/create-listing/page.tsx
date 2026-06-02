@@ -1492,30 +1492,43 @@ export default function CreateListingPage() {
                   <input
                     type="text"
                     value={sehirQ}
-                    readOnly={countryIso === 'TR'}
                     onChange={e => {
-                      if (countryIso === 'TR') return
                       const v = e.target.value
                       setSehirQ(v)
                       setForm(f => ({...f, city: v}))
-                      const all = State.getStatesOfCountry(countryIso) || []
                       const q = normalize(v)
-                      if (v.length === 0) {
-                        setSehirSug(all.slice(0, 6).map(s => s.name))
-                        setSehirOpen(true)
+                      if (countryIso === 'TR') {
+                        const all = Object.keys(turkiyeData)
+                        if (v.length === 0) {
+                          setSehirSug(all.slice(0, 6))
+                          setSehirOpen(true)
+                        } else {
+                          const starts = all.filter(name => normalize(name).startsWith(q))
+                          const includes = all.filter(name =>
+                            !normalize(name).startsWith(q) && normalize(name).includes(q)
+                          )
+                          setSehirSug([...starts, ...includes].slice(0, 6))
+                          setSehirOpen(starts.length + includes.length > 0)
+                        }
                       } else {
-                        const starts = all.filter(s => normalize(s.name).startsWith(q))
-                        const includes = all.filter(s =>
-                          !normalize(s.name).startsWith(q) && normalize(s.name).includes(q)
-                        )
-                        setSehirSug([...starts, ...includes].slice(0, 6).map(s => s.name))
-                        setSehirOpen(starts.length + includes.length > 0)
+                        const all = State.getStatesOfCountry(countryIso) || []
+                        if (v.length === 0) {
+                          setSehirSug(all.slice(0, 6).map(s => s.name))
+                          setSehirOpen(true)
+                        } else {
+                          const starts = all.filter(s => normalize(s.name).startsWith(q))
+                          const includes = all.filter(s =>
+                            !normalize(s.name).startsWith(q) && normalize(s.name).includes(q)
+                          )
+                          setSehirSug([...starts, ...includes].slice(0, 6).map(s => s.name))
+                          setSehirOpen(starts.length + includes.length > 0)
+                        }
                       }
                     }}
                     onFocus={() => {
                       if (countryIso === 'TR') {
                         const all = Object.keys(turkiyeData)
-                        setSehirSug(all)
+                        setSehirSug(all.slice(0, 6))
                         setSehirOpen(all.length > 0)
                       } else {
                         const all = State.getStatesOfCountry(countryIso) || []
@@ -1525,7 +1538,7 @@ export default function CreateListingPage() {
                     }}
                     onBlur={() => setTimeout(() => setSehirOpen(false), 150)}
                     placeholder="İstanbul, Ankara, Tehran..."
-                    className={`w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-colors${countryIso === 'TR' ? ' cursor-pointer' : ''}`}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-colors"
                   />
                   {sehirOpen && sehirSug.length > 0 && (
                     <div className="absolute left-0 right-0 top-full mt-1 z-30 bg-white border border-gray-200 rounded-xl shadow-lg overflow-y-auto max-h-48">
@@ -1568,30 +1581,43 @@ export default function CreateListingPage() {
                     type="text"
                     value={ilceQ}
                     disabled={!sehirQ}
-                    readOnly={countryIso === 'TR'}
                     onChange={e => {
-                      if (countryIso === 'TR') return
                       const v = e.target.value
                       setIlceQ(v)
                       setForm(f => ({...f, district: v}))
-                      const cities = City.getCitiesOfState(countryIso, selectedStateIso) || []
                       const q = normalize(v)
-                      if (v.length === 0) {
-                        setIlceSug(cities.slice(0, 6).map(c => c.name))
-                        setIlceOpen(true)
+                      if (countryIso === 'TR') {
+                        const ilceler = Object.keys(turkiyeData[selectedIl] || {})
+                        if (v.length === 0) {
+                          setIlceSug(ilceler.slice(0, 6))
+                          setIlceOpen(true)
+                        } else {
+                          const starts = ilceler.filter(name => normalize(name).startsWith(q))
+                          const includes = ilceler.filter(name =>
+                            !normalize(name).startsWith(q) && normalize(name).includes(q)
+                          )
+                          setIlceSug([...starts, ...includes].slice(0, 6))
+                          setIlceOpen(starts.length + includes.length > 0)
+                        }
                       } else {
-                        const starts = cities.filter(c => normalize(c.name).startsWith(q))
-                        const includes = cities.filter(c =>
-                          !normalize(c.name).startsWith(q) && normalize(c.name).includes(q)
-                        )
-                        setIlceSug([...starts, ...includes].slice(0, 6).map(c => c.name))
-                        setIlceOpen(starts.length + includes.length > 0)
+                        const cities = City.getCitiesOfState(countryIso, selectedStateIso) || []
+                        if (v.length === 0) {
+                          setIlceSug(cities.slice(0, 6).map(c => c.name))
+                          setIlceOpen(true)
+                        } else {
+                          const starts = cities.filter(c => normalize(c.name).startsWith(q))
+                          const includes = cities.filter(c =>
+                            !normalize(c.name).startsWith(q) && normalize(c.name).includes(q)
+                          )
+                          setIlceSug([...starts, ...includes].slice(0, 6).map(c => c.name))
+                          setIlceOpen(starts.length + includes.length > 0)
+                        }
                       }
                     }}
                     onFocus={() => {
                       if (countryIso === 'TR') {
                         const ilceler = Object.keys(turkiyeData[selectedIl] || {})
-                        setIlceSug(ilceler)
+                        setIlceSug(ilceler.slice(0, 6))
                         setIlceOpen(ilceler.length > 0)
                       } else {
                         const cities = City.getCitiesOfState(countryIso, selectedStateIso) || []
@@ -1601,7 +1627,7 @@ export default function CreateListingPage() {
                     }}
                     onBlur={() => setTimeout(() => setIlceOpen(false), 150)}
                     placeholder="Esenyurt, Kadıköy, Beşiktaş..."
-                    className={`w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50${countryIso === 'TR' && sehirQ ? ' cursor-pointer' : ''}`}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50"
                   />
                   {ilceOpen && ilceSug.length > 0 && (
                     <div className="absolute left-0 right-0 top-full mt-1 z-30 bg-white border border-gray-200 rounded-xl shadow-lg overflow-y-auto max-h-48">
