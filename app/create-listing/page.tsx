@@ -1006,6 +1006,38 @@ const normalize = (str: string): string =>
     .toLowerCase()
     .trim()
 
+const countryCityExamples: Record<string, string> = {
+  'TR': 'İstanbul, Ankara, İzmir...',
+  'IR': 'Tehran, Mashhad, Shiraz...',
+  'US': 'New York, Los Angeles, Chicago...',
+  'DE': 'Berlin, Munich, Hamburg...',
+  'GB': 'London, Manchester, Birmingham...',
+  'FR': 'Paris, Lyon, Marseille...',
+  'AE': 'Dubai, Abu Dhabi, Sharjah...',
+  'SA': 'Riyadh, Jeddah, Mecca...',
+  'RU': 'Moscow, Saint Petersburg, Kazan...',
+  'CN': 'Beijing, Shanghai, Guangzhou...',
+  'IN': 'Mumbai, Delhi, Bangalore...',
+  'PK': 'Karachi, Lahore, Islamabad...',
+  'AF': 'Kabul, Herat, Mazar-i-Sharif...',
+  'IQ': 'Baghdad, Basra, Erbil...',
+  'SY': 'Damascus, Aleppo, Homs...',
+  'EG': 'Cairo, Alexandria, Giza...',
+  'MA': 'Casablanca, Rabat, Marrakech...',
+  'TN': 'Tunis, Sfax, Sousse...',
+  'NL': 'Amsterdam, Rotterdam, The Hague...',
+  'IT': 'Rome, Milan, Naples...',
+  'ES': 'Madrid, Barcelona, Valencia...',
+  'CA': 'Toronto, Vancouver, Montreal...',
+  'AU': 'Sydney, Melbourne, Brisbane...',
+  'JP': 'Tokyo, Osaka, Kyoto...',
+  'KR': 'Seoul, Busan, Incheon...',
+  'BR': 'São Paulo, Rio de Janeiro, Brasília...',
+  'MX': 'Mexico City, Guadalajara, Monterrey...',
+  'AZ': 'Baku, Ganja, Sumqayit...',
+  'UZ': 'Tashkent, Samarkand, Bukhara...',
+}
+
 // ── Main component ────────────────────────────────────────────────────────────
 export default function CreateListingPage() {
   const { user, loading } = useAuth();
@@ -1561,7 +1593,7 @@ export default function CreateListingPage() {
                       }
                     }}
                     onBlur={() => setTimeout(() => setSehirOpen(false), 150)}
-                    placeholder="İstanbul, Ankara, Tehran..."
+                    placeholder={countryCityExamples[countryIso] || 'City...'}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-colors"
                   />
                   {sehirOpen && sehirSug.length > 0 && (
