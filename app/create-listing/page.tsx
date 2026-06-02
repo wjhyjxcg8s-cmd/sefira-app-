@@ -1088,6 +1088,18 @@ export default function CreateListingPage() {
 
   const [isFloor20Plus, setIsFloor20Plus] = useState(false)
 
+  const [iranCities, setIranCities] = useState<string[]>([])
+  useEffect(() => {
+    if (countryIso === 'IR') {
+      fetch('/iran-cities.json')
+        .then(r => r.json())
+        .then((data: {name: string}[]) => {
+          setIranCities(data.map(c => c.name).sort())
+        })
+        .catch(() => {})
+    }
+  }, [countryIso])
+
   useEffect(() => {
     if (countryIso === 'TR') {
       fetch('/turkiye-data.json')
@@ -1598,16 +1610,18 @@ export default function CreateListingPage() {
                           setSehirOpen(starts.length + includes.length > 0)
                         }
                       } else {
-                        const all = State.getStatesOfCountry(countryIso) || []
+                        const cityList = countryIso === 'IR'
+                          ? iranCities
+                          : (State.getStatesOfCountry(countryIso) || []).map(s => s.name)
                         if (v.length === 0) {
-                          setSehirSug(all.slice(0, 6).map(s => s.name))
+                          setSehirSug(cityList.slice(0, 8))
                           setSehirOpen(true)
                         } else {
-                          const starts = all.filter(s => normalize(s.name).startsWith(q))
-                          const includes = all.filter(s =>
-                            !normalize(s.name).startsWith(q) && normalize(s.name).includes(q)
+                          const starts = cityList.filter(name => normalize(name).startsWith(q))
+                          const includes = cityList.filter(name =>
+                            !normalize(name).startsWith(q) && normalize(name).includes(q)
                           )
-                          setSehirSug([...starts, ...includes].slice(0, 6).map(s => s.name))
+                          setSehirSug([...starts, ...includes].slice(0, 8))
                           setSehirOpen(starts.length + includes.length > 0)
                         }
                       }
@@ -1618,9 +1632,11 @@ export default function CreateListingPage() {
                         setSehirSug(all.slice(0, 6))
                         setSehirOpen(all.length > 0)
                       } else {
-                        const all = State.getStatesOfCountry(countryIso) || []
-                        setSehirSug(all.slice(0, 6).map(s => s.name))
-                        setSehirOpen(all.length > 0)
+                        const cityList = countryIso === 'IR'
+                          ? iranCities
+                          : (State.getStatesOfCountry(countryIso) || []).map(s => s.name)
+                        setSehirSug(cityList.slice(0, 8))
+                        setSehirOpen(cityList.length > 0)
                       }
                     }}
                     onBlur={() => setTimeout(() => setSehirOpen(false), 150)}

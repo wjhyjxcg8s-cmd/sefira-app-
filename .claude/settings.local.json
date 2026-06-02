@@ -20,7 +20,11 @@
       "Bash(node check_quotes.js)",
       "Bash(Remove-Item \"e:\\\\sefıra-web\\\\sefira-app\\\\app\\\\create-listing\\\\PlacesAutocomplete.tsx\")",
       "Bash(curl -o \"e:/sefira-web/sefira-app/public/turkiye-data.json\" \"https://raw.githubusercontent.com/bertugfahriozer/il_ilce_mahalle/master/il-ilce-mahalle.json\")",
-      "PowerShell(Invoke-WebRequest -Uri \"https://api.github.com/repos/bertugfahriozer/il_ilce_mahalle/contents\" -UseBasicParsing)"
+      "PowerShell(Invoke-WebRequest -Uri \"https://api.github.com/repos/bertugfahriozer/il_ilce_mahalle/contents\" -UseBasicParsing)",
+      "Bash(curl -o \"e:/sefıra-web/sefira-app/public/iran-cities.json\" https://raw.githubusercontent.com/sajaddp/list-of-cities-in-Iran/main/dist/cities.json)",
+      "Bash(Get-Content \"e:/sefıra-web/sefira-app/public/iran-cities.json\")",
+      "Bash(curl -s \"https://api.github.com/repos/sajaddp/list-of-cities-in-Iran/contents/\")",
+      "Bash(curl -s \"https://api.github.com/repos/sajaddp/list-of-cities-in-Iran/contents/dist\")"
     ],
     "additionalDirectories": [
       "e:\\sefıra-web\\sefira-app\\app\\api\\admin\\channels"
