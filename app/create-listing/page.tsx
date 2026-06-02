@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
-import { City, ICity } from 'country-state-city'
+import { City, State, ICity, IState } from 'country-state-city'
 
 // ── Countries ─────────────────────────────────────────────────────────────────
 const TOP_COUNTRY_CODES = ["TR", "IR", "DE", "AE", "GB", "RU", "US", "FR", "ES"];
@@ -702,6 +702,7 @@ interface ListingForm {
   countryCode: string;
   country: string;
   city: string;
+  district: string;
   neighborhood: string;
   price: string;
   currency: Currency;
@@ -729,6 +730,7 @@ const initialForm: ListingForm = {
   countryCode: "",
   country: "",
   city: "",
+  district: "",
   neighborhood: "",
   price: "",
   currency: "USD",
@@ -997,16 +999,27 @@ export default function CreateListingPage() {
   const [validationError, setValidationError] = useState<string | null>(null);
 
   const [countryIso, setCountryIso] = useState('TR')
-  const [cityQ, setCityQ] = useState('')
-  const [citySug, setCitySug] = useState<ICity[]>([])
-  const [cityOpen, setCityOpen] = useState(false)
-  const cityRef = useRef<HTMLInputElement>(null)
-  const [cityPos, setCityPos] = useState({ top: 0, left: 0, width: 0 })
+
+  const [sehirQ, setSehirQ] = useState('')
+  const [sehirSug, setSehirSug] = useState<IState[]>([])
+  const [sehirOpen, setSehirOpen] = useState(false)
+  const [selectedStateIso, setSelectedStateIso] = useState('')
+  const sehirRef = useRef<HTMLInputElement>(null)
+  const [sehirPos, setSehirPos] = useState({ top: 0, left: 0, width: 0 })
+
+  const [ilceQ, setIlceQ] = useState('')
+  const [ilceSug, setIlceSug] = useState<ICity[]>([])
+  const [ilceOpen, setIlceOpen] = useState(false)
+  const ilceRef = useRef<HTMLInputElement>(null)
+  const [ilcePos, setIlcePos] = useState({ top: 0, left: 0, width: 0 })
 
   useEffect(() => {
     const fn = (e: MouseEvent) => {
       const t = e.target as HTMLElement
-      if (!t.closest('[data-city-ac]')) setCityOpen(false)
+      if (!t.closest('[data-loc-ac]')) {
+        setSehirOpen(false)
+        setIlceOpen(false)
+      }
     }
     document.addEventListener('mousedown', fn)
     return () => document.removeEventListener('mousedown', fn)
@@ -1091,6 +1104,7 @@ export default function CreateListingPage() {
       payload.country_code = form.countryCode || null;
       payload.country = form.country || null;
       payload.city = form.city || null;
+      payload.district = form.district || '';
       payload.neighborhood = form.neighborhood || null;
       payload.rent = parseFloat(form.price) || null;
       payload.currency = form.currency;
@@ -1451,87 +1465,142 @@ export default function CreateListingPage() {
               <CountrySelect
                 countryCode={form.countryCode}
                 lang={lang}
-                onSelect={(code, name) => { set("countryCode", code); set("country", name); setCountryIso(code); setCityQ(''); setCityOpen(false); }}
+                onSelect={(code, name) => { set("countryCode", code); setCountryIso(code); setSehirQ(''); setIlceQ(''); setSelectedStateIso(''); setForm(f => ({ ...f, country: name, city: '', district: '' })); }}
                 label={t.countryLabel}
                 placeholder={t.countryPlaceholder}
               />
-              {/* City */}
-              <div data-city-ac className="relative">
+              {/* Şehir */}
+              <div data-loc-ac className="relative">
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  {t.cityLabel || 'Şehir / İlçe'}
+                  Şehir
                 </label>
                 <input
-                  ref={cityRef}
+                  ref={sehirRef}
                   type="text"
-                  value={cityQ}
+                  value={sehirQ}
                   onChange={(e) => {
                     const v = e.target.value
-                    setCityQ(v)
+                    setSehirQ(v)
                     setForm(f => ({ ...f, city: v }))
+                    setIlceQ('')
+                    setSelectedStateIso('')
+                    setForm(f => ({ ...f, district: '' }))
                     if (v.length >= 1) {
-                      const rect = cityRef.current?.getBoundingClientRect()
-                      if (rect) setCityPos({ top: rect.bottom + 4, left: rect.left, width: rect.width })
-                      const allCities = City.getCitiesOfCountry(countryIso) || []
-                      const filtered = allCities
-                        .filter(c => c.name.toLowerCase().includes(v.toLowerCase()))
+                      const rect = sehirRef.current?.getBoundingClientRect()
+                      if (rect) setSehirPos({ top: rect.bottom + 4, left: rect.left, width: rect.width })
+                      const states = State.getStatesOfCountry(countryIso) || []
+                      const filtered = states
+                        .filter(s => s.name.toLowerCase().includes(v.toLowerCase()))
                         .slice(0, 8)
-                      setCitySug(filtered)
-                      setCityOpen(filtered.length > 0)
+                      setSehirSug(filtered)
+                      setSehirOpen(filtered.length > 0)
                     } else {
-                      setCitySug([])
-                      setCityOpen(false)
+                      setSehirOpen(false)
                     }
                   }}
-                  placeholder="İstanbul, Berlin, تهران..."
+                  placeholder="İstanbul, Ankara, Tehran..."
                   autoComplete="off"
                   className="w-full px-4 py-3 border border-gray-200 rounded-2xl
                     focus:outline-none focus:ring-2 focus:ring-orange-400
                     focus:border-transparent text-gray-900 bg-white text-sm"
                 />
-                {cityOpen && citySug.length > 0 && (
+                {sehirOpen && sehirSug.length > 0 && (
                   <div
-                    style={{
-                      position: 'fixed',
-                      top: cityPos.top,
-                      left: cityPos.left,
-                      width: cityPos.width,
-                      zIndex: 99999,
-                    }}
+                    style={{ position: 'fixed', top: sehirPos.top, left: sehirPos.left, width: sehirPos.width, zIndex: 99999 }}
                     className="bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-y-auto max-h-56"
                   >
-                    {citySug.map((c, i) => (
+                    {sehirSug.map((s, i) => (
                       <button
                         key={i}
                         type="button"
                         onMouseDown={(e) => {
                           e.preventDefault()
-                          setCityQ(c.name)
-                          setForm(f => ({ ...f, city: c.name }))
-                          setCityOpen(false)
+                          setSehirQ(s.name)
+                          setSelectedStateIso(s.isoCode)
+                          setForm(f => ({ ...f, city: s.name }))
+                          setSehirOpen(false)
+                          setIlceQ('')
+                          setForm(f => ({ ...f, district: '' }))
                         }}
                         className="w-full text-left px-4 py-3 hover:bg-orange-50
                           border-b border-gray-100 last:border-0 transition-colors"
                       >
-                        <p className="font-semibold text-sm text-gray-900">{c.name}</p>
-                        {c.stateCode && (
-                          <p className="text-xs text-gray-400">{c.stateCode} · {countryIso}</p>
-                        )}
+                        <p className="font-semibold text-sm text-gray-900">{s.name}</p>
                       </button>
                     ))}
                   </div>
                 )}
               </div>
 
-              {/* Neighborhood */}
+              {/* İlçe */}
+              <div data-loc-ac className="relative">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  İlçe
+                </label>
+                <input
+                  ref={ilceRef}
+                  type="text"
+                  value={ilceQ}
+                  onChange={(e) => {
+                    const v = e.target.value
+                    setIlceQ(v)
+                    setForm(f => ({ ...f, district: v }))
+                    if (v.length >= 1) {
+                      const rect = ilceRef.current?.getBoundingClientRect()
+                      if (rect) setIlcePos({ top: rect.bottom + 4, left: rect.left, width: rect.width })
+                      const cities = selectedStateIso
+                        ? (City.getCitiesOfState(countryIso, selectedStateIso) || [])
+                        : (City.getCitiesOfCountry(countryIso) || [])
+                      const filtered = cities
+                        .filter(c => c.name.toLowerCase().includes(v.toLowerCase()))
+                        .slice(0, 8)
+                      setIlceSug(filtered)
+                      setIlceOpen(filtered.length > 0)
+                    } else {
+                      setIlceOpen(false)
+                    }
+                  }}
+                  placeholder="Esenyurt, Kadıköy, Beşiktaş..."
+                  autoComplete="off"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl
+                    focus:outline-none focus:ring-2 focus:ring-orange-400
+                    focus:border-transparent text-gray-900 bg-white text-sm"
+                />
+                {ilceOpen && ilceSug.length > 0 && (
+                  <div
+                    style={{ position: 'fixed', top: ilcePos.top, left: ilcePos.left, width: ilcePos.width, zIndex: 99999 }}
+                    className="bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-y-auto max-h-56"
+                  >
+                    {ilceSug.map((c, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onMouseDown={(e) => {
+                          e.preventDefault()
+                          setIlceQ(c.name)
+                          setForm(f => ({ ...f, district: c.name }))
+                          setIlceOpen(false)
+                        }}
+                        className="w-full text-left px-4 py-3 hover:bg-orange-50
+                          border-b border-gray-100 last:border-0 transition-colors"
+                      >
+                        <p className="font-semibold text-sm text-gray-900">{c.name}</p>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Mahalle */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  {t.neighborhoodLabel || 'Mahalle / Semt'}
+                  Mahalle / Semt
                 </label>
                 <input
                   type="text"
                   value={form.neighborhood || ''}
                   onChange={(e) => setForm(f => ({ ...f, neighborhood: e.target.value }))}
-                  placeholder="Kadıköy, Beşiktaş, Mitte..."
+                  placeholder="Zafer Mh., Cumhuriyet Mh..."
                   className="w-full px-4 py-3 border border-gray-200 rounded-2xl
                     focus:outline-none focus:ring-2 focus:ring-orange-400
                     focus:border-transparent text-gray-900 bg-white text-sm"
