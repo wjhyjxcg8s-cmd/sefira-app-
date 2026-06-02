@@ -1488,14 +1488,33 @@ export default function CreateListingPage() {
                     if (v.length >= 1) {
                       const rect = sehirRef.current?.getBoundingClientRect()
                       if (rect) setSehirPos({ top: rect.bottom + 4, left: rect.left, width: rect.width })
-                      const states = State.getStatesOfCountry(countryIso) || []
-                      const filtered = states
-                        .filter(s => s.name.toLowerCase().includes(v.toLowerCase()))
+                      const normalize = (str: string) =>
+                        str.normalize('NFD').replace(/[̀-ͯ]/g, '')
+                           .replace(/İ/g, 'I').replace(/ı/g, 'i')
+                           .replace(/Ş/g, 'S').replace(/ş/g, 's')
+                           .replace(/Ğ/g, 'G').replace(/ğ/g, 'g')
+                           .replace(/Ü/g, 'U').replace(/ü/g, 'u')
+                           .replace(/Ö/g, 'O').replace(/ö/g, 'o')
+                           .replace(/Ç/g, 'C').replace(/ç/g, 'c')
+                           .toLowerCase()
+                      const filtered = (State.getStatesOfCountry(countryIso) || [])
+                        .filter(s => normalize(s.name).includes(normalize(v)))
                         .slice(0, 8)
                       setSehirSug(filtered)
                       setSehirOpen(filtered.length > 0)
                     } else {
                       setSehirOpen(false)
+                    }
+                  }}
+                  onFocus={() => {
+                    const rect = sehirRef.current?.getBoundingClientRect()
+                    if (rect) setSehirPos({ top: rect.bottom + 4, left: rect.left, width: rect.width })
+                    if (!sehirQ) {
+                      const all = (State.getStatesOfCountry(countryIso) || []).slice(0, 8)
+                      setSehirSug(all)
+                      setSehirOpen(all.length > 0)
+                    } else {
+                      setSehirOpen(sehirSug.length > 0)
                     }
                   }}
                   placeholder="İstanbul, Ankara, Tehran..."
@@ -1551,8 +1570,17 @@ export default function CreateListingPage() {
                       const cities = selectedStateIso
                         ? (City.getCitiesOfState(countryIso, selectedStateIso) || [])
                         : (City.getCitiesOfCountry(countryIso) || [])
+                      const normalize = (str: string) =>
+                        str.normalize('NFD').replace(/[̀-ͯ]/g, '')
+                           .replace(/İ/g, 'I').replace(/ı/g, 'i')
+                           .replace(/Ş/g, 'S').replace(/ş/g, 's')
+                           .replace(/Ğ/g, 'G').replace(/ğ/g, 'g')
+                           .replace(/Ü/g, 'U').replace(/ü/g, 'u')
+                           .replace(/Ö/g, 'O').replace(/ö/g, 'o')
+                           .replace(/Ç/g, 'C').replace(/ç/g, 'c')
+                           .toLowerCase()
                       const filtered = cities
-                        .filter(c => c.name.toLowerCase().includes(v.toLowerCase()))
+                        .filter(c => normalize(c.name).includes(normalize(v)))
                         .slice(0, 8)
                       setIlceSug(filtered)
                       setIlceOpen(filtered.length > 0)
