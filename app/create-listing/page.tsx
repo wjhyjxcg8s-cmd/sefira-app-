@@ -1464,29 +1464,33 @@ export default function CreateListingPage() {
                   type="button"
                   onClick={() => {
                     setSehirSug((State.getStatesOfCountry(countryIso) || []).slice(0, 50))
+                    setSehirSearchQ('')
                     setSehirOpen(true)
                   }}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl
-                    text-left text-sm bg-white focus:outline-none focus:ring-2
-                    focus:ring-orange-400"
+                  className="w-full px-4 py-3 bg-white border-2 border-gray-200
+                    rounded-xl text-left text-sm flex items-center justify-between
+                    focus:outline-none focus:border-orange-400"
                 >
                   <span className={sehirQ ? 'text-gray-900 font-medium' : 'text-gray-400'}>
                     {sehirQ || 'İstanbul, Ankara, Tehran...'}
                   </span>
+                  <span className="text-gray-400">▼</span>
                 </button>
               </div>
               {sehirOpen && (
-                <div className="fixed inset-0 z-[99999] flex flex-col justify-end">
+                <div className="fixed inset-0 z-50 flex flex-col justify-end">
                   <div className="absolute inset-0 bg-black/50" onClick={() => setSehirOpen(false)} />
-                  <div className="relative bg-white rounded-t-3xl max-h-[75vh] flex flex-col shadow-2xl">
+                  <div className="relative bg-white rounded-t-3xl max-h-[80vh] flex flex-col shadow-2xl">
                     <div className="flex justify-center pt-3 pb-2">
                       <div className="w-10 h-1 bg-gray-300 rounded-full" />
                     </div>
-                    <div className="px-4 pb-3 border-b border-gray-100">
-                      <p className="text-center font-bold text-gray-900 mb-3">Şehir Seçin</p>
+                    <div className="flex items-center justify-between px-5 pb-3 border-b border-gray-100">
+                      <h3 className="font-bold text-lg text-gray-900">Şehir Seç</h3>
+                      <button type="button" onClick={() => setSehirOpen(false)} className="text-gray-400 text-2xl leading-none">×</button>
+                    </div>
+                    <div className="px-4 py-3">
                       <input
                         type="text"
-                        autoFocus
                         value={sehirSearchQ}
                         onChange={(e) => {
                           const v = e.target.value
@@ -1549,34 +1553,40 @@ export default function CreateListingPage() {
                 </label>
                 <button
                   type="button"
+                  disabled={!sehirQ}
                   onClick={() => {
                     const cities = selectedStateIso
                       ? (City.getCitiesOfState(countryIso, selectedStateIso) || [])
                       : (City.getCitiesOfCountry(countryIso) || [])
                     setIlceSug(cities.slice(0, 50))
+                    setIlceSearchQ('')
                     setIlceOpen(true)
                   }}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl
-                    text-left text-sm bg-white focus:outline-none focus:ring-2
-                    focus:ring-orange-400"
+                  className="w-full px-4 py-3 bg-white border-2 border-gray-200
+                    rounded-xl text-left text-sm flex items-center justify-between
+                    focus:outline-none focus:border-orange-400
+                    disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className={ilceQ ? 'text-gray-900 font-medium' : 'text-gray-400'}>
                     {ilceQ || 'Esenyurt, Kadıköy, Beşiktaş...'}
                   </span>
+                  <span className="text-gray-400">▼</span>
                 </button>
               </div>
               {ilceOpen && (
-                <div className="fixed inset-0 z-[99999] flex flex-col justify-end">
+                <div className="fixed inset-0 z-50 flex flex-col justify-end">
                   <div className="absolute inset-0 bg-black/50" onClick={() => setIlceOpen(false)} />
-                  <div className="relative bg-white rounded-t-3xl max-h-[75vh] flex flex-col shadow-2xl">
+                  <div className="relative bg-white rounded-t-3xl max-h-[80vh] flex flex-col shadow-2xl">
                     <div className="flex justify-center pt-3 pb-2">
                       <div className="w-10 h-1 bg-gray-300 rounded-full" />
                     </div>
-                    <div className="px-4 pb-3 border-b border-gray-100">
-                      <p className="text-center font-bold text-gray-900 mb-3">İlçe Seçin</p>
+                    <div className="flex items-center justify-between px-5 pb-3 border-b border-gray-100">
+                      <h3 className="font-bold text-lg text-gray-900">İlçe Seç</h3>
+                      <button type="button" onClick={() => setIlceOpen(false)} className="text-gray-400 text-2xl leading-none">×</button>
+                    </div>
+                    <div className="px-4 py-3">
                       <input
                         type="text"
-                        autoFocus
                         value={ilceSearchQ}
                         onChange={(e) => {
                           const v = e.target.value
