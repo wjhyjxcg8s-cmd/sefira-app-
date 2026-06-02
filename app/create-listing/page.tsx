@@ -1015,26 +1015,13 @@ export default function CreateListingPage() {
   const [countryIso, setCountryIso] = useState('TR')
 
   const [sehirQ, setSehirQ] = useState('')
-  const [sehirSearchQ, setSehirSearchQ] = useState('')
   const [sehirSug, setSehirSug] = useState<IState[]>([])
   const [sehirOpen, setSehirOpen] = useState(false)
   const [selectedStateIso, setSelectedStateIso] = useState('')
 
   const [ilceQ, setIlceQ] = useState('')
-  const [ilceSearchQ, setIlceSearchQ] = useState('')
   const [ilceSug, setIlceSug] = useState<ICity[]>([])
   const [ilceOpen, setIlceOpen] = useState(false)
-
-  const [keyboardHeight, setKeyboardHeight] = useState(0)
-  useEffect(() => {
-    const onResize = () => {
-      const visualHeight = window.visualViewport?.height ?? window.innerHeight
-      const windowHeight = window.innerHeight
-      setKeyboardHeight(Math.max(0, windowHeight - visualHeight))
-    }
-    window.visualViewport?.addEventListener('resize', onResize)
-    return () => window.visualViewport?.removeEventListener('resize', onResize)
-  }, [])
 
   const photoInputRef = useRef<HTMLInputElement>(null);
 
@@ -1372,12 +1359,6 @@ export default function CreateListingPage() {
 
     return (
       <div dir={dir} className="min-h-screen bg-stone-50">
-        <style>{`
-          @keyframes sheetUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-          }
-        `}</style>
         <Navbar />
         <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
@@ -1491,198 +1472,133 @@ export default function CreateListingPage() {
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Şehir
                 </label>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSehirSug((State.getStatesOfCountry(countryIso) || []).slice(0, 50))
-                    setSehirSearchQ('')
-                    setSehirOpen(true)
-                  }}
-                  className="w-full px-4 py-3 bg-white border-2 border-gray-200
-                    rounded-xl text-left text-sm flex items-center justify-between
-                    focus:outline-none focus:border-orange-400"
-                >
-                  <span className={sehirQ ? 'text-gray-900 font-medium' : 'text-gray-400'}>
-                    {sehirQ || 'İstanbul, Ankara, Tehran...'}
-                  </span>
-                  <span className="text-gray-400">▼</span>
-                </button>
-              </div>
-              {sehirOpen && (
-                <div className="fixed inset-0 z-50 flex flex-col justify-end">
-                  <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" style={{ bottom: 0 }} onClick={() => setSehirOpen(false)} />
-                  <div className="relative bg-white rounded-t-3xl flex flex-col w-full max-w-md mx-auto shadow-2xl" style={{maxHeight: `calc(78vh - ${keyboardHeight}px)`, animation: 'sheetUp 0.25s ease-out', paddingBottom: keyboardHeight > 0 ? `${keyboardHeight}px` : '24px'}}>
-                    <div className="flex justify-center pt-3 pb-1">
-                      <div className="w-9 h-1.5 bg-gray-300 rounded-full" />
-                    </div>
-                    <div className="flex items-center justify-between px-5 pt-2 pb-3">
-                      <h3 className="font-bold text-xl text-gray-900 tracking-tight">Şehir Seç</h3>
-                      <button
-                        type="button"
-                        onClick={() => setSehirOpen(false)}
-                        className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors"
-                      >
-                        <span className="text-lg leading-none">×</span>
-                      </button>
-                    </div>
-                    <div className="px-5 pb-3">
-                      <div className="relative">
-                        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
-                        <input
-                          type="text"
-                          value={sehirSearchQ}
-                          onChange={(e) => {
-                            const v = e.target.value
-                            setSehirSearchQ(v)
-                            const all = State.getStatesOfCountry(countryIso) || []
-                            const q = normalize(v)
-                            setSehirSug(
-                              v.length === 0
-                                ? all.slice(0, 50)
-                                : all.filter(s => normalize(s.name).startsWith(q))
-                                    .concat(
-                                      all.filter(s =>
-                                        !normalize(s.name).startsWith(q) &&
-                                        normalize(s.name).includes(q)
-                                      )
-                                    )
-                            )
-                          }}
-                          placeholder="Şehir ara..."
-                          className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:bg-white transition-colors"
-                        />
-                      </div>
-                    </div>
-                    <div className="overflow-y-auto flex-1 px-3 divide-y divide-gray-100">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={sehirQ}
+                    onChange={e => {
+                      const v = e.target.value
+                      setSehirQ(v)
+                      setForm(f => ({...f, city: v}))
+                      const all = State.getStatesOfCountry(countryIso) || []
+                      const q = normalize(v)
+                      if (v.length === 0) {
+                        setSehirSug(all.slice(0, 6))
+                        setSehirOpen(true)
+                      } else {
+                        const starts = all.filter(s => normalize(s.name).startsWith(q))
+                        const includes = all.filter(s =>
+                          !normalize(s.name).startsWith(q) && normalize(s.name).includes(q)
+                        )
+                        setSehirSug([...starts, ...includes].slice(0, 6))
+                        setSehirOpen(starts.length + includes.length > 0)
+                      }
+                    }}
+                    onFocus={() => {
+                      const all = State.getStatesOfCountry(countryIso) || []
+                      setSehirSug(all.slice(0, 6))
+                      setSehirOpen(all.length > 0)
+                    }}
+                    onBlur={() => setTimeout(() => setSehirOpen(false), 150)}
+                    placeholder="İstanbul, Ankara, Tehran..."
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl
+                      text-gray-900 placeholder-gray-400 focus:outline-none
+                      focus:border-orange-400 transition-colors"
+                  />
+                  {sehirOpen && sehirSug.length > 0 && (
+                    <div className="absolute left-0 right-0 top-full mt-1 z-30
+                      bg-white border border-gray-200 rounded-xl shadow-lg
+                      overflow-hidden">
                       {sehirSug.map((s, i) => (
                         <button
                           key={i}
                           type="button"
+                          onMouseDown={e => e.preventDefault()}
                           onClick={() => {
                             setSehirQ(s.name)
-                            setSehirSearchQ('')
                             setSelectedStateIso(s.isoCode)
-                            setForm(f => ({ ...f, city: s.name }))
+                            setForm(f => ({...f, city: s.name}))
                             setSehirOpen(false)
                             setIlceQ('')
-                            setForm(f => ({ ...f, district: '' }))
+                            setForm(f => ({...f, district: ''}))
                           }}
-                          className={`w-full text-left py-3.5 flex items-center justify-between transition-colors border-l-4 pl-3 pr-4 ${sehirQ === s.name ? 'border-orange-400 bg-orange-50' : 'border-transparent hover:bg-gray-50 active:bg-gray-100'}`}
+                          className="w-full text-left px-4 py-3 text-[15px]
+                            text-gray-700 hover:bg-orange-50 hover:text-orange-600
+                            border-b border-gray-100 last:border-0 transition-colors"
                         >
-                          <span className={`text-[15px] ${sehirQ === s.name ? 'text-orange-600 font-semibold' : 'text-gray-700 font-normal'}`}>{s.name}</span>
-                          {sehirQ === s.name && (
-                            <span className="text-orange-500">✓</span>
-                          )}
+                          {s.name}
                         </button>
                       ))}
-                      {sehirSug.length === 0 && (
-                        <p className="text-center text-gray-400 text-sm py-10">Sonuç bulunamadı</p>
-                      )}
                     </div>
-                  </div>
+                  )}
                 </div>
-              )}
+              </div>
 
               {/* İlçe */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   İlçe
                 </label>
-                <button
-                  type="button"
-                  disabled={!sehirQ}
-                  onClick={() => {
-                    const cities = selectedStateIso
-                      ? (City.getCitiesOfState(countryIso, selectedStateIso) || [])
-                      : (City.getCitiesOfCountry(countryIso) || [])
-                    setIlceSug(cities.slice(0, 50))
-                    setIlceSearchQ('')
-                    setIlceOpen(true)
-                  }}
-                  className="w-full px-4 py-3 bg-white border-2 border-gray-200
-                    rounded-xl text-left text-sm flex items-center justify-between
-                    focus:outline-none focus:border-orange-400
-                    disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <span className={ilceQ ? 'text-gray-900 font-medium' : 'text-gray-400'}>
-                    {ilceQ || 'Esenyurt, Kadıköy, Beşiktaş...'}
-                  </span>
-                  <span className="text-gray-400">▼</span>
-                </button>
-              </div>
-              {ilceOpen && (
-                <div className="fixed inset-0 z-50 flex flex-col justify-end">
-                  <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" style={{ bottom: 0 }} onClick={() => setIlceOpen(false)} />
-                  <div className="relative bg-white rounded-t-3xl flex flex-col w-full max-w-md mx-auto shadow-2xl" style={{maxHeight: `calc(78vh - ${keyboardHeight}px)`, animation: 'sheetUp 0.25s ease-out', paddingBottom: keyboardHeight > 0 ? `${keyboardHeight}px` : '24px'}}>
-                    <div className="flex justify-center pt-3 pb-1">
-                      <div className="w-9 h-1.5 bg-gray-300 rounded-full" />
-                    </div>
-                    <div className="flex items-center justify-between px-5 pt-2 pb-3">
-                      <h3 className="font-bold text-xl text-gray-900 tracking-tight">İlçe Seç</h3>
-                      <button
-                        type="button"
-                        onClick={() => setIlceOpen(false)}
-                        className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors"
-                      >
-                        <span className="text-lg leading-none">×</span>
-                      </button>
-                    </div>
-                    <div className="px-5 pb-3">
-                      <div className="relative">
-                        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
-                        <input
-                          type="text"
-                          value={ilceSearchQ}
-                          onChange={(e) => {
-                            const v = e.target.value
-                            setIlceSearchQ(v)
-                            const cities = selectedStateIso
-                              ? (City.getCitiesOfState(countryIso, selectedStateIso) || [])
-                              : (City.getCitiesOfCountry(countryIso) || [])
-                            const q = normalize(v)
-                            setIlceSug(
-                              v.length === 0
-                                ? cities.slice(0, 50)
-                                : cities.filter(c => normalize(c.name).startsWith(q))
-                                    .concat(
-                                      cities.filter(c =>
-                                        !normalize(c.name).startsWith(q) &&
-                                        normalize(c.name).includes(q)
-                                      )
-                                    )
-                            )
-                          }}
-                          placeholder="İlçe ara..."
-                          className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-400 focus:bg-white transition-colors"
-                        />
-                      </div>
-                    </div>
-                    <div className="overflow-y-auto flex-1 px-3 divide-y divide-gray-100">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={ilceQ}
+                    disabled={!sehirQ}
+                    onChange={e => {
+                      const v = e.target.value
+                      setIlceQ(v)
+                      setForm(f => ({...f, district: v}))
+                      const cities = City.getCitiesOfState(countryIso, selectedStateIso) || []
+                      const q = normalize(v)
+                      if (v.length === 0) {
+                        setIlceSug(cities.slice(0, 6))
+                        setIlceOpen(true)
+                      } else {
+                        const starts = cities.filter(c => normalize(c.name).startsWith(q))
+                        const includes = cities.filter(c =>
+                          !normalize(c.name).startsWith(q) && normalize(c.name).includes(q)
+                        )
+                        setIlceSug([...starts, ...includes].slice(0, 6))
+                        setIlceOpen(starts.length + includes.length > 0)
+                      }
+                    }}
+                    onFocus={() => {
+                      const cities = City.getCitiesOfState(countryIso, selectedStateIso) || []
+                      setIlceSug(cities.slice(0, 6))
+                      setIlceOpen(cities.length > 0)
+                    }}
+                    onBlur={() => setTimeout(() => setIlceOpen(false), 150)}
+                    placeholder="Esenyurt, Kadıköy, Beşiktaş..."
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl
+                      text-gray-900 placeholder-gray-400 focus:outline-none
+                      focus:border-orange-400 transition-colors
+                      disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50"
+                  />
+                  {ilceOpen && ilceSug.length > 0 && (
+                    <div className="absolute left-0 right-0 top-full mt-1 z-30
+                      bg-white border border-gray-200 rounded-xl shadow-lg
+                      overflow-hidden">
                       {ilceSug.map((c, i) => (
                         <button
                           key={i}
                           type="button"
+                          onMouseDown={e => e.preventDefault()}
                           onClick={() => {
                             setIlceQ(c.name)
-                            setIlceSearchQ('')
-                            setForm(f => ({ ...f, district: c.name }))
+                            setForm(f => ({...f, district: c.name}))
                             setIlceOpen(false)
                           }}
-                          className={`w-full text-left py-3.5 flex items-center justify-between transition-colors border-l-4 pl-3 pr-4 ${ilceQ === c.name ? 'border-orange-400 bg-orange-50' : 'border-transparent hover:bg-gray-50 active:bg-gray-100'}`}
+                          className="w-full text-left px-4 py-3 text-[15px]
+                            text-gray-700 hover:bg-orange-50 hover:text-orange-600
+                            border-b border-gray-100 last:border-0 transition-colors"
                         >
-                          <span className={`text-[15px] ${ilceQ === c.name ? 'text-orange-600 font-semibold' : 'text-gray-700 font-normal'}`}>{c.name}</span>
-                          {ilceQ === c.name && (
-                            <span className="text-orange-500">✓</span>
-                          )}
+                          {c.name}
                         </button>
                       ))}
-                      {ilceSug.length === 0 && (
-                        <p className="text-center text-gray-400 text-sm py-10">Sonuç bulunamadı</p>
-                      )}
                     </div>
-                  </div>
+                  )}
                 </div>
-              )}
+              </div>
 
               {/* Mahalle */}
               <div>
