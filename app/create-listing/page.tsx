@@ -1006,6 +1006,8 @@ const normalize = (str: string): string =>
     .toLowerCase()
     .trim()
 
+const ARAB_COUNTRIES = new Set(['SA','AE','EG','IQ','SY','JO','LB','KW','QA','BH','OM','YE','LY','TN','DZ','MA','SD','MR','SO','DJ','KM','PS'])
+
 const countryCityExamples: Record<string, string> = {
   'TR': 'İstanbul, Ankara, İzmir...',
   'IR': 'Tehran, Mashhad, Shiraz...',
@@ -1629,7 +1631,7 @@ export default function CreateListingPage() {
                           setSehirSug([...starts, ...includes].slice(0, 6))
                           setSehirOpen(starts.length + includes.length > 0)
                         }
-                      } else {
+                      } else if (!(lang === 'ar' && ARAB_COUNTRIES.has(countryIso))) {
                         const cityList = countryIso === 'IR' && lang === 'fa'
                           ? iranCities
                           : countryIso === 'RU' && lang === 'ru'
@@ -1658,7 +1660,7 @@ export default function CreateListingPage() {
                         const all = Object.keys(turkiyeData)
                         setSehirSug(all.slice(0, 6))
                         setSehirOpen(all.length > 0)
-                      } else {
+                      } else if (!(lang === 'ar' && ARAB_COUNTRIES.has(countryIso))) {
                         const cityList = countryIso === 'IR' && lang === 'fa'
                           ? iranCities
                           : countryIso === 'RU' && lang === 'ru'
@@ -1674,7 +1676,7 @@ export default function CreateListingPage() {
                       }
                     }}
                     onBlur={() => setTimeout(() => setSehirOpen(false), 150)}
-                    placeholder={countryCityExamples[countryIso] || 'City...'}
+                    placeholder={lang === 'ar' && ARAB_COUNTRIES.has(countryIso) ? 'اكتب اسم مدينتك...' : (countryCityExamples[countryIso] || 'City...')}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-colors"
                   />
                   {sehirOpen && sehirSug.length > 0 && (

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.106.1",
+    "cities.json": "^1.1.59",
     "country-state-city": "^3.2.1",
     "framer-motion": "^12.40.0",
     "lottie-react": "^2.4.1",
