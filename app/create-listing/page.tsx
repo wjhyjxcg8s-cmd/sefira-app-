@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
-import PlacesAutocomplete from './PlacesAutocomplete'
+import { City, ICity } from 'country-state-city'
 
 // ── Countries ─────────────────────────────────────────────────────────────────
 const TOP_COUNTRY_CODES = ["TR", "IR", "DE", "AE", "GB", "RU", "US", "FR", "ES"];
@@ -996,6 +996,22 @@ export default function CreateListingPage() {
   const [submitted, setSubmitted] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
 
+  const [countryIso, setCountryIso] = useState('TR')
+  const [cityQ, setCityQ] = useState('')
+  const [citySug, setCitySug] = useState<ICity[]>([])
+  const [cityOpen, setCityOpen] = useState(false)
+  const cityRef = useRef<HTMLInputElement>(null)
+  const [cityPos, setCityPos] = useState({ top: 0, left: 0, width: 0 })
+
+  useEffect(() => {
+    const fn = (e: MouseEvent) => {
+      const t = e.target as HTMLElement
+      if (!t.closest('[data-city-ac]')) setCityOpen(false)
+    }
+    document.addEventListener('mousedown', fn)
+    return () => document.removeEventListener('mousedown', fn)
+  }, [])
+
   const photoInputRef = useRef<HTMLInputElement>(null);
 
   const set = <K extends keyof ListingForm>(key: K, val: ListingForm[K]) =>
@@ -1435,31 +1451,92 @@ export default function CreateListingPage() {
               <CountrySelect
                 countryCode={form.countryCode}
                 lang={lang}
-                onSelect={(code, name) => { set("countryCode", code); set("country", name); }}
+                onSelect={(code, name) => { set("countryCode", code); set("country", name); setCountryIso(code); setCityQ(''); setCityOpen(false); }}
                 label={t.countryLabel}
                 placeholder={t.countryPlaceholder}
               />
               {/* City */}
-              <PlacesAutocomplete
-                value={form.city || ''}
-                onChange={(v) => setForm(prev => ({ ...prev, city: v }))}
-                placeholder="İstanbul, Berlin, Tehran..."
-                lang={lang}
-                type="city"
-                label={t.cityLabel || 'Şehir / İlçe'}
-                isRTL={lang === 'fa' || lang === 'ar'}
-              />
+              <div data-city-ac className="relative">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  {t.cityLabel || 'Şehir / İlçe'}
+                </label>
+                <input
+                  ref={cityRef}
+                  type="text"
+                  value={cityQ}
+                  onChange={(e) => {
+                    const v = e.target.value
+                    setCityQ(v)
+                    setForm(f => ({ ...f, city: v }))
+                    if (v.length >= 1) {
+                      const rect = cityRef.current?.getBoundingClientRect()
+                      if (rect) setCityPos({ top: rect.bottom + 4, left: rect.left, width: rect.width })
+                      const allCities = City.getCitiesOfCountry(countryIso) || []
+                      const filtered = allCities
+                        .filter(c => c.name.toLowerCase().includes(v.toLowerCase()))
+                        .slice(0, 8)
+                      setCitySug(filtered)
+                      setCityOpen(filtered.length > 0)
+                    } else {
+                      setCitySug([])
+                      setCityOpen(false)
+                    }
+                  }}
+                  placeholder="İstanbul, Berlin, تهران..."
+                  autoComplete="off"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl
+                    focus:outline-none focus:ring-2 focus:ring-orange-400
+                    focus:border-transparent text-gray-900 bg-white text-sm"
+                />
+                {cityOpen && citySug.length > 0 && (
+                  <div
+                    style={{
+                      position: 'fixed',
+                      top: cityPos.top,
+                      left: cityPos.left,
+                      width: cityPos.width,
+                      zIndex: 99999,
+                    }}
+                    className="bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-y-auto max-h-56"
+                  >
+                    {citySug.map((c, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onMouseDown={(e) => {
+                          e.preventDefault()
+                          setCityQ(c.name)
+                          setForm(f => ({ ...f, city: c.name }))
+                          setCityOpen(false)
+                        }}
+                        className="w-full text-left px-4 py-3 hover:bg-orange-50
+                          border-b border-gray-100 last:border-0 transition-colors"
+                      >
+                        <p className="font-semibold text-sm text-gray-900">{c.name}</p>
+                        {c.stateCode && (
+                          <p className="text-xs text-gray-400">{c.stateCode} · {countryIso}</p>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
 
               {/* Neighborhood */}
-              <PlacesAutocomplete
-                value={form.neighborhood || ''}
-                onChange={(v) => setForm(prev => ({ ...prev, neighborhood: v }))}
-                placeholder="Kadıköy, Beşiktaş..."
-                lang={lang}
-                type="neighborhood"
-                label={t.neighborhoodLabel || 'Mahalle / Semt'}
-                isRTL={lang === 'fa' || lang === 'ar'}
-              />
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  {t.neighborhoodLabel || 'Mahalle / Semt'}
+                </label>
+                <input
+                  type="text"
+                  value={form.neighborhood || ''}
+                  onChange={(e) => setForm(f => ({ ...f, neighborhood: e.target.value }))}
+                  placeholder="Kadıköy, Beşiktaş, Mitte..."
+                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl
+                    focus:outline-none focus:ring-2 focus:ring-orange-400
+                    focus:border-transparent text-gray-900 bg-white text-sm"
+                />
+              </div>
             </div>
 
             {/* 7. Monthly cost */}
