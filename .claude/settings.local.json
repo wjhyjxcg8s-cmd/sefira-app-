@@ -24,7 +24,9 @@
       "Bash(curl -o \"e:/sefıra-web/sefira-app/public/iran-cities.json\" https://raw.githubusercontent.com/sajaddp/list-of-cities-in-Iran/main/dist/cities.json)",
       "Bash(Get-Content \"e:/sefıra-web/sefira-app/public/iran-cities.json\")",
       "Bash(curl -s \"https://api.github.com/repos/sajaddp/list-of-cities-in-Iran/contents/\")",
-      "Bash(curl -s \"https://api.github.com/repos/sajaddp/list-of-cities-in-Iran/contents/dist\")"
+      "Bash(curl -s \"https://api.github.com/repos/sajaddp/list-of-cities-in-Iran/contents/dist\")",
+      "Bash(curl -s \"https://raw.githubusercontent.com/arbaev/russia-cities/master/russia-cities.json\")",
+      "Bash(curl -o \"e:/sefıra-web/sefira-app/public/russia-cities.json\" \"https://raw.githubusercontent.com/arbaev/russia-cities/master/russia-cities.json\")"
     ],
     "additionalDirectories": [
       "e:\\sefıra-web\\sefira-app\\app\\api\\admin\\channels"

@@ -1100,6 +1100,18 @@ export default function CreateListingPage() {
     }
   }, [countryIso])
 
+  const [russiaCities, setRussiaCities] = useState<string[]>([])
+  useEffect(() => {
+    if (countryIso === 'RU') {
+      fetch('/russia-cities.json')
+        .then(r => r.json())
+        .then((data: {name: string}[]) => {
+          setRussiaCities(data.map(c => c.name).sort())
+        })
+        .catch(() => {})
+    }
+  }, [countryIso])
+
   useEffect(() => {
     if (countryIso === 'TR') {
       fetch('/turkiye-data.json')
@@ -1612,6 +1624,8 @@ export default function CreateListingPage() {
                       } else {
                         const cityList = countryIso === 'IR'
                           ? iranCities
+                          : countryIso === 'RU'
+                          ? russiaCities
                           : (State.getStatesOfCountry(countryIso) || []).map(s => s.name)
                         if (v.length === 0) {
                           setSehirSug(cityList.slice(0, 8))
@@ -1634,6 +1648,8 @@ export default function CreateListingPage() {
                       } else {
                         const cityList = countryIso === 'IR'
                           ? iranCities
+                          : countryIso === 'RU'
+                          ? russiaCities
                           : (State.getStatesOfCountry(countryIso) || []).map(s => s.name)
                         setSehirSug(cityList.slice(0, 8))
                         setSehirOpen(cityList.length > 0)
