@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
-import { City, State } from 'country-state-city'
+import { City, Country, State } from 'country-state-city'
 
 // ── Countries ─────────────────────────────────────────────────────────────────
 const TOP_COUNTRY_CODES = ["TR", "IR", "DE", "AE", "GB", "RU", "US", "FR", "ES"];
@@ -1100,17 +1100,25 @@ export default function CreateListingPage() {
     }
   }, [countryIso])
 
-  const [russiaCities, setRussiaCities] = useState<string[]>([])
+  const [russiaCitiesRU, setRussiaCitiesRU] = useState<string[]>([])
   useEffect(() => {
-    if (countryIso === 'RU') {
+    if (countryIso === 'RU' && lang === 'ru') {
       fetch('/russia-cities.json')
         .then(r => r.json())
         .then((data: {name: string}[]) => {
-          setRussiaCities(data.map(c => c.name).sort())
+          setRussiaCitiesRU(data.map(c => c.name).sort())
         })
         .catch(() => {})
     }
-  }, [countryIso])
+  }, [countryIso, lang])
+
+  const [worldCities, setWorldCities] = useState<Record<string, string[]>>({})
+  useEffect(() => {
+    fetch('/world-cities.json')
+      .then(r => r.json())
+      .then(setWorldCities)
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     if (countryIso === 'TR') {
@@ -1622,11 +1630,16 @@ export default function CreateListingPage() {
                           setSehirOpen(starts.length + includes.length > 0)
                         }
                       } else {
-                        const cityList = countryIso === 'IR'
+                        const cityList = countryIso === 'IR' && lang === 'fa'
                           ? iranCities
-                          : countryIso === 'RU'
-                          ? russiaCities
-                          : (State.getStatesOfCountry(countryIso) || []).map(s => s.name)
+                          : countryIso === 'RU' && lang === 'ru'
+                          ? russiaCitiesRU
+                          : (() => {
+                              const countryName = Country.getCountryByCode(countryIso)?.name || ''
+                              return worldCities[countryName]?.length
+                                ? worldCities[countryName]
+                                : (State.getStatesOfCountry(countryIso) || []).map(s => s.name)
+                            })()
                         if (v.length === 0) {
                           setSehirSug(cityList.slice(0, 8))
                           setSehirOpen(true)
@@ -1646,11 +1659,16 @@ export default function CreateListingPage() {
                         setSehirSug(all.slice(0, 6))
                         setSehirOpen(all.length > 0)
                       } else {
-                        const cityList = countryIso === 'IR'
+                        const cityList = countryIso === 'IR' && lang === 'fa'
                           ? iranCities
-                          : countryIso === 'RU'
-                          ? russiaCities
-                          : (State.getStatesOfCountry(countryIso) || []).map(s => s.name)
+                          : countryIso === 'RU' && lang === 'ru'
+                          ? russiaCitiesRU
+                          : (() => {
+                              const countryName = Country.getCountryByCode(countryIso)?.name || ''
+                              return worldCities[countryName]?.length
+                                ? worldCities[countryName]
+                                : (State.getStatesOfCountry(countryIso) || []).map(s => s.name)
+                            })()
                         setSehirSug(cityList.slice(0, 8))
                         setSehirOpen(cityList.length > 0)
                       }
