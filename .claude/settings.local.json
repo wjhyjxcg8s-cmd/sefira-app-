@@ -18,7 +18,9 @@
       "Bash(node -e ' *)",
       "Bash(node -e \"var src=require\\('fs'\\).readFileSync\\(require\\('path'\\).join\\(process.cwd\\(\\),'app/security/page.tsx'\\),'utf8'\\);var lines=src.split\\('\\\\n'\\);var issues=0;lines.forEach\\(function\\(line,i\\){var t=line.trim\\(\\);if\\(!t.startsWith\\('\\\\\"'\\)\\)return;var count=0,j=0;while\\(j<t.length\\){if\\(t[j]==='\\\\\\\\\\\\\\\\'\\){j+=2;return;}if\\(t[j]==='\\\\\"'\\)count++;j++;}if\\(count>2\\){console.log\\('Line '+\\(i+1\\)+': '+count+' quotes'\\);issues++;}}\\);console.log\\(issues===0?'OK':'issues: '+issues\\);\")",
       "Bash(node check_quotes.js)",
-      "Bash(Remove-Item \"e:\\\\sefıra-web\\\\sefira-app\\\\app\\\\create-listing\\\\PlacesAutocomplete.tsx\")"
+      "Bash(Remove-Item \"e:\\\\sefıra-web\\\\sefira-app\\\\app\\\\create-listing\\\\PlacesAutocomplete.tsx\")",
+      "Bash(curl -o \"e:/sefira-web/sefira-app/public/turkiye-data.json\" \"https://raw.githubusercontent.com/bertugfahriozer/il_ilce_mahalle/master/il-ilce-mahalle.json\")",
+      "PowerShell(Invoke-WebRequest -Uri \"https://api.github.com/repos/bertugfahriozer/il_ilce_mahalle/contents\" -UseBasicParsing)"
     ],
     "additionalDirectories": [
       "e:\\sefıra-web\\sefira-app\\app\\api\\admin\\channels"

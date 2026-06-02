@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
-import { City, State, ICity, IState } from 'country-state-city'
+import { City, State } from 'country-state-city'
 
 // ── Countries ─────────────────────────────────────────────────────────────────
 const TOP_COUNTRY_CODES = ["TR", "IR", "DE", "AE", "GB", "RU", "US", "FR", "ES"];
@@ -1013,15 +1013,31 @@ export default function CreateListingPage() {
   const [validationError, setValidationError] = useState<string | null>(null);
 
   const [countryIso, setCountryIso] = useState('TR')
+  const [turkiyeData, setTurkiyeData] = useState<Record<string, Record<string, string[]>>>({})
+  const [selectedIl, setSelectedIl] = useState('')
+  const [selectedIlce, setSelectedIlce] = useState('')
 
   const [sehirQ, setSehirQ] = useState('')
-  const [sehirSug, setSehirSug] = useState<IState[]>([])
+  const [sehirSug, setSehirSug] = useState<string[]>([])
   const [sehirOpen, setSehirOpen] = useState(false)
   const [selectedStateIso, setSelectedStateIso] = useState('')
 
   const [ilceQ, setIlceQ] = useState('')
-  const [ilceSug, setIlceSug] = useState<ICity[]>([])
+  const [ilceSug, setIlceSug] = useState<string[]>([])
   const [ilceOpen, setIlceOpen] = useState(false)
+
+  const [mahalleQ, setMahalleQ] = useState('')
+  const [mahalleSug, setMahalleSug] = useState<string[]>([])
+  const [mahalleOpen, setMahalleOpen] = useState(false)
+
+  useEffect(() => {
+    if (countryIso === 'TR') {
+      fetch('/turkiye-data.json')
+        .then(r => r.json())
+        .then(setTurkiyeData)
+        .catch(() => {})
+    }
+  }, [countryIso])
 
   const photoInputRef = useRef<HTMLInputElement>(null);
 
@@ -1463,7 +1479,7 @@ export default function CreateListingPage() {
               <CountrySelect
                 countryCode={form.countryCode}
                 lang={lang}
-                onSelect={(code, name) => { set("countryCode", code); setCountryIso(code); setSehirQ(''); setIlceQ(''); setSelectedStateIso(''); setForm(f => ({ ...f, country: name, city: '', district: '' })); }}
+                onSelect={(code, name) => { set("countryCode", code); setCountryIso(code); setSehirQ(''); setIlceQ(''); setSelectedStateIso(''); setSelectedIl(''); setSelectedIlce(''); setMahalleQ(''); setForm(f => ({ ...f, country: name, city: '', district: '', neighborhood: '' })); }}
                 label={t.countryLabel}
                 placeholder={t.countryPlaceholder}
               />
@@ -1476,57 +1492,65 @@ export default function CreateListingPage() {
                   <input
                     type="text"
                     value={sehirQ}
+                    readOnly={countryIso === 'TR'}
                     onChange={e => {
+                      if (countryIso === 'TR') return
                       const v = e.target.value
                       setSehirQ(v)
                       setForm(f => ({...f, city: v}))
                       const all = State.getStatesOfCountry(countryIso) || []
                       const q = normalize(v)
                       if (v.length === 0) {
-                        setSehirSug(all.slice(0, 6))
+                        setSehirSug(all.slice(0, 6).map(s => s.name))
                         setSehirOpen(true)
                       } else {
                         const starts = all.filter(s => normalize(s.name).startsWith(q))
                         const includes = all.filter(s =>
                           !normalize(s.name).startsWith(q) && normalize(s.name).includes(q)
                         )
-                        setSehirSug([...starts, ...includes].slice(0, 6))
+                        setSehirSug([...starts, ...includes].slice(0, 6).map(s => s.name))
                         setSehirOpen(starts.length + includes.length > 0)
                       }
                     }}
                     onFocus={() => {
-                      const all = State.getStatesOfCountry(countryIso) || []
-                      setSehirSug(all.slice(0, 6))
-                      setSehirOpen(all.length > 0)
+                      if (countryIso === 'TR') {
+                        const all = Object.keys(turkiyeData)
+                        setSehirSug(all)
+                        setSehirOpen(all.length > 0)
+                      } else {
+                        const all = State.getStatesOfCountry(countryIso) || []
+                        setSehirSug(all.slice(0, 6).map(s => s.name))
+                        setSehirOpen(all.length > 0)
+                      }
                     }}
                     onBlur={() => setTimeout(() => setSehirOpen(false), 150)}
                     placeholder="İstanbul, Ankara, Tehran..."
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl
-                      text-gray-900 placeholder-gray-400 focus:outline-none
-                      focus:border-orange-400 transition-colors"
+                    className={`w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-colors${countryIso === 'TR' ? ' cursor-pointer' : ''}`}
                   />
                   {sehirOpen && sehirSug.length > 0 && (
-                    <div className="absolute left-0 right-0 top-full mt-1 z-30
-                      bg-white border border-gray-200 rounded-xl shadow-lg
-                      overflow-hidden">
+                    <div className="absolute left-0 right-0 top-full mt-1 z-30 bg-white border border-gray-200 rounded-xl shadow-lg overflow-y-auto max-h-48">
                       {sehirSug.map((s, i) => (
                         <button
                           key={i}
                           type="button"
                           onMouseDown={e => e.preventDefault()}
                           onClick={() => {
-                            setSehirQ(s.name)
-                            setSelectedStateIso(s.isoCode)
-                            setForm(f => ({...f, city: s.name}))
+                            setSehirQ(s)
+                            setSelectedIl(s)
+                            setForm(f => ({...f, city: s}))
                             setSehirOpen(false)
                             setIlceQ('')
-                            setForm(f => ({...f, district: ''}))
+                            setSelectedIlce('')
+                            setMahalleQ('')
+                            setForm(f => ({...f, district: '', neighborhood: ''}))
+                            if (countryIso !== 'TR') {
+                              const stateObj = (State.getStatesOfCountry(countryIso) || []).find(st => st.name === s)
+                              if (stateObj) setSelectedStateIso(stateObj.isoCode)
+                            }
                           }}
-                          className="w-full text-left px-4 py-3 text-[15px]
-                            text-gray-700 hover:bg-orange-50 hover:text-orange-600
-                            border-b border-gray-100 last:border-0 transition-colors"
+                          className="w-full text-left px-4 py-3 text-[15px] text-gray-700 hover:bg-orange-50 hover:text-orange-600 border-b border-gray-100 last:border-0 transition-colors"
                         >
-                          {s.name}
+                          {s}
                         </button>
                       ))}
                     </div>
@@ -1544,55 +1568,61 @@ export default function CreateListingPage() {
                     type="text"
                     value={ilceQ}
                     disabled={!sehirQ}
+                    readOnly={countryIso === 'TR'}
                     onChange={e => {
+                      if (countryIso === 'TR') return
                       const v = e.target.value
                       setIlceQ(v)
                       setForm(f => ({...f, district: v}))
                       const cities = City.getCitiesOfState(countryIso, selectedStateIso) || []
                       const q = normalize(v)
                       if (v.length === 0) {
-                        setIlceSug(cities.slice(0, 6))
+                        setIlceSug(cities.slice(0, 6).map(c => c.name))
                         setIlceOpen(true)
                       } else {
                         const starts = cities.filter(c => normalize(c.name).startsWith(q))
                         const includes = cities.filter(c =>
                           !normalize(c.name).startsWith(q) && normalize(c.name).includes(q)
                         )
-                        setIlceSug([...starts, ...includes].slice(0, 6))
+                        setIlceSug([...starts, ...includes].slice(0, 6).map(c => c.name))
                         setIlceOpen(starts.length + includes.length > 0)
                       }
                     }}
                     onFocus={() => {
-                      const cities = City.getCitiesOfState(countryIso, selectedStateIso) || []
-                      setIlceSug(cities.slice(0, 6))
-                      setIlceOpen(cities.length > 0)
+                      if (countryIso === 'TR') {
+                        const ilceler = Object.keys(turkiyeData[selectedIl] || {})
+                        setIlceSug(ilceler)
+                        setIlceOpen(ilceler.length > 0)
+                      } else {
+                        const cities = City.getCitiesOfState(countryIso, selectedStateIso) || []
+                        setIlceSug(cities.slice(0, 6).map(c => c.name))
+                        setIlceOpen(cities.length > 0)
+                      }
                     }}
                     onBlur={() => setTimeout(() => setIlceOpen(false), 150)}
                     placeholder="Esenyurt, Kadıköy, Beşiktaş..."
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl
-                      text-gray-900 placeholder-gray-400 focus:outline-none
-                      focus:border-orange-400 transition-colors
-                      disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50"
+                    className={`w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50${countryIso === 'TR' && sehirQ ? ' cursor-pointer' : ''}`}
                   />
                   {ilceOpen && ilceSug.length > 0 && (
-                    <div className="absolute left-0 right-0 top-full mt-1 z-30
-                      bg-white border border-gray-200 rounded-xl shadow-lg
-                      overflow-hidden">
+                    <div className="absolute left-0 right-0 top-full mt-1 z-30 bg-white border border-gray-200 rounded-xl shadow-lg overflow-y-auto max-h-48">
                       {ilceSug.map((c, i) => (
                         <button
                           key={i}
                           type="button"
                           onMouseDown={e => e.preventDefault()}
                           onClick={() => {
-                            setIlceQ(c.name)
-                            setForm(f => ({...f, district: c.name}))
+                            setIlceQ(c)
+                            setSelectedIlce(c)
+                            setForm(f => ({...f, district: c}))
                             setIlceOpen(false)
+                            if (countryIso === 'TR') {
+                              setMahalleQ('')
+                              setForm(f => ({...f, neighborhood: ''}))
+                            }
                           }}
-                          className="w-full text-left px-4 py-3 text-[15px]
-                            text-gray-700 hover:bg-orange-50 hover:text-orange-600
-                            border-b border-gray-100 last:border-0 transition-colors"
+                          className="w-full text-left px-4 py-3 text-[15px] text-gray-700 hover:bg-orange-50 hover:text-orange-600 border-b border-gray-100 last:border-0 transition-colors"
                         >
-                          {c.name}
+                          {c}
                         </button>
                       ))}
                     </div>
@@ -1605,15 +1635,67 @@ export default function CreateListingPage() {
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Mahalle / Semt
                 </label>
-                <input
-                  type="text"
-                  value={form.neighborhood || ''}
-                  onChange={(e) => setForm(f => ({ ...f, neighborhood: e.target.value }))}
-                  placeholder="Zafer Mh., Cumhuriyet Mh..."
-                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl
-                    focus:outline-none focus:ring-2 focus:ring-orange-400
-                    focus:border-transparent text-gray-900 bg-white text-sm"
-                />
+                {countryIso === 'TR' && selectedIl && selectedIlce ? (
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={mahalleQ}
+                      onChange={e => {
+                        const v = e.target.value
+                        setMahalleQ(v)
+                        setForm(f => ({...f, neighborhood: v}))
+                        const mahalleler = turkiyeData[selectedIl]?.[selectedIlce] || []
+                        const q = normalize(v)
+                        if (v.length === 0) {
+                          setMahalleSug(mahalleler.slice(0, 6))
+                          setMahalleOpen(true)
+                        } else {
+                          const starts = mahalleler.filter(m => normalize(m).startsWith(q))
+                          const includes = mahalleler.filter(m =>
+                            !normalize(m).startsWith(q) && normalize(m).includes(q)
+                          )
+                          setMahalleSug([...starts, ...includes].slice(0, 6))
+                          setMahalleOpen(starts.length + includes.length > 0)
+                        }
+                      }}
+                      onFocus={() => {
+                        const mahalleler = turkiyeData[selectedIl]?.[selectedIlce] || []
+                        setMahalleSug(mahalleler.slice(0, 6))
+                        setMahalleOpen(mahalleler.length > 0)
+                      }}
+                      onBlur={() => setTimeout(() => setMahalleOpen(false), 150)}
+                      placeholder="Zafer Mh., Cumhuriyet Mh..."
+                      className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-gray-900 bg-white text-sm"
+                    />
+                    {mahalleOpen && mahalleSug.length > 0 && (
+                      <div className="absolute left-0 right-0 top-full mt-1 z-30 bg-white border border-gray-200 rounded-xl shadow-lg overflow-y-auto max-h-48">
+                        {mahalleSug.map((m, i) => (
+                          <button
+                            key={i}
+                            type="button"
+                            onMouseDown={e => e.preventDefault()}
+                            onClick={() => {
+                              setMahalleQ(m)
+                              setForm(f => ({...f, neighborhood: m}))
+                              setMahalleOpen(false)
+                            }}
+                            className="w-full text-left px-4 py-3 text-[15px] text-gray-700 hover:bg-orange-50 hover:text-orange-600 border-b border-gray-100 last:border-0 transition-colors"
+                          >
+                            {m}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <input
+                    type="text"
+                    value={form.neighborhood || ''}
+                    onChange={(e) => setForm(f => ({ ...f, neighborhood: e.target.value }))}
+                    placeholder="Zafer Mh., Cumhuriyet Mh..."
+                    className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-gray-900 bg-white text-sm"
+                  />
+                )}
               </div>
             </div>
 
