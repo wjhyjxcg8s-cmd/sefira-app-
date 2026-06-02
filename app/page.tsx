@@ -2769,12 +2769,7 @@ export default function Home() {
               </div>
               <p className="text-sm text-stone-400 leading-relaxed max-w-xs mb-7">{t.footerDesc}</p>
               <div className="flex gap-2.5">
-                {["X", "in", "yt"].map((icon) => (
-                  <button key={icon} className="w-9 h-9 bg-white/5 border border-white/10 rounded-lg text-xs text-stone-400 hover:text-white hover:border-white/25 hover:bg-white/10 transition-all duration-200 font-bold hover:scale-110 active:scale-90">
-                    {icon}
-                  </button>
-                ))}
-                <a
+                <
                   href="https://www.instagram.com/sefira.app"
                   target="_blank"
                   rel="noopener noreferrer"
