@@ -968,6 +968,20 @@ function CountrySelect({
   );
 }
 
+// ── Normalize helper ──────────────────────────────────────────────────────────
+const normalize = (str: string): string =>
+  str
+    .replace(/İ/g, 'I').replace(/ı/g, 'i')
+    .replace(/Ş/g, 'S').replace(/ş/g, 's')
+    .replace(/Ğ/g, 'G').replace(/ğ/g, 'g')
+    .replace(/Ü/g, 'U').replace(/ü/g, 'u')
+    .replace(/Ö/g, 'O').replace(/ö/g, 'o')
+    .replace(/Ç/g, 'C').replace(/ç/g, 'c')
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .trim()
+
 // ── Main component ────────────────────────────────────────────────────────────
 export default function CreateListingPage() {
   const { user, loading } = useAuth();
@@ -1010,6 +1024,17 @@ export default function CreateListingPage() {
   const [ilceSearchQ, setIlceSearchQ] = useState('')
   const [ilceSug, setIlceSug] = useState<ICity[]>([])
   const [ilceOpen, setIlceOpen] = useState(false)
+
+  const [keyboardHeight, setKeyboardHeight] = useState(0)
+  useEffect(() => {
+    const onResize = () => {
+      const visualHeight = window.visualViewport?.height ?? window.innerHeight
+      const windowHeight = window.innerHeight
+      setKeyboardHeight(Math.max(0, windowHeight - visualHeight))
+    }
+    window.visualViewport?.addEventListener('resize', onResize)
+    return () => window.visualViewport?.removeEventListener('resize', onResize)
+  }, [])
 
   const photoInputRef = useRef<HTMLInputElement>(null);
 
@@ -1485,8 +1510,8 @@ export default function CreateListingPage() {
               </div>
               {sehirOpen && (
                 <div className="fixed inset-0 z-50 flex flex-col justify-end">
-                  <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setSehirOpen(false)} />
-                  <div className="relative bg-white rounded-t-3xl flex flex-col w-full max-w-md mx-auto shadow-2xl" style={{maxHeight: '78vh', animation: 'sheetUp 0.25s ease-out'}}>
+                  <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" style={{ bottom: 0 }} onClick={() => setSehirOpen(false)} />
+                  <div className="relative bg-white rounded-t-3xl flex flex-col w-full max-w-md mx-auto shadow-2xl" style={{maxHeight: `calc(78vh - ${keyboardHeight}px)`, animation: 'sheetUp 0.25s ease-out', paddingBottom: keyboardHeight > 0 ? `${keyboardHeight}px` : '24px'}}>
                     <div className="flex justify-center pt-3 pb-1">
                       <div className="w-9 h-1.5 bg-gray-300 rounded-full" />
                     </div>
@@ -1509,20 +1534,18 @@ export default function CreateListingPage() {
                           onChange={(e) => {
                             const v = e.target.value
                             setSehirSearchQ(v)
-                            const normalize = (s: string) =>
-                              s.normalize('NFD').replace(/[̀-ͯ]/g, '')
-                               .replace(/İ/g,'I').replace(/ı/g,'i')
-                               .replace(/Ş/g,'S').replace(/ş/g,'s')
-                               .replace(/Ğ/g,'G').replace(/ğ/g,'g')
-                               .replace(/Ü/g,'U').replace(/ü/g,'u')
-                               .replace(/Ö/g,'O').replace(/ö/g,'o')
-                               .replace(/Ç/g,'C').replace(/ç/g,'c')
-                               .toLowerCase()
                             const all = State.getStatesOfCountry(countryIso) || []
+                            const q = normalize(v)
                             setSehirSug(
                               v.length === 0
                                 ? all.slice(0, 50)
-                                : all.filter(s => normalize(s.name).includes(normalize(v)))
+                                : all.filter(s => normalize(s.name).startsWith(q))
+                                    .concat(
+                                      all.filter(s =>
+                                        !normalize(s.name).startsWith(q) &&
+                                        normalize(s.name).includes(q)
+                                      )
+                                    )
                             )
                           }}
                           placeholder="Şehir ara..."
@@ -1530,7 +1553,7 @@ export default function CreateListingPage() {
                         />
                       </div>
                     </div>
-                    <div className="overflow-y-auto flex-1 px-3 pb-6">
+                    <div className="overflow-y-auto flex-1 px-3 divide-y divide-gray-100">
                       {sehirSug.map((s, i) => (
                         <button
                           key={i}
@@ -1544,9 +1567,9 @@ export default function CreateListingPage() {
                             setIlceQ('')
                             setForm(f => ({ ...f, district: '' }))
                           }}
-                          className={`w-full text-left px-4 py-3 rounded-xl mb-0.5 flex items-center justify-between transition-colors ${sehirQ === s.name ? 'bg-orange-50 text-orange-600' : 'text-gray-800 hover:bg-gray-50 active:bg-gray-100'}`}
+                          className={`w-full text-left py-3.5 flex items-center justify-between transition-colors border-l-4 pl-3 pr-4 ${sehirQ === s.name ? 'border-orange-400 bg-orange-50' : 'border-transparent hover:bg-gray-50 active:bg-gray-100'}`}
                         >
-                          <span className="font-medium text-[15px]">{s.name}</span>
+                          <span className={`text-[15px] ${sehirQ === s.name ? 'text-orange-600 font-semibold' : 'text-gray-700 font-normal'}`}>{s.name}</span>
                           {sehirQ === s.name && (
                             <span className="text-orange-500">✓</span>
                           )}
@@ -1589,8 +1612,8 @@ export default function CreateListingPage() {
               </div>
               {ilceOpen && (
                 <div className="fixed inset-0 z-50 flex flex-col justify-end">
-                  <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIlceOpen(false)} />
-                  <div className="relative bg-white rounded-t-3xl flex flex-col w-full max-w-md mx-auto shadow-2xl" style={{maxHeight: '78vh', animation: 'sheetUp 0.25s ease-out'}}>
+                  <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" style={{ bottom: 0 }} onClick={() => setIlceOpen(false)} />
+                  <div className="relative bg-white rounded-t-3xl flex flex-col w-full max-w-md mx-auto shadow-2xl" style={{maxHeight: `calc(78vh - ${keyboardHeight}px)`, animation: 'sheetUp 0.25s ease-out', paddingBottom: keyboardHeight > 0 ? `${keyboardHeight}px` : '24px'}}>
                     <div className="flex justify-center pt-3 pb-1">
                       <div className="w-9 h-1.5 bg-gray-300 rounded-full" />
                     </div>
@@ -1613,22 +1636,20 @@ export default function CreateListingPage() {
                           onChange={(e) => {
                             const v = e.target.value
                             setIlceSearchQ(v)
-                            const normalize = (s: string) =>
-                              s.normalize('NFD').replace(/[̀-ͯ]/g, '')
-                               .replace(/İ/g,'I').replace(/ı/g,'i')
-                               .replace(/Ş/g,'S').replace(/ş/g,'s')
-                               .replace(/Ğ/g,'G').replace(/ğ/g,'g')
-                               .replace(/Ü/g,'U').replace(/ü/g,'u')
-                               .replace(/Ö/g,'O').replace(/ö/g,'o')
-                               .replace(/Ç/g,'C').replace(/ç/g,'c')
-                               .toLowerCase()
                             const cities = selectedStateIso
                               ? (City.getCitiesOfState(countryIso, selectedStateIso) || [])
                               : (City.getCitiesOfCountry(countryIso) || [])
+                            const q = normalize(v)
                             setIlceSug(
                               v.length === 0
                                 ? cities.slice(0, 50)
-                                : cities.filter(c => normalize(c.name).includes(normalize(v)))
+                                : cities.filter(c => normalize(c.name).startsWith(q))
+                                    .concat(
+                                      cities.filter(c =>
+                                        !normalize(c.name).startsWith(q) &&
+                                        normalize(c.name).includes(q)
+                                      )
+                                    )
                             )
                           }}
                           placeholder="İlçe ara..."
@@ -1636,7 +1657,7 @@ export default function CreateListingPage() {
                         />
                       </div>
                     </div>
-                    <div className="overflow-y-auto flex-1 px-3 pb-6">
+                    <div className="overflow-y-auto flex-1 px-3 divide-y divide-gray-100">
                       {ilceSug.map((c, i) => (
                         <button
                           key={i}
@@ -1647,9 +1668,9 @@ export default function CreateListingPage() {
                             setForm(f => ({ ...f, district: c.name }))
                             setIlceOpen(false)
                           }}
-                          className={`w-full text-left px-4 py-3 rounded-xl mb-0.5 flex items-center justify-between transition-colors ${ilceQ === c.name ? 'bg-orange-50 text-orange-600' : 'text-gray-800 hover:bg-gray-50 active:bg-gray-100'}`}
+                          className={`w-full text-left py-3.5 flex items-center justify-between transition-colors border-l-4 pl-3 pr-4 ${ilceQ === c.name ? 'border-orange-400 bg-orange-50' : 'border-transparent hover:bg-gray-50 active:bg-gray-100'}`}
                         >
-                          <span className="font-medium text-[15px]">{c.name}</span>
+                          <span className={`text-[15px] ${ilceQ === c.name ? 'text-orange-600 font-semibold' : 'text-gray-700 font-normal'}`}>{c.name}</span>
                           {ilceQ === c.name && (
                             <span className="text-orange-500">✓</span>
                           )}
