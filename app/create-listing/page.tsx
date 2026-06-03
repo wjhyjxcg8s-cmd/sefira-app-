@@ -736,8 +736,7 @@ interface ListingForm {
   needed_roommates: number;
   rooms: number;
   rent: string;
-  photos: File[];
-  photoPreviews: string[];
+  photos: string[];
   address: string;
   gender_preference: GenderPref;
   occupation_preference: OccupationPref;
@@ -764,7 +763,6 @@ const initialForm: ListingForm = {
   rooms: 2,
   rent: "",
   photos: [],
-  photoPreviews: [],
   address: "",
   gender_preference: "any",
   occupation_preference: "any",
@@ -1069,6 +1067,8 @@ export default function CreateListingPage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [uploadingCount, setUploadingCount] = useState(0);
+  const [photoError, setPhotoError] = useState<string | null>(null);
 
   const [countryIso, setCountryIso] = useState('TR')
   const [turkiyeData, setTurkiyeData] = useState<Record<string, Record<string, string[]>>>({})
@@ -1136,21 +1136,33 @@ export default function CreateListingPage() {
   const set = <K extends keyof ListingForm>(key: K, val: ListingForm[K]) =>
     setForm((f) => ({ ...f, [key]: val }));
 
-  // Photo handling
-  const handlePhotos = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Photo handling — uploads immediately on selection
+  const handlePhotos = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
-    const remaining = 3 - form.photos.length;
-    const newFiles = files.slice(0, remaining);
-    const previews = newFiles.map((f) => URL.createObjectURL(f));
-    set("photos", [...form.photos, ...newFiles]);
-    set("photoPreviews", [...form.photoPreviews, ...previews]);
     e.target.value = "";
+    if (!user || files.length === 0) return;
+    const available = 3 - form.photos.length - uploadingCount;
+    const newFiles = files.slice(0, Math.max(0, available));
+    if (newFiles.length === 0) return;
+    setPhotoError(null);
+    setUploadingCount((c) => c + newFiles.length);
+    for (const file of newFiles) {
+      const path = `${user.id}/${Date.now()}-${encodeURIComponent(file.name)}`;
+      const { error: upErr } = await supabase.storage
+        .from("listing-photos")
+        .upload(path, file, { upsert: true });
+      setUploadingCount((c) => c - 1);
+      if (upErr) {
+        setPhotoError(t.errorPhoto);
+      } else {
+        const { data } = supabase.storage.from("listing-photos").getPublicUrl(path);
+        setForm((f) => ({ ...f, photos: [...f.photos, data.publicUrl] }));
+      }
+    }
   };
 
   const removePhoto = (idx: number) => {
-    URL.revokeObjectURL(form.photoPreviews[idx]);
     set("photos", form.photos.filter((_, i) => i !== idx));
-    set("photoPreviews", form.photoPreviews.filter((_, i) => i !== idx));
   };
 
   // Navigation — 4 steps total for has_place, 2 for needs_place
@@ -1179,21 +1191,8 @@ export default function CreateListingPage() {
     setSubmitting(true);
     setSubmitError(null);
 
-    const photoUrls: string[] = [];
-    for (const file of form.photos) {
-      const ext = file.name.split(".").pop();
-      const path = `${user.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
-      const { error: upErr } = await supabase.storage
-        .from("listing-photos")
-        .upload(path, file, { upsert: false });
-      if (upErr) {
-        setSubmitError(t.errorPhoto);
-        setSubmitting(false);
-        return;
-      }
-      const { data: { publicUrl } } = supabase.storage.from("listing-photos").getPublicUrl(path);
-      photoUrls.push(publicUrl);
-    }
+    // Photos are already uploaded; use the stored public URLs directly
+    const photoUrls = form.photos.filter(Boolean);
 
     const payload: Record<string, unknown> = {
       user_id: user.id,
@@ -2026,6 +2025,65 @@ export default function CreateListingPage() {
             </div>
           </div>
 
+          {/* Photo Upload Section */}
+          <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-5 mt-4">
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-sm font-semibold text-stone-700">{t.photos}</label>
+              <span className="text-xs text-stone-400">
+                {form.photos.length + uploadingCount}/3
+              </span>
+            </div>
+
+            {/* Preview grid */}
+            {(form.photos.length > 0 || uploadingCount > 0) && (
+              <div className="grid grid-cols-3 gap-2 mb-3">
+                {form.photos.map((url, i) => (
+                  <div key={i} className="relative aspect-square rounded-xl overflow-hidden bg-stone-100">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={url} className="w-full h-full object-cover" alt="" />
+                    <button
+                      type="button"
+                      onClick={() => removePhoto(i)}
+                      className="absolute top-1 right-1 bg-black/60 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+                {Array.from({ length: uploadingCount }).map((_, i) => (
+                  <div key={`uploading-${i}`} className="aspect-square rounded-xl bg-stone-100 flex items-center justify-center">
+                    <span className="w-6 h-6 border-2 border-orange-300 border-t-orange-500 rounded-full animate-spin" />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Upload area — hidden when 3 slots filled */}
+            {form.photos.length + uploadingCount < 3 && (
+              <div
+                onClick={() => photoInputRef.current?.click()}
+                className="border-2 border-dashed border-orange-300 rounded-2xl p-6 flex flex-col items-center gap-2 cursor-pointer bg-orange-50 active:bg-orange-100 transition-colors"
+              >
+                <span className="text-3xl">📷</span>
+                <p className="text-sm font-medium text-orange-600">{t.uploadPhotos}</p>
+                <p className="text-xs text-gray-400">PNG, JPG • Maks. 3 fotoğraf</p>
+              </div>
+            )}
+
+            <input
+              ref={photoInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handlePhotos}
+              className="hidden"
+            />
+
+            {photoError && (
+              <p className="mt-3 text-xs text-rose-500">{photoError}</p>
+            )}
+          </div>
+
           {validationError && (
             <p className="mt-4 text-sm text-rose-500 bg-rose-50 border border-rose-100 rounded-xl px-4 py-3">
               {validationError}
@@ -2041,7 +2099,8 @@ export default function CreateListingPage() {
             </button>
             <button
               onClick={goNext}
-              className="flex-[2] py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg shadow-orange-500/25 hover:opacity-90 active:scale-95 transition-all duration-200 text-sm"
+              disabled={uploadingCount > 0}
+              className="flex-[2] py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg shadow-orange-500/25 hover:opacity-90 active:scale-95 transition-all duration-200 text-sm disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {t.next}
             </button>
@@ -2123,16 +2182,16 @@ export default function CreateListingPage() {
           <p className="text-stone-500 mb-8 text-sm">{t.step3Title}</p>
 
           <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden">
-            {form.photoPreviews.length > 0 && (
+            {form.photos.length > 0 && (
               <div className="flex gap-1">
-                {form.photoPreviews.map((src, i) => (
+                {form.photos.map((src, i) => (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     key={i}
                     src={src}
                     alt=""
                     className="flex-1 h-40 object-cover"
-                    style={{ maxWidth: `${100 / form.photoPreviews.length}%` }}
+                    style={{ maxWidth: `${100 / form.photos.length}%` }}
                   />
                 ))}
               </div>
