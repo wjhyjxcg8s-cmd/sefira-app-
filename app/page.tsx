@@ -2794,7 +2794,7 @@ export default function Home() {
                   aria-label="Sefira on YouTube"
                   className="w-9 h-9 bg-white/5 border border-white/10 rounded-lg text-xs font-bold text-stone-400 hover:text-white hover:border-white/25 hover:bg-white/10 transition-all duration-200 flex items-center justify-center hover:scale-110 active:scale-90 cursor-pointer hover:opacity-80"
                 >
-                  <a href="https://www.youtube.com/channel/UCcvN3kYg3tYE1ongda_2fFw" target="_blank" rel="noopener noreferrer">yt
+                  yt
                 </a>
                 <a
                   href="https://www.instagram.com/sefira.app"
