@@ -2770,7 +2770,7 @@ export default function Home() {
               <p className="text-sm text-stone-400 leading-relaxed max-w-xs mb-7">{t.footerDesc}</p>
               <div className="flex gap-2.5">
                 <a
-                  href="https://x.com/sefiraapp"
+                  href="https://twitter.com/getsefira"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Follow Sefira on X"
