@@ -1191,44 +1191,37 @@ export default function CreateListingPage() {
     setSubmitting(true);
     setSubmitError(null);
 
-    // Photos are already uploaded; use the stored public URLs directly
-    const photoUrls = form.photos.filter(Boolean);
+    const photoUrls: string[] = form.photos.filter(Boolean);
 
     const payload: Record<string, unknown> = {
-      user_id: user.id,
-      type: form.type,
+      user_id:           user.id,
+      type:              form.type,
+      house_type:        form.houseType || null,
+      floor:             form.floor || null,
+      elevator:          form.elevator,
+      parking:           form.parking,
+      furnished:         form.furnished,
+      city:              form.city || null,
+      district:          form.district || null,
+      neighborhood:      form.neighborhood || null,
+      rent:              parseFloat(form.price) || null,
+      currency:          form.currency,
+      smoking:           form.smoking,
+      current_residents: form.current_residents,
+      needed_roommates:  form.needed_roommates,
+      rooms:             form.rooms,
+      photos:            photoUrls,
+      address:           form.address || null,
     };
 
-    if (form.type === "has_place") {
-      // House details (step 2)
-      payload.house_type = form.houseType || null;
-      payload.floor = form.floor;
-      payload.elevator = form.elevator;
-      payload.parking = form.parking;
-      payload.furnished = form.furnished;
-      payload.country_code = form.countryCode || null;
-      payload.country = form.country || null;
-      payload.city = form.city || null;
-      payload.district = form.district || '';
-      payload.neighborhood = form.neighborhood || null;
-      payload.rent = parseFloat(form.price) || null;
-      payload.currency = form.currency;
-      // Housemate prefs (step 3)
-      payload.smoking = form.smoking;
-      payload.current_residents = form.current_residents;
-      payload.needed_roommates = form.needed_roommates;
-      payload.rooms = form.rooms;
-      payload.photos = photoUrls;
-      payload.address = form.address;
-      payload.gender_preference = form.gender_preference;
-      payload.occupation_preference = form.occupation_preference;
-      payload.description = form.description;
-    }
+    console.log('Insert payload:', JSON.stringify(payload, null, 2));
+    console.log('Form data:', JSON.stringify(form, null, 2));
 
     const { error: dbErr } = await supabase.from("listings").insert(payload);
 
     if (dbErr) {
-      setSubmitError(t.errorSubmit);
+      console.log('Submit error:', JSON.stringify(dbErr));
+      setSubmitError(dbErr.message || JSON.stringify(dbErr));
       setSubmitting(false);
       return;
     }
