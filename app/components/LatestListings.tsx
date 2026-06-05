@@ -8,48 +8,129 @@ const supabaseClient = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlZXR6b3BoYXlieXdmdWhlemh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTc4NTUsImV4cCI6MjA5NDkzMzg1NX0.DARDlw_AL8WX6yfgYDgb6nSgCo84jMV05aNbfT-zHpI"
 );
 
-export default function LatestListings() {
+type Lang = "tr" | "en" | "fa" | "ar" | "de" | "ru";
+
+const countries = [
+  { code: "all", flag: "🌍", name: { tr: "Tümü", en: "All", fa: "همه", ar: "الكل", de: "Alle", ru: "Все" } },
+  { code: "US", flag: "🇺🇸", name: { tr: "Amerika", en: "USA", fa: "آمریکا", ar: "أمريكا", de: "USA", ru: "США" } },
+  { code: "TR", flag: "🇹🇷", name: { tr: "Türkiye", en: "Turkey", fa: "ترکیه", ar: "تركيا", de: "Türkei", ru: "Турция" } },
+  { code: "DE", flag: "🇩🇪", name: { tr: "Almanya", en: "Germany", fa: "آلمان", ar: "ألمانيا", de: "Deutschland", ru: "Германия" } },
+  { code: "RU", flag: "🇷🇺", name: { tr: "Rusya", en: "Russia", fa: "روسیه", ar: "روسيا", de: "Russland", ru: "Россия" } },
+  { code: "AE", flag: "🇦🇪", name: { tr: "BAE", en: "UAE", fa: "امارات", ar: "الإمارات", de: "VAE", ru: "ОАЭ" } },
+  { code: "GB", flag: "🇬🇧", name: { tr: "İngiltere", en: "UK", fa: "انگلیس", ar: "بريطانيا", de: "UK", ru: "Великобритания" } },
+  { code: "FR", flag: "🇫🇷", name: { tr: "Fransa", en: "France", fa: "فرانسه", ar: "فرنسا", de: "Frankreich", ru: "Франция" } },
+  { code: "CA", flag: "🇨🇦", name: { tr: "Kanada", en: "Canada", fa: "کانادا", ar: "كندا", de: "Kanada", ru: "Канада" } },
+  { code: "IR", flag: "🇮🇷", name: { tr: "İran", en: "Iran", fa: "ایران", ar: "إيران", de: "Iran", ru: "Иран" } },
+  { code: "NL", flag: "🇳🇱", name: { tr: "Hollanda", en: "Netherlands", fa: "هلند", ar: "هولندا", de: "Niederlande", ru: "Нидерланды" } },
+  { code: "SE", flag: "🇸🇪", name: { tr: "İsveç", en: "Sweden", fa: "سوئد", ar: "السويد", de: "Schweden", ru: "Швеция" } },
+];
+
+const subtitles: Record<Lang, string> = {
+  tr: "Dünyanın her yerinden en son ilanlar",
+  en: "Latest listings from around the world",
+  fa: "آخرین آگهی‌ها از سراسر جهان",
+  ar: "أحدث الإعلانات من حول العالم",
+  de: "Neueste Anzeigen aus aller Welt",
+  ru: "Последние объявления со всего мира",
+};
+
+const titles: Record<Lang, string> = {
+  tr: "Son İlanlar",
+  en: "Latest Listings",
+  fa: "آخرین آگهی‌ها",
+  ar: "أحدث الإعلانات",
+  de: "Neueste Anzeigen",
+  ru: "Последние объявления",
+};
+
+export default function LatestListings({ lang = "tr" }: { lang?: Lang }) {
   const [listings, setListings] = useState<any[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState("all");
+  const [loading, setLoading] = useState(true);
+
+  async function fetchListings() {
+    setLoading(true);
+
+    let query = supabaseClient
+      .from("listings")
+      .select("id, type, city, district, rent, currency, photos, house_type, rooms, smoking, user_id, country_code")
+      .order("created_at", { ascending: false })
+      .limit(6);
+
+    if (selectedCountry !== "all") {
+      query = query.eq("country_code", selectedCountry);
+    }
+
+    const { data, error } = await query;
+
+    if (error || !data || data.length === 0) {
+      setListings([]);
+      setLoading(false);
+      return;
+    }
+
+    const userIds = data.map((l: any) => l.user_id).filter(Boolean);
+    const { data: profiles } = await supabaseClient
+      .from("profiles")
+      .select("user_id, display_name, avatar_url")
+      .in("user_id", userIds);
+
+    const merged = data.map((l: any) => ({
+      ...l,
+      profile: profiles?.find((p: any) => p.user_id === l.user_id) || null,
+    }));
+
+    setListings(merged);
+    setLoading(false);
+  }
 
   useEffect(() => {
-    async function fetchListings() {
-      const { data, error } = await supabaseClient
-        .from("listings")
-        .select("id, type, city, district, rent, currency, photos, house_type, rooms, smoking, user_id")
-        .order("created_at", { ascending: false })
-        .limit(6);
-
-      if (error || !data || data.length === 0) {
-        setListings([]);
-        return;
-      }
-
-      const userIds = data.map((l: any) => l.user_id).filter(Boolean);
-      const { data: profiles } = await supabaseClient
-        .from("profiles")
-        .select("user_id, display_name, avatar_url")
-        .in("user_id", userIds);
-
-      const merged = data.map((l: any) => ({
-        ...l,
-        profile: profiles?.find((p: any) => p.user_id === l.user_id) || null,
-      }));
-
-      setListings(merged);
-    }
     fetchListings();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCountry]);
 
   return (
     <section className="max-w-7xl mx-auto px-5 mt-14 mb-14">
       <div className="text-center mb-8">
         <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-2 tracking-tight">
-          Son İlanlar
+          {titles[lang]}
         </h2>
+        <p className="text-gray-500 text-sm sm:text-base">{subtitles[lang]}</p>
       </div>
 
-      {listings.length === 0 ? (
-        <p className="text-center text-gray-400 py-8">Henüz ilan yok</p>
+      {/* Country filter pills */}
+      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide mb-6">
+        {countries.map((c) => (
+          <button
+            key={c.code}
+            onClick={() => setSelectedCountry(c.code)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-all ${
+              selectedCountry === c.code
+                ? "bg-orange-500 text-white shadow-md scale-105"
+                : "bg-white text-gray-600 border border-gray-200 hover:border-orange-300"
+            }`}
+          >
+            <span className="text-lg">{c.flag}</span>
+            <span>{c.name[lang] || c.name.tr}</span>
+          </button>
+        ))}
+      </div>
+
+      {loading ? (
+        <div className="grid grid-cols-3 gap-3">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="animate-pulse bg-gray-200 rounded-2xl h-48" />
+          ))}
+        </div>
+      ) : listings.length === 0 ? (
+        <p className="text-center text-gray-400 py-8">
+          {lang === "tr" ? "Bu ülkede ilan yok" :
+           lang === "fa" ? "آگهی‌ای در این کشور وجود ندارد" :
+           lang === "ar" ? "لا توجد إعلانات في هذا البلد" :
+           lang === "de" ? "Keine Anzeigen in diesem Land" :
+           lang === "ru" ? "Нет объявлений в этой стране" :
+           "No listings in this country"}
+        </p>
       ) : (
         <div className="grid grid-cols-3 gap-3">
           {listings.map((listing) => (

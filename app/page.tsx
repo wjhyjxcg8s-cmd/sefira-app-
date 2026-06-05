@@ -2704,7 +2704,7 @@ export default function Home() {
       </section>
 
       {/* ── LATEST LISTINGS ───────────────────────────────────────────────────── */}
-      <LatestListings />
+      <LatestListings lang={lang} />
 
       {/* ── HOW IT WORKS ──────────────────────────────────────────────────────── */}
       <section className="bg-amber-50/80 border-y border-amber-100 pb-20 mt-0 pt-6">
