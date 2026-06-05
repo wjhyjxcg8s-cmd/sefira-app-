@@ -1528,27 +1528,15 @@ export default function Home() {
                   setShowLangTooltip(false);
                   window.dispatchEvent(new CustomEvent('langSelectorOpened'));
                 }}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  background: 'linear-gradient(135deg, #f97316, #ea580c)',
-                  border: 'none',
-                  borderRadius: '50px',
-                  padding: '8px 14px',
-                  cursor: 'pointer',
-                  boxShadow: '0 2px 12px rgba(249,115,22,0.4)',
-                  transition: 'all 0.2s ease',
-                  animation: 'langPulse 3s infinite',
-                }}
+                className="flex items-center gap-1.5 border-2 border-orange-500 text-orange-500 bg-white rounded-full px-3 py-1.5 hover:bg-orange-500 hover:text-white transition-all cursor-pointer"
               >
-                <span style={{ fontSize: '22px' }}>
+                <span style={{ fontSize: '20px' }}>
                   {lang === "tr" ? "🇹🇷" : lang === "en" ? "🇬🇧" : lang === "fa" ? "🇮🇷" : lang === "ar" ? "🇸🇦" : lang === "ru" ? "🇷🇺" : "🇩🇪"}
                 </span>
-                <span style={{ color: 'white', fontSize: '13px', fontWeight: '700', letterSpacing: '0.5px' }}>
+                <span style={{ fontSize: '13px', fontWeight: '700', letterSpacing: '0.5px' }}>
                   {lang === "tr" ? "TR" : lang === "en" ? "EN" : lang === "fa" ? "FA" : lang === "ar" ? "AR" : lang === "ru" ? "RU" : "DE"}
                 </span>
-                <span style={{ color: 'white', fontSize: '12px' }}>▼</span>
+                <span style={{ fontSize: '11px' }}>▼</span>
               </button>
 
               {/* One-time first-visit tooltip */}
@@ -3296,13 +3284,10 @@ export default function Home() {
       <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 px-4 py-3 bg-white/95 backdrop-blur-xl border-t border-stone-200 shadow-2xl shadow-stone-900/10">
         <button
           onClick={handleCreateListing}
-          className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black text-sm px-6 py-4 rounded-2xl shadow-lg shadow-orange-500/30 active:scale-95 transition-all duration-200"
+          className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-slate-800 to-slate-900 text-white text-sm px-6 py-4 rounded-2xl shadow-2xl active:scale-95 transition-all duration-200"
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4">
-            <line x1="12" y1="5" x2="12" y2="19" />
-            <line x1="5" y1="12" x2="19" y2="12" />
-          </svg>
-          {t.ilanVer}
+          <span className="text-orange-400 font-bold text-xl leading-none">+</span>
+          <span className="text-white font-semibold">{t.ilanVer}</span>
         </button>
       </div>
 

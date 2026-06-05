@@ -275,7 +275,7 @@ export default function LatestListings({ lang = "tr", filterCity, onClearFilter 
   return (
     <section className="max-w-7xl mx-auto px-5 mt-14 mb-14">
       <div className="flex flex-col items-center mb-6">
-        <h2 className="text-2xl font-black text-gray-900">{titles[lang]}</h2>
+        <h2 className="text-2xl font-black text-slate-800">{titles[lang]}</h2>
         <p className="text-sm text-gray-400 mt-1">{subtitles[lang]}</p>
       </div>
 
@@ -302,8 +302,8 @@ export default function LatestListings({ lang = "tr", filterCity, onClearFilter 
             onClick={() => setSelectedCountry(c.code)}
             className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-all ${
               selectedCountry === c.code
-                ? "bg-orange-500 text-white shadow-md scale-105"
-                : "bg-white text-gray-600 border border-gray-200 hover:border-orange-300"
+                ? "bg-slate-800 text-white shadow-md scale-105"
+                : "bg-white text-gray-600 border border-gray-200 hover:border-slate-300"
             }`}
           >
             <span className="text-lg">{c.flag}</span>
@@ -366,7 +366,7 @@ export default function LatestListings({ lang = "tr", filterCity, onClearFilter 
                     </svg>
                   </div>
                 )}
-                <span className="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                <span className={`absolute top-2 left-2 text-white text-xs px-2 py-1 rounded-full font-medium ${listing.type === "has_place" ? "bg-emerald-500" : "bg-blue-500"}`}>
                   {listing.type === "has_place" ? "Ev Sahibi" : "Kiracı"}
                 </span>
               </div>
