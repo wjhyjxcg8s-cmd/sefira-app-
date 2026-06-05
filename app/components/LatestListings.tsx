@@ -84,6 +84,15 @@ function detectCountry(city: string, district: string) {
   return { flag: "🌍", country: null, plate: null };
 }
 
+function GenderBadge({ gender }: { gender: string | null }) {
+  if (!gender) return null;
+  if (gender === "male" || gender === "erkek")
+    return <span className="text-xs bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded-full font-medium">♂</span>;
+  if (gender === "female" || gender === "kadın" || gender === "kadin")
+    return <span className="text-xs bg-pink-100 text-pink-500 px-1.5 py-0.5 rounded-full font-medium">♀</span>;
+  return null;
+}
+
 function filterByCountry(listings: any[], countryCode: string) {
   if (countryCode === "all") return listings;
   return listings.filter((l) => {
@@ -203,7 +212,7 @@ export default function LatestListings({ lang = "tr" }: { lang?: Lang }) {
       const userIds = data.map((l: any) => l.user_id).filter(Boolean);
       const { data: profiles } = await supabaseClient
         .from("profiles")
-        .select("user_id, display_name, avatar_url")
+        .select("user_id, display_name, avatar_url, gender")
         .in("user_id", userIds);
 
       setAllListings(
@@ -375,6 +384,7 @@ export default function LatestListings({ lang = "tr" }: { lang?: Lang }) {
                     <span className="text-xs text-gray-500 font-medium truncate">
                       {listing.profile.display_name || ""}
                     </span>
+                    <GenderBadge gender={listing.profile.gender ?? null} />
                   </div>
                 )}
               </div>
