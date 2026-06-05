@@ -718,11 +718,11 @@ type OccupationPref = "student" | "working" | "any";
 interface ListingForm {
   type: ListingType | null;
   // House details (step 2)
-  houseType: string;
+  houseType: string | null;
   floor: number;
-  elevator: boolean;
-  parking: boolean;
-  furnished: boolean;
+  elevator: boolean | null;
+  parking: boolean | null;
+  furnished: boolean | null;
   countryCode: string;
   country: string;
   city: string;
@@ -731,25 +731,25 @@ interface ListingForm {
   price: string;
   currency: Currency;
   // Housemate prefs (step 3)
-  smoking: boolean;
+  smoking: boolean | null;
   current_residents: number;
   needed_roommates: number;
   rooms: number;
   rent: string;
   photos: string[];
   address: string;
-  gender_preference: GenderPref;
-  occupation_preference: OccupationPref;
+  gender_preference: GenderPref | null;
+  occupation_preference: OccupationPref | null;
   description: string;
 }
 
 const initialForm: ListingForm = {
   type: null,
-  houseType: "",
+  houseType: null,
   floor: 1,
-  elevator: false,
-  parking: false,
-  furnished: false,
+  elevator: null,
+  parking: null,
+  furnished: null,
   countryCode: "",
   country: "",
   city: "",
@@ -757,15 +757,15 @@ const initialForm: ListingForm = {
   neighborhood: "",
   price: "",
   currency: "USD",
-  smoking: false,
+  smoking: null,
   current_residents: 1,
   needed_roommates: 1,
   rooms: 2,
   rent: "",
   photos: [],
   address: "",
-  gender_preference: "any",
-  occupation_preference: "any",
+  gender_preference: null,
+  occupation_preference: null,
   description: "",
 };
 
@@ -784,36 +784,41 @@ function Toggle({
   labelOn,
   labelOff,
   onChange,
+  hasError,
 }: {
-  value: boolean;
+  value: boolean | null;
   labelOn: string;
   labelOff: string;
   onChange: (v: boolean) => void;
+  hasError?: boolean;
 }) {
+  const wrapClass = hasError && value === null ? "border-2 border-red-300 rounded-2xl p-2" : "";
   return (
-    <div className="flex rounded-xl border border-stone-200 overflow-hidden text-sm font-semibold">
-      <button
-        type="button"
-        onClick={() => onChange(true)}
-        className={`flex-1 py-2.5 transition-all duration-200 ${
-          value
-            ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-inner"
-            : "bg-white text-stone-500 hover:bg-stone-50"
-        }`}
-      >
-        {labelOn}
-      </button>
-      <button
-        type="button"
-        onClick={() => onChange(false)}
-        className={`flex-1 py-2.5 transition-all duration-200 ${
-          !value
-            ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-inner"
-            : "bg-white text-stone-500 hover:bg-stone-50"
-        }`}
-      >
-        {labelOff}
-      </button>
+    <div className={wrapClass}>
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => onChange(true)}
+          className={`flex-1 transition-all duration-200 text-sm ${
+            value === true
+              ? "border-2 border-orange-500 text-white bg-orange-500 rounded-xl py-3 px-4 font-bold"
+              : "border-2 border-gray-200 text-gray-400 bg-white rounded-xl py-3 px-4"
+          }`}
+        >
+          {labelOn}
+        </button>
+        <button
+          type="button"
+          onClick={() => onChange(false)}
+          className={`flex-1 transition-all duration-200 text-sm ${
+            value === false
+              ? "border-2 border-orange-500 text-white bg-orange-500 rounded-xl py-3 px-4 font-bold"
+              : "border-2 border-gray-200 text-gray-400 bg-white rounded-xl py-3 px-4"
+          }`}
+        >
+          {labelOff}
+        </button>
+      </div>
     </div>
   );
 }
@@ -857,7 +862,7 @@ function OptionGroup({
   hasError,
 }: {
   options: { label: string; value: string }[];
-  value: string;
+  value: string | null;
   onChange: (v: string) => void;
   hasError?: boolean;
 }) {
@@ -888,7 +893,7 @@ function PillGroup({
   hasError,
 }: {
   options: { label: string; value: string }[];
-  value: string;
+  value: string | null;
   onChange: (v: string) => void;
   hasError?: boolean;
 }) {
@@ -919,6 +924,7 @@ function CountrySelect({
   label,
   placeholder,
   hasError,
+  required,
 }: {
   countryCode: string;
   lang: string;
@@ -926,6 +932,7 @@ function CountrySelect({
   label: string;
   placeholder: string;
   hasError?: boolean;
+  required?: boolean;
 }) {
   const [inputVal, setInputVal] = useState(() => countryCode ? getCountryName(countryCode, lang) : "");
   const [isOpen, setIsOpen] = useState(false);
@@ -963,7 +970,7 @@ function CountrySelect({
 
   return (
     <div className="relative" ref={wrapperRef}>
-      <label className="block text-sm font-semibold text-stone-700 mb-2">{label}</label>
+      <label className="block text-sm font-semibold text-stone-700 mb-2">{label}{required && <span className="text-red-500 ml-1">*</span>}</label>
       <input
         type="text"
         value={inputVal}
@@ -1210,12 +1217,19 @@ export default function CreateListingPage() {
     if (step === 3) {
       const errors: string[] = [];
       const invalid: string[] = [];
-      if (!form.gender_preference) { errors.push("Tercih ettiğiniz cinsiyet seçiniz"); invalid.push("gender"); }
-      if (!form.occupation_preference) { errors.push("Tercih ettiğiniz meslek seçiniz"); invalid.push("occupation"); }
-      // smoking is boolean, always has a value — cannot be unset in current UI
+      if (form.gender_preference === null) { errors.push("Cinsiyet tercihi seçiniz"); invalid.push("gender"); }
+      if (form.occupation_preference === null) { errors.push("Meslek tercihi seçiniz"); invalid.push("occupation"); }
+      if (form.furnished === null) { errors.push("Eşyalı durumu seçiniz"); invalid.push("furnished"); }
+      if (form.elevator === null) { errors.push("Asansör durumu seçiniz"); invalid.push("elevator"); }
+      if (form.parking === null) { errors.push("Otopark durumu seçiniz"); invalid.push("parking"); }
+      if (form.smoking === null) { errors.push("Sigara tercihi seçiniz"); invalid.push("smoking"); }
       if (!form.description || form.description.trim().length < 20) {
         errors.push("Kendinizi en az 20 karakter ile tanıtın");
         invalid.push("description");
+      }
+      if (!form.photos || form.photos.length === 0) {
+        errors.push("En az 1 ev fotoğrafı yükleyiniz");
+        invalid.push("photos");
       }
       if (errors.length > 0) {
         setStepErrors(errors);
@@ -1424,7 +1438,8 @@ export default function CreateListingPage() {
 
           <ProgressBar />
           <h1 className="text-2xl font-black text-stone-900 mb-2">{t.pageTitle}</h1>
-          <p className="text-stone-500 mb-4 text-sm">{t.step1Title}</p>
+          <p className="text-stone-500 mb-2 text-sm">{t.step1Title}</p>
+          <label className="block text-sm font-semibold text-stone-700 mb-4">{t.typeLabel}<span className="text-red-500 ml-1">*</span></label>
 
           {stepErrors.length > 0 && (
             <div className="bg-red-50 border border-red-300 rounded-2xl p-4 mb-4">
@@ -1566,7 +1581,7 @@ export default function CreateListingPage() {
 
             {/* 1. House type */}
             <div className="p-5">
-              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.houseTypeLabel}</label>
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.houseTypeLabel}<span className="text-red-500 ml-1">*</span></label>
               <PillGroup
                 options={houseTypeOptions}
                 value={form.houseType}
@@ -1575,7 +1590,18 @@ export default function CreateListingPage() {
               />
             </div>
 
-            {/* 2. Floor */}
+            {/* 2. Rooms */}
+            <div className="p-5 flex items-center justify-between">
+              <label className="text-sm font-semibold text-stone-700">{t.rooms}<span className="text-red-500 ml-1">*</span></label>
+              <NumberStepper
+                value={form.rooms}
+                onChange={(v) => set("rooms", v)}
+                min={1}
+                max={20}
+              />
+            </div>
+
+            {/* 3. Floor */}
             <div className="p-5">
               <div className="flex items-center justify-between">
                 <div>
@@ -1620,40 +1646,7 @@ export default function CreateListingPage() {
               </div>
             </div>
 
-            {/* 3. Elevator */}
-            <div className="p-5">
-              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.elevatorLabel}</label>
-              <Toggle
-                value={form.elevator}
-                labelOn={t.elevatorYes}
-                labelOff={t.elevatorNo}
-                onChange={(v) => set("elevator", v)}
-              />
-            </div>
-
-            {/* 4. Parking */}
-            <div className="p-5">
-              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.parking}</label>
-              <Toggle
-                value={form.parking}
-                labelOn={t.parkingYes}
-                labelOff={t.parkingNo}
-                onChange={(v) => set("parking", v)}
-              />
-            </div>
-
-            {/* 5. Furnished */}
-            <div className="p-5">
-              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.furnishedLabel}</label>
-              <Toggle
-                value={form.furnished}
-                labelOn={t.furnishedYes}
-                labelOff={t.furnishedNo}
-                onChange={(v) => set("furnished", v)}
-              />
-            </div>
-
-            {/* 6. Location */}
+            {/* 4. Location */}
             <div className="p-5 flex flex-col gap-4">
               <CountrySelect
                 countryCode={form.countryCode}
@@ -1662,11 +1655,12 @@ export default function CreateListingPage() {
                 label={t.countryLabel}
                 placeholder={t.countryPlaceholder}
                 hasError={invalidFields.includes("country") && !form.countryCode}
+                required
               />
               {/* Şehir / İl */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  {countryIso === 'TR' ? t.il : t.city}
+                  {countryIso === 'TR' ? t.il : t.city}<span className="text-red-500 ml-1">*</span>
                 </label>
                 <div className="relative">
                   <input
@@ -1772,7 +1766,7 @@ export default function CreateListingPage() {
               {/* İlçe — Turkey only */}
               {countryIso === 'TR' && <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  {t.district}
+                  {t.district}<span className="text-red-500 ml-1">*</span>
                 </label>
                 <div className="relative">
                   <input
@@ -1923,11 +1917,12 @@ export default function CreateListingPage() {
               </div>
             </div>
 
-            {/* 7. Monthly cost */}
+            {/* 5. Monthly cost */}
             <div className="p-5">
-              <label className="block text-sm font-semibold text-stone-700 mb-1">{t.pricingLabel}</label>
+              <label className="block text-sm font-semibold text-stone-700 mb-1">{t.pricingLabel}<span className="text-red-500 ml-1">*</span></label>
               <p className="text-xs text-stone-400 mb-3">{t.pricingSub}</p>
               {/* Currency pills */}
+              <label className="block text-sm font-semibold text-stone-700 mb-2">{t.currency}<span className="text-red-500 ml-1">*</span></label>
               <div className="flex gap-2 overflow-x-auto pb-1 mb-3">
                 {CURRENCY_OPTIONS.map((c) => (
                   <button
@@ -2027,7 +2022,7 @@ export default function CreateListingPage() {
           <div className="bg-white rounded-2xl border border-stone-100 shadow-sm divide-y divide-stone-100">
             {/* 1. Gender preference */}
             <div className="p-5">
-              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.genderPref}</label>
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.genderPref}<span className="text-red-500 ml-1">*</span></label>
               <OptionGroup
                 value={form.gender_preference}
                 onChange={(v) => set("gender_preference", v as GenderPref)}
@@ -2036,13 +2031,13 @@ export default function CreateListingPage() {
                   { label: t.genderFemale, value: "female" },
                   { label: t.genderAny, value: "any" },
                 ]}
-                hasError={invalidFields.includes("gender") && !form.gender_preference}
+                hasError={invalidFields.includes("gender") && form.gender_preference === null}
               />
             </div>
 
             {/* 2. Occupation preference */}
             <div className="p-5">
-              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.occupationPref}</label>
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.occupationPref}<span className="text-red-500 ml-1">*</span></label>
               <OptionGroup
                 value={form.occupation_preference}
                 onChange={(v) => set("occupation_preference", v as OccupationPref)}
@@ -2051,7 +2046,7 @@ export default function CreateListingPage() {
                   { label: t.occWorking, value: "working" },
                   { label: t.occAny, value: "any" },
                 ]}
-                hasError={invalidFields.includes("occupation") && !form.occupation_preference}
+                hasError={invalidFields.includes("occupation") && form.occupation_preference === null}
               />
             </div>
 
@@ -2066,20 +2061,57 @@ export default function CreateListingPage() {
               />
             </div>
 
-            {/* 4. Smoking */}
+            {/* 4. Furnished */}
             <div className="p-5">
-              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.smoking}</label>
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.furnishedLabel}<span className="text-red-500 ml-1">*</span></label>
+              <Toggle
+                value={form.furnished}
+                labelOn={t.furnishedYes}
+                labelOff={t.furnishedNo}
+                onChange={(v) => set("furnished", v)}
+                hasError={invalidFields.includes("furnished") && form.furnished === null}
+              />
+            </div>
+
+            {/* 5. Elevator */}
+            <div className="p-5">
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.elevatorLabel}<span className="text-red-500 ml-1">*</span></label>
+              <Toggle
+                value={form.elevator}
+                labelOn={t.elevatorYes}
+                labelOff={t.elevatorNo}
+                onChange={(v) => set("elevator", v)}
+                hasError={invalidFields.includes("elevator") && form.elevator === null}
+              />
+            </div>
+
+            {/* 6. Parking */}
+            <div className="p-5">
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.parking}<span className="text-red-500 ml-1">*</span></label>
+              <Toggle
+                value={form.parking}
+                labelOn={t.parkingYes}
+                labelOff={t.parkingNo}
+                onChange={(v) => set("parking", v)}
+                hasError={invalidFields.includes("parking") && form.parking === null}
+              />
+            </div>
+
+            {/* 7. Smoking */}
+            <div className="p-5">
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.smoking}<span className="text-red-500 ml-1">*</span></label>
               <Toggle
                 value={form.smoking}
                 labelOn={t.smokingYes}
                 labelOff={t.smokingNo}
                 onChange={(v) => set("smoking", v)}
+                hasError={invalidFields.includes("smoking") && form.smoking === null}
               />
             </div>
 
-            {/* 5. Description */}
+            {/* 8. Description */}
             <div className="p-5">
-              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.descLabel}</label>
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.descLabel}<span className="text-red-500 ml-1">*</span></label>
               <textarea
                 rows={4}
                 value={form.description}
@@ -2091,9 +2123,9 @@ export default function CreateListingPage() {
           </div>
 
           {/* Photo Upload Section */}
-          <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-5 mt-4">
+          <div className={`bg-white rounded-2xl shadow-sm p-5 mt-4 ${invalidFields.includes("photos") && form.photos.length === 0 ? "border-2 border-red-400" : "border border-stone-100"}`}>
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-semibold text-stone-700">{t.photos}</label>
+              <label className="text-sm font-semibold text-stone-700">{t.photos}<span className="text-red-500 ml-1">*</span></label>
               <span className="text-xs text-stone-400">
                 {form.photos.length + uploadingCount}/3
               </span>
@@ -2127,7 +2159,7 @@ export default function CreateListingPage() {
             {form.photos.length + uploadingCount < 3 && (
               <div
                 onClick={() => photoInputRef.current?.click()}
-                className="border-2 border-dashed border-orange-300 rounded-2xl p-6 flex flex-col items-center gap-2 cursor-pointer bg-orange-50 active:bg-orange-100 transition-colors"
+                className={`border-2 border-dashed rounded-2xl p-6 flex flex-col items-center gap-2 cursor-pointer active:bg-orange-100 transition-colors ${invalidFields.includes("photos") && form.photos.length === 0 ? "border-red-400 bg-red-50" : "border-orange-300 bg-orange-50"}`}
               >
                 <span className="text-3xl">📷</span>
                 <p className="text-sm font-medium text-orange-600">{t.uploadPhotos}</p>
