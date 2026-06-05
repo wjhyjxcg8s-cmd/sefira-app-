@@ -120,9 +120,9 @@ function formatDate(dateStr: string, lang: Lang): string {
 export default function ListingDetailPage() {
   const router = useRouter();
   const params = useParams();
-  const id = params?.id as string;
 
   const [listing, setListing] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [activePhoto, setActivePhoto] = useState(0);
@@ -135,20 +135,47 @@ export default function ListingDetailPage() {
 
   useEffect(() => {
     async function load() {
+      const id = String(params?.id ?? "");
+      console.log("Loading listing id:", id);
+
+      if (!id) {
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
-      console.log('Listing ID:', id);
-      const { data, error } = await supabase
+
+      // Step 1: fetch listing alone — no JOIN so a missing profile can't break it
+      const { data: listingData, error: listingErr } = await supabase
         .from("listings")
-        .select("*, profiles(display_name, avatar_url, gender, birth_date, country, created_at)")
+        .select("*")
         .eq("id", id)
-        .single();
-      console.log('Listing data:', JSON.stringify(data));
-      console.log('Listing error:', JSON.stringify(error));
-      setListing(data);
+        .maybeSingle();
+
+      console.log("Listing data:", listingData);
+      console.log("Listing error:", listingErr);
+
+      if (listingData) {
+        setListing(listingData);
+
+        // Step 2: fetch profile separately — failure is non-fatal
+        if (listingData.user_id) {
+          const { data: profileData, error: profileErr } = await supabase
+            .from("profiles")
+            .select("display_name, avatar_url, gender, birth_date, country, created_at")
+            .eq("user_id", listingData.user_id)
+            .maybeSingle();
+          console.log("Profile data:", profileData);
+          console.log("Profile error:", profileErr);
+          setProfile(profileData ?? null);
+        }
+      }
+
       setLoading(false);
     }
-    if (id) load();
-  }, [id]);
+
+    load();
+  }, [params]);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -159,7 +186,6 @@ export default function ListingDetailPage() {
   const t = labels[lang];
   const isLoggedIn = !!currentUserId;
   const isOwner = isLoggedIn && listing && currentUserId === listing.user_id;
-  const profile = listing?.profiles;
   const photos: string[] = listing?.photos ?? [];
 
   function handleSendMessage() {
@@ -169,9 +195,7 @@ export default function ListingDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-orange-400 border-t-transparent rounded-full animate-spin" />
-        </div>
+        <div className="w-10 h-10 border-4 border-orange-400 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -182,7 +206,7 @@ export default function ListingDetailPage() {
         <div className="text-center">
           <p className="text-4xl mb-3">🏚️</p>
           <p className="text-gray-500">İlan bulunamadı</p>
-          <button onClick={() => router.back()} className="mt-4 text-orange-500 underline text-sm">
+          <button onClick={() => router.push("/")} className="mt-4 text-orange-500 underline text-sm">
             Geri dön
           </button>
         </div>
@@ -191,7 +215,8 @@ export default function ListingDetailPage() {
   }
 
   const age = calcAge(profile?.birth_date ?? null);
-  const genderEmoji = profile?.gender === "male" || profile?.gender === "erkek" ? "👨"
+  const genderEmoji =
+    profile?.gender === "male" || profile?.gender === "erkek" ? "👨"
     : profile?.gender === "female" || profile?.gender === "kadın" || profile?.gender === "kadin" ? "👩"
     : null;
 
@@ -226,13 +251,13 @@ export default function ListingDetailPage() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={photos[activePhoto]}
-              alt={listing.city}
+              alt={listing.city ?? ""}
               className="w-full h-full object-cover"
             />
           </div>
           {photos.length > 1 && (
             <div className="flex gap-2 p-2 overflow-x-auto bg-black">
-              {photos.map((p, i) => (
+              {photos.map((p: string, i: number) => (
                 <button key={i} onClick={() => setActivePhoto(i)}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -266,7 +291,7 @@ export default function ListingDetailPage() {
         </div>
 
         <h1 className="text-xl font-black text-gray-900">
-          {listing.city}{listing.district ? ` / ${listing.district}` : ""}
+          {listing.city ?? ""}{listing.district ? ` / ${listing.district}` : ""}
         </h1>
 
         {listing.country_code && (
@@ -338,7 +363,7 @@ export default function ListingDetailPage() {
             )}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-bold text-gray-900 truncate">{profile.display_name || "—"}</span>
+                <span className="font-bold text-gray-900 truncate">{profile.display_name ?? "—"}</span>
                 {profile.avatar_url && (
                   <span className="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full font-medium">
                     ✓ {t.verified}
