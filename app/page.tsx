@@ -1003,6 +1003,20 @@ interface WeeklyStory {
   views: number;
 }
 
+// ─── Supabase listing type ─────────────────────────────────────────────────────
+interface SupabaseListing {
+  id: string;
+  type: string;
+  city: string;
+  district: string | null;
+  rent: number | null;
+  currency: string | null;
+  photos: string[] | null;
+  house_type: string | null;
+  rooms: number | null;
+  smoking: boolean | null;
+}
+
 export default function Home() {
   // ── Auth ──────────────────────────────────────────────────────────────────
   const { user, signOut: handleSignOut } = useAuth();
@@ -1019,6 +1033,8 @@ export default function Home() {
   const profileMenuRef = useRef<HTMLDivElement>(null);
   const langMenuRef = useRef<HTMLDivElement>(null);
   const currencyMenuRef = useRef<HTMLDivElement>(null);
+  const notifRef = useRef<HTMLDivElement>(null);
+  const [notifOpen, setNotifOpen] = useState(false);
 
   // ── Scroll detection ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -1069,6 +1085,9 @@ export default function Home() {
       }
       if (currencyMenuRef.current && !currencyMenuRef.current.contains(e.target as Node)) {
         setCurrencyMenuOpen(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setNotifOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClick);
@@ -1215,6 +1234,17 @@ export default function Home() {
       console.log("Stories:", stories?.length, storiesError?.message);
       if (stories) setWeeklyStories(stories);
     })();
+  }, []);
+
+  // ── Latest listings from Supabase ─────────────────────────────────────────
+  const [latestListings, setLatestListings] = useState<SupabaseListing[]>([]);
+  useEffect(() => {
+    supabase
+      .from("listings")
+      .select("id, type, city, district, rent, currency, photos, house_type, rooms, smoking, furnished, current_residents")
+      .order("created_at", { ascending: false })
+      .limit(6)
+      .then(({ data }) => { if (data) setLatestListings(data as SupabaseListing[]); });
   }, []);
 
   // ── Story viewer navigation helpers ──────────────────────────────────────
@@ -1481,6 +1511,61 @@ export default function Home() {
                       {l === "tr" ? "TR" : l === "en" ? "EN" : l === "fa" ? "FA" : l === "ar" ? "AR" : l === "ru" ? "RU" : "DE"}
                     </button>
                   ))}
+                </div>
+              )}
+            </div>
+
+            {/* Notifications bell */}
+            <div className="relative" ref={notifRef}>
+              <button
+                onClick={() => { setNotifOpen((o) => !o); setLangMenuOpen(false); setCurrencyMenuOpen(false); setProfileMenuOpen(false); }}
+                className="relative w-9 h-9 flex items-center justify-center rounded-lg border border-stone-200 text-stone-500 hover:text-orange-500 hover:border-orange-300 hover:bg-orange-50 transition-all duration-200"
+                aria-label="Yeni İlanlar"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
+                {latestListings.length > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-500 text-white text-[9px] font-black rounded-full flex items-center justify-center leading-none">
+                    {latestListings.length > 3 ? "3+" : latestListings.length}
+                  </span>
+                )}
+              </button>
+              {notifOpen && (
+                <div className="absolute top-full mt-2 right-0 z-[100] bg-white border border-stone-200 rounded-2xl shadow-xl overflow-hidden w-72 animate-dropdown-slide">
+                  <div className="px-4 py-3 border-b border-stone-100 flex items-center justify-between">
+                    <p className="text-sm font-black text-stone-800">
+                      {lang === "tr" ? "Yeni İlanlar" : lang === "fa" ? "آگهی‌های جدید" : lang === "ar" ? "إعلانات جديدة" : lang === "de" ? "Neue Anzeigen" : lang === "ru" ? "Новые объявления" : "New Listings"}
+                    </p>
+                    <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+                  </div>
+                  {latestListings.slice(0, 3).map((listing) => (
+                    <div key={listing.id} className="flex items-center gap-3 px-4 py-3 hover:bg-stone-50 transition-colors cursor-pointer border-b border-stone-50 last:border-0">
+                      <span className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${listing.type === "has_place" ? "bg-orange-100 text-orange-700" : "bg-blue-100 text-blue-700"}`}>
+                            Yeni İlan
+                          </span>
+                          <span className="text-xs text-stone-600 truncate font-medium">{listing.city}{listing.district ? ` / ${listing.district}` : ""}</span>
+                        </div>
+                        {listing.rent && listing.currency && (
+                          <p className="text-xs font-bold text-orange-500 mt-0.5">{listing.rent} {listing.currency}/ay</p>
+                        )}
+                      </div>
+                      <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full flex-shrink-0 ${listing.type === "has_place" ? "bg-orange-500 text-white" : "bg-blue-500 text-white"}`}>
+                        {listing.type === "has_place"
+                          ? (lang === "tr" ? "Ev Sahibi" : lang === "fa" ? "صاحب‌خانه" : lang === "ar" ? "صاحب المنزل" : lang === "de" ? "Vermieter" : lang === "ru" ? "Хозяин" : "Landlord")
+                          : (lang === "tr" ? "Kiracı" : lang === "fa" ? "هم‌خانه‌یاب" : lang === "ar" ? "باحث" : lang === "de" ? "Mieter" : lang === "ru" ? "Жилец" : "Seeking")}
+                      </span>
+                    </div>
+                  ))}
+                  {latestListings.length === 0 && (
+                    <div className="px-4 py-6 text-center text-sm text-stone-400">
+                      {lang === "tr" ? "Henüz ilan yok" : lang === "fa" ? "آگهی‌ای یافت نشد" : lang === "ar" ? "لا توجد إعلانات بعد" : lang === "de" ? "Noch keine Inserate" : lang === "ru" ? "Нет объявлений" : "No listings yet"}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -2493,6 +2578,67 @@ export default function Home() {
           </button>
         </div>
       </section>
+
+      {/* ── LATEST LISTINGS ───────────────────────────────────────────────────── */}
+      {latestListings.length > 0 && (
+        <section className="max-w-7xl mx-auto px-5 mt-14 mb-14">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-2 tracking-tight">
+              {lang === "tr" ? "Son İlanlar" : lang === "fa" ? "آخرین آگهی‌ها" : lang === "ar" ? "أحدث الإعلانات" : lang === "de" ? "Neueste Anzeigen" : lang === "ru" ? "Последние объявления" : "Latest Listings"}
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+            {latestListings.map((listing) => (
+              <div
+                key={listing.id}
+                className="rounded-2xl overflow-hidden shadow-md bg-white hover:shadow-xl transition-shadow cursor-pointer"
+              >
+                <div className="aspect-video bg-gray-100 relative">
+                  {listing.photos?.[0] ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={listing.photos[0]}
+                      alt={listing.city}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-10 h-10 text-stone-400">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                      </svg>
+                    </div>
+                  )}
+                  <span className="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                    {listing.type === "has_place"
+                      ? (lang === "tr" ? "Ev Sahibi" : lang === "fa" ? "صاحب‌خانه" : lang === "ar" ? "صاحب المنزل" : lang === "de" ? "Vermieter" : lang === "ru" ? "Хозяин" : "Landlord")
+                      : (lang === "tr" ? "Kiracı Arıyor" : lang === "fa" ? "دنبال هم‌خانه" : lang === "ar" ? "يبحث عن سكن" : lang === "de" ? "Sucht Mitbewohner" : lang === "ru" ? "Ищу жильё" : "Looking for Room")}
+                  </span>
+                </div>
+                <div className="p-4">
+                  <p className="font-bold text-gray-900">{listing.city}{listing.district ? ` / ${listing.district}` : ""}</p>
+                  {listing.rent && listing.currency && (
+                    <p className="text-orange-500 font-bold mt-1">{listing.rent} {listing.currency}/ay</p>
+                  )}
+                  {(listing.house_type || listing.rooms) && (
+                    <p className="text-gray-500 text-sm mt-1">
+                      {listing.house_type ?? ""}
+                      {listing.house_type && listing.rooms ? " • " : ""}
+                      {listing.rooms ? `${listing.rooms} oda` : ""}
+                    </p>
+                  )}
+                  {listing.smoking !== null && (
+                    <p className="text-gray-400 text-xs mt-1">
+                      {listing.smoking
+                        ? (lang === "tr" ? "🚬 Sigara İçilebilir" : "🚬 Smoking OK")
+                        : (lang === "tr" ? "🚭 Sigara İçilmez" : "🚭 No Smoking")}
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ── HOW IT WORKS ──────────────────────────────────────────────────────── */}
       <section className="bg-amber-50/80 border-y border-amber-100 pb-20 mt-0 pt-6">
