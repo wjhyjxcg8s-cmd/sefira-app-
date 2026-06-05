@@ -342,7 +342,7 @@ export default function LatestListings({ lang = "tr", filterCity, onClearFilter 
   const [selectedCountry, setSelectedCountry] = useState("all");
   const [loading, setLoading] = useState(true);
   const [showCountryModal, setShowCountryModal] = useState(false);
-  const [modalSearch, setModalSearch] = useState("");
+  const [countrySearch, setCountrySearch] = useState("");
   const [extraPills, setExtraPills] = useState<{ code: string; flag: string; name: string }[]>([]);
 
   useEffect(() => {
@@ -390,22 +390,13 @@ export default function LatestListings({ lang = "tr", filterCity, onClearFilter 
     return base.slice(0, 6);
   }, [allListings, selectedCountry, filterCity]);
 
-  const filteredModalCountries = useMemo(
-    () =>
-      allCountries.filter((c) =>
-        c.name.toLowerCase().includes(modalSearch.toLowerCase()) ||
-        c.code.toLowerCase().includes(modalSearch.toLowerCase())
-      ),
-    [modalSearch]
-  );
-
   function selectFromModal(country: { code: string; flag: string; name: string }) {
     if (!fixedCodes.has(country.code) && !extraPills.find((p) => p.code === country.code)) {
       setExtraPills((prev) => [...prev, country]);
     }
     setSelectedCountry(country.code);
     setShowCountryModal(false);
-    setModalSearch("");
+    setCountrySearch("");
   }
 
   const pillList = [
@@ -444,10 +435,7 @@ export default function LatestListings({ lang = "tr", filterCity, onClearFilter 
         {pillList.map((c) => (
           <button
             key={c.code}
-            onClick={() => {
-              setSelectedCountry(c.code);
-              if (c.code === "all") setShowCountryModal(true);
-            }}
+            onClick={() => setSelectedCountry(c.code)}
             className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-all ${
               selectedCountry === c.code
                 ? c.code === "all"
@@ -463,9 +451,9 @@ export default function LatestListings({ lang = "tr", filterCity, onClearFilter 
 
         <button
           onClick={() => setShowCountryModal(true)}
-          className="flex items-center gap-1 px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium border border-dashed border-gray-300 text-gray-500 hover:border-orange-400 hover:text-orange-500 transition-all"
+          className="flex items-center gap-1 px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-all border-2 border-dashed border-gray-300 text-gray-500 hover:border-orange-400 hover:text-orange-500 bg-white"
         >
-          🌐 + Diğer
+          🌐 +
         </button>
       </div>
 
@@ -580,64 +568,65 @@ export default function LatestListings({ lang = "tr", filterCity, onClearFilter 
         </div>
       )}
 
-      {/* More countries bottom sheet modal */}
+      {/* Country selector bottom sheet */}
       {showCountryModal && (
-        <div
-          className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center sm:p-4 bg-black/50 backdrop-blur-sm"
-          onClick={(e) => { if (e.target === e.currentTarget) { setShowCountryModal(false); setModalSearch(""); } }}
-        >
-          <div className="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
+        <div className="fixed inset-0 bg-black/50 z-50" onClick={() => setShowCountryModal(false)}>
+          <div
+            className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl max-h-[85vh] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-gray-100 flex-shrink-0">
-              <h3 className="font-bold text-gray-900 text-lg">🌍 Ülke Seç</h3>
+            <div className="flex items-center justify-between p-4 border-b border-gray-100">
+              <h3 className="font-bold text-lg">🌍 Ülke Seç</h3>
               <button
-                onClick={() => { setShowCountryModal(false); setModalSearch(""); }}
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors"
+                onClick={() => setShowCountryModal(false)}
+                className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500"
               >
                 ✕
               </button>
             </div>
 
             {/* Search */}
-            <div className="px-6 py-3 flex-shrink-0">
+            <div className="p-4 pb-2">
               <input
-                type="text"
+                value={countrySearch}
+                onChange={(e) => setCountrySearch(e.target.value)}
                 placeholder="Ülke ara..."
-                value={modalSearch}
-                onChange={(e) => setModalSearch(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+                className="w-full px-4 py-2.5 bg-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
                 autoFocus
               />
             </div>
 
+            {/* Show All option */}
+            <div className="px-4 pb-2">
+              <button
+                onClick={() => { setSelectedCountry("all"); setShowCountryModal(false); }}
+                className="w-full flex items-center gap-2 p-3 rounded-xl border-2 border-orange-200 bg-orange-50 text-orange-600 font-medium text-sm"
+              >
+                🌍 Tüm Ülkeleri Göster
+              </button>
+            </div>
+
             {/* Country grid */}
-            <div className="overflow-y-auto px-6 pb-6 flex-1">
-              {!modalSearch && (
-                <button
-                  onClick={() => { setSelectedCountry("all"); setShowCountryModal(false); setModalSearch(""); }}
-                  className="w-full flex items-center gap-2 p-3 mb-3 rounded-xl border border-slate-200 hover:border-slate-400 hover:bg-slate-50 transition-all text-sm font-medium text-slate-700"
-                >
-                  🌍 Tümünü Göster
-                </button>
-              )}
+            <div className="overflow-y-auto flex-1 px-4 pb-6">
               <div className="grid grid-cols-2 gap-2">
-                {filteredModalCountries.map((c) => (
-                  <button
-                    key={c.code}
-                    onClick={() => selectFromModal(c)}
-                    className={`flex items-center gap-2 p-3 rounded-xl border transition-all text-sm ${
-                      selectedCountry === c.code
-                        ? "bg-orange-50 border-orange-400 text-orange-600"
-                        : "border-gray-200 hover:border-orange-400 hover:bg-orange-50 text-gray-700"
-                    }`}
-                  >
-                    <span className="text-xl">{c.flag}</span>
-                    <span className="font-medium truncate">{c.name}</span>
-                  </button>
-                ))}
-                {filteredModalCountries.length === 0 && (
-                  <p className="col-span-2 text-center text-gray-400 text-sm py-8">Sonuç bulunamadı</p>
-                )}
+                {allCountries
+                  .filter((c) => c.name.toLowerCase().includes(countrySearch.toLowerCase()))
+                  .map((c) => (
+                    <button
+                      key={c.code}
+                      onClick={() => { selectFromModal(c); setCountrySearch(""); }}
+                      className={`flex items-center gap-2 p-3 rounded-xl border text-sm text-left transition-all ${
+                        selectedCountry === c.code
+                          ? "border-orange-500 bg-orange-50 text-orange-600 font-medium"
+                          : "border-gray-200 hover:border-orange-300 hover:bg-orange-50"
+                      }`}
+                    >
+                      <span className="text-xl">{c.flag}</span>
+                      <span className="truncate">{c.name}</span>
+                    </button>
+                  ))
+                }
               </div>
             </div>
           </div>
