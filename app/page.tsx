@@ -956,6 +956,15 @@ const trendingCities = [
 
 
 
+const thisWeekLabel: Record<string, string> = {
+  tr: "Bu Hafta",
+  en: "This Week",
+  fa: "این هفته",
+  ar: "هذا الأسبوع",
+  de: "Diese Woche",
+  ru: "На этой неделе",
+};
+
 const PRIORITY_COUNTRIES = [
   "Turkey", "Germany", "United States", "Spain", "Brazil",
   "Italy", "France", "United Arab Emirates", "South Korea",
@@ -2523,7 +2532,7 @@ export default function Home() {
       {weeklyStories.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 sm:px-5 mt-2 pt-0 pb-4">
           <p className="text-sm font-bold text-stone-800 mb-3 sm:mb-4">
-            {weeklyStories[0]?.week_label ?? "Bu Hafta"}
+            {weeklyStories[0]?.week_label ?? thisWeekLabel[lang] ?? "Bu Hafta"}
           </p>
           <div
             className="flex gap-3 sm:gap-4 overflow-x-auto pb-2"
