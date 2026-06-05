@@ -10,8 +10,33 @@ const supabaseClient = createClient(
 
 type Lang = "tr" | "en" | "fa" | "ar" | "de" | "ru";
 
-const turkishCities = ["istanbul", "ankara", "izmir", "bursa", "adana", "antalya", "konya", "gaziantep", "mersin", "diyarbakır", "kayseri", "eskişehir", "trabzon", "ağrı", "ceyhan", "diyadin"];
-const germanCities = ["berlin", "munich", "hamburg", "frankfurt", "cologne", "stuttgart", "düsseldorf", "dortmund", "münchen"];
+function normalizeTR(str: string): string {
+  return str
+    .toLowerCase()
+    .replace(/ğ/g, "g")
+    .replace(/ü/g, "u")
+    .replace(/ş/g, "s")
+    .replace(/ı/g, "i")
+    .replace(/ö/g, "o")
+    .replace(/ç/g, "c")
+    .replace(/â/g, "a")
+    .replace(/î/g, "i")
+    .replace(/û/g, "u");
+}
+
+const turkishCities = [
+  "istanbul", "ankara", "izmir", "bursa", "adana", "antalya",
+  "konya", "gaziantep", "mersin", "diyarbakir", "kayseri",
+  "eskisehir", "trabzon", "agri", "ceyhan", "diyadin",
+  "samsun", "denizli", "adapazari", "sakarya", "malatya",
+  "kahramanmaras", "erzurum", "van", "batman", "sanliurfa",
+  "urfa", "hatay", "antakya", "iskenderun", "bodrum",
+  "mugla", "aydin", "manisa", "balikesir", "canakkale",
+  "tekirdag", "edirne", "kirklareli", "kocaeli", "izmit",
+  "gebze", "pendik", "umraniye", "kadikoy", "besiktas",
+  "sisli", "beyoglu", "fatih", "uskudar", "maltepe",
+];
+const germanCities = ["berlin", "munich", "hamburg", "frankfurt", "cologne", "stuttgart", "dusseldorf", "dortmund", "munchen"];
 const usCities = ["new york", "los angeles", "chicago", "houston", "phoenix", "philadelphia", "san antonio", "san diego", "dallas"];
 const russianCities = ["moscow", "saint petersburg", "novosibirsk", "yekaterinburg", "nizhny novgorod", "kazan", "moskva"];
 const uaeCities = ["dubai", "abu dhabi", "sharjah", "ajman"];
@@ -30,9 +55,9 @@ function filterByCountry(listings: any[], countryCode: string) {
   if (countryCode === "all") return listings;
   return listings.filter((l) => {
     if (l.country_code) return l.country_code === countryCode;
-    const location = ((l.city || "") + " " + (l.district || "")).toLowerCase();
+    const normalizedLocation = normalizeTR((l.city || "") + " " + (l.district || ""));
     const cities = cityMap[countryCode] || [];
-    return cities.some((c) => location.includes(c));
+    return cities.some((c) => normalizedLocation.includes(normalizeTR(c)));
   });
 }
 
