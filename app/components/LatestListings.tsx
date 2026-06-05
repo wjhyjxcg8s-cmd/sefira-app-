@@ -51,6 +51,39 @@ const cityMap: Record<string, string[]> = {
   IR: iranianCities,
 };
 
+function detectCountry(city: string, district: string) {
+  const loc = normalizeTR((city || "") + " " + (district || ""));
+
+  const turkishPlates: Record<string, string> = {
+    istanbul: "34", ankara: "06", izmir: "35",
+    bursa: "16", adana: "01", antalya: "07",
+    konya: "42", gaziantep: "27", mersin: "33",
+    diyarbakir: "21", kayseri: "38", eskisehir: "26",
+    trabzon: "61", agri: "04", ceyhan: "01",
+    diyadin: "04", samsun: "55", denizli: "20",
+    van: "65", malatya: "44", sanliurfa: "63",
+    hatay: "31", mugla: "48", manisa: "45",
+    balikesir: "10", kocaeli: "41", sakarya: "54",
+    erzurum: "25", batman: "72", kahramanmaras: "46",
+  };
+
+  for (const [c, plate] of Object.entries(turkishPlates)) {
+    if (loc.includes(c)) return { flag: "🇹🇷", country: "TR", plate };
+  }
+  if (["ahvaz", "tehran", "mashhad", "isfahan", "tabriz", "shiraz"].some((c) => loc.includes(c)))
+    return { flag: "🇮🇷", country: "IR", plate: null };
+  if (["berlin", "munich", "hamburg", "frankfurt", "cologne", "munchen"].some((c) => loc.includes(c)))
+    return { flag: "🇩🇪", country: "DE", plate: null };
+  if (["moscow", "saint petersburg", "novosibirsk", "moskva"].some((c) => loc.includes(c)))
+    return { flag: "🇷🇺", country: "RU", plate: null };
+  if (["dubai", "abu dhabi", "sharjah"].some((c) => loc.includes(c)))
+    return { flag: "🇦🇪", country: "AE", plate: null };
+  if (["new york", "los angeles", "chicago", "houston"].some((c) => loc.includes(c)))
+    return { flag: "🇺🇸", country: "US", plate: null };
+
+  return { flag: "🌍", country: null, plate: null };
+}
+
 function filterByCountry(listings: any[], countryCode: string) {
   if (countryCode === "all") return listings;
   return listings.filter((l) => {
@@ -296,6 +329,25 @@ export default function LatestListings({ lang = "tr" }: { lang?: Lang }) {
                 <p className="font-bold text-sm text-gray-900">
                   {listing.city}{listing.district ? ` / ${listing.district}` : ""}
                 </p>
+                {(() => {
+                  const countryInfo = detectCountry(listing.city, listing.district);
+                  return (
+                    <div className="flex items-center gap-2 mt-1 mb-2">
+                      <span className="text-base">{countryInfo.flag}</span>
+                      {countryInfo.plate && (
+                        <div className="flex items-center border border-gray-300 rounded overflow-hidden text-xs font-bold shadow-sm">
+                          <div className="bg-blue-700 text-white px-1 py-0.5 flex flex-col items-center leading-tight">
+                            <span className="text-[8px]">🇪🇺</span>
+                            <span className="text-[7px]">TR</span>
+                          </div>
+                          <div className="bg-white text-gray-800 px-2 py-0.5 tracking-widest font-bold text-xs">
+                            {countryInfo.plate}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
                 {listing.rent && listing.currency && (
                   <p className="text-orange-500 font-bold text-sm mt-1">
                     {listing.rent} {listing.currency}/ay
