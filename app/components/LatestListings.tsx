@@ -86,10 +86,10 @@ function detectCountry(city: string, district: string) {
 
 function GenderBadge({ gender }: { gender: string | null }) {
   if (!gender) return null;
-  if (gender === "male" || gender === "erkek")
-    return <span className="text-xs bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded-full font-medium">♂</span>;
-  if (gender === "female" || gender === "kadın" || gender === "kadin")
-    return <span className="text-xs bg-pink-100 text-pink-500 px-1.5 py-0.5 rounded-full font-medium">♀</span>;
+  const isMale = gender === "male" || gender === "erkek" || gender === "man";
+  const isFemale = gender === "female" || gender === "kadın" || gender === "kadin" || gender === "woman";
+  if (isMale) return <span className="text-lg" title="Erkek">👨</span>;
+  if (isFemale) return <span className="text-lg" title="Kadın">👩</span>;
   return null;
 }
 
