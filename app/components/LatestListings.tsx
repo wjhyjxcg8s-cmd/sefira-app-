@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseClient = createClient(
@@ -338,6 +339,7 @@ interface LatestListingsProps {
 }
 
 export default function LatestListings({ lang = "tr", filterCity, onClearFilter }: LatestListingsProps) {
+  const router = useRouter();
   const [allListings, setAllListings] = useState<any[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("all");
   const [loading, setLoading] = useState(true);
@@ -487,6 +489,7 @@ export default function LatestListings({ lang = "tr", filterCity, onClearFilter 
           {listings.map((listing) => (
             <div
               key={listing.id}
+              onClick={() => router.push(`/listings/${listing.id}`)}
               className="rounded-2xl overflow-hidden shadow-md bg-white hover:shadow-xl transition-shadow cursor-pointer"
             >
               <div className="aspect-video bg-gray-100 relative">
