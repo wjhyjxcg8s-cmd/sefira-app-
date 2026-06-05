@@ -1015,6 +1015,8 @@ interface SupabaseListing {
   house_type: string | null;
   rooms: number | null;
   smoking: boolean | null;
+  user_id: string;
+  profiles: { display_name: string | null; avatar_url: string | null } | null;
 }
 
 export default function Home() {
@@ -1241,10 +1243,15 @@ export default function Home() {
   useEffect(() => {
     supabase
       .from("listings")
-      .select("id, type, city, district, rent, currency, photos, house_type, rooms, smoking, furnished, current_residents")
+      .select(`
+        id, type, city, district, rent, currency, photos,
+        house_type, rooms, smoking, furnished, current_residents,
+        user_id,
+        profiles!inner(display_name, avatar_url)
+      `)
       .order("created_at", { ascending: false })
       .limit(6)
-      .then(({ data }) => { if (data) setLatestListings(data as SupabaseListing[]); });
+      .then(({ data }) => { if (data) setLatestListings(data as unknown as SupabaseListing[]); });
   }, []);
 
   // ── Story viewer navigation helpers ──────────────────────────────────────
@@ -2633,6 +2640,23 @@ export default function Home() {
                         : (lang === "tr" ? "🚭 Sigara İçilmez" : "🚭 No Smoking")}
                     </p>
                   )}
+                  <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+                    {listing.profiles?.avatar_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={listing.profiles.avatar_url}
+                        className="w-8 h-8 rounded-full object-cover border-2 border-orange-200"
+                        alt=""
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 text-xs font-bold border-2 border-orange-200">
+                        {listing.profiles?.display_name?.[0]?.toUpperCase() || "?"}
+                      </div>
+                    )}
+                    <span className="text-xs text-gray-500 font-medium truncate">
+                      {listing.profiles?.display_name || "Kullanıcı"}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}
