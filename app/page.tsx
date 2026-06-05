@@ -1274,11 +1274,13 @@ export default function Home() {
         id, type, city, district, rent, currency, photos,
         house_type, rooms, smoking, furnished, current_residents,
         user_id,
-        profiles!inner(display_name, avatar_url)
+        profiles(display_name, avatar_url)
       `)
       .order("created_at", { ascending: false })
       .limit(6)
-      .then(({ data }) => {
+      .then(({ data, error }) => {
+        console.log('Listings result:', JSON.stringify(data));
+        console.log('Listings error:', JSON.stringify(error));
         if (!data) return;
         const incoming = data as unknown as SupabaseListing[];
         setLatestListings(incoming);
