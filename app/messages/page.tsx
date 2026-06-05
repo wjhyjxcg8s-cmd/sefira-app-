@@ -161,10 +161,10 @@ function MessagesPageContent() {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [targetUserId, setTargetUserId] = useState<string | null>(null);
   const [targetProfile, setTargetProfile] = useState<{ display_name: string | null; avatar_url: string | null } | null>(null);
-  const [peerMessages, setPeerMessages] = useState<PeerMessage[]>([]);
-  const [peerInput, setPeerInput] = useState("");
-  const [sendingPeer, setSendingPeer] = useState(false);
-  const peerBottomRef = useRef<HTMLDivElement>(null);
+  const [messages, setMessages] = useState<any[]>([]);
+  const [messageText, setMessageText] = useState("");
+  const [sendingMessage, setSendingMessage] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const savedLang = localStorage.getItem("sefira-lang") as Lang | null;
@@ -229,29 +229,26 @@ function MessagesPageContent() {
 
   // Load peer messages whenever a user conversation is selected
   useEffect(() => {
-    if (!selectedConv || SYSTEM_CONVS.has(selectedConv) || !currentUserId) return;
+    if (!selectedConv || SYSTEM_CONVS.has(selectedConv)) return;
 
-    supabase
-      .from("messages")
-      .select("*")
-      .or(
-        `and(from_user_id.eq.${currentUserId},to_user_id.eq.${selectedConv}),` +
-        `and(from_user_id.eq.${selectedConv},to_user_id.eq.${currentUserId})`
-      )
-      .order("created_at", { ascending: true })
-      .then(({ data, error }) => {
-        console.log("Peer messages:", data, error);
-        if (!error && data) setPeerMessages(data as PeerMessage[]);
-        else setPeerMessages([]);
-      });
-  }, [selectedConv, currentUserId]);
+    async function fetchMessages() {
+      const { data, error } = await supabase
+        .from("user_messages")
+        .select("*")
+        .eq("conversation_id", selectedConv)
+        .order("created_at", { ascending: true });
 
-  // Scroll peer chat to bottom
-  useEffect(() => {
-    if (selectedConv && !SYSTEM_CONVS.has(selectedConv)) {
-      peerBottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      console.log("Messages:", data, "Error:", error);
+      if (data) setMessages(data);
     }
-  }, [peerMessages, selectedConv]);
+
+    fetchMessages();
+  }, [selectedConv]);
+
+  // Scroll to bottom after new messages
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   // Scroll support chat to bottom
   useEffect(() => {
@@ -297,21 +294,45 @@ function MessagesPageContent() {
     setSendingChat(false);
   };
 
-  const handleSendPeer = async () => {
-    if (!peerInput.trim() || sendingPeer || !currentUserId || !selectedConv) return;
-    setSendingPeer(true);
-    const text = peerInput.trim();
-    setPeerInput("");
+  const sendMessage = async () => {
+    if (!messageText.trim() || !selectedConv || !currentUserId) return;
+
+    const content = messageText.trim();
+    setMessageText("");
+
+    // Optimistic update — message appears instantly
+    const tempMsg = {
+      id: Date.now().toString(),
+      conversation_id: selectedConv,
+      sender_id: currentUserId,
+      content,
+      is_read: false,
+      created_at: new Date().toISOString(),
+    };
+    setMessages((prev) => [...prev, tempMsg]);
 
     const { data, error } = await supabase
-      .from("messages")
-      .insert([{ from_user_id: currentUserId, to_user_id: selectedConv, content: text, is_read: false }])
+      .from("user_messages")
+      .insert({ conversation_id: selectedConv, sender_id: currentUserId, content })
       .select()
       .single();
 
-    console.log("Peer send:", data, error);
-    if (!error && data) setPeerMessages((prev) => [...prev, data as PeerMessage]);
-    setSendingPeer(false);
+    console.log("Send result:", data, error);
+
+    if (error) {
+      // Roll back optimistic message and restore text
+      setMessages((prev) => prev.filter((m) => m.id !== tempMsg.id));
+      setMessageText(content);
+      return;
+    }
+
+    // Swap temp message for the real one from the server
+    setMessages((prev) => prev.map((m) => (m.id === tempMsg.id ? data : m)));
+
+    await supabase
+      .from("conversations")
+      .update({ updated_at: new Date().toISOString() })
+      .eq("id", selectedConv);
   };
 
   const formatDate = (d: string) =>
@@ -389,8 +410,8 @@ function MessagesPageContent() {
                   <span className="text-xs text-orange-500 font-semibold flex-shrink-0">{t.newMessage}</span>
                 </div>
                 <p className="text-xs text-stone-400 truncate">
-                  {peerMessages.length > 0
-                    ? peerMessages[peerMessages.length - 1].content
+                  {messages.length > 0
+                    ? messages[messages.length - 1].content
                     : t.noMessagesYet}
                 </p>
               </div>
@@ -493,11 +514,11 @@ function MessagesPageContent() {
               </div>
 
               <div className="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-3">
-                {peerMessages.length === 0 && (
+                {messages.length === 0 && (
                   <div className="text-center py-10 text-stone-400 text-sm">{t.noMessagesYet}</div>
                 )}
-                {peerMessages.map((msg) => {
-                  const isMe = msg.from_user_id === currentUserId;
+                {messages.map((msg) => {
+                  const isMe = msg.sender_id === currentUserId;
                   return (
                     <div key={msg.id} className={`flex w-full ${isMe ? "justify-end" : "justify-start"}`} style={{ direction: "ltr" }}>
                       <div className={`flex items-end gap-2 max-w-[80%] ${isMe ? "flex-row-reverse" : ""}`}>
@@ -523,25 +544,25 @@ function MessagesPageContent() {
                     </div>
                   );
                 })}
-                <div ref={peerBottomRef} />
+                <div ref={messagesEndRef} />
               </div>
 
               <div className="px-4 py-3 bg-white border-t border-stone-200 flex-shrink-0">
                 <div className="flex gap-2" style={{ direction: "ltr" }}>
                   <input
-                    value={peerInput}
-                    onChange={(e) => setPeerInput(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSendPeer(); } }}
+                    value={messageText}
+                    onChange={(e) => setMessageText(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
                     placeholder={t.typeMessage}
                     dir="auto"
                     className="flex-1 px-4 py-2.5 rounded-2xl border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-stone-50"
                   />
                   <button
-                    onClick={handleSendPeer}
-                    disabled={!peerInput.trim() || sendingPeer}
+                    onClick={sendMessage}
+                    disabled={!messageText.trim() || sendingMessage}
                     className="px-4 py-2.5 rounded-2xl bg-orange-500 text-white text-sm font-semibold hover:bg-orange-600 disabled:opacity-50 transition-colors flex-shrink-0"
                   >
-                    {sendingPeer ? "…" : t.sendButton}
+                    {sendingMessage ? "…" : t.sendButton}
                   </button>
                 </div>
               </div>
