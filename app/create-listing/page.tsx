@@ -2220,11 +2220,11 @@ export default function CreateListingPage() {
       { label: t.typeLabel, value: isHasPlace ? t.hasPlaceLabel : t.needsPlaceLabel },
       ...(isHasPlace
         ? [
-            { label: t.houseTypeReviewLabel, value: houseTypeLabels[form.houseType] || "—" },
+            { label: t.houseTypeReviewLabel, value: (form.houseType ? houseTypeLabels[form.houseType] : null) || "—" },
             { label: t.floorReviewLabel, value: form.floor === 21 ? '20+' : `${form.floor}` },
-            { label: t.elevatorReviewLabel, value: form.elevator ? t.yes : t.no },
-            { label: t.parkingLabel, value: form.parking ? t.yes : t.no },
-            { label: t.furnishedReviewLabel, value: form.furnished ? t.furnishedYes : t.furnishedNo },
+            { label: t.elevatorReviewLabel, value: form.elevator === true ? t.yes : form.elevator === false ? t.no : '—' },
+            { label: t.parkingLabel, value: form.parking === true ? t.yes : form.parking === false ? t.no : '—' },
+            { label: t.furnishedReviewLabel, value: form.furnished === true ? t.furnishedYes : form.furnished === false ? t.furnishedNo : '—' },
             { label: t.locationReviewLabel, value: locationStr },
             {
               label: t.priceReviewLabel,
@@ -2237,7 +2237,7 @@ export default function CreateListingPage() {
                   })()
                 : "—",
             },
-            { label: t.smokingLabel, value: form.smoking ? t.smokingYes : t.smokingNo },
+            { label: t.smokingLabel, value: form.smoking === true ? t.smokingYes : form.smoking === false ? t.smokingNo : '—' },
             { label: t.residentsLabel, value: `${form.current_residents} ${t.person}` },
           ]
         : []),
