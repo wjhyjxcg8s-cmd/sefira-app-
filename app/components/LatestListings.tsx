@@ -186,7 +186,13 @@ const titles: Record<Lang, string> = {
 
 const fixedCodes = new Set(countries.map((c) => c.code));
 
-export default function LatestListings({ lang = "tr" }: { lang?: Lang }) {
+interface LatestListingsProps {
+  lang?: Lang;
+  filterCity?: string | null;
+  onClearFilter?: () => void;
+}
+
+export default function LatestListings({ lang = "tr", filterCity, onClearFilter }: LatestListingsProps) {
   const [allListings, setAllListings] = useState<any[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("all");
   const [loading, setLoading] = useState(true);
@@ -226,10 +232,18 @@ export default function LatestListings({ lang = "tr" }: { lang?: Lang }) {
     fetchListings();
   }, []);
 
-  const listings = useMemo(
-    () => filterByCountry(allListings, selectedCountry).slice(0, 6),
-    [allListings, selectedCountry]
-  );
+  const listings = useMemo(() => {
+    let base = filterByCountry(allListings, selectedCountry);
+    if (filterCity) {
+      const q = normalizeTR(filterCity);
+      base = base.filter(
+        (l) =>
+          normalizeTR(l.city || "").includes(q) ||
+          normalizeTR(l.district || "").includes(q)
+      );
+    }
+    return base.slice(0, 6);
+  }, [allListings, selectedCountry, filterCity]);
 
   const filteredModalCountries = useMemo(
     () =>
@@ -265,6 +279,21 @@ export default function LatestListings({ lang = "tr" }: { lang?: Lang }) {
         <p className="text-sm text-gray-400 mt-1">{subtitles[lang]}</p>
       </div>
 
+      {/* City filter badge */}
+      {filterCity && (
+        <div className="flex items-center gap-2 mb-4 bg-orange-50 border border-orange-200 rounded-2xl px-4 py-2">
+          <span className="text-orange-600 text-sm font-medium">
+            📍 {filterCity} ilanları gösteriliyor
+          </span>
+          <button
+            onClick={onClearFilter}
+            className="ml-auto text-xs text-gray-400 hover:text-red-400 transition-colors"
+          >
+            ✕ Temizle
+          </button>
+        </div>
+      )}
+
       {/* Country filter pills */}
       <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide mb-6">
         {pillList.map((c) => (
@@ -297,14 +326,24 @@ export default function LatestListings({ lang = "tr" }: { lang?: Lang }) {
           ))}
         </div>
       ) : listings.length === 0 ? (
-        <p className="text-center text-gray-400 py-8">
-          {lang === "tr" ? "Bu ülkede ilan yok" :
-           lang === "fa" ? "آگهی‌ای در این کشور وجود ندارد" :
-           lang === "ar" ? "لا توجد إعلانات في هذا البلد" :
-           lang === "de" ? "Keine Anzeigen in diesem Land" :
-           lang === "ru" ? "Нет объявлений в этой стране" :
-           "No listings in this country"}
-        </p>
+        filterCity ? (
+          <div className="col-span-3 text-center py-12">
+            <p className="text-4xl mb-3">🏙️</p>
+            <p className="text-gray-500 font-medium">{filterCity} için henüz ilan yok</p>
+            <button onClick={onClearFilter} className="mt-3 text-orange-500 text-sm underline">
+              Tüm ilanları gör
+            </button>
+          </div>
+        ) : (
+          <p className="text-center text-gray-400 py-8">
+            {lang === "tr" ? "Bu ülkede ilan yok" :
+             lang === "fa" ? "آگهی‌ای در این کشور وجود ندارد" :
+             lang === "ar" ? "لا توجد إعلانات في هذا البلد" :
+             lang === "de" ? "Keine Anzeigen in diesem Land" :
+             lang === "ru" ? "Нет объявлений в этой стране" :
+             "No listings in this country"}
+          </p>
+        )
       ) : (
         <div className="grid grid-cols-3 gap-3">
           {listings.map((listing) => (

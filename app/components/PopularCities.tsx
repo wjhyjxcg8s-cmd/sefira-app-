@@ -242,14 +242,18 @@ interface CityCardProps {
   imgSizes: string;
   t: { listings: string; explore: string };
   featured?: boolean;
+  onCityClick?: (cityName: string) => void;
 }
 
-function CityCard({ city, lang, inView, delay, className = "", imgSizes, t, featured }: CityCardProps) {
+function CityCard({ city, lang, inView, delay, className = "", imgSizes, t, featured, onCityClick }: CityCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 44 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ delay, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ scale: 1.03 }}
+      whileTap={{ scale: 0.97 }}
+      onClick={() => onCityClick?.(city.name)}
       className={`group relative overflow-hidden rounded-2xl cursor-pointer shadow-xl hover:shadow-2xl hover:shadow-stone-900/25 transition-shadow duration-500 ${className}`}
     >
       {/* Image — zoom on hover */}
@@ -338,7 +342,12 @@ function CityCard({ city, lang, inView, delay, className = "", imgSizes, t, feat
   );
 }
 
-export default function PopularCities({ lang }: { lang: "tr" | "en" | "fa" | "ar" | "de" | "ru" }) {
+interface PopularCitiesProps {
+  lang: "tr" | "en" | "fa" | "ar" | "de" | "ru";
+  onCityClick?: (cityName: string) => void;
+}
+
+export default function PopularCities({ lang, onCityClick }: PopularCitiesProps) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const t = copy[lang];
@@ -387,25 +396,25 @@ export default function PopularCities({ lang }: { lang: "tr" | "en" | "fa" | "ar
 
       {/* Mobile / SM layout */}
       <div className="grid grid-cols-2 gap-3 lg:hidden">
-        <CityCard city={istanbul}     lang={lang} inView={inView} delay={0.06} className="h-40" imgSizes="50vw" t={t} featured />
-        <CityCard city={washingtonDc} lang={lang} inView={inView} delay={0.12} className="h-40" imgSizes="50vw" t={t} />
-        <CityCard city={newYork}      lang={lang} inView={inView} delay={0.18} className="h-40" imgSizes="50vw" t={t} />
-        <CityCard city={paris}        lang={lang} inView={inView} delay={0.24} className="h-40" imgSizes="50vw" t={t} />
-        <CityCard city={barcelona}    lang={lang} inView={inView} delay={0.30} className="h-40" imgSizes="50vw" t={t} />
-        <CityCard city={berlin}       lang={lang} inView={inView} delay={0.36} className="h-40" imgSizes="50vw" t={t} />
-        <CityCard city={dubai}        lang={lang} inView={inView} delay={0.42} className="h-40" imgSizes="50vw" t={t} />
-        <CityCard city={moscow}       lang={lang} inView={inView} delay={0.48} className="h-40" imgSizes="50vw" t={t} />
-        <CityCard city={tehran}       lang={lang} inView={inView} delay={0.54} className="h-40" imgSizes="50vw" t={t} />
-        <CityCard city={manchester}   lang={lang} inView={inView} delay={0.60} className="h-40" imgSizes="50vw" t={t} />
-        <CityCard city={london}       lang={lang} inView={inView} delay={0.66} className="h-40" imgSizes="50vw" t={t} />
-        <CityCard city={frankfurt}    lang={lang} inView={inView} delay={0.72} className="h-40" imgSizes="50vw" t={t} />
+        <CityCard city={istanbul}     lang={lang} inView={inView} delay={0.06} className="h-40" imgSizes="50vw" t={t} featured onCityClick={onCityClick} />
+        <CityCard city={washingtonDc} lang={lang} inView={inView} delay={0.12} className="h-40" imgSizes="50vw" t={t} onCityClick={onCityClick} />
+        <CityCard city={newYork}      lang={lang} inView={inView} delay={0.18} className="h-40" imgSizes="50vw" t={t} onCityClick={onCityClick} />
+        <CityCard city={paris}        lang={lang} inView={inView} delay={0.24} className="h-40" imgSizes="50vw" t={t} onCityClick={onCityClick} />
+        <CityCard city={barcelona}    lang={lang} inView={inView} delay={0.30} className="h-40" imgSizes="50vw" t={t} onCityClick={onCityClick} />
+        <CityCard city={berlin}       lang={lang} inView={inView} delay={0.36} className="h-40" imgSizes="50vw" t={t} onCityClick={onCityClick} />
+        <CityCard city={dubai}        lang={lang} inView={inView} delay={0.42} className="h-40" imgSizes="50vw" t={t} onCityClick={onCityClick} />
+        <CityCard city={moscow}       lang={lang} inView={inView} delay={0.48} className="h-40" imgSizes="50vw" t={t} onCityClick={onCityClick} />
+        <CityCard city={tehran}       lang={lang} inView={inView} delay={0.54} className="h-40" imgSizes="50vw" t={t} onCityClick={onCityClick} />
+        <CityCard city={manchester}   lang={lang} inView={inView} delay={0.60} className="h-40" imgSizes="50vw" t={t} onCityClick={onCityClick} />
+        <CityCard city={london}       lang={lang} inView={inView} delay={0.66} className="h-40" imgSizes="50vw" t={t} onCityClick={onCityClick} />
+        <CityCard city={frankfurt}    lang={lang} inView={inView} delay={0.72} className="h-40" imgSizes="50vw" t={t} onCityClick={onCityClick} />
       </div>
 
       {/* LG+ bento layout */}
       <div className="hidden lg:flex gap-4 h-[580px]">
         {/* Istanbul — featured tall left */}
         <div className="flex-[2] min-w-0">
-          <CityCard city={istanbul} lang={lang} inView={inView} delay={0.06} className="h-full" imgSizes="38vw" t={t} featured />
+          <CityCard city={istanbul} lang={lang} inView={inView} delay={0.06} className="h-full" imgSizes="38vw" t={t} featured onCityClick={onCityClick} />
         </div>
 
         {/* Right column — top 3 + bottom 3 */}
@@ -413,25 +422,25 @@ export default function PopularCities({ lang }: { lang: "tr" | "en" | "fa" | "ar
           {/* Top row: Washington DC + New York + Paris */}
           <div className="flex gap-4 flex-1">
             <div className="flex-1">
-              <CityCard city={washingtonDc} lang={lang} inView={inView} delay={0.14} className="h-full" imgSizes="14vw" t={t} />
+              <CityCard city={washingtonDc} lang={lang} inView={inView} delay={0.14} className="h-full" imgSizes="14vw" t={t} onCityClick={onCityClick} />
             </div>
             <div className="flex-1">
-              <CityCard city={newYork}      lang={lang} inView={inView} delay={0.20} className="h-full" imgSizes="14vw" t={t} />
+              <CityCard city={newYork}      lang={lang} inView={inView} delay={0.20} className="h-full" imgSizes="14vw" t={t} onCityClick={onCityClick} />
             </div>
             <div className="flex-1">
-              <CityCard city={paris}        lang={lang} inView={inView} delay={0.26} className="h-full" imgSizes="14vw" t={t} />
+              <CityCard city={paris}        lang={lang} inView={inView} delay={0.26} className="h-full" imgSizes="14vw" t={t} onCityClick={onCityClick} />
             </div>
           </div>
           {/* Bottom row: Barcelona + Berlin + Dubai */}
           <div className="flex gap-4 flex-1">
             <div className="flex-1">
-              <CityCard city={barcelona} lang={lang} inView={inView} delay={0.32} className="h-full" imgSizes="14vw" t={t} />
+              <CityCard city={barcelona} lang={lang} inView={inView} delay={0.32} className="h-full" imgSizes="14vw" t={t} onCityClick={onCityClick} />
             </div>
             <div className="flex-1">
-              <CityCard city={berlin}    lang={lang} inView={inView} delay={0.38} className="h-full" imgSizes="14vw" t={t} />
+              <CityCard city={berlin}    lang={lang} inView={inView} delay={0.38} className="h-full" imgSizes="14vw" t={t} onCityClick={onCityClick} />
             </div>
             <div className="flex-1">
-              <CityCard city={dubai}     lang={lang} inView={inView} delay={0.44} className="h-full" imgSizes="14vw" t={t} />
+              <CityCard city={dubai}     lang={lang} inView={inView} delay={0.44} className="h-full" imgSizes="14vw" t={t} onCityClick={onCityClick} />
             </div>
           </div>
         </div>
@@ -439,11 +448,11 @@ export default function PopularCities({ lang }: { lang: "tr" | "en" | "fa" | "ar
 
       {/* LG+ additional row for new cities */}
       <div className="hidden lg:grid lg:grid-cols-5 gap-4 mt-4 h-44">
-        <CityCard city={moscow}     lang={lang} inView={inView} delay={0.50} className="h-full" imgSizes="18vw" t={t} />
-        <CityCard city={tehran}     lang={lang} inView={inView} delay={0.56} className="h-full" imgSizes="18vw" t={t} />
-        <CityCard city={manchester} lang={lang} inView={inView} delay={0.62} className="h-full" imgSizes="18vw" t={t} />
-        <CityCard city={london}     lang={lang} inView={inView} delay={0.68} className="h-full" imgSizes="18vw" t={t} />
-        <CityCard city={frankfurt}  lang={lang} inView={inView} delay={0.74} className="h-full" imgSizes="18vw" t={t} />
+        <CityCard city={moscow}     lang={lang} inView={inView} delay={0.50} className="h-full" imgSizes="18vw" t={t} onCityClick={onCityClick} />
+        <CityCard city={tehran}     lang={lang} inView={inView} delay={0.56} className="h-full" imgSizes="18vw" t={t} onCityClick={onCityClick} />
+        <CityCard city={manchester} lang={lang} inView={inView} delay={0.62} className="h-full" imgSizes="18vw" t={t} onCityClick={onCityClick} />
+        <CityCard city={london}     lang={lang} inView={inView} delay={0.68} className="h-full" imgSizes="18vw" t={t} onCityClick={onCityClick} />
+        <CityCard city={frankfurt}  lang={lang} inView={inView} delay={0.74} className="h-full" imgSizes="18vw" t={t} onCityClick={onCityClick} />
       </div>
     </section>
   );

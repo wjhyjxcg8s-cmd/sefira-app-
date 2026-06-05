@@ -1196,6 +1196,15 @@ export default function Home() {
       .then(({ data }) => setProfileAvatarUrl(data?.avatar_url ?? null));
   }, [user]);
 
+  // ── City filter for LatestListings ───────────────────────────────────────
+  const [filterCity, setFilterCity] = useState<string | null>(null);
+  const listingsRef = useRef<HTMLDivElement>(null);
+
+  function handleCityClick(cityName: string) {
+    setFilterCity(cityName);
+    listingsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   // ── Existing state ────────────────────────────────────────────────────────
   const [activeFilter, setActiveFilter] = useState("all");
   const [likedListings, setLikedListings] = useState<number[]>([]);
@@ -2704,7 +2713,9 @@ export default function Home() {
       </section>
 
       {/* ── LATEST LISTINGS ───────────────────────────────────────────────────── */}
-      <LatestListings lang={lang} />
+      <div ref={listingsRef}>
+        <LatestListings lang={lang} filterCity={filterCity} onClearFilter={() => setFilterCity(null)} />
+      </div>
 
       {/* ── HOW IT WORKS ──────────────────────────────────────────────────────── */}
       <section className="bg-amber-50/80 border-y border-amber-100 pb-20 mt-0 pt-6">
@@ -2802,7 +2813,7 @@ export default function Home() {
       </section>
 
       {/* ── POPULAR CITIES ────────────────────────────────────────────────────── */}
-      <PopularCities lang={lang} />
+      <PopularCities lang={lang} onCityClick={handleCityClick} />
 
       {/* ── SOCIAL MEDIA ──────────────────────────────────────────────────────── */}
       <section className="py-10 px-4">
