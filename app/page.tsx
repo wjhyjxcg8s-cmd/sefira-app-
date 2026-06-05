@@ -1003,6 +1003,21 @@ interface WeeklyStory {
   views: number;
 }
 
+// ─── Notification item ────────────────────────────────────────────────────────
+interface NotifItem {
+  id: string;
+  type: "new_listing";
+  city: string;
+  district: string | null;
+  rent: number | null;
+  currency: string | null;
+  listingType: string;
+  avatar_url: string | null;
+  display_name: string | null;
+  createdAt: number;
+  read: boolean;
+}
+
 // ─── Supabase listing type ─────────────────────────────────────────────────────
 interface SupabaseListing {
   id: string;
@@ -1037,6 +1052,8 @@ export default function Home() {
   const currencyMenuRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [notifications, setNotifications] = useState<NotifItem[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   // ── Scroll detection ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -1064,6 +1081,16 @@ export default function Home() {
       setTimeout(() => setShowLangTooltip(false), 4000);
     }, 2000);
     return () => clearTimeout(timer);
+  }, []);
+
+  // ── Load persisted notifications from localStorage ───────────────────────
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("sefira-notifications");
+      if (stored) setNotifications(JSON.parse(stored));
+      const unread = localStorage.getItem("sefira-notifications-unread");
+      if (unread) setUnreadCount(parseInt(unread, 10) || 0);
+    } catch { /* ignore */ }
   }, []);
 
   // ── WelcomePopup → openAuthModal event ───────────────────────────────────
@@ -1251,7 +1278,39 @@ export default function Home() {
       `)
       .order("created_at", { ascending: false })
       .limit(6)
-      .then(({ data }) => { if (data) setLatestListings(data as unknown as SupabaseListing[]); });
+      .then(({ data }) => {
+        if (!data) return;
+        const incoming = data as unknown as SupabaseListing[];
+        setLatestListings(incoming);
+
+        setNotifications((prev) => {
+          const existingIds = new Set(prev.map((n) => n.id));
+          const newItems: NotifItem[] = incoming
+            .filter((l) => !existingIds.has(l.id))
+            .map((l) => ({
+              id: l.id,
+              type: "new_listing" as const,
+              city: l.city,
+              district: l.district,
+              rent: l.rent,
+              currency: l.currency,
+              listingType: l.type,
+              avatar_url: l.profiles?.avatar_url ?? null,
+              display_name: l.profiles?.display_name ?? null,
+              createdAt: Date.now(),
+              read: false,
+            }));
+          if (newItems.length === 0) return prev;
+          const merged = [...newItems, ...prev];
+          try {
+            localStorage.setItem("sefira-notifications", JSON.stringify(merged));
+            const newUnread = merged.filter((n) => !n.read).length;
+            localStorage.setItem("sefira-notifications-unread", String(newUnread));
+            setUnreadCount(newUnread);
+          } catch { /* ignore */ }
+          return merged;
+        });
+      });
   }, []);
 
   // ── Story viewer navigation helpers ──────────────────────────────────────
@@ -1525,7 +1584,22 @@ export default function Home() {
             {/* Notifications bell */}
             <div className="relative" ref={notifRef}>
               <button
-                onClick={() => { setNotifOpen((o) => !o); setLangMenuOpen(false); setCurrencyMenuOpen(false); setProfileMenuOpen(false); }}
+                onClick={() => {
+                  const opening = !notifOpen;
+                  setNotifOpen(opening);
+                  setLangMenuOpen(false);
+                  setCurrencyMenuOpen(false);
+                  setProfileMenuOpen(false);
+                  if (opening) {
+                    setNotifications((prev) => {
+                      const updated = prev.map((n) => ({ ...n, read: true }));
+                      try { localStorage.setItem("sefira-notifications", JSON.stringify(updated)); } catch { /* ignore */ }
+                      return updated;
+                    });
+                    setUnreadCount(0);
+                    try { localStorage.setItem("sefira-notifications-unread", "0"); } catch { /* ignore */ }
+                  }
+                }}
                 className="relative w-9 h-9 flex items-center justify-center rounded-lg border border-stone-200 text-stone-500 hover:text-orange-500 hover:border-orange-300 hover:bg-orange-50 transition-all duration-200"
                 aria-label="Yeni İlanlar"
               >
@@ -1533,46 +1607,90 @@ export default function Home() {
                   <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                   <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                 </svg>
-                {latestListings.length > 0 && (
+                {unreadCount > 0 && (
                   <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-500 text-white text-[9px] font-black rounded-full flex items-center justify-center leading-none">
-                    {latestListings.length > 3 ? "3+" : latestListings.length}
+                    {unreadCount > 9 ? "9+" : unreadCount}
                   </span>
                 )}
               </button>
               {notifOpen && (
-                <div className="absolute top-full mt-2 right-0 z-[100] bg-white border border-stone-200 rounded-2xl shadow-xl overflow-hidden w-72 animate-dropdown-slide">
+                <div className="absolute top-full mt-2 right-0 z-[100] bg-white border border-stone-200 rounded-2xl shadow-xl overflow-hidden w-80 animate-dropdown-slide">
                   <div className="px-4 py-3 border-b border-stone-100 flex items-center justify-between">
                     <p className="text-sm font-black text-stone-800">
                       {lang === "tr" ? "Yeni İlanlar" : lang === "fa" ? "آگهی‌های جدید" : lang === "ar" ? "إعلانات جديدة" : lang === "de" ? "Neue Anzeigen" : lang === "ru" ? "Новые объявления" : "New Listings"}
                     </p>
-                    <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+                    {notifications.length > 0 && (
+                      <button
+                        onClick={() => {
+                          setNotifications([]);
+                          setUnreadCount(0);
+                          try {
+                            localStorage.setItem("sefira-notifications", "[]");
+                            localStorage.setItem("sefira-notifications-unread", "0");
+                          } catch { /* ignore */ }
+                        }}
+                        className="text-[10px] font-bold text-stone-400 hover:text-rose-500 transition-colors px-2 py-1 rounded-lg hover:bg-rose-50"
+                      >
+                        {lang === "tr" ? "Tümünü Temizle" : lang === "fa" ? "پاک کردن همه" : lang === "ar" ? "مسح الكل" : lang === "de" ? "Alle löschen" : lang === "ru" ? "Очистить всё" : "Clear All"}
+                      </button>
+                    )}
                   </div>
-                  {latestListings.slice(0, 3).map((listing) => (
-                    <div key={listing.id} className="flex items-center gap-3 px-4 py-3 hover:bg-stone-50 transition-colors cursor-pointer border-b border-stone-50 last:border-0">
-                      <span className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${listing.type === "has_place" ? "bg-orange-100 text-orange-700" : "bg-blue-100 text-blue-700"}`}>
-                            Yeni İlan
-                          </span>
-                          <span className="text-xs text-stone-600 truncate font-medium">{listing.city}{listing.district ? ` / ${listing.district}` : ""}</span>
-                        </div>
-                        {listing.rent && listing.currency && (
-                          <p className="text-xs font-bold text-orange-500 mt-0.5">{listing.rent} {listing.currency}/ay</p>
-                        )}
+                  <div className="max-h-80 overflow-y-auto">
+                    {notifications.length === 0 ? (
+                      <div className="px-4 py-6 text-center text-sm text-stone-400">
+                        {lang === "tr" ? "Henüz ilan yok" : lang === "fa" ? "آگهی‌ای یافت نشد" : lang === "ar" ? "لا توجد إعلانات بعد" : lang === "de" ? "Noch keine Inserate" : lang === "ru" ? "Нет объявлений" : "No listings yet"}
                       </div>
-                      <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full flex-shrink-0 ${listing.type === "has_place" ? "bg-orange-500 text-white" : "bg-blue-500 text-white"}`}>
-                        {listing.type === "has_place"
-                          ? (lang === "tr" ? "Ev Sahibi" : lang === "fa" ? "صاحب‌خانه" : lang === "ar" ? "صاحب المنزل" : lang === "de" ? "Vermieter" : lang === "ru" ? "Хозяин" : "Landlord")
-                          : (lang === "tr" ? "Kiracı" : lang === "fa" ? "هم‌خانه‌یاب" : lang === "ar" ? "باحث" : lang === "de" ? "Mieter" : lang === "ru" ? "Жилец" : "Seeking")}
-                      </span>
-                    </div>
-                  ))}
-                  {latestListings.length === 0 && (
-                    <div className="px-4 py-6 text-center text-sm text-stone-400">
-                      {lang === "tr" ? "Henüz ilan yok" : lang === "fa" ? "آگهی‌ای یافت نشد" : lang === "ar" ? "لا توجد إعلانات بعد" : lang === "de" ? "Noch keine Inserate" : lang === "ru" ? "Нет объявлений" : "No listings yet"}
-                    </div>
-                  )}
+                    ) : (
+                      notifications.map((notif) => (
+                        <div
+                          key={notif.id}
+                          className={`flex items-center gap-3 px-4 py-3 border-b border-stone-50 last:border-0 transition-colors ${!notif.read ? "bg-orange-50" : "hover:bg-stone-50"}`}
+                        >
+                          {notif.avatar_url ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={notif.avatar_url} className="w-8 h-8 rounded-full object-cover border-2 border-orange-200 flex-shrink-0" alt="" />
+                          ) : (
+                            <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 text-xs font-bold border-2 border-orange-200 flex-shrink-0">
+                              {notif.display_name?.[0]?.toUpperCase() || "?"}
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${notif.listingType === "has_place" ? "bg-orange-500 text-white" : "bg-blue-500 text-white"}`}>
+                                {notif.listingType === "has_place"
+                                  ? (lang === "tr" ? "Ev Sahibi" : lang === "fa" ? "صاحب‌خانه" : lang === "ar" ? "صاحب المنزل" : lang === "de" ? "Vermieter" : lang === "ru" ? "Хозяин" : "Landlord")
+                                  : (lang === "tr" ? "Kiracı" : lang === "fa" ? "هم‌خانه‌یاب" : lang === "ar" ? "باحث" : lang === "de" ? "Mieter" : lang === "ru" ? "Жилец" : "Seeking")}
+                              </span>
+                              <span className="text-xs text-stone-600 font-medium truncate">
+                                {notif.display_name || (lang === "tr" ? "Kullanıcı" : "User")}
+                              </span>
+                            </div>
+                            <p className="text-xs text-stone-500 truncate mt-0.5">
+                              {notif.city}{notif.district ? ` / ${notif.district}` : ""}
+                            </p>
+                            {notif.rent && notif.currency && (
+                              <p className="text-xs font-bold text-orange-500 mt-0.5">{notif.rent} {notif.currency}/ay</p>
+                            )}
+                          </div>
+                          <button
+                            onClick={() => {
+                              const updated = notifications.filter((n) => n.id !== notif.id);
+                              setNotifications(updated);
+                              const newUnread = updated.filter((n) => !n.read).length;
+                              setUnreadCount(newUnread);
+                              try {
+                                localStorage.setItem("sefira-notifications", JSON.stringify(updated));
+                                localStorage.setItem("sefira-notifications-unread", String(newUnread));
+                              } catch { /* ignore */ }
+                            }}
+                            className="w-5 h-5 flex items-center justify-center rounded-full text-stone-300 hover:text-rose-500 hover:bg-rose-50 transition-colors flex-shrink-0 text-xs"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </div>
               )}
             </div>
