@@ -260,11 +260,31 @@ export default function LatestListings({ lang = "tr" }: { lang?: Lang }) {
 
   return (
     <section className="max-w-7xl mx-auto px-5 mt-14 mb-14">
+      <style>{`
+        @keyframes sefira-bounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
+      `}</style>
+
       <div className="text-center mb-8">
-        <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-2 tracking-tight">
-          {titles[lang]}
-        </h2>
-        <p className="text-gray-500 text-sm sm:text-base">{subtitles[lang]}</p>
+        <div className="relative flex flex-col items-center mb-2">
+          <div className="relative">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://api.dicebear.com/7.x/adventurer/svg?seed=sefira-mascot&backgroundColor=ffdfbf&hair=short01&hairColor=2c1b18&eyes=variant12&mouth=variant04&skinColor=f2d3b1&clothingColor=f97316"
+              alt="Sefira Mascot"
+              className="w-20 h-20 drop-shadow-lg"
+              style={{ filter: "drop-shadow(0px 4px 6px rgba(0,0,0,0.15))", animation: "sefira-bounce 2s infinite" }}
+            />
+            <div className="absolute -top-8 -right-12 bg-white rounded-2xl px-3 py-1 shadow-md border border-orange-100 text-xs font-medium text-gray-600 whitespace-nowrap">
+              Yeni ilanlar! 🎉
+              <div className="absolute bottom-0 left-4 translate-y-1/2 rotate-45 w-2 h-2 bg-white border-r border-b border-orange-100" />
+            </div>
+          </div>
+          <h2 className="text-2xl font-black text-gray-900 mt-1">{titles[lang]}</h2>
+          <p className="text-sm text-gray-400 mt-1">{subtitles[lang]}</p>
+        </div>
       </div>
 
       {/* Country filter pills */}
