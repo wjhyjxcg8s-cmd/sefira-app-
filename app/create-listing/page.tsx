@@ -854,13 +854,15 @@ function OptionGroup({
   options,
   value,
   onChange,
+  hasError,
 }: {
   options: { label: string; value: string }[];
   value: string;
   onChange: (v: string) => void;
+  hasError?: boolean;
 }) {
   return (
-    <div className="flex rounded-xl border border-stone-200 overflow-hidden text-sm font-semibold">
+    <div className={`flex rounded-xl border overflow-hidden text-sm font-semibold ${hasError ? "border-red-400 border-2" : "border-stone-200"}`}>
       {options.map((opt) => (
         <button
           key={opt.value}
@@ -883,13 +885,15 @@ function PillGroup({
   options,
   value,
   onChange,
+  hasError,
 }: {
   options: { label: string; value: string }[];
   value: string;
   onChange: (v: string) => void;
+  hasError?: boolean;
 }) {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className={`flex flex-wrap gap-2 ${hasError ? "rounded-xl ring-2 ring-red-400 p-2" : ""}`}>
       {options.map((opt) => (
         <button
           key={opt.value}
@@ -914,12 +918,14 @@ function CountrySelect({
   onSelect,
   label,
   placeholder,
+  hasError,
 }: {
   countryCode: string;
   lang: string;
   onSelect: (code: string, name: string) => void;
   label: string;
   placeholder: string;
+  hasError?: boolean;
 }) {
   const [inputVal, setInputVal] = useState(() => countryCode ? getCountryName(countryCode, lang) : "");
   const [isOpen, setIsOpen] = useState(false);
@@ -964,7 +970,7 @@ function CountrySelect({
         placeholder={placeholder}
         onFocus={() => setIsOpen(true)}
         onChange={(e) => { setInputVal(e.target.value); setIsOpen(true); }}
-        className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+        className={`w-full border rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm ${hasError ? "border-red-400 border-2" : "border-gray-200"}`}
       />
       {isOpen && filtered.length > 0 && (
         <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto">
@@ -1066,7 +1072,8 @@ export default function CreateListingPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
-  const [validationError, setValidationError] = useState<string | null>(null);
+  const [stepErrors, setStepErrors] = useState<string[]>([]);
+  const [invalidFields, setInvalidFields] = useState<string[]>([]);
   const [uploadingCount, setUploadingCount] = useState(0);
   const [photoError, setPhotoError] = useState<string | null>(null);
 
@@ -1167,18 +1174,62 @@ export default function CreateListingPage() {
 
   // Navigation — 4 steps total for has_place, 2 for needs_place
   const goNext = () => {
-    setValidationError(null);
+    setStepErrors([]);
+    setInvalidFields([]);
+
     if (step === 1) {
-      if (!form.type) { setValidationError(t.selectType); return; }
+      if (!form.type) {
+        setStepErrors(["İlan türü seçiniz"]);
+        setInvalidFields(["type"]);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
       setStep(form.type === "needs_place" ? 4 : 2);
       return;
     }
-    if (step === 2) { setStep(3); return; }
-    if (step === 3) { setStep(4); }
+
+    if (step === 2) {
+      const errors: string[] = [];
+      const invalid: string[] = [];
+      if (!form.countryCode) { errors.push("Ülke seçiniz"); invalid.push("country"); }
+      if (!form.city) { errors.push("Şehir seçiniz"); invalid.push("city"); }
+      if (countryIso === "TR" && !form.district) { errors.push("İlçe seçiniz"); invalid.push("district"); }
+      if (!form.price || parseFloat(form.price) <= 0) { errors.push("Aylık kira miktarı giriniz"); invalid.push("price"); }
+      if (!form.rooms || form.rooms <= 0) { errors.push("Oda sayısı giriniz"); invalid.push("rooms"); }
+      if (!form.houseType) { errors.push("Konut tipi seçiniz"); invalid.push("houseType"); }
+      if (errors.length > 0) {
+        setStepErrors(errors);
+        setInvalidFields(invalid);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+      setStep(3);
+      return;
+    }
+
+    if (step === 3) {
+      const errors: string[] = [];
+      const invalid: string[] = [];
+      if (!form.gender_preference) { errors.push("Tercih ettiğiniz cinsiyet seçiniz"); invalid.push("gender"); }
+      if (!form.occupation_preference) { errors.push("Tercih ettiğiniz meslek seçiniz"); invalid.push("occupation"); }
+      // smoking is boolean, always has a value — cannot be unset in current UI
+      if (!form.description || form.description.trim().length < 20) {
+        errors.push("Kendinizi en az 20 karakter ile tanıtın");
+        invalid.push("description");
+      }
+      if (errors.length > 0) {
+        setStepErrors(errors);
+        setInvalidFields(invalid);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+      setStep(4);
+    }
   };
 
   const goBack = () => {
-    setValidationError(null);
+    setStepErrors([]);
+    setInvalidFields([]);
     if (step === 4 && form.type === "needs_place") { setStep(1); return; }
     if (step === 4) { setStep(3); return; }
     if (step === 3) { setStep(2); return; }
@@ -1373,7 +1424,16 @@ export default function CreateListingPage() {
 
           <ProgressBar />
           <h1 className="text-2xl font-black text-stone-900 mb-2">{t.pageTitle}</h1>
-          <p className="text-stone-500 mb-8 text-sm">{t.step1Title}</p>
+          <p className="text-stone-500 mb-4 text-sm">{t.step1Title}</p>
+
+          {stepErrors.length > 0 && (
+            <div className="bg-red-50 border border-red-300 rounded-2xl p-4 mb-4">
+              <p className="text-red-600 font-bold text-sm mb-2">⚠️ Lütfen tüm zorunlu alanları doldurun:</p>
+              <ul className="text-red-500 text-sm list-disc list-inside">
+                {stepErrors.map((e, i) => <li key={i}>{e}</li>)}
+              </ul>
+            </div>
+          )}
 
           <div className="flex flex-col gap-4">
             {(["has_place", "needs_place"] as ListingType[]).map((type) => {
@@ -1398,6 +1458,8 @@ export default function CreateListingPage() {
                   className={`w-full flex items-center gap-5 p-6 rounded-2xl border-2 text-left transition-all duration-200 ${
                     isSelected
                       ? "border-orange-400 bg-orange-50 shadow-lg shadow-orange-500/10"
+                      : invalidFields.includes("type")
+                      ? "border-red-400 bg-white"
                       : "border-stone-200 bg-white hover:border-stone-300 hover:shadow-sm"
                   }`}
                 >
@@ -1429,12 +1491,6 @@ export default function CreateListingPage() {
               );
             })}
           </div>
-
-          {validationError && (
-            <p className="mt-4 text-sm text-rose-500 bg-rose-50 border border-rose-100 rounded-xl px-4 py-3">
-              {validationError}
-            </p>
-          )}
 
           <button
             onClick={goNext}
@@ -1484,7 +1540,16 @@ export default function CreateListingPage() {
 
           <ProgressBar />
           <h1 className="text-2xl font-black text-stone-900 mb-2">{t.pageTitle}</h1>
-          <p className="text-stone-500 mb-8 text-sm">{t.step2HouseTitle}</p>
+          <p className="text-stone-500 mb-4 text-sm">{t.step2HouseTitle}</p>
+
+          {stepErrors.length > 0 && (
+            <div className="bg-red-50 border border-red-300 rounded-2xl p-4 mb-4">
+              <p className="text-red-600 font-bold text-sm mb-2">⚠️ Lütfen tüm zorunlu alanları doldurun:</p>
+              <ul className="text-red-500 text-sm list-disc list-inside">
+                {stepErrors.map((e, i) => <li key={i}>{e}</li>)}
+              </ul>
+            </div>
+          )}
 
           {/* Header banner */}
           <div className="bg-gradient-to-r from-orange-50 to-orange-100 border border-orange-200 rounded-2xl p-4 mb-6">
@@ -1506,6 +1571,7 @@ export default function CreateListingPage() {
                 options={houseTypeOptions}
                 value={form.houseType}
                 onChange={(v) => set("houseType", v)}
+                hasError={invalidFields.includes("houseType") && !form.houseType}
               />
             </div>
 
@@ -1595,6 +1661,7 @@ export default function CreateListingPage() {
                 onSelect={(code, name) => { set("countryCode", code); setCountryIso(code); setSehirQ(''); setIlceQ(''); setSelectedStateIso(''); setSelectedIl(''); setSelectedIlce(''); setMahalleQ(''); setForm(f => ({ ...f, country: name, city: '', district: '', neighborhood: '' })); }}
                 label={t.countryLabel}
                 placeholder={t.countryPlaceholder}
+                hasError={invalidFields.includes("country") && !form.countryCode}
               />
               {/* Şehir / İl */}
               <div>
@@ -1669,7 +1736,7 @@ export default function CreateListingPage() {
                     }}
                     onBlur={() => setTimeout(() => setSehirOpen(false), 150)}
                     placeholder={lang === 'ar' && ARAB_COUNTRIES.has(countryIso) ? 'اكتب اسم مدينتك...' : (countryCityExamples[countryIso] || 'City...')}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-colors"
+                    className={`w-full px-4 py-3 border-2 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-colors ${invalidFields.includes("city") && !form.city ? "border-red-400" : "border-gray-200"}`}
                   />
                   {sehirOpen && sehirSug.length > 0 && (
                     <div className="absolute left-0 right-0 top-full mt-1 z-30 bg-white border border-gray-200 rounded-xl shadow-lg overflow-y-auto max-h-48">
@@ -1758,7 +1825,7 @@ export default function CreateListingPage() {
                     }}
                     onBlur={() => setTimeout(() => setIlceOpen(false), 150)}
                     placeholder="Esenyurt, Kadıköy, Beşiktaş..."
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50"
+                    className={`w-full px-4 py-3 border-2 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 ${invalidFields.includes("district") && !form.district ? "border-red-400" : "border-gray-200"}`}
                   />
                   {ilceOpen && ilceSug.length > 0 && (
                     <div className="absolute left-0 right-0 top-full mt-1 z-30 bg-white border border-gray-200 rounded-xl shadow-lg overflow-y-auto max-h-48">
@@ -1883,16 +1950,10 @@ export default function CreateListingPage() {
                 value={form.price}
                 onChange={(e) => set("price", e.target.value)}
                 placeholder="0"
-                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+                className={`w-full border rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm ${invalidFields.includes("price") && (!form.price || parseFloat(form.price) <= 0) ? "border-red-400 border-2" : "border-gray-200"}`}
               />
             </div>
           </div>
-
-          {validationError && (
-            <p className="mt-4 text-sm text-rose-500 bg-rose-50 border border-rose-100 rounded-xl px-4 py-3">
-              {validationError}
-            </p>
-          )}
 
           <div className="flex gap-3 mt-8">
             <button
@@ -1942,7 +2003,16 @@ export default function CreateListingPage() {
 
           <ProgressBar />
           <h1 className="text-2xl font-black text-stone-900 mb-2">{t.pageTitle}</h1>
-          <p className="text-stone-500 mb-8 text-sm">{t.step2Title}</p>
+          <p className="text-stone-500 mb-4 text-sm">{t.step2Title}</p>
+
+          {stepErrors.length > 0 && (
+            <div className="bg-red-50 border border-red-300 rounded-2xl p-4 mb-4">
+              <p className="text-red-600 font-bold text-sm mb-2">⚠️ Lütfen tüm zorunlu alanları doldurun:</p>
+              <ul className="text-red-500 text-sm list-disc list-inside">
+                {stepErrors.map((e, i) => <li key={i}>{e}</li>)}
+              </ul>
+            </div>
+          )}
 
           <div className="bg-gradient-to-r from-orange-50 to-orange-100 border border-orange-200 rounded-2xl p-4 mb-6">
             <div className="flex items-start gap-3">
@@ -1966,6 +2036,7 @@ export default function CreateListingPage() {
                   { label: t.genderFemale, value: "female" },
                   { label: t.genderAny, value: "any" },
                 ]}
+                hasError={invalidFields.includes("gender") && !form.gender_preference}
               />
             </div>
 
@@ -1980,6 +2051,7 @@ export default function CreateListingPage() {
                   { label: t.occWorking, value: "working" },
                   { label: t.occAny, value: "any" },
                 ]}
+                hasError={invalidFields.includes("occupation") && !form.occupation_preference}
               />
             </div>
 
@@ -2013,7 +2085,7 @@ export default function CreateListingPage() {
                 value={form.description}
                 onChange={(e) => set("description", e.target.value)}
                 placeholder={t.descPlaceholder}
-                className="w-full border border-gray-200 rounded-2xl p-3 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm resize-none"
+                className={`w-full border rounded-2xl p-3 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm resize-none ${invalidFields.includes("description") && (!form.description || form.description.trim().length < 20) ? "border-red-400 border-2" : "border-gray-200"}`}
               />
             </div>
           </div>
@@ -2076,12 +2148,6 @@ export default function CreateListingPage() {
               <p className="mt-3 text-xs text-rose-500">{photoError}</p>
             )}
           </div>
-
-          {validationError && (
-            <p className="mt-4 text-sm text-rose-500 bg-rose-50 border border-rose-100 rounded-xl px-4 py-3">
-              {validationError}
-            </p>
-          )}
 
           <div className="flex gap-3 mt-8">
             <button
