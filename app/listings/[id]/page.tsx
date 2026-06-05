@@ -136,11 +136,14 @@ export default function ListingDetailPage() {
   useEffect(() => {
     async function load() {
       setLoading(true);
-      const { data } = await supabase
+      console.log('Listing ID:', id);
+      const { data, error } = await supabase
         .from("listings")
         .select("*, profiles(display_name, avatar_url, gender, birth_date, country, created_at)")
         .eq("id", id)
         .single();
+      console.log('Listing data:', JSON.stringify(data));
+      console.log('Listing error:', JSON.stringify(error));
       setListing(data);
       setLoading(false);
     }
