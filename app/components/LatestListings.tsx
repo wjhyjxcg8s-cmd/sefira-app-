@@ -51,7 +51,7 @@ export default function LatestListings() {
       {listings.length === 0 ? (
         <p className="text-center text-gray-400 py-8">Henüz ilan yok</p>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-3 gap-3">
           {listings.map((listing) => (
             <div
               key={listing.id}
@@ -78,16 +78,16 @@ export default function LatestListings() {
               </div>
 
               <div className="p-4">
-                <p className="font-bold text-gray-900">
+                <p className="font-bold text-sm text-gray-900">
                   {listing.city}{listing.district ? ` / ${listing.district}` : ""}
                 </p>
                 {listing.rent && listing.currency && (
-                  <p className="text-orange-500 font-bold mt-1">
+                  <p className="text-orange-500 font-bold text-sm mt-1">
                     {listing.rent} {listing.currency}/ay
                   </p>
                 )}
                 {(listing.house_type || listing.rooms) && (
-                  <p className="text-gray-500 text-sm mt-1">
+                  <p className="text-gray-500 text-xs mt-1">
                     {listing.house_type ?? ""}
                     {listing.house_type && listing.rooms ? " • " : ""}
                     {listing.rooms ? `${listing.rooms} oda` : ""}
