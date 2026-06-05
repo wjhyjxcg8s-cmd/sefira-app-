@@ -7,6 +7,10 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
 
+const CURRENCY_SYMBOLS: Record<string, string> = {
+  USD: "$", EUR: "€", TRY: "₺", AED: "د.إ", TOMAN: "ت", RUB: "₽",
+};
+
 const translations = {
   tr: {
     title: "İlanlarım",
@@ -14,13 +18,17 @@ const translations = {
     createBtn: "İlan Ver",
     notLoggedIn: "İlanlarınızı görmek için giriş yapınız.",
     goHome: "Ana Sayfaya Git",
-    address: "Adres",
-    sharingCost: "Aylık Paylaşım Ücreti",
-    roommates: "Aranan Ev Arkadaşı",
-    rooms: "Oda",
     active: "Aktif",
-    type_has_place: "Ev sahibi — ev arkadaşı arıyor",
-    type_needs_place: "Ev arıyor — birlikte yaşayacak biri",
+    edit: "Düzenle",
+    delete: "Sil",
+    deleteConfirm: "Bu ilanı silmek istediğinize emin misiniz?",
+    deleting: "Siliniyor...",
+    houseTypeApartment: "Daire",
+    houseTypeVilla: "Villa",
+    houseTypeResidence: "Rezidans",
+    houseTypeDormitory: "Yurt",
+    houseTypeIndependent: "Müstakil Ev",
+    perMonth: "/ay",
   },
   en: {
     title: "My Listings",
@@ -28,27 +36,53 @@ const translations = {
     createBtn: "Create Listing",
     notLoggedIn: "Please sign in to view your listings.",
     goHome: "Go to Home",
-    address: "Address",
-    sharingCost: "Monthly Sharing Cost",
-    roommates: "Housemates Needed",
-    rooms: "Rooms",
     active: "Active",
-    type_has_place: "Has a place — looking for housemate(s)",
-    type_needs_place: "No place — looking to share living",
+    edit: "Edit",
+    delete: "Delete",
+    deleteConfirm: "Are you sure you want to delete this listing?",
+    deleting: "Deleting...",
+    houseTypeApartment: "Apartment",
+    houseTypeVilla: "Villa",
+    houseTypeResidence: "Residence",
+    houseTypeDormitory: "Dormitory",
+    houseTypeIndependent: "Independent House",
+    perMonth: "/mo",
   },
   fa: {
     title: "آگهی‌های من",
-    empty: "عزیزم، هنوز آگهی‌ای ثبت نکردی! اما می‌توانی همین‌جا آگهی بدی.",
+    empty: "هنوز آگهی‌ای ثبت نکردید. اولین آگهی‌تان را ثبت کنید!",
     createBtn: "ثبت آگهی",
     notLoggedIn: "برای مشاهده آگهی‌های خود لطفاً وارد شوید.",
     goHome: "رفتن به صفحه اصلی",
-    address: "آدرس",
-    sharingCost: "هزینه مشترک ماهانه",
-    roommates: "هم‌خانه مورد نیاز",
-    rooms: "اتاق",
     active: "فعال",
-    type_has_place: "خانه دارم — دنبال هم‌خانه",
-    type_needs_place: "خانه ندارم — دنبال زندگی مشترک",
+    edit: "ویرایش",
+    delete: "حذف",
+    deleteConfirm: "آیا مطمئن هستید که می‌خواهید این آگهی را حذف کنید؟",
+    deleting: "در حال حذف...",
+    houseTypeApartment: "آپارتمان",
+    houseTypeVilla: "ویلا",
+    houseTypeResidence: "رزیدانس",
+    houseTypeDormitory: "خوابگاه",
+    houseTypeIndependent: "خانه مستقل",
+    perMonth: "/ماه",
+  },
+  ar: {
+    title: "إعلاناتي",
+    empty: "لم تنشر أي إعلانات بعد. انشر إعلانك الأول الآن!",
+    createBtn: "نشر إعلان",
+    notLoggedIn: "يرجى تسجيل الدخول لعرض إعلاناتك.",
+    goHome: "الذهاب إلى الرئيسية",
+    active: "نشط",
+    edit: "تعديل",
+    delete: "حذف",
+    deleteConfirm: "هل أنت متأكد أنك تريد حذف هذا الإعلان؟",
+    deleting: "جارٍ الحذف...",
+    houseTypeApartment: "شقة",
+    houseTypeVilla: "فيلا",
+    houseTypeResidence: "ريزيدنس",
+    houseTypeDormitory: "سكن طلابي",
+    houseTypeIndependent: "بيت مستقل",
+    perMonth: "/شهر",
   },
   de: {
     title: "Meine Inserate",
@@ -56,28 +90,17 @@ const translations = {
     createBtn: "Inserat aufgeben",
     notLoggedIn: "Bitte melden Sie sich an, um Ihre Inserate anzuzeigen.",
     goHome: "Zur Startseite",
-    address: "Adresse",
-    sharingCost: "Monatliche Mietkosten",
-    roommates: "Gesuchte Mitbewohner",
-    rooms: "Zimmer",
     active: "Aktiv",
-    type_has_place: "Hat Wohnung — sucht Mitbewohner",
-    type_needs_place: "Keine Wohnung — sucht Mitbewohner",
-  },
-  // Always add "ar" key when adding new translations
-  ar: {
-    title: "إعلاناتي",
-    empty: "لم تنشر أي إعلانات بعد. انشر إعلانك الأول الآن!",
-    createBtn: "نشر إعلان",
-    notLoggedIn: "يرجى تسجيل الدخول لعرض إعلاناتك.",
-    goHome: "الذهاب إلى الرئيسية",
-    address: "العنوان",
-    sharingCost: "تكلفة المشاركة الشهرية",
-    roommates: "شركاء السكن المطلوبون",
-    rooms: "الغرف",
-    active: "نشط",
-    type_has_place: "لديه مكان — يبحث عن شريك سكن",
-    type_needs_place: "ليس لديه مكان — يبحث عن المشاركة",
+    edit: "Bearbeiten",
+    delete: "Löschen",
+    deleteConfirm: "Sind Sie sicher, dass Sie dieses Inserat löschen möchten?",
+    deleting: "Wird gelöscht...",
+    houseTypeApartment: "Wohnung",
+    houseTypeVilla: "Villa",
+    houseTypeResidence: "Residenz",
+    houseTypeDormitory: "Wohnheim",
+    houseTypeIndependent: "Einfamilienhaus",
+    perMonth: "/Mo.",
   },
   ru: {
     title: "Мои объявления",
@@ -85,13 +108,17 @@ const translations = {
     createBtn: "Создать объявление",
     notLoggedIn: "Войдите, чтобы просмотреть объявления.",
     goHome: "Перейти на главную",
-    address: "Адрес",
-    sharingCost: "Стоимость аренды в месяц",
-    roommates: "Нужных соседей",
-    rooms: "Комнаты",
     active: "Активно",
-    type_has_place: "Есть жильё — ищу соседа",
-    type_needs_place: "Нет жилья — ищу совместное проживание",
+    edit: "Редактировать",
+    delete: "Удалить",
+    deleteConfirm: "Вы уверены, что хотите удалить это объявление?",
+    deleting: "Удаление...",
+    houseTypeApartment: "Квартира",
+    houseTypeVilla: "Вилла",
+    houseTypeResidence: "Резиденция",
+    houseTypeDormitory: "Общежитие",
+    houseTypeIndependent: "Частный дом",
+    perMonth: "/мес",
   },
 };
 
@@ -99,13 +126,29 @@ type Lang = keyof typeof translations;
 
 interface Listing {
   id: number;
-  type: "has_place" | "needs_place";
-  address: string;
+  photos: string[] | null;
+  city: string | null;
+  district: string | null;
   rent: number | null;
   currency: string;
-  rooms: number;
-  needed_roommates: number;
+  house_type: string | null;
   created_at: string;
+}
+
+function houseTypeLabel(
+  t: (typeof translations)[Lang],
+  houseType: string | null
+): string | null {
+  if (!houseType) return null;
+  const map: Record<string, keyof typeof translations.en> = {
+    apartment: "houseTypeApartment",
+    villa: "houseTypeVilla",
+    residence: "houseTypeResidence",
+    dormitory: "houseTypeDormitory",
+    independent: "houseTypeIndependent",
+  };
+  const key = map[houseType];
+  return key ? (t[key] as string) : houseType;
 }
 
 export default function MyListingsPage() {
@@ -116,10 +159,11 @@ export default function MyListingsPage() {
 
   const [listings, setListings] = useState<Listing[]>([]);
   const [fetching, setFetching] = useState(true);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem("sefira-lang") as Lang | null;
-    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de" || saved === "ru") setLang(saved);
+    if (saved && saved in translations) setLang(saved);
   }, []);
 
   useEffect(() => {
@@ -127,7 +171,7 @@ export default function MyListingsPage() {
     if (!user) { setFetching(false); return; }
     supabase
       .from("listings")
-      .select("id, type, address, rent, currency, rooms, needed_roommates, created_at")
+      .select("id, photos, city, district, rent, currency, house_type, created_at")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .then(({ data }) => {
@@ -135,6 +179,14 @@ export default function MyListingsPage() {
         setFetching(false);
       });
   }, [user, loading]);
+
+  const handleDelete = async (id: number) => {
+    if (!window.confirm(t.deleteConfirm)) return;
+    setDeletingId(id);
+    await supabase.from("listings").delete().eq("id", id);
+    setListings((prev) => prev.filter((l) => l.id !== id));
+    setDeletingId(null);
+  };
 
   if (loading || fetching) {
     return (
@@ -182,8 +234,8 @@ export default function MyListingsPage() {
         </div>
       </nav>
 
-      <div className="pt-24 pb-24 px-5 max-w-2xl mx-auto">
-        {/* Back to home */}
+      <div className="pt-24 pb-28 px-5 max-w-2xl mx-auto">
+        {/* Back button */}
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block mb-5">
           <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -231,44 +283,101 @@ export default function MyListingsPage() {
           </div>
         ) : (
           <div className="flex flex-col gap-4">
-            {listings.map((listing) => (
-              <div
-                key={listing.id}
-                className="bg-white rounded-2xl border border-stone-100 shadow-sm p-5 flex flex-col gap-3"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex flex-col gap-1 min-w-0">
-                    <p className="font-bold text-stone-900 text-sm truncate">
-                      {listing.address || "—"}
-                    </p>
-                    <p className="text-xs text-stone-500">
-                      {listing.type === "has_place" ? t.type_has_place : t.type_needs_place}
-                    </p>
-                    <p className="text-xs text-stone-400">
-                      {t.rooms}: {listing.rooms} · {t.roommates}: {listing.needed_roommates}
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                    {listing.rent && (
-                      <span className="text-sm font-black text-orange-500">
-                        {listing.currency === "USD" ? "$" : listing.currency === "EUR" ? "€" : "₺"}
-                        {listing.rent}
-                        <span className="text-stone-400 font-normal text-xs">/mo</span>
-                      </span>
+            {listings.map((listing) => {
+              const firstPhoto = listing.photos?.[0] ?? null;
+              const sym = CURRENCY_SYMBOLS[listing.currency] ?? listing.currency;
+              const typeLabel = houseTypeLabel(t, listing.house_type);
+              const isDeleting = deletingId === listing.id;
+
+              return (
+                <motion.div
+                  key={listing.id}
+                  layout
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden"
+                >
+                  {/* Photo */}
+                  <div className="w-full h-44 bg-stone-100 relative">
+                    {firstPhoto ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={firstPhoto}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-12 h-12 text-stone-300">
+                          <rect x="3" y="3" width="18" height="18" rx="2" />
+                          <circle cx="8.5" cy="8.5" r="1.5" />
+                          <polyline points="21 15 16 10 5 21" />
+                        </svg>
+                      </div>
                     )}
-                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                    <span className="absolute top-2 left-2 text-[10px] font-bold text-emerald-600 bg-emerald-50/90 backdrop-blur-sm px-2 py-0.5 rounded-full">
                       {t.active}
                     </span>
                   </div>
-                </div>
-                <p className="text-[10px] text-stone-300 font-medium">
-                  {new Date(listing.created_at).toLocaleDateString(
-                    lang === "tr" ? "tr-TR" : lang === "fa" ? "fa-IR" : lang === "ar" ? "ar-SA" : "en-US",
-                    { year: "numeric", month: "long", day: "numeric" }
-                  )}
-                </p>
-              </div>
-            ))}
+
+                  {/* Info */}
+                  <div className="p-4">
+                    <div className="flex items-start justify-between gap-2 mb-3">
+                      <div className="min-w-0">
+                        <p className="font-bold text-stone-900 text-base truncate">
+                          {[listing.city, listing.district].filter(Boolean).join(", ") || "—"}
+                        </p>
+                        {typeLabel && (
+                          <span className="inline-block mt-1 text-xs font-semibold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full">
+                            {typeLabel}
+                          </span>
+                        )}
+                      </div>
+                      {listing.rent != null && (
+                        <div className="text-right flex-shrink-0">
+                          <span className="text-lg font-black text-orange-500">
+                            {sym}{listing.rent}
+                          </span>
+                          <span className="text-stone-400 font-normal text-xs">{t.perMonth}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Buttons */}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => router.push(`/listings/${listing.id}/edit`)}
+                        className="flex-1 flex items-center justify-center gap-1.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold text-sm py-2.5 rounded-xl shadow-md shadow-orange-500/20 hover:opacity-90 active:scale-95 transition-all"
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg>
+                        {t.edit}
+                      </button>
+                      <button
+                        onClick={() => handleDelete(listing.id)}
+                        disabled={isDeleting}
+                        className="flex-1 flex items-center justify-center gap-1.5 bg-rose-500 hover:bg-rose-600 disabled:opacity-60 text-white font-bold text-sm py-2.5 rounded-xl shadow-md shadow-rose-500/20 active:scale-95 transition-all"
+                      >
+                        {isDeleting ? (
+                          <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                        ) : (
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                            <path d="M10 11v6M14 11v6" />
+                            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                          </svg>
+                        )}
+                        {isDeleting ? t.deleting : t.delete}
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         )}
       </div>
