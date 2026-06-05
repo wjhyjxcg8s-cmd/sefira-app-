@@ -119,51 +119,196 @@ const countries = [
 ];
 
 const allCountries = [
-  { code: "AF", flag: "🇦🇫", name: "Afganistan" },
-  { code: "AL", flag: "🇦🇱", name: "Arnavutluk" },
-  { code: "DZ", flag: "🇩🇿", name: "Cezayir" },
-  { code: "AR", flag: "🇦🇷", name: "Arjantin" },
-  { code: "AM", flag: "🇦🇲", name: "Ermenistan" },
-  { code: "AU", flag: "🇦🇺", name: "Avustralya" },
-  { code: "AT", flag: "🇦🇹", name: "Avusturya" },
-  { code: "AZ", flag: "🇦🇿", name: "Azerbaycan" },
-  { code: "BE", flag: "🇧🇪", name: "Belçika" },
-  { code: "BR", flag: "🇧🇷", name: "Brezilya" },
-  { code: "BG", flag: "🇧🇬", name: "Bulgaristan" },
-  { code: "CN", flag: "🇨🇳", name: "Çin" },
-  { code: "CZ", flag: "🇨🇿", name: "Çekya" },
-  { code: "DK", flag: "🇩🇰", name: "Danimarka" },
-  { code: "EG", flag: "🇪🇬", name: "Mısır" },
-  { code: "FI", flag: "🇫🇮", name: "Finlandiya" },
-  { code: "GE", flag: "🇬🇪", name: "Gürcistan" },
-  { code: "GR", flag: "🇬🇷", name: "Yunanistan" },
-  { code: "HU", flag: "🇭🇺", name: "Macaristan" },
-  { code: "IN", flag: "🇮🇳", name: "Hindistan" },
-  { code: "IQ", flag: "🇮🇶", name: "Irak" },
-  { code: "IT", flag: "🇮🇹", name: "İtalya" },
-  { code: "JP", flag: "🇯🇵", name: "Japonya" },
-  { code: "JO", flag: "🇯🇴", name: "Ürdün" },
-  { code: "KZ", flag: "🇰🇿", name: "Kazakistan" },
-  { code: "KW", flag: "🇰🇼", name: "Kuveyt" },
-  { code: "LB", flag: "🇱🇧", name: "Lübnan" },
-  { code: "MY", flag: "🇲🇾", name: "Malezya" },
-  { code: "MX", flag: "🇲🇽", name: "Meksika" },
-  { code: "MA", flag: "🇲🇦", name: "Fas" },
-  { code: "NO", flag: "🇳🇴", name: "Norveç" },
-  { code: "PK", flag: "🇵🇰", name: "Pakistan" },
-  { code: "PL", flag: "🇵🇱", name: "Polonya" },
-  { code: "PT", flag: "🇵🇹", name: "Portekiz" },
-  { code: "QA", flag: "🇶🇦", name: "Katar" },
-  { code: "RO", flag: "🇷🇴", name: "Romanya" },
-  { code: "SA", flag: "🇸🇦", name: "Suudi Arabistan" },
-  { code: "RS", flag: "🇷🇸", name: "Sırbistan" },
-  { code: "SY", flag: "🇸🇾", name: "Suriye" },
-  { code: "CH", flag: "🇨🇭", name: "İsviçre" },
-  { code: "TN", flag: "🇹🇳", name: "Tunus" },
-  { code: "UA", flag: "🇺🇦", name: "Ukrayna" },
-  { code: "UZ", flag: "🇺🇿", name: "Özbekistan" },
-  { code: "VN", flag: "🇻🇳", name: "Vietnam" },
-  { code: "YE", flag: "🇾🇪", name: "Yemen" },
+  {code:'AF',flag:'🇦🇫',name:'Afganistan'},
+  {code:'AL',flag:'🇦🇱',name:'Arnavutluk'},
+  {code:'DZ',flag:'🇩🇿',name:'Cezayir'},
+  {code:'AD',flag:'🇦🇩',name:'Andorra'},
+  {code:'AO',flag:'🇦🇴',name:'Angola'},
+  {code:'AG',flag:'🇦🇬',name:'Antigua ve Barbuda'},
+  {code:'AR',flag:'🇦🇷',name:'Arjantin'},
+  {code:'AM',flag:'🇦🇲',name:'Ermenistan'},
+  {code:'AU',flag:'🇦🇺',name:'Avustralya'},
+  {code:'AT',flag:'🇦🇹',name:'Avusturya'},
+  {code:'AZ',flag:'🇦🇿',name:'Azerbaycan'},
+  {code:'BS',flag:'🇧🇸',name:'Bahamalar'},
+  {code:'BH',flag:'🇧🇭',name:'Bahreyn'},
+  {code:'BD',flag:'🇧🇩',name:'Bangladeş'},
+  {code:'BB',flag:'🇧🇧',name:'Barbados'},
+  {code:'BY',flag:'🇧🇾',name:'Belarus'},
+  {code:'BE',flag:'🇧🇪',name:'Belçika'},
+  {code:'BZ',flag:'🇧🇿',name:'Belize'},
+  {code:'BJ',flag:'🇧🇯',name:'Benin'},
+  {code:'BT',flag:'🇧🇹',name:'Bhutan'},
+  {code:'BO',flag:'🇧🇴',name:'Bolivya'},
+  {code:'BA',flag:'🇧🇦',name:'Bosna Hersek'},
+  {code:'BW',flag:'🇧🇼',name:'Botsvana'},
+  {code:'BR',flag:'🇧🇷',name:'Brezilya'},
+  {code:'BN',flag:'🇧🇳',name:'Brunei'},
+  {code:'BG',flag:'🇧🇬',name:'Bulgaristan'},
+  {code:'BF',flag:'🇧🇫',name:'Burkina Faso'},
+  {code:'BI',flag:'🇧🇮',name:'Burundi'},
+  {code:'CV',flag:'🇨🇻',name:'Cabo Verde'},
+  {code:'KH',flag:'🇰🇭',name:'Kamboçya'},
+  {code:'CM',flag:'🇨🇲',name:'Kamerun'},
+  {code:'CA',flag:'🇨🇦',name:'Kanada'},
+  {code:'CF',flag:'🇨🇫',name:'Orta Afrika Cumhuriyeti'},
+  {code:'TD',flag:'🇹🇩',name:'Çad'},
+  {code:'CL',flag:'🇨🇱',name:'Şili'},
+  {code:'CN',flag:'🇨🇳',name:'Çin'},
+  {code:'CO',flag:'🇨🇴',name:'Kolombiya'},
+  {code:'KM',flag:'🇰🇲',name:'Komorlar'},
+  {code:'CG',flag:'🇨🇬',name:'Kongo'},
+  {code:'CR',flag:'🇨🇷',name:'Kosta Rika'},
+  {code:'HR',flag:'🇭🇷',name:'Hırvatistan'},
+  {code:'CU',flag:'🇨🇺',name:'Küba'},
+  {code:'CY',flag:'🇨🇾',name:'Kıbrıs'},
+  {code:'CZ',flag:'🇨🇿',name:'Çekya'},
+  {code:'DK',flag:'🇩🇰',name:'Danimarka'},
+  {code:'DJ',flag:'🇩🇯',name:'Cibuti'},
+  {code:'DM',flag:'🇩🇲',name:'Dominika'},
+  {code:'DO',flag:'🇩🇴',name:'Dominik Cumhuriyeti'},
+  {code:'EC',flag:'🇪🇨',name:'Ekvador'},
+  {code:'EG',flag:'🇪🇬',name:'Mısır'},
+  {code:'SV',flag:'🇸🇻',name:'El Salvador'},
+  {code:'GQ',flag:'🇬🇶',name:'Ekvator Ginesi'},
+  {code:'ER',flag:'🇪🇷',name:'Eritre'},
+  {code:'EE',flag:'🇪🇪',name:'Estonya'},
+  {code:'SZ',flag:'🇸🇿',name:'Esvatini'},
+  {code:'ET',flag:'🇪🇹',name:'Etiyopya'},
+  {code:'FJ',flag:'🇫🇯',name:'Fiji'},
+  {code:'FI',flag:'🇫🇮',name:'Finlandiya'},
+  {code:'FR',flag:'🇫🇷',name:'Fransa'},
+  {code:'GA',flag:'🇬🇦',name:'Gabon'},
+  {code:'GM',flag:'🇬🇲',name:'Gambiya'},
+  {code:'GE',flag:'🇬🇪',name:'Gürcistan'},
+  {code:'DE',flag:'🇩🇪',name:'Almanya'},
+  {code:'GH',flag:'🇬🇭',name:'Gana'},
+  {code:'GR',flag:'🇬🇷',name:'Yunanistan'},
+  {code:'GD',flag:'🇬🇩',name:'Grenada'},
+  {code:'GT',flag:'🇬🇹',name:'Guatemala'},
+  {code:'GN',flag:'🇬🇳',name:'Gine'},
+  {code:'GW',flag:'🇬🇼',name:'Gine-Bissau'},
+  {code:'GY',flag:'🇬🇾',name:'Guyana'},
+  {code:'HT',flag:'🇭🇹',name:'Haiti'},
+  {code:'HN',flag:'🇭🇳',name:'Honduras'},
+  {code:'HU',flag:'🇭🇺',name:'Macaristan'},
+  {code:'IS',flag:'🇮🇸',name:'İzlanda'},
+  {code:'IN',flag:'🇮🇳',name:'Hindistan'},
+  {code:'ID',flag:'🇮🇩',name:'Endonezya'},
+  {code:'IR',flag:'🇮🇷',name:'İran'},
+  {code:'IQ',flag:'🇮🇶',name:'Irak'},
+  {code:'IE',flag:'🇮🇪',name:'İrlanda'},
+  {code:'IL',flag:'🇮🇱',name:'İsrail'},
+  {code:'IT',flag:'🇮🇹',name:'İtalya'},
+  {code:'JM',flag:'🇯🇲',name:'Jamaika'},
+  {code:'JP',flag:'🇯🇵',name:'Japonya'},
+  {code:'JO',flag:'🇯🇴',name:'Ürdün'},
+  {code:'KZ',flag:'🇰🇿',name:'Kazakistan'},
+  {code:'KE',flag:'🇰🇪',name:'Kenya'},
+  {code:'KI',flag:'🇰🇮',name:'Kiribati'},
+  {code:'KW',flag:'🇰🇼',name:'Kuveyt'},
+  {code:'KG',flag:'🇰🇬',name:'Kırgızistan'},
+  {code:'LA',flag:'🇱🇦',name:'Laos'},
+  {code:'LV',flag:'🇱🇻',name:'Letonya'},
+  {code:'LB',flag:'🇱🇧',name:'Lübnan'},
+  {code:'LS',flag:'🇱🇸',name:'Lesotho'},
+  {code:'LR',flag:'🇱🇷',name:'Liberya'},
+  {code:'LY',flag:'🇱🇾',name:'Libya'},
+  {code:'LI',flag:'🇱🇮',name:'Lihtenştayn'},
+  {code:'LT',flag:'🇱🇹',name:'Litvanya'},
+  {code:'LU',flag:'🇱🇺',name:'Lüksemburg'},
+  {code:'MG',flag:'🇲🇬',name:'Madagaskar'},
+  {code:'MW',flag:'🇲🇼',name:'Malavi'},
+  {code:'MY',flag:'🇲🇾',name:'Malezya'},
+  {code:'MV',flag:'🇲🇻',name:'Maldivler'},
+  {code:'ML',flag:'🇲🇱',name:'Mali'},
+  {code:'MT',flag:'🇲🇹',name:'Malta'},
+  {code:'MH',flag:'🇲🇭',name:'Marshall Adaları'},
+  {code:'MR',flag:'🇲🇷',name:'Moritanya'},
+  {code:'MU',flag:'🇲🇺',name:'Mauritius'},
+  {code:'MX',flag:'🇲🇽',name:'Meksika'},
+  {code:'FM',flag:'🇫🇲',name:'Mikronezya'},
+  {code:'MD',flag:'🇲🇩',name:'Moldova'},
+  {code:'MC',flag:'🇲🇨',name:'Monako'},
+  {code:'MN',flag:'🇲🇳',name:'Moğolistan'},
+  {code:'ME',flag:'🇲🇪',name:'Karadağ'},
+  {code:'MA',flag:'🇲🇦',name:'Fas'},
+  {code:'MZ',flag:'🇲🇿',name:'Mozambik'},
+  {code:'MM',flag:'🇲🇲',name:'Myanmar'},
+  {code:'NA',flag:'🇳🇦',name:'Namibya'},
+  {code:'NR',flag:'🇳🇷',name:'Nauru'},
+  {code:'NP',flag:'🇳🇵',name:'Nepal'},
+  {code:'NL',flag:'🇳🇱',name:'Hollanda'},
+  {code:'NZ',flag:'🇳🇿',name:'Yeni Zelanda'},
+  {code:'NI',flag:'🇳🇮',name:'Nikaragua'},
+  {code:'NE',flag:'🇳🇪',name:'Nijer'},
+  {code:'NG',flag:'🇳🇬',name:'Nijerya'},
+  {code:'NO',flag:'🇳🇴',name:'Norveç'},
+  {code:'OM',flag:'🇴🇲',name:'Umman'},
+  {code:'PK',flag:'🇵🇰',name:'Pakistan'},
+  {code:'PW',flag:'🇵🇼',name:'Palau'},
+  {code:'PA',flag:'🇵🇦',name:'Panama'},
+  {code:'PG',flag:'🇵🇬',name:'Papua Yeni Gine'},
+  {code:'PY',flag:'🇵🇾',name:'Paraguay'},
+  {code:'PE',flag:'🇵🇪',name:'Peru'},
+  {code:'PH',flag:'🇵🇭',name:'Filipinler'},
+  {code:'PL',flag:'🇵🇱',name:'Polonya'},
+  {code:'PT',flag:'🇵🇹',name:'Portekiz'},
+  {code:'QA',flag:'🇶🇦',name:'Katar'},
+  {code:'RO',flag:'🇷🇴',name:'Romanya'},
+  {code:'RU',flag:'🇷🇺',name:'Rusya'},
+  {code:'RW',flag:'🇷🇼',name:'Ruanda'},
+  {code:'KN',flag:'🇰🇳',name:'Saint Kitts ve Nevis'},
+  {code:'LC',flag:'🇱🇨',name:'Saint Lucia'},
+  {code:'VC',flag:'🇻🇨',name:'Saint Vincent'},
+  {code:'WS',flag:'🇼🇸',name:'Samoa'},
+  {code:'SM',flag:'🇸🇲',name:'San Marino'},
+  {code:'ST',flag:'🇸🇹',name:'Sao Tome ve Principe'},
+  {code:'SA',flag:'🇸🇦',name:'Suudi Arabistan'},
+  {code:'SN',flag:'🇸🇳',name:'Senegal'},
+  {code:'RS',flag:'🇷🇸',name:'Sırbistan'},
+  {code:'SC',flag:'🇸🇨',name:'Seyşeller'},
+  {code:'SL',flag:'🇸🇱',name:'Sierra Leone'},
+  {code:'SG',flag:'🇸🇬',name:'Singapur'},
+  {code:'SK',flag:'🇸🇰',name:'Slovakya'},
+  {code:'SI',flag:'🇸🇮',name:'Slovenya'},
+  {code:'SB',flag:'🇸🇧',name:'Solomon Adaları'},
+  {code:'SO',flag:'🇸🇴',name:'Somali'},
+  {code:'ZA',flag:'🇿🇦',name:'Güney Afrika'},
+  {code:'KR',flag:'🇰🇷',name:'Güney Kore'},
+  {code:'SS',flag:'🇸🇸',name:'Güney Sudan'},
+  {code:'ES',flag:'🇪🇸',name:'İspanya'},
+  {code:'LK',flag:'🇱🇰',name:'Sri Lanka'},
+  {code:'SD',flag:'🇸🇩',name:'Sudan'},
+  {code:'SR',flag:'🇸🇷',name:'Surinam'},
+  {code:'SE',flag:'🇸🇪',name:'İsveç'},
+  {code:'CH',flag:'🇨🇭',name:'İsviçre'},
+  {code:'SY',flag:'🇸🇾',name:'Suriye'},
+  {code:'TW',flag:'🇹🇼',name:'Tayvan'},
+  {code:'TJ',flag:'🇹🇯',name:'Tacikistan'},
+  {code:'TZ',flag:'🇹🇿',name:'Tanzanya'},
+  {code:'TH',flag:'🇹🇭',name:'Tayland'},
+  {code:'TL',flag:'🇹🇱',name:'Doğu Timor'},
+  {code:'TG',flag:'🇹🇬',name:'Togo'},
+  {code:'TO',flag:'🇹🇴',name:'Tonga'},
+  {code:'TT',flag:'🇹🇹',name:'Trinidad ve Tobago'},
+  {code:'TN',flag:'🇹🇳',name:'Tunus'},
+  {code:'TR',flag:'🇹🇷',name:'Türkiye'},
+  {code:'TM',flag:'🇹🇲',name:'Türkmenistan'},
+  {code:'TV',flag:'🇹🇻',name:'Tuvalu'},
+  {code:'UG',flag:'🇺🇬',name:'Uganda'},
+  {code:'UA',flag:'🇺🇦',name:'Ukrayna'},
+  {code:'AE',flag:'🇦🇪',name:'BAE'},
+  {code:'GB',flag:'🇬🇧',name:'İngiltere'},
+  {code:'US',flag:'🇺🇸',name:'Amerika'},
+  {code:'UY',flag:'🇺🇾',name:'Uruguay'},
+  {code:'UZ',flag:'🇺🇿',name:'Özbekistan'},
+  {code:'VU',flag:'🇻🇺',name:'Vanuatu'},
+  {code:'VE',flag:'🇻🇪',name:'Venezuela'},
+  {code:'VN',flag:'🇻🇳',name:'Vietnam'},
+  {code:'YE',flag:'🇾🇪',name:'Yemen'},
+  {code:'ZM',flag:'🇿🇲',name:'Zambiya'},
+  {code:'ZW',flag:'🇿🇼',name:'Zimbabve'},
 ];
 
 const subtitles: Record<Lang, string> = {
@@ -299,10 +444,15 @@ export default function LatestListings({ lang = "tr", filterCity, onClearFilter 
         {pillList.map((c) => (
           <button
             key={c.code}
-            onClick={() => setSelectedCountry(c.code)}
+            onClick={() => {
+              setSelectedCountry(c.code);
+              if (c.code === "all") setShowCountryModal(true);
+            }}
             className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-all ${
               selectedCountry === c.code
-                ? "bg-orange-500 text-white shadow-md scale-105"
+                ? c.code === "all"
+                  ? "bg-slate-800 text-white shadow-md scale-105"
+                  : "bg-orange-500 text-white shadow-md scale-105"
                 : "bg-white text-gray-600 border border-gray-200 hover:border-orange-300"
             }`}
           >
@@ -366,7 +516,7 @@ export default function LatestListings({ lang = "tr", filterCity, onClearFilter 
                     </svg>
                   </div>
                 )}
-                <span className="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                <span className={`absolute top-2 left-2 text-white text-xs px-2 py-1 rounded-full font-medium ${listing.type === "has_place" ? "bg-emerald-500" : "bg-blue-500"}`}>
                   {listing.type === "has_place" ? "Ev Sahibi" : "Kiracı"}
                 </span>
               </div>
@@ -462,23 +612,31 @@ export default function LatestListings({ lang = "tr", filterCity, onClearFilter 
 
             {/* Country grid */}
             <div className="overflow-y-auto px-6 pb-6 flex-1">
-              <div className="grid grid-cols-3 gap-2">
+              {!modalSearch && (
+                <button
+                  onClick={() => { setSelectedCountry("all"); setShowCountryModal(false); setModalSearch(""); }}
+                  className="w-full flex items-center gap-2 p-3 mb-3 rounded-xl border border-slate-200 hover:border-slate-400 hover:bg-slate-50 transition-all text-sm font-medium text-slate-700"
+                >
+                  🌍 Tümünü Göster
+                </button>
+              )}
+              <div className="grid grid-cols-2 gap-2">
                 {filteredModalCountries.map((c) => (
                   <button
                     key={c.code}
                     onClick={() => selectFromModal(c)}
-                    className={`flex flex-col items-center gap-1 p-3 rounded-xl text-center transition-all ${
+                    className={`flex items-center gap-2 p-3 rounded-xl border transition-all text-sm ${
                       selectedCountry === c.code
-                        ? "bg-orange-50 border border-orange-300 text-orange-600"
-                        : "bg-gray-50 border border-transparent hover:bg-orange-50 hover:border-orange-200 text-gray-700"
+                        ? "bg-orange-50 border-orange-400 text-orange-600"
+                        : "border-gray-200 hover:border-orange-400 hover:bg-orange-50 text-gray-700"
                     }`}
                   >
-                    <span className="text-2xl">{c.flag}</span>
-                    <span className="text-xs font-medium leading-tight">{c.name}</span>
+                    <span className="text-xl">{c.flag}</span>
+                    <span className="font-medium truncate">{c.name}</span>
                   </button>
                 ))}
                 {filteredModalCountries.length === 0 && (
-                  <p className="col-span-3 text-center text-gray-400 text-sm py-8">Sonuç bulunamadı</p>
+                  <p className="col-span-2 text-center text-gray-400 text-sm py-8">Sonuç bulunamadı</p>
                 )}
               </div>
             </div>
