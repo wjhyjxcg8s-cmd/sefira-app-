@@ -557,43 +557,44 @@ function MessagesPageContent() {
     }
   };
 
-  // Derive current conversation's preloaded data
-  const currentConvData = enrichedConvs.find((c) => c.id === selectedConv);
-  const currentListing = currentConvData?.listing ?? (selectedConv === targetUserId ? listingContext : null);
+  const [activeListing, setActiveListing] = useState<any>(null);
+  const [listingLoading, setListingLoading] = useState(false);
+  const userIdRef = useRef<string | null>(null);
+  const listingContextRef = useRef<ListingContextData | null>(null);
 
-  const [listingMap, setListingMap] = useState<Record<string, any>>({});
-
-  useEffect(() => {
-    if (currentListing && selectedConv) {
-      setListingMap(prev => ({
-        ...prev,
-        [selectedConv]: currentListing,
-      }));
-    }
-  }, [currentListing, selectedConv]);
+  useEffect(() => { userIdRef.current = currentUserId; }, [currentUserId]);
+  useEffect(() => { listingContextRef.current = listingContext; }, [listingContext]);
 
   useEffect(() => {
-    if (enrichedConvs.length > 0) {
-      const map: Record<string, any> = {};
-      enrichedConvs.forEach(conv => {
-        if (conv.listing) map[conv.id] = conv.listing;
+    if (!selectedConv || SYSTEM_CONVS.has(selectedConv)) return;
+
+    let cancelled = false;
+    setListingLoading(true);
+
+    fetch("/api/messages/conversation-detail", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        conversationId: selectedConv,
+        currentUserId: userIdRef.current || "",
+      }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (cancelled) return;
+        if (data.listing) {
+          setActiveListing(data.listing);
+        } else if (listingContextRef.current) {
+          setActiveListing(listingContextRef.current);
+        }
+        setListingLoading(false);
+      })
+      .catch(() => {
+        if (!cancelled) setListingLoading(false);
       });
-      setListingMap(prev => ({ ...prev, ...map }));
-    }
-  }, [enrichedConvs]);
 
-  const [displayListing, setDisplayListing] = useState<any>(null);
-
-  useEffect(() => {
-    if (!selectedConv) {
-      setDisplayListing(null);
-      return;
-    }
-    const listing = listingMap[selectedConv] || currentListing || null;
-    if (listing) {
-      setDisplayListing(listing);
-    }
-  }, [selectedConv, listingMap, currentListing]);
+    return () => { cancelled = true; };
+  }, [selectedConv]);
 
   // Deduplicate: for conversations without listing_id, skip if a better one for same user exists
   const deduplicatedConvs = enrichedConvs.reduce((acc: any[], conv: any) => {
@@ -929,17 +930,20 @@ function MessagesPageContent() {
                 </div>
               </div>
 
-              {/* Listing context card — data is preloaded, no async fetch needed */}
-              {displayListing && (
+              {/* Listing context card — fetched on-demand per conversation */}
+              {listingLoading && !activeListing && (
+                <div className="mx-3 mt-3 mb-2 h-20 bg-orange-100 animate-pulse rounded-2xl flex-shrink-0" />
+              )}
+              {activeListing && (
                 <div
-                  onClick={() => router.push(`/listings/${displayListing.id}`)}
+                  onClick={() => router.push(`/listings/${activeListing.id}`)}
                   className="mx-3 mt-3 mb-2 cursor-pointer active:scale-[0.98] transition-transform flex-shrink-0"
                 >
                   <div className="flex items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-3 shadow-lg">
-                    {displayListing.photos?.[0] ? (
+                    {activeListing.photos?.[0] ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={displayListing.photos[0]}
+                        src={activeListing.photos[0]}
                         className="w-16 h-16 rounded-xl object-cover flex-shrink-0 border-2 border-white/30"
                         alt=""
                       />
@@ -953,15 +957,15 @@ function MessagesPageContent() {
                         💬 Bu ilan hakkında konuşuyorsunuz
                       </p>
                       <p className="font-bold text-white text-sm truncate">
-                        {displayListing.city}
-                        {displayListing.district ? ` / ${displayListing.district}` : ""}
+                        {activeListing.city}
+                        {activeListing.district ? ` / ${activeListing.district}` : ""}
                       </p>
                       <p className="text-white font-bold text-sm">
-                        {displayListing.rent?.toLocaleString()} {displayListing.currency}/ay
+                        {activeListing.rent?.toLocaleString()} {activeListing.currency}/ay
                       </p>
                       <p className="text-white/70 text-xs">
-                        {displayListing.house_type}
-                        {displayListing.rooms ? ` • ${displayListing.rooms} oda` : ""}
+                        {activeListing.house_type}
+                        {activeListing.rooms ? ` • ${activeListing.rooms} oda` : ""}
                         {" "}• Detay için tıkla →
                       </p>
                     </div>
