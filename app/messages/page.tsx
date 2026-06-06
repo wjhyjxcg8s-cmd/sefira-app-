@@ -182,6 +182,8 @@ function MessagesPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
+  console.log("URL params - userId:", searchParams.get("userId"), "listingId:", searchParams.get("listingId"));
+
   const [lang, setLang] = useState<Lang>("tr");
   const [mounted, setMounted] = useState(false);
   const [selectedConv, setSelectedConv] = useState<string | null>(null);
@@ -532,6 +534,13 @@ function MessagesPageContent() {
       created_at: new Date().toISOString(),
     };
     setMessages((prev) => [...prev, tempMsg]);
+
+    console.log("Sending message with:", {
+      conversationId: realConvId,
+      senderId: currentUserId,
+      targetUserId: pendingUserId || targetUserId,
+      listingId: pendingListingId || targetListingId,
+    });
 
     const res = await fetch("/api/messages/send", {
       method: "POST",

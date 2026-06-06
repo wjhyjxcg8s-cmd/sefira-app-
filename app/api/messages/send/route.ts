@@ -9,10 +9,13 @@ const supabaseAdmin = createClient(
 
 export async function POST(request: Request) {
   try {
-    const { conversationId, senderId, content, targetUserId, listingId } =
-      await request.json();
+    const body = await request.json();
+    console.log("FULL REQUEST BODY:", JSON.stringify(body));
 
-    console.log("[messages/send] received:", { conversationId, senderId, targetUserId, listingId });
+    const { conversationId, senderId, content, targetUserId, listingId } = body;
+
+    console.log("listingId received:", listingId);
+    console.log("targetUserId received:", targetUserId);
 
     if (!senderId || !content || !targetUserId) {
       return NextResponse.json(
@@ -38,18 +41,22 @@ export async function POST(request: Request) {
       if (existing) {
         convId = existing.id;
       } else {
-        console.log("[messages/send] Creating conversation with listingId:", listingId);
+        console.log("Creating conversation:", {
+          user1_id: senderId,
+          user2_id: targetUserId,
+          listing_id: listingId,
+        });
         const { data: newConv, error: convErr } = await supabaseAdmin
           .from("conversations")
           .insert({
             user1_id: senderId,
             user2_id: targetUserId,
-            listing_id: listingId || null,
+            listing_id: listingId ?? null,
           })
           .select("id, listing_id")
           .single();
 
-        console.log("[messages/send] Created conversation:", newConv, "error:", convErr);
+        console.log("Created conv result:", newConv, convErr);
 
         if (convErr) {
           return NextResponse.json({ error: convErr.message }, { status: 500 });
