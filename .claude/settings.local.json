@@ -35,7 +35,8 @@
       "Bash(ls /e/sefira-web/sefira-app/app/api/messages/)",
       "Read(//e/sefira-web/sefira-app/app/api/**)",
       "Bash(cd /e/sefira-web/sefira-app && npx tsc --noEmit 2>&1)",
-      "Read(//e/sefira-web/**)"
+      "Read(//e/sefira-web/**)",
+      "PowerShell(pm2 logs sefira --lines 50 --nostream 2>&1)"
     ],
     "additionalDirectories": [
       "e:\\sefıra-web\\sefira-app\\app\\api\\admin\\channels",

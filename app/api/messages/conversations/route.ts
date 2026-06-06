@@ -121,6 +121,13 @@ export async function POST(req: Request) {
       };
     });
 
+    console.log("Enriched convs debug:", enriched.map((c: any) => ({
+      convId: c.id,
+      listingId: c.listing?.id,
+      listingPhotos: c.listing?.photos,
+      otherUserId: c.otherUser?.user_id,
+    })));
+
     return NextResponse.json({ conversations: enriched });
   } catch (e: any) {
     console.error("[conversations] error:", e);
