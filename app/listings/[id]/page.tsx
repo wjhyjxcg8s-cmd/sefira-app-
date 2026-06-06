@@ -189,7 +189,7 @@ export default function ListingDetailPage() {
   const photos: string[] = listing?.photos ?? [];
 
   function handleSendMessage() {
-    router.push(`/messages?userId=${listing.user_id}`);
+    router.push(`/messages?userId=${listing.user_id}&listingId=${listing.id}`);
   }
 
   if (loading) {

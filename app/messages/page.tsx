@@ -213,7 +213,8 @@ function MessagesPageContent() {
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
   const [listingContext, setListingContext] = useState<ListingContextData | null>(null);
   const [convListing, setConvListing] = useState<any>(null);
-  const [storedListingId, setStoredListingId] = useState<string | null>(null);
+  const [pendingListingId, setPendingListingId] = useState<string | null>(null);
+  const [pendingUserId, setPendingUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const savedLang = localStorage.getItem("sefira-lang") as Lang | null;
@@ -272,37 +273,53 @@ function MessagesPageContent() {
       .catch(() => {});
   }, [currentUserId]);
 
-  // Persist listingId from URL params so it survives conversation switches
+  // Capture URL params immediately and persist in state
   useEffect(() => {
-    const urlListingId = searchParams.get("listingId");
-    if (urlListingId) setStoredListingId(urlListingId);
+    const lid = searchParams.get("listingId");
+    const uid = searchParams.get("userId");
+    console.log("[messages] URL params — listingId:", lid, "userId:", uid);
+    if (lid) setPendingListingId(lid);
+    if (uid) setPendingUserId(uid);
   }, [searchParams]);
 
-  // Fetch listing context via admin API whenever the selected conversation changes
+  // Fetch listing context reliably via conversation-detail API
   useEffect(() => {
     if (!selectedConv || SYSTEM_CONVS.has(selectedConv)) {
       setConvListing(null);
       return;
     }
 
-    const currentConv = conversations.find((c) => c.id === selectedConv);
-    const listingIdToFetch = currentConv?.listingId || storedListingId;
+    console.log("[convListing] fetching for selectedConv:", selectedConv);
 
-    if (listingIdToFetch) {
-      fetch("/api/messages/listing-context", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ listingId: listingIdToFetch }),
+    fetch("/api/messages/conversation-detail", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ conversationId: selectedConv }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        console.log("[convListing] conversation-detail response:", data);
+        if (data.listing) {
+          setConvListing(data.listing);
+        } else if (pendingListingId) {
+          console.log("[convListing] no listing from conv, using pendingListingId:", pendingListingId);
+          fetch("/api/messages/listing-context", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ listingId: pendingListingId }),
+          })
+            .then((r) => r.json())
+            .then((d) => {
+              console.log("[convListing] pending listing result:", d);
+              setConvListing(d.listing ?? null);
+            })
+            .catch(() => setConvListing(null));
+        } else {
+          setConvListing(null);
+        }
       })
-        .then((r) => r.json())
-        .then((data) => {
-          setConvListing(data.listing ?? null);
-        })
-        .catch(() => setConvListing(null));
-    } else {
-      setConvListing(null);
-    }
-  }, [selectedConv, conversations, storedListingId]);
+      .catch(() => setConvListing(null));
+  }, [selectedConv, pendingListingId]);
 
   // Fetch listing context when targetListingId changes
   useEffect(() => {
@@ -523,8 +540,8 @@ function MessagesPageContent() {
         conversationId: realConvId,
         senderId: currentUserId,
         content,
-        targetUserId,
-        listingId: targetListingId,
+        targetUserId: pendingUserId || targetUserId,
+        listingId: pendingListingId || targetListingId,
       }),
     });
 

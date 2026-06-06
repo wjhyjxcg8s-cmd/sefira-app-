@@ -38,6 +38,7 @@ export async function POST(request: Request) {
       if (existing) {
         convId = existing.id;
       } else {
+        console.log("[messages/send] Creating conversation with listingId:", listingId);
         const { data: newConv, error: convErr } = await supabaseAdmin
           .from("conversations")
           .insert({
@@ -45,10 +46,10 @@ export async function POST(request: Request) {
             user2_id: targetUserId,
             listing_id: listingId || null,
           })
-          .select("id")
+          .select("id, listing_id")
           .single();
 
-        console.log("[messages/send] created conv:", newConv, convErr);
+        console.log("[messages/send] Created conversation:", newConv, "error:", convErr);
 
         if (convErr) {
           return NextResponse.json({ error: convErr.message }, { status: 500 });
