@@ -212,6 +212,8 @@ function MessagesPageContent() {
   // Conversations list + listing context
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
   const [listingContext, setListingContext] = useState<ListingContextData | null>(null);
+  const [convListing, setConvListing] = useState<any>(null);
+  const [storedListingId, setStoredListingId] = useState<string | null>(null);
 
   useEffect(() => {
     const savedLang = localStorage.getItem("sefira-lang") as Lang | null;
@@ -269,6 +271,38 @@ function MessagesPageContent() {
       })
       .catch(() => {});
   }, [currentUserId]);
+
+  // Persist listingId from URL params so it survives conversation switches
+  useEffect(() => {
+    const urlListingId = searchParams.get("listingId");
+    if (urlListingId) setStoredListingId(urlListingId);
+  }, [searchParams]);
+
+  // Fetch listing context via admin API whenever the selected conversation changes
+  useEffect(() => {
+    if (!selectedConv || SYSTEM_CONVS.has(selectedConv)) {
+      setConvListing(null);
+      return;
+    }
+
+    const currentConv = conversations.find((c) => c.id === selectedConv);
+    const listingIdToFetch = currentConv?.listingId || storedListingId;
+
+    if (listingIdToFetch) {
+      fetch("/api/messages/listing-context", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ listingId: listingIdToFetch }),
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          setConvListing(data.listing ?? null);
+        })
+        .catch(() => setConvListing(null));
+    } else {
+      setConvListing(null);
+    }
+  }, [selectedConv, conversations, storedListingId]);
 
   // Fetch listing context when targetListingId changes
   useEffect(() => {
@@ -854,36 +888,40 @@ function MessagesPageContent() {
               </div>
 
               {/* Listing context card */}
-              {listingContext && (
+              {convListing && (
                 <div
-                  className="mx-4 my-3 flex items-center gap-3 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-2xl p-3 cursor-pointer hover:shadow-md transition-shadow flex-shrink-0"
-                  onClick={() => router.push(`/listings/${listingContext.id}`)}
+                  onClick={() => router.push(`/listings/${convListing.id}`)}
+                  className="mx-3 mt-3 flex items-center gap-3 bg-white border border-orange-200 rounded-2xl p-3 cursor-pointer shadow-sm active:scale-95 transition-transform flex-shrink-0"
                 >
-                  {listingContext.photos?.[0] ? (
+                  {convListing.photos?.[0] ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      src={listingContext.photos[0]}
+                      src={convListing.photos[0]}
+                      className="w-16 h-16 rounded-xl object-cover flex-shrink-0"
                       alt=""
-                      className="w-14 h-14 rounded-xl object-cover flex-shrink-0"
                     />
                   ) : (
-                    <div className="w-14 h-14 rounded-xl bg-orange-100 flex items-center justify-center text-2xl flex-shrink-0">
+                    <div className="w-16 h-16 rounded-xl bg-orange-50 flex items-center justify-center text-3xl flex-shrink-0">
                       🏠
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-orange-500 font-bold uppercase tracking-wide mb-0.5">
-                      İlan Hakkında
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <span className="text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-bold uppercase tracking-wide">
+                        💬 İlan Hakkında
+                      </span>
+                    </div>
+                    <p className="font-bold text-gray-900 text-sm">
+                      {convListing.city}
+                      {convListing.district ? ` / ${convListing.district}` : ""}
                     </p>
-                    <p className="font-bold text-gray-900 text-sm truncate">
-                      {listingContext.city}
-                      {listingContext.district ? ` / ${listingContext.district}` : ""}
+                    <p className="text-orange-500 font-bold text-sm">
+                      {convListing.rent?.toLocaleString()} {convListing.currency}/ay
                     </p>
-                    <p className="text-orange-500 text-sm font-bold">
-                      {listingContext.rent?.toLocaleString()} {listingContext.currency}/ay
+                    <p className="text-gray-400 text-xs">
+                      {convListing.house_type} • İlanı görüntüle →
                     </p>
                   </div>
-                  <span className="text-gray-300 text-lg">›</span>
                 </div>
               )}
 
