@@ -127,6 +127,7 @@ export async function POST(req: Request) {
       listingPhotos: c.listing?.photos,
       otherUserId: c.otherUser?.user_id,
     })));
+    console.log('FINAL ENRICHED SAMPLE:', JSON.stringify(enriched[0], null, 2));
 
     return NextResponse.json({ conversations: enriched });
   } catch (e: any) {
