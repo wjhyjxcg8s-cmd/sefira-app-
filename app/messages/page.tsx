@@ -561,17 +561,30 @@ function MessagesPageContent() {
   const currentConvData = enrichedConvs.find((c) => c.id === selectedConv);
   const currentListing = currentConvData?.listing ?? (selectedConv === targetUserId ? listingContext : null);
 
-  const [stickyListing, setStickyListing] = useState<any>(null);
+  const [listingMap, setListingMap] = useState<Record<string, any>>({});
 
   useEffect(() => {
-    if (currentListing) {
-      setStickyListing(currentListing);
+    if (currentListing && selectedConv) {
+      setListingMap(prev => ({
+        ...prev,
+        [selectedConv]: currentListing,
+      }));
     }
-  }, [currentListing]);
+  }, [currentListing, selectedConv]);
 
   useEffect(() => {
-    setStickyListing(null);
-  }, [selectedConv]);
+    if (enrichedConvs.length > 0) {
+      const map: Record<string, any> = {};
+      enrichedConvs.forEach(conv => {
+        if (conv.listing) map[conv.id] = conv.listing;
+      });
+      setListingMap(prev => ({ ...prev, ...map }));
+    }
+  }, [enrichedConvs]);
+
+  const displayListing = selectedConv
+    ? (listingMap[selectedConv] || currentListing)
+    : null;
 
   // Deduplicate: for conversations without listing_id, skip if a better one for same user exists
   const deduplicatedConvs = enrichedConvs.reduce((acc: any[], conv: any) => {
@@ -908,16 +921,16 @@ function MessagesPageContent() {
               </div>
 
               {/* Listing context card — data is preloaded, no async fetch needed */}
-              {stickyListing && (
+              {displayListing && (
                 <div
-                  onClick={() => router.push(`/listings/${stickyListing.id}`)}
+                  onClick={() => router.push(`/listings/${displayListing.id}`)}
                   className="mx-3 mt-3 mb-2 cursor-pointer active:scale-[0.98] transition-transform flex-shrink-0"
                 >
                   <div className="flex items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-3 shadow-lg">
-                    {stickyListing.photos?.[0] ? (
+                    {displayListing.photos?.[0] ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={stickyListing.photos[0]}
+                        src={displayListing.photos[0]}
                         className="w-16 h-16 rounded-xl object-cover flex-shrink-0 border-2 border-white/30"
                         alt=""
                       />
@@ -931,15 +944,15 @@ function MessagesPageContent() {
                         💬 Bu ilan hakkında konuşuyorsunuz
                       </p>
                       <p className="font-bold text-white text-sm truncate">
-                        {stickyListing.city}
-                        {stickyListing.district ? ` / ${stickyListing.district}` : ""}
+                        {displayListing.city}
+                        {displayListing.district ? ` / ${displayListing.district}` : ""}
                       </p>
                       <p className="text-white font-bold text-sm">
-                        {stickyListing.rent?.toLocaleString()} {stickyListing.currency}/ay
+                        {displayListing.rent?.toLocaleString()} {displayListing.currency}/ay
                       </p>
                       <p className="text-white/70 text-xs">
-                        {stickyListing.house_type}
-                        {stickyListing.rooms ? ` • ${stickyListing.rooms} oda` : ""}
+                        {displayListing.house_type}
+                        {displayListing.rooms ? ` • ${displayListing.rooms} oda` : ""}
                         {" "}• Detay için tıkla →
                       </p>
                     </div>
