@@ -602,6 +602,16 @@ function MessagesPageContent() {
     }
   };
 
+  const deduplicatedConvs = conversations.reduce((acc, conv) => {
+    if (!conv.listingId) {
+      const existingWithListing = acc.find(c =>
+        c.otherUserId === conv.otherUserId && c.listingId
+      );
+      if (existingWithListing) return acc;
+    }
+    return [...acc, conv];
+  }, [] as typeof conversations);
+
   const globalSorted = [...globalMessages].reverse();
   const isUserConv = selectedConv !== null && !SYSTEM_CONVS.has(selectedConv);
   const activePeerName = targetProfile?.display_name ?? "—";
@@ -812,7 +822,7 @@ function MessagesPageContent() {
           )}
 
           {/* Loaded peer conversations — grouped by listing */}
-          {conversations.map((conv) => {
+          {deduplicatedConvs.map((conv) => {
             const name = conv.otherUserProfile?.display_name ?? "Kullanıcı";
             const avatar = conv.otherUserProfile?.avatar_url ?? null;
             const listing = convListingMap[conv.id] ?? null;
@@ -827,9 +837,9 @@ function MessagesPageContent() {
               >
                 {/* Listing thumbnail as primary, user avatar as overlay */}
                 <div className="relative flex-shrink-0">
-                  {listing?.photos?.[0] ? (
+                  {convListingMap[conv.id]?.photos?.[0] ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={listing.photos[0]} alt="" className="w-14 h-14 rounded-xl object-cover" />
+                    <img src={convListingMap[conv.id].photos[0]} alt="" className="w-14 h-14 rounded-xl object-cover" />
                   ) : (
                     <div className="w-14 h-14 rounded-xl bg-orange-50 flex items-center justify-center text-2xl">🏠</div>
                   )}
@@ -924,13 +934,13 @@ function MessagesPageContent() {
               {convListing && (
                 <div
                   onClick={() => router.push(`/listings/${convListing.id}`)}
-                  className="mx-3 mt-3 flex items-center gap-3 bg-white border border-orange-200 rounded-2xl p-3 cursor-pointer shadow-sm active:scale-95 transition-transform flex-shrink-0"
+                  className="mx-3 mt-3 flex items-center gap-3 bg-white border-2 border-orange-100 rounded-2xl p-3 cursor-pointer shadow-sm active:scale-95 transition-transform flex-shrink-0"
                 >
                   {convListing.photos?.[0] ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={convListing.photos[0]}
-                      className="w-16 h-16 rounded-xl object-cover flex-shrink-0"
+                      className="w-16 h-16 rounded-xl object-cover flex-shrink-0 border border-orange-100"
                       alt=""
                     />
                   ) : (
@@ -940,8 +950,8 @@ function MessagesPageContent() {
                   )}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 mb-1">
-                      <span className="text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-bold uppercase tracking-wide">
-                        💬 İlan Hakkında
+                      <span className="text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-bold">
+                        🏠 İlan Hakkında
                       </span>
                     </div>
                     <p className="font-bold text-gray-900 text-sm">
@@ -951,9 +961,7 @@ function MessagesPageContent() {
                     <p className="text-orange-500 font-bold text-sm">
                       {convListing.rent?.toLocaleString()} {convListing.currency}/ay
                     </p>
-                    <p className="text-gray-400 text-xs">
-                      {convListing.house_type} • İlanı görüntüle →
-                    </p>
+                    <p className="text-gray-400 text-xs">Detay için tıklayın →</p>
                   </div>
                 </div>
               )}
