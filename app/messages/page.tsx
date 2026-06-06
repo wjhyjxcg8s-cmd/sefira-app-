@@ -561,6 +561,18 @@ function MessagesPageContent() {
   const currentConvData = enrichedConvs.find((c) => c.id === selectedConv);
   const currentListing = currentConvData?.listing ?? (selectedConv === targetUserId ? listingContext : null);
 
+  const [stickyListing, setStickyListing] = useState<any>(null);
+
+  useEffect(() => {
+    if (currentListing) {
+      setStickyListing(currentListing);
+    }
+  }, [currentListing]);
+
+  useEffect(() => {
+    setStickyListing(null);
+  }, [selectedConv]);
+
   // Deduplicate: for conversations without listing_id, skip if a better one for same user exists
   const deduplicatedConvs = enrichedConvs.reduce((acc: any[], conv: any) => {
     const otherUserId = conv.user1_id === currentUserId ? conv.user2_id : conv.user1_id;
@@ -896,16 +908,16 @@ function MessagesPageContent() {
               </div>
 
               {/* Listing context card — data is preloaded, no async fetch needed */}
-              {currentListing && (
+              {stickyListing && (
                 <div
-                  onClick={() => router.push(`/listings/${currentListing.id}`)}
+                  onClick={() => router.push(`/listings/${stickyListing.id}`)}
                   className="mx-3 mt-3 mb-2 cursor-pointer active:scale-[0.98] transition-transform flex-shrink-0"
                 >
                   <div className="flex items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-3 shadow-lg">
-                    {currentListing.photos?.[0] ? (
+                    {stickyListing.photos?.[0] ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={currentListing.photos[0]}
+                        src={stickyListing.photos[0]}
                         className="w-16 h-16 rounded-xl object-cover flex-shrink-0 border-2 border-white/30"
                         alt=""
                       />
@@ -919,15 +931,15 @@ function MessagesPageContent() {
                         💬 Bu ilan hakkında konuşuyorsunuz
                       </p>
                       <p className="font-bold text-white text-sm truncate">
-                        {currentListing.city}
-                        {currentListing.district ? ` / ${currentListing.district}` : ""}
+                        {stickyListing.city}
+                        {stickyListing.district ? ` / ${stickyListing.district}` : ""}
                       </p>
                       <p className="text-white font-bold text-sm">
-                        {currentListing.rent?.toLocaleString()} {currentListing.currency}/ay
+                        {stickyListing.rent?.toLocaleString()} {stickyListing.currency}/ay
                       </p>
                       <p className="text-white/70 text-xs">
-                        {currentListing.house_type}
-                        {currentListing.rooms ? ` • ${currentListing.rooms} oda` : ""}
+                        {stickyListing.house_type}
+                        {stickyListing.rooms ? ` • ${stickyListing.rooms} oda` : ""}
                         {" "}• Detay için tıkla →
                       </p>
                     </div>
