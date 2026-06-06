@@ -9,13 +9,29 @@ const supabaseAdmin = createClient(
 
 export async function POST(request: Request) {
   try {
-    const { conversationId, senderId, targetUserId } = await request.json();
+    // currentUserId: when provided alongside conversationId, we resolve the targetUserId
+    const { conversationId, senderId, targetUserId, currentUserId } = await request.json();
 
-    console.log("[messages/fetch] received:", { conversationId, senderId, targetUserId });
+    console.log("[messages/fetch] received:", { conversationId, senderId, targetUserId, currentUserId });
 
     let convId = conversationId;
+    let resolvedTargetUserId: string | null = null;
 
-    // If no direct convId, look up by user pair
+    // Path A: direct conversationId (from ?convId= notification link)
+    if (convId && currentUserId) {
+      const { data: conv } = await supabaseAdmin
+        .from("conversations")
+        .select("user1_id, user2_id")
+        .eq("id", convId)
+        .maybeSingle();
+
+      if (conv) {
+        resolvedTargetUserId =
+          conv.user1_id === currentUserId ? conv.user2_id : conv.user1_id;
+      }
+    }
+
+    // Path B: user-pair lookup (from ?userId= flow)
     if (!convId && senderId && targetUserId) {
       const { data: existing } = await supabaseAdmin
         .from("conversations")
@@ -25,12 +41,11 @@ export async function POST(request: Request) {
         )
         .maybeSingle();
 
-      console.log("[messages/fetch] lookup result:", existing);
+      console.log("[messages/fetch] pair lookup result:", existing);
 
       if (existing) {
         convId = existing.id;
       } else {
-        // No conversation yet — return empty
         return NextResponse.json({ messages: [], conversationId: null });
       }
     }
@@ -45,13 +60,17 @@ export async function POST(request: Request) {
       .eq("conversation_id", convId)
       .order("created_at", { ascending: true });
 
-    console.log("[messages/fetch] messages count:", data?.length, error);
+    console.log("[messages/fetch] messages count:", data?.length, error?.message);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ messages: data || [], conversationId: convId });
+    return NextResponse.json({
+      messages: data || [],
+      conversationId: convId,
+      ...(resolvedTargetUserId ? { targetUserId: resolvedTargetUserId } : {}),
+    });
   } catch (e: any) {
     console.error("[messages/fetch] error:", e);
     return NextResponse.json({ error: e.message }, { status: 500 });

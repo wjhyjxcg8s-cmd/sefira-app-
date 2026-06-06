@@ -233,6 +233,47 @@ function MessagesPageContent() {
       });
   }, [searchParams]);
 
+  // Handle ?convId= query param — opened from notification bell
+  useEffect(() => {
+    const convId = searchParams.get("convId");
+    if (!convId || !currentUserId) return;
+
+    setRealConvId(convId);
+    setSelectedConv(convId);
+    setMessages([]);
+    setMobileView("chat");
+
+    // Fetch messages + resolve the target user from the conversation
+    fetch("/api/messages/fetch", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ conversationId: convId, currentUserId }),
+    })
+      .then((r) => r.json())
+      .then((result) => {
+        console.log("[convId param] fetch result:", result);
+        if (result.messages) setMessages(result.messages);
+        if (result.targetUserId) {
+          setTargetUserId(result.targetUserId);
+          supabase
+            .from("profiles")
+            .select("display_name, avatar_url")
+            .eq("user_id", result.targetUserId)
+            .maybeSingle()
+            .then(({ data }) => {
+              setTargetProfile(data ?? { display_name: null, avatar_url: null });
+            });
+        }
+      });
+
+    // Mark all messages in this conversation as read
+    fetch("/api/messages/mark-read", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ conversationId: convId, userId: currentUserId }),
+    });
+  }, [searchParams, currentUserId]);
+
   // Load peer messages via server API whenever a user conversation is selected
   useEffect(() => {
     if (!selectedConv || SYSTEM_CONVS.has(selectedConv) || !currentUserId || !targetUserId) return;

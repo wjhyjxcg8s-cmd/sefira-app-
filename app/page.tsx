@@ -1028,6 +1028,16 @@ interface NotifItem {
   read: boolean;
 }
 
+interface MsgNotifItem {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  senderName: string;
+  senderAvatar: string | null;
+  content: string;
+  createdAt: string;
+}
+
 // ─── Supabase listing type ─────────────────────────────────────────────────────
 interface SupabaseListing {
   id: string;
@@ -1064,6 +1074,7 @@ export default function Home() {
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifications, setNotifications] = useState<NotifItem[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [msgNotifications, setMsgNotifications] = useState<MsgNotifItem[]>([]);
 
   // ── Scroll detection ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -1329,6 +1340,27 @@ export default function Home() {
         });
       });
   }, []);
+
+  // ── Poll for unread peer messages (every 15s when logged in) ────────────
+  useEffect(() => {
+    if (!user) return;
+
+    async function checkUnread() {
+      const res = await fetch("/api/messages/unread", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user!.id }),
+      });
+      const result = await res.json();
+      if (result.notifications) {
+        setMsgNotifications(result.notifications);
+      }
+    }
+
+    checkUnread();
+    const interval = setInterval(checkUnread, 15000);
+    return () => clearInterval(interval);
+  }, [user]);
 
   // ── Story viewer navigation helpers ──────────────────────────────────────
   const trackView = async (storyId: string) => {
@@ -1608,6 +1640,7 @@ export default function Home() {
                   setCurrencyMenuOpen(false);
                   setProfileMenuOpen(false);
                   if (opening) {
+                    // Mark listing notifications as read
                     setNotifications((prev) => {
                       const updated = prev.map((n) => ({ ...n, read: true }));
                       try { localStorage.setItem("sefira-notifications", JSON.stringify(updated)); } catch { /* ignore */ }
@@ -1615,18 +1648,19 @@ export default function Home() {
                     });
                     setUnreadCount(0);
                     try { localStorage.setItem("sefira-notifications-unread", "0"); } catch { /* ignore */ }
+                    // Message notifications remain until individually clicked
                   }
                 }}
                 className="relative w-9 h-9 flex items-center justify-center rounded-lg border border-stone-200 text-stone-500 hover:text-orange-500 hover:border-orange-300 hover:bg-orange-50 transition-all duration-200"
-                aria-label="Yeni İlanlar"
+                aria-label="Bildirimler"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
                   <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                   <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                 </svg>
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-500 text-white text-[9px] font-black rounded-full flex items-center justify-center leading-none">
-                    {unreadCount > 9 ? "9+" : unreadCount}
+                {(unreadCount + msgNotifications.length) > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center leading-none">
+                    {(unreadCount + msgNotifications.length) > 9 ? "9+" : (unreadCount + msgNotifications.length)}
                   </span>
                 )}
               </button>
@@ -1653,11 +1687,56 @@ export default function Home() {
                     )}
                   </div>
                   <div className="max-h-80 overflow-y-auto">
-                    {notifications.length === 0 ? (
-                      <div className="px-4 py-6 text-center text-sm text-stone-400">
-                        {lang === "tr" ? "Henüz ilan yok" : lang === "fa" ? "آگهی‌ای یافت نشد" : lang === "ar" ? "لا توجد إعلانات بعد" : lang === "de" ? "Noch keine Inserate" : lang === "ru" ? "Нет объявлений" : "No listings yet"}
+                    {/* ── Unread peer messages section ── */}
+                    {msgNotifications.length > 0 && (
+                      <div className="border-b border-stone-100 pb-1">
+                        <p className="text-[10px] font-black text-stone-400 px-4 pt-2.5 pb-1 uppercase tracking-wider">
+                          {lang === "tr" ? "💬 Yeni Mesajlar" : lang === "fa" ? "💬 پیام‌های جدید" : lang === "ar" ? "💬 رسائل جديدة" : lang === "de" ? "💬 Neue Nachrichten" : lang === "ru" ? "💬 Новые сообщения" : "💬 New Messages"}
+                        </p>
+                        {msgNotifications.map((notif) => (
+                          <button
+                            key={notif.id}
+                            onClick={() => {
+                              fetch("/api/messages/mark-read", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ conversationId: notif.conversationId, userId: user!.id }),
+                              });
+                              setMsgNotifications((prev) =>
+                                prev.filter((n) => n.conversationId !== notif.conversationId)
+                              );
+                              setNotifOpen(false);
+                              router.push(`/messages?convId=${notif.conversationId}`);
+                            }}
+                            className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-orange-50 transition-colors text-left"
+                          >
+                            {notif.senderAvatar ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={notif.senderAvatar}
+                                className="w-9 h-9 rounded-full object-cover border-2 border-orange-200 flex-shrink-0"
+                                alt=""
+                              />
+                            ) : (
+                              <div className="w-9 h-9 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 font-bold text-sm flex-shrink-0">
+                                {notif.senderName[0]?.toUpperCase() ?? "?"}
+                              </div>
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-bold text-stone-800 truncate">{notif.senderName}</p>
+                              <p className="text-[11px] text-stone-500 truncate">{notif.content}</p>
+                            </div>
+                            <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0" />
+                          </button>
+                        ))}
                       </div>
-                    ) : (
+                    )}
+                    {/* ── Listing notifications section ── */}
+                    {notifications.length === 0 && msgNotifications.length === 0 ? (
+                      <div className="px-4 py-6 text-center text-sm text-stone-400">
+                        {lang === "tr" ? "Henüz bildirim yok" : lang === "fa" ? "هیچ اعلانی یافت نشد" : lang === "ar" ? "لا توجد إشعارات بعد" : lang === "de" ? "Noch keine Benachrichtigungen" : lang === "ru" ? "Нет уведомлений" : "No notifications yet"}
+                      </div>
+                    ) : notifications.length === 0 ? null : (
                       notifications.map((notif) => (
                         <div
                           key={notif.id}
