@@ -827,6 +827,7 @@ function MessagesPageContent() {
             const avatar = conv.otherUser?.avatar_url ?? null;
             const listing = conv.listing ?? null;
             const isSelected = selectedConv === conv.id;
+            console.log("Conv listing:", conv.id, listing?.photos?.[0]);
             return (
               <button
                 key={conv.id}
