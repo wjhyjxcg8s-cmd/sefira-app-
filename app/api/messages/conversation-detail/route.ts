@@ -8,36 +8,58 @@ const supabaseAdmin = createClient(
 );
 
 export async function POST(request: Request) {
-  try {
-    const { conversationId } = await request.json();
-    console.log("[conversation-detail] conversationId:", conversationId);
+  const { conversationId, currentUserId } = await request.json();
+  console.log("[conversation-detail] conversationId:", conversationId, "currentUserId:", currentUserId);
 
-    if (!conversationId) {
-      return NextResponse.json({ conversation: null, listing: null });
-    }
+  const { data: conv } = await supabaseAdmin
+    .from("conversations")
+    .select("*")
+    .eq("id", conversationId)
+    .maybeSingle();
 
-    const { data: conv } = await supabaseAdmin
-      .from("conversations")
-      .select("*")
-      .eq("id", conversationId)
+  console.log("[conversation-detail] conv:", conv);
+
+  if (!conv) return NextResponse.json({ conversation: null, listing: null });
+
+  let listing = null;
+
+  // Try the conversation's listing_id first
+  if (conv.listing_id) {
+    const { data: l } = await supabaseAdmin
+      .from("listings")
+      .select("id, city, district, rent, currency, photos, house_type, rooms")
+      .eq("id", conv.listing_id)
+      .maybeSingle();
+    listing = l;
+    console.log("[conversation-detail] listing from conv.listing_id:", listing);
+  }
+
+  // FALLBACK: if no listing, find the OTHER user's listing
+  if (!listing) {
+    const otherUserId = conv.user1_id === currentUserId ? conv.user2_id : conv.user1_id;
+    console.log("[conversation-detail] no listing_id, looking up otherUserId:", otherUserId);
+
+    const { data: otherListing } = await supabaseAdmin
+      .from("listings")
+      .select("id, city, district, rent, currency, photos, house_type, rooms")
+      .eq("user_id", otherUserId)
+      .order("created_at", { ascending: false })
+      .limit(1)
       .maybeSingle();
 
-    console.log("[conversation-detail] conv:", conv);
+    listing = otherListing;
+    console.log("[conversation-detail] fallback listing:", listing);
 
-    let listing = null;
-    if (conv?.listing_id) {
-      const { data: l } = await supabaseAdmin
-        .from("listings")
-        .select("id, city, district, rent, currency, photos, house_type")
-        .eq("id", conv.listing_id)
-        .maybeSingle();
-      listing = l;
-      console.log("[conversation-detail] listing:", listing);
+    // Save to conversation so next call hits the fast path
+    if (otherListing) {
+      await supabaseAdmin
+        .from("conversations")
+        .update({ listing_id: otherListing.id })
+        .eq("id", conversationId);
+      console.log("[conversation-detail] saved listing_id to conversation");
     }
-
-    return NextResponse.json({ conversation: conv ?? null, listing });
-  } catch (e: any) {
-    console.error("[conversation-detail] error:", e);
-    return NextResponse.json({ conversation: null, listing: null });
   }
+
+  console.log("[conversation-detail] final listing:", listing);
+  return NextResponse.json({ conversation: conv, listing });
 }

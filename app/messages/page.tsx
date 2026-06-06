@@ -294,42 +294,28 @@ function MessagesPageContent() {
 
   // Fetch listing context reliably via conversation-detail API
   useEffect(() => {
-    if (!selectedConv || SYSTEM_CONVS.has(selectedConv)) {
+    if (!selectedConv || SYSTEM_CONVS.has(selectedConv) || !currentUserId) {
       setConvListing(null);
       return;
     }
 
-    console.log("[convListing] fetching for selectedConv:", selectedConv);
+    console.log("[convListing] fetching for selectedConv:", selectedConv, "currentUserId:", currentUserId);
 
     fetch("/api/messages/conversation-detail", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ conversationId: selectedConv }),
+      body: JSON.stringify({ conversationId: selectedConv, currentUserId }),
     })
       .then((r) => r.json())
       .then((data) => {
         console.log("[convListing] conversation-detail response:", data);
-        if (data.listing) {
-          setConvListing(data.listing);
-        } else if (pendingListingId) {
-          console.log("[convListing] no listing from conv, using pendingListingId:", pendingListingId);
-          fetch("/api/messages/listing-context", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ listingId: pendingListingId }),
-          })
-            .then((r) => r.json())
-            .then((d) => {
-              console.log("[convListing] pending listing result:", d);
-              setConvListing(d.listing ?? null);
-            })
-            .catch(() => setConvListing(null));
-        } else {
-          setConvListing(null);
-        }
+        setConvListing(data.listing ?? null);
       })
-      .catch(() => setConvListing(null));
-  }, [selectedConv, pendingListingId]);
+      .catch((e) => {
+        console.log("[convListing] error:", e);
+        setConvListing(null);
+      });
+  }, [selectedConv, currentUserId]);
 
   // Fetch listing context when targetListingId changes
   useEffect(() => {
@@ -934,34 +920,37 @@ function MessagesPageContent() {
               {convListing && (
                 <div
                   onClick={() => router.push(`/listings/${convListing.id}`)}
-                  className="mx-3 mt-3 flex items-center gap-3 bg-white border-2 border-orange-100 rounded-2xl p-3 cursor-pointer shadow-sm active:scale-95 transition-transform flex-shrink-0"
+                  className="mx-3 mt-3 mb-1 cursor-pointer active:scale-[0.98] transition-transform flex-shrink-0"
                 >
-                  {convListing.photos?.[0] ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={convListing.photos[0]}
-                      className="w-16 h-16 rounded-xl object-cover flex-shrink-0 border border-orange-100"
-                      alt=""
-                    />
-                  ) : (
-                    <div className="w-16 h-16 rounded-xl bg-orange-50 flex items-center justify-center text-3xl flex-shrink-0">
-                      🏠
+                  <div className="flex items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-3 shadow-lg">
+                    {convListing.photos?.[0] ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={convListing.photos[0]}
+                        className="w-16 h-16 rounded-xl object-cover flex-shrink-0 border-2 border-white/30"
+                        alt=""
+                      />
+                    ) : (
+                      <div className="w-16 h-16 rounded-xl bg-white/20 flex items-center justify-center text-3xl flex-shrink-0">
+                        🏠
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white/80 text-[10px] font-bold uppercase tracking-wide">
+                        💬 Bu ilan hakkında konuşuyorsunuz
+                      </p>
+                      <p className="font-bold text-white text-sm mt-0.5 truncate">
+                        {convListing.city}
+                        {convListing.district ? ` / ${convListing.district}` : ""}
+                      </p>
+                      <p className="text-white font-bold text-sm">
+                        {convListing.rent?.toLocaleString()} {convListing.currency}/ay
+                        <span className="text-white/70 font-normal text-xs ml-2">
+                          {convListing.house_type}{convListing.rooms ? ` • ${convListing.rooms} oda` : ""}
+                        </span>
+                      </p>
                     </div>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5 mb-1">
-                      <span className="text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-bold">
-                        🏠 İlan Hakkında
-                      </span>
-                    </div>
-                    <p className="font-bold text-gray-900 text-sm">
-                      {convListing.city}
-                      {convListing.district ? ` / ${convListing.district}` : ""}
-                    </p>
-                    <p className="text-orange-500 font-bold text-sm">
-                      {convListing.rent?.toLocaleString()} {convListing.currency}/ay
-                    </p>
-                    <p className="text-gray-400 text-xs">Detay için tıklayın →</p>
+                    <span className="text-white/80 text-xl flex-shrink-0">›</span>
                   </div>
                 </div>
               )}
