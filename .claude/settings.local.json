@@ -30,10 +30,12 @@
       "Bash(curl -s \"https://raw.githubusercontent.com/russ666/all-countries-and-cities-json/master/countries.json\")",
       "Bash(curl -o \"e:/sefıra-web/sefira-app/public/world-cities.json\" \"https://raw.githubusercontent.com/russ666/all-countries-and-cities-json/master/countries.json\")",
       "Bash(Select-Object Name, Mode)",
-      "Bash(git revert *)"
+      "Bash(git revert *)",
+      "Bash(mkdir -p \"e:/sefıra-web/sefira-app/app/api/messages/send\" \"e:/sefıra-web/sefira-app/app/api/messages/fetch\")"
     ],
     "additionalDirectories": [
-      "e:\\sefıra-web\\sefira-app\\app\\api\\admin\\channels"
+      "e:\\sefıra-web\\sefira-app\\app\\api\\admin\\channels",
+      "e:\\sefıra-web\\sefira-app\\app\\api\\messages"
     ]
   }
 }

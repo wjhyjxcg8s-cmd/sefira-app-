@@ -160,6 +160,8 @@ function MessagesPageContent() {
   // Peer messaging state
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [targetUserId, setTargetUserId] = useState<string | null>(null);
+  const [targetListingId, setTargetListingId] = useState<string | null>(null);
+  const [realConvId, setRealConvId] = useState<string | null>(null);
   const [targetProfile, setTargetProfile] = useState<{ display_name: string | null; avatar_url: string | null } | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const [messageText, setMessageText] = useState("");
@@ -211,9 +213,13 @@ function MessagesPageContent() {
   // Handle ?userId= query param — auto-open conversation
   useEffect(() => {
     const userId = searchParams.get("userId");
+    const listingId = searchParams.get("listingId");
     if (!userId) return;
 
     setTargetUserId(userId);
+    setTargetListingId(listingId);
+    setRealConvId(null);
+    setMessages([]);
     setSelectedConv(userId);
     setMobileView("chat");
 
@@ -227,23 +233,25 @@ function MessagesPageContent() {
       });
   }, [searchParams]);
 
-  // Load peer messages whenever a user conversation is selected
+  // Load peer messages via server API whenever a user conversation is selected
   useEffect(() => {
-    if (!selectedConv || SYSTEM_CONVS.has(selectedConv)) return;
+    if (!selectedConv || SYSTEM_CONVS.has(selectedConv) || !currentUserId || !targetUserId) return;
 
     async function fetchMessages() {
-      const { data, error } = await supabase
-        .from("user_messages")
-        .select("*")
-        .eq("conversation_id", selectedConv)
-        .order("created_at", { ascending: true });
-
-      console.log("Messages:", data, "Error:", error);
-      if (data) setMessages(data);
+      console.log("[fetchMessages] targetUserId:", targetUserId, "currentUserId:", currentUserId);
+      const res = await fetch("/api/messages/fetch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ senderId: currentUserId, targetUserId }),
+      });
+      const result = await res.json();
+      console.log("[fetchMessages] result:", result);
+      if (result.conversationId) setRealConvId(result.conversationId);
+      if (result.messages) setMessages(result.messages);
     }
 
     fetchMessages();
-  }, [selectedConv]);
+  }, [selectedConv, currentUserId, targetUserId]);
 
   // Scroll to bottom after new messages
   useEffect(() => {
@@ -295,44 +303,49 @@ function MessagesPageContent() {
   };
 
   const sendMessage = async () => {
-    if (!messageText.trim() || !selectedConv || !currentUserId) return;
+    if (!messageText.trim() || !currentUserId || !targetUserId) return;
 
     const content = messageText.trim();
     setMessageText("");
 
     // Optimistic update — message appears instantly
     const tempMsg = {
-      id: Date.now().toString(),
-      conversation_id: selectedConv,
+      id: "temp-" + Date.now(),
       sender_id: currentUserId,
       content,
-      is_read: false,
       created_at: new Date().toISOString(),
     };
     setMessages((prev) => [...prev, tempMsg]);
 
-    const { data, error } = await supabase
-      .from("user_messages")
-      .insert({ conversation_id: selectedConv, sender_id: currentUserId, content })
-      .select()
-      .single();
+    const res = await fetch("/api/messages/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        conversationId: realConvId,
+        senderId: currentUserId,
+        content,
+        targetUserId,
+        listingId: targetListingId,
+      }),
+    });
 
-    console.log("Send result:", data, error);
+    const result = await res.json();
+    console.log("[sendMessage] result:", result);
 
-    if (error) {
-      // Roll back optimistic message and restore text
+    if (result.error) {
       setMessages((prev) => prev.filter((m) => m.id !== tempMsg.id));
       setMessageText(content);
+      alert("Mesaj gönderilemedi: " + result.error);
       return;
     }
 
-    // Swap temp message for the real one from the server
-    setMessages((prev) => prev.map((m) => (m.id === tempMsg.id ? data : m)));
+    // Update realConvId if a new conversation was created
+    if (result.conversationId && result.conversationId !== realConvId) {
+      setRealConvId(result.conversationId);
+    }
 
-    await supabase
-      .from("conversations")
-      .update({ updated_at: new Date().toISOString() })
-      .eq("id", selectedConv);
+    // Swap temp message for the real one from the server
+    setMessages((prev) => prev.map((m) => (m.id === tempMsg.id ? result.message : m)));
   };
 
   const formatDate = (d: string) =>
