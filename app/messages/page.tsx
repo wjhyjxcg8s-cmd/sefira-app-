@@ -582,9 +582,18 @@ function MessagesPageContent() {
     }
   }, [enrichedConvs]);
 
-  const displayListing = selectedConv
-    ? (listingMap[selectedConv] || currentListing)
-    : null;
+  const [displayListing, setDisplayListing] = useState<any>(null);
+
+  useEffect(() => {
+    if (!selectedConv) {
+      setDisplayListing(null);
+      return;
+    }
+    const listing = listingMap[selectedConv] || currentListing || null;
+    if (listing) {
+      setDisplayListing(listing);
+    }
+  }, [selectedConv, listingMap, currentListing]);
 
   // Deduplicate: for conversations without listing_id, skip if a better one for same user exists
   const deduplicatedConvs = enrichedConvs.reduce((acc: any[], conv: any) => {
