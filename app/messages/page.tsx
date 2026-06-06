@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, Suspense } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 
 const translations = {
@@ -131,25 +131,63 @@ interface AdminMessage {
   sender: "admin" | "user" | null;
 }
 
-interface PeerMessage {
+interface ConversationItem {
   id: string;
-  from_user_id: string;
-  to_user_id: string;
-  content: string;
-  created_at: string;
+  otherUserId: string;
+  otherUserProfile: { display_name: string | null; avatar_url: string | null } | null;
+  listingId: string | null;
+  listingPreview: {
+    id: string;
+    city: string | null;
+    district: string | null;
+    rent: number | null;
+    currency: string | null;
+    photos: string[] | null;
+  } | null;
+  lastMessage: { content: string; created_at: string; sender_id: string } | null;
+  unreadCount: number;
+  updatedAt: string;
+}
+
+interface ListingContextData {
+  id: string;
+  city: string | null;
+  district: string | null;
+  rent: number | null;
+  currency: string | null;
+  photos: string[] | null;
+  house_type: string | null;
 }
 
 const SYSTEM_CONVS = new Set(["sefira-notifications", "sefira-destek"]);
 
+function formatTime(dateStr: string) {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffDays = Math.floor((now.getTime() - date.getTime()) / 86400000);
+  if (diffDays === 0)
+    return date.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
+  if (diffDays === 1)
+    return "Dün " + date.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
+  return date.toLocaleDateString("tr-TR", { day: "numeric", month: "short" });
+}
+
+const SendIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+  </svg>
+);
+
 function MessagesPageContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const [lang, setLang] = useState<Lang>("tr");
   const [mounted, setMounted] = useState(false);
   const [selectedConv, setSelectedConv] = useState<string | null>(null);
   const [mobileView, setMobileView] = useState<"list" | "chat">("list");
 
-  // System channel state (unchanged)
+  // System channel state
   const [globalMessages, setGlobalMessages] = useState<AdminMessage[]>([]);
   const [chatMessages, setChatMessages] = useState<AdminMessage[]>([]);
   const [unreadSupportCount, setUnreadSupportCount] = useState(0);
@@ -162,11 +200,18 @@ function MessagesPageContent() {
   const [targetUserId, setTargetUserId] = useState<string | null>(null);
   const [targetListingId, setTargetListingId] = useState<string | null>(null);
   const [realConvId, setRealConvId] = useState<string | null>(null);
-  const [targetProfile, setTargetProfile] = useState<{ display_name: string | null; avatar_url: string | null } | null>(null);
+  const [targetProfile, setTargetProfile] = useState<{
+    display_name: string | null;
+    avatar_url: string | null;
+  } | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const [messageText, setMessageText] = useState("");
   const [sendingMessage, setSendingMessage] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Conversations list + listing context
+  const [conversations, setConversations] = useState<ConversationItem[]>([]);
+  const [listingContext, setListingContext] = useState<ListingContextData | null>(null);
 
   useEffect(() => {
     const savedLang = localStorage.getItem("sefira-lang") as Lang | null;
@@ -210,6 +255,35 @@ function MessagesPageContent() {
     });
   }, []);
 
+  // Load conversations list when currentUserId is ready
+  useEffect(() => {
+    if (!currentUserId) return;
+    fetch("/api/messages/conversations", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: currentUserId }),
+    })
+      .then((r) => r.json())
+      .then((result) => {
+        if (result.conversations) setConversations(result.conversations);
+      })
+      .catch(() => {});
+  }, [currentUserId]);
+
+  // Fetch listing context when targetListingId changes
+  useEffect(() => {
+    if (!targetListingId) {
+      setListingContext(null);
+      return;
+    }
+    supabase
+      .from("listings")
+      .select("id, city, district, rent, currency, photos, house_type")
+      .eq("id", targetListingId)
+      .maybeSingle()
+      .then(({ data }) => setListingContext(data as ListingContextData | null));
+  }, [targetListingId]);
+
   // Handle ?userId= query param — auto-open conversation
   useEffect(() => {
     const userId = searchParams.get("userId");
@@ -243,7 +317,6 @@ function MessagesPageContent() {
     setMessages([]);
     setMobileView("chat");
 
-    // Fetch messages + resolve the target user from the conversation
     fetch("/api/messages/fetch", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -251,8 +324,8 @@ function MessagesPageContent() {
     })
       .then((r) => r.json())
       .then((result) => {
-        console.log("[convId param] fetch result:", result);
         if (result.messages) setMessages(result.messages);
+        if (result.listingId) setTargetListingId(result.listingId);
         if (result.targetUserId) {
           setTargetUserId(result.targetUserId);
           supabase
@@ -266,7 +339,6 @@ function MessagesPageContent() {
         }
       });
 
-    // Mark all messages in this conversation as read
     fetch("/api/messages/mark-read", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -276,22 +348,24 @@ function MessagesPageContent() {
 
   // Load peer messages via server API whenever a user conversation is selected
   useEffect(() => {
-    if (!selectedConv || SYSTEM_CONVS.has(selectedConv) || !currentUserId || !targetUserId) return;
+    if (
+      !selectedConv ||
+      SYSTEM_CONVS.has(selectedConv) ||
+      !currentUserId ||
+      !targetUserId
+    )
+      return;
 
-    async function fetchMessages() {
-      console.log("[fetchMessages] targetUserId:", targetUserId, "currentUserId:", currentUserId);
-      const res = await fetch("/api/messages/fetch", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ senderId: currentUserId, targetUserId }),
+    fetch("/api/messages/fetch", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ senderId: currentUserId, targetUserId }),
+    })
+      .then((r) => r.json())
+      .then((result) => {
+        if (result.conversationId) setRealConvId(result.conversationId);
+        if (result.messages) setMessages(result.messages);
       });
-      const result = await res.json();
-      console.log("[fetchMessages] result:", result);
-      if (result.conversationId) setRealConvId(result.conversationId);
-      if (result.messages) setMessages(result.messages);
-    }
-
-    fetchMessages();
   }, [selectedConv, currentUserId, targetUserId]);
 
   // Scroll to bottom after new messages
@@ -316,11 +390,48 @@ function MessagesPageContent() {
     setSelectedConv("sefira-notifications");
     setMobileView("chat");
     if (globalMessages.some((m) => !m.is_read)) {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session?.user?.id) {
-        await supabase.from("admin_messages").update({ is_read: true }).eq("is_global", true);
+        await supabase
+          .from("admin_messages")
+          .update({ is_read: true })
+          .eq("is_global", true);
         setGlobalMessages((prev) => prev.map((m) => ({ ...m, is_read: true })));
       }
+    }
+  };
+
+  const openConversation = (conv: ConversationItem) => {
+    setTargetUserId(conv.otherUserId);
+    setTargetProfile(conv.otherUserProfile);
+    setTargetListingId(conv.listingId);
+    setRealConvId(conv.id);
+    setSelectedConv(conv.id);
+    setMessages([]);
+    setMobileView("chat");
+
+    fetch("/api/messages/fetch", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ conversationId: conv.id, currentUserId }),
+    })
+      .then((r) => r.json())
+      .then((result) => {
+        if (result.messages) setMessages(result.messages);
+      });
+
+    if (conv.unreadCount > 0) {
+      fetch("/api/messages/mark-read", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ conversationId: conv.id, userId: currentUserId }),
+      }).then(() => {
+        setConversations((prev) =>
+          prev.map((c) => (c.id === conv.id ? { ...c, unreadCount: 0 } : c))
+        );
+      });
     }
   };
 
@@ -330,12 +441,26 @@ function MessagesPageContent() {
     const text = chatInput.trim();
     setChatInput("");
 
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.user?.id) { setSendingChat(false); return; }
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session?.user?.id) {
+      setSendingChat(false);
+      return;
+    }
 
     const { data, error } = await supabase
       .from("admin_messages")
-      .insert([{ user_id: session.user.id, title: "reply", message: text, is_global: false, sender: "user", is_read: false }])
+      .insert([
+        {
+          user_id: session.user.id,
+          title: "reply",
+          message: text,
+          is_global: false,
+          sender: "user",
+          is_read: false,
+        },
+      ])
       .select()
       .single();
 
@@ -349,7 +474,6 @@ function MessagesPageContent() {
     const content = messageText.trim();
     setMessageText("");
 
-    // Optimistic update — message appears instantly
     const tempMsg = {
       id: "temp-" + Date.now(),
       sender_id: currentUserId,
@@ -371,7 +495,6 @@ function MessagesPageContent() {
     });
 
     const result = await res.json();
-    console.log("[sendMessage] result:", result);
 
     if (result.error) {
       setMessages((prev) => prev.filter((m) => m.id !== tempMsg.id));
@@ -380,31 +503,50 @@ function MessagesPageContent() {
       return;
     }
 
-    // Update realConvId if a new conversation was created
     if (result.conversationId && result.conversationId !== realConvId) {
       setRealConvId(result.conversationId);
     }
 
-    // Swap temp message for the real one from the server
-    setMessages((prev) => prev.map((m) => (m.id === tempMsg.id ? result.message : m)));
-  };
-
-  const formatDate = (d: string) =>
-    new Date(d).toLocaleDateString(
-      lang === "tr" ? "tr-TR" : lang === "fa" || lang === "ar" ? "ar" : "en-US",
-      { month: "short", day: "numeric" }
+    setMessages((prev) =>
+      prev.map((m) => (m.id === tempMsg.id ? result.message : m))
     );
 
-  const globalSorted = [...globalMessages].reverse();
+    // Update conversation list with latest message
+    if (result.conversationId) {
+      setConversations((prev) => {
+        const updated = prev.map((c) =>
+          c.id === result.conversationId
+            ? {
+                ...c,
+                lastMessage: {
+                  content,
+                  created_at: new Date().toISOString(),
+                  sender_id: currentUserId!,
+                },
+                updatedAt: new Date().toISOString(),
+              }
+            : c
+        );
+        return updated.sort(
+          (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        );
+      });
+    }
+  };
 
-  // Derived values for peer chat
+  const globalSorted = [...globalMessages].reverse();
   const isUserConv = selectedConv !== null && !SYSTEM_CONVS.has(selectedConv);
   const activePeerName = targetProfile?.display_name ?? "—";
   const activePeerAvatar = targetProfile?.avatar_url ?? null;
 
+  // Is the URL-param target user already present in the loaded conversations list?
+  const targetInList = targetUserId
+    ? conversations.some((c) => c.otherUserId === targetUserId)
+    : false;
+
   return (
     <div className="flex flex-col h-screen bg-[#fefaf5]" dir={isFa ? "rtl" : "ltr"}>
-      {/* Header */}
+      {/* Top header bar */}
       <header className="h-14 flex items-center px-4 border-b border-stone-200 bg-white shadow-sm flex-shrink-0 gap-3">
         <Link
           href="/"
@@ -418,86 +560,88 @@ function MessagesPageContent() {
       {/* Back to home */}
       <div className="px-4 py-2.5 border-b border-stone-100 bg-white flex-shrink-0">
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
-          <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          <Link
+            href="/"
+            className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
             </svg>
-            <span>Ana Sayfa</span>
+            <span>{t.home}</span>
           </Link>
         </motion.div>
       </div>
 
       {/* Main layout */}
       <div className="flex flex-1 overflow-hidden">
-
-        {/* ── Left panel ───────────────────────────────────────────────── */}
-        <div className={`
-          ${mobileView === "chat" ? "hidden" : "flex"} md:flex
-          flex-col w-full md:w-[30%] border-r border-stone-200 bg-white overflow-y-auto flex-shrink-0
-        `}>
-          <div className="px-5 py-3 border-b border-stone-100">
-            <h2 className="font-bold text-stone-500 text-xs uppercase tracking-wider">{t.messages}</h2>
+        {/* ── Left panel ──────────────────────────────────────────────── */}
+        <div
+          className={`
+            ${mobileView === "chat" ? "hidden" : "flex"} md:flex
+            flex-col w-full md:w-[30%] border-r border-gray-100 bg-white overflow-y-auto flex-shrink-0
+          `}
+        >
+          <div className="px-5 py-3 border-b border-gray-100">
+            <h2 className="font-bold text-gray-500 text-xs uppercase tracking-wider">
+              {t.messages}
+            </h2>
           </div>
-
-          {/* Target user (from ?userId=) — shown at top when present */}
-          {targetUserId && (
-            <button
-              onClick={() => { setSelectedConv(targetUserId); setMobileView("chat"); }}
-              className={`w-full flex items-center gap-3 px-4 py-3.5 transition-colors text-left border-b border-stone-100 ${
-                selectedConv === targetUserId ? "bg-orange-50" : "hover:bg-stone-50"
-              }`}
-            >
-              <div className="relative w-12 h-12 flex-shrink-0">
-                {activePeerAvatar ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={activePeerAvatar} alt="" className="w-12 h-12 rounded-full object-cover" />
-                ) : (
-                  <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 font-bold text-lg">
-                    {activePeerName[0]?.toUpperCase() ?? "?"}
-                  </div>
-                )}
-                <div className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-orange-500 border-2 border-white" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2 mb-0.5">
-                  <span className="text-sm font-bold text-stone-900 truncate">{activePeerName}</span>
-                  <span className="text-xs text-orange-500 font-semibold flex-shrink-0">{t.newMessage}</span>
-                </div>
-                <p className="text-xs text-stone-400 truncate">
-                  {messages.length > 0
-                    ? messages[messages.length - 1].content
-                    : t.noMessagesYet}
-                </p>
-              </div>
-            </button>
-          )}
 
           {/* Sefira Destek */}
           <button
-            onClick={() => { window.location.href = "/support-chat"; }}
-            className="w-full flex items-center gap-3 px-4 py-3.5 transition-colors text-left border-b border-stone-100 hover:bg-stone-50"
+            onClick={() => {
+              window.location.href = "/support-chat";
+            }}
+            className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-orange-50 transition-colors border-b border-gray-50 active:bg-orange-100"
           >
-            <div className="relative w-12 h-12 flex-shrink-0">
-              <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-lg shadow-sm">S</div>
+            <div className="relative flex-shrink-0">
+              <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-lg shadow-sm">
+                S
+              </div>
               {unreadSupportCount > 0 && (
-                <div className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-red-500 border-2 border-white" />
+                <div className="absolute bottom-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-white" />
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between gap-2 mb-0.5">
-                <span className={`text-sm truncate ${unreadSupportCount > 0 ? "font-bold text-stone-900" : "font-semibold text-stone-700"}`}>
+              <div className="flex justify-between items-center">
+                <p
+                  className={`text-sm ${
+                    unreadSupportCount > 0
+                      ? "font-extrabold text-gray-900"
+                      : "font-bold text-gray-900"
+                  }`}
+                >
                   {t.supportChannelName}
-                </span>
+                </p>
                 {chatMessages.length > 0 && (
-                  <span className="text-xs text-stone-400 flex-shrink-0">{formatDate(chatMessages[chatMessages.length - 1].created_at)}</span>
+                  <p className="text-[10px] text-gray-400">
+                    {formatTime(chatMessages[chatMessages.length - 1].created_at)}
+                  </p>
                 )}
               </div>
-              <div className="flex items-center gap-1.5">
-                <p className={`text-xs truncate flex-1 ${unreadSupportCount > 0 ? "text-stone-700 font-medium" : "text-stone-400"}`}>
+              <div className="flex items-center justify-between mt-0.5">
+                <p
+                  className={`text-xs truncate flex-1 ${
+                    unreadSupportCount > 0
+                      ? "text-gray-700 font-medium"
+                      : "text-gray-500"
+                  }`}
+                >
                   {chatMessages[chatMessages.length - 1]?.message || t.supportWelcome}
                 </p>
                 {unreadSupportCount > 0 && (
-                  <span className="flex-shrink-0 min-w-[18px] h-[18px] rounded-full bg-orange-500 text-white text-[10px] font-bold flex items-center justify-center px-1">
+                  <span className="w-5 h-5 bg-orange-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold flex-shrink-0 ml-1">
                     {unreadSupportCount > 9 ? "9+" : unreadSupportCount}
                   </span>
                 )}
@@ -508,92 +652,289 @@ function MessagesPageContent() {
           {/* Sefira Bildirimleri */}
           <button
             onClick={openNotificationsChannel}
-            className={`w-full flex items-center gap-3 px-4 py-3.5 transition-colors text-left ${
-              selectedConv === "sefira-notifications" ? "bg-orange-50" : "hover:bg-stone-50"
+            className={`w-full flex items-center gap-3 px-4 py-3.5 hover:bg-orange-50 transition-colors border-b border-gray-50 active:bg-orange-100 ${
+              selectedConv === "sefira-notifications" ? "bg-orange-50" : ""
             }`}
           >
-            <div className="relative w-12 h-12 flex-shrink-0">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white font-black text-lg shadow-sm">S</div>
+            <div className="relative flex-shrink-0">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white font-black text-lg shadow-sm">
+                S
+              </div>
               {hasUnreadGlobal && (
-                <div className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-orange-500 border-2 border-white" />
+                <div className="absolute bottom-0 right-0 w-3 h-3 bg-orange-500 rounded-full border-2 border-white" />
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between gap-2 mb-0.5">
-                <span className={`text-sm truncate ${hasUnreadGlobal ? "font-bold text-stone-900" : "font-semibold text-stone-700"}`}>
+              <div className="flex justify-between items-center">
+                <p
+                  className={`text-sm ${
+                    hasUnreadGlobal
+                      ? "font-extrabold text-gray-900"
+                      : "font-bold text-gray-900"
+                  }`}
+                >
                   {t.channelName}
-                </span>
-                <span className="text-xs text-stone-400 flex-shrink-0">
-                  {lastGlobalMsg ? formatDate(lastGlobalMsg.created_at) : "Sefira"}
-                </span>
+                </p>
+                {lastGlobalMsg && (
+                  <p className="text-[10px] text-gray-400">
+                    {formatTime(lastGlobalMsg.created_at)}
+                  </p>
+                )}
               </div>
-              <div className="flex items-center gap-1.5">
-                <p className={`text-xs truncate flex-1 ${hasUnreadGlobal ? "text-stone-700 font-medium" : "text-stone-400"}`}>
+              <div className="flex items-center justify-between mt-0.5">
+                <p
+                  className={`text-xs truncate flex-1 ${
+                    hasUnreadGlobal ? "text-gray-700 font-medium" : "text-gray-500"
+                  }`}
+                >
                   {lastGlobalMsg ? lastGlobalMsg.message : t.welcomePreview}
                 </p>
-                {hasUnreadGlobal && <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0" />}
+                {hasUnreadGlobal && (
+                  <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0 ml-1" />
+                )}
               </div>
             </div>
           </button>
+
+          {/* URL-param target user — shown only if not already in conversations list */}
+          {targetUserId && !targetInList && (
+            <button
+              onClick={() => {
+                setSelectedConv(targetUserId);
+                setMobileView("chat");
+              }}
+              className={`w-full flex items-center gap-3 px-4 py-3.5 hover:bg-orange-50 transition-colors border-b border-gray-50 active:bg-orange-100 ${
+                selectedConv === targetUserId ? "bg-orange-50" : ""
+              }`}
+            >
+              <div className="relative flex-shrink-0">
+                {activePeerAvatar ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={activePeerAvatar}
+                    alt=""
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 font-bold text-lg">
+                    {activePeerName[0]?.toUpperCase() ?? "?"}
+                  </div>
+                )}
+                <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex justify-between items-center">
+                  <p className="font-bold text-gray-900 text-sm truncate">{activePeerName}</p>
+                  <p className="text-[10px] text-orange-400 font-semibold flex-shrink-0 ml-1">
+                    {t.newMessage}
+                  </p>
+                </div>
+                <p className="text-xs text-gray-500 truncate mt-0.5">
+                  {messages.length > 0
+                    ? messages[messages.length - 1].content
+                    : t.noMessagesYet}
+                </p>
+                {targetListingId && listingContext && (
+                  <p className="text-[10px] text-orange-400 mt-0.5">
+                    🏠 {listingContext.city}
+                  </p>
+                )}
+              </div>
+            </button>
+          )}
+
+          {/* Loaded peer conversations */}
+          {conversations.map((conv) => {
+            const name = conv.otherUserProfile?.display_name ?? "Kullanıcı";
+            const avatar = conv.otherUserProfile?.avatar_url ?? null;
+            const isSelected =
+              selectedConv === conv.id ||
+              (selectedConv === conv.otherUserId);
+            return (
+              <button
+                key={conv.id}
+                onClick={() => openConversation(conv)}
+                className={`w-full flex items-center gap-3 px-4 py-3.5 hover:bg-orange-50 transition-colors border-b border-gray-50 active:bg-orange-100 ${
+                  isSelected ? "bg-orange-50" : ""
+                }`}
+              >
+                <div className="relative flex-shrink-0">
+                  {avatar ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={avatar}
+                      alt=""
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 font-bold text-lg">
+                      {name[0]?.toUpperCase() ?? "?"}
+                    </div>
+                  )}
+                  <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-center">
+                    <p
+                      className={`text-sm truncate ${
+                        conv.unreadCount > 0
+                          ? "font-extrabold text-gray-900"
+                          : "font-bold text-gray-900"
+                      }`}
+                    >
+                      {name}
+                    </p>
+                    {conv.lastMessage && (
+                      <p className="text-[10px] text-gray-400 flex-shrink-0 ml-1">
+                        {formatTime(conv.lastMessage.created_at)}
+                      </p>
+                    )}
+                  </div>
+                  <p
+                    className={`text-xs truncate mt-0.5 ${
+                      conv.unreadCount > 0
+                        ? "text-gray-700 font-medium"
+                        : "text-gray-500"
+                    }`}
+                  >
+                    {conv.lastMessage?.content ?? t.noMessagesYet}
+                  </p>
+                  {conv.listingId && conv.listingPreview && (
+                    <p className="text-[10px] text-orange-400 mt-0.5">
+                      🏠 {conv.listingPreview.city}
+                    </p>
+                  )}
+                </div>
+                {conv.unreadCount > 0 && (
+                  <span className="w-5 h-5 bg-orange-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold flex-shrink-0">
+                    {conv.unreadCount > 9 ? "9+" : conv.unreadCount}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
 
-        {/* ── Right panel ──────────────────────────────────────────────── */}
+        {/* ── Right panel ─────────────────────────────────────────────── */}
         <div
-          className={`${mobileView === "list" ? "hidden" : "flex"} md:flex flex-col flex-1 overflow-hidden`}
-          style={{ background: "#f0ebe4" }}
+          className={`${
+            mobileView === "list" ? "hidden" : "flex"
+          } md:flex flex-col flex-1 overflow-hidden`}
+          style={{ background: "linear-gradient(135deg, #fafafa 0%, #fff7ed 100%)" }}
         >
           {isUserConv ? (
             /* ── Peer chat ── */
             <>
-              <div className="flex items-center gap-3 px-4 py-3 bg-white border-b border-stone-200 shadow-sm flex-shrink-0">
+              {/* Chat header */}
+              <div className="flex items-center gap-3 px-4 py-3 bg-white border-b border-gray-100 shadow-sm flex-shrink-0">
                 <button
                   onClick={() => setMobileView("list")}
-                  className="md:hidden p-2 -ml-2 text-stone-500 hover:text-stone-800 rounded-lg hover:bg-stone-100 transition-colors"
+                  className="md:hidden w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 text-lg font-bold"
                 >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-5 h-5">
-                    <polyline points="15 18 9 12 15 6" />
-                  </svg>
+                  ←
                 </button>
                 {activePeerAvatar ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={activePeerAvatar} alt="" className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                  <img
+                    src={activePeerAvatar}
+                    alt=""
+                    className="w-10 h-10 rounded-full object-cover border-2 border-orange-200"
+                  />
                 ) : (
-                  <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 font-bold flex-shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center font-bold text-orange-500">
                     {activePeerName[0]?.toUpperCase() ?? "?"}
                   </div>
                 )}
                 <div>
-                  <p className="font-bold text-stone-900 text-sm leading-tight">{activePeerName}</p>
+                  <p className="font-bold text-gray-900 text-sm">
+                    {activePeerName || "Kullanıcı"}
+                  </p>
+                  <p className="text-xs text-green-500">● Çevrimiçi</p>
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-3">
+              {/* Listing context card */}
+              {listingContext && (
+                <div
+                  className="mx-4 my-3 flex items-center gap-3 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-2xl p-3 cursor-pointer hover:shadow-md transition-shadow flex-shrink-0"
+                  onClick={() => router.push(`/listings/${listingContext.id}`)}
+                >
+                  {listingContext.photos?.[0] ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={listingContext.photos[0]}
+                      alt=""
+                      className="w-14 h-14 rounded-xl object-cover flex-shrink-0"
+                    />
+                  ) : (
+                    <div className="w-14 h-14 rounded-xl bg-orange-100 flex items-center justify-center text-2xl flex-shrink-0">
+                      🏠
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-orange-500 font-bold uppercase tracking-wide mb-0.5">
+                      İlan Hakkında
+                    </p>
+                    <p className="font-bold text-gray-900 text-sm truncate">
+                      {listingContext.city}
+                      {listingContext.district ? ` / ${listingContext.district}` : ""}
+                    </p>
+                    <p className="text-orange-500 text-sm font-bold">
+                      {listingContext.rent?.toLocaleString()} {listingContext.currency}/ay
+                    </p>
+                  </div>
+                  <span className="text-gray-300 text-lg">›</span>
+                </div>
+              )}
+
+              {/* Messages area */}
+              <div
+                className="flex-1 overflow-y-auto py-4"
+                style={{ direction: "ltr" }}
+              >
                 {messages.length === 0 && (
-                  <div className="text-center py-10 text-stone-400 text-sm">{t.noMessagesYet}</div>
+                  <div className="text-center py-10 text-gray-400 text-sm">
+                    {t.noMessagesYet}
+                  </div>
                 )}
                 {messages.map((msg) => {
                   const isMe = msg.sender_id === currentUserId;
-                  return (
-                    <div key={msg.id} className={`flex w-full ${isMe ? "justify-end" : "justify-start"}`} style={{ direction: "ltr" }}>
-                      <div className={`flex items-end gap-2 max-w-[80%] ${isMe ? "flex-row-reverse" : ""}`}>
-                        {!isMe && (
-                          activePeerAvatar ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={activePeerAvatar} alt="" className="w-8 h-8 rounded-full object-cover flex-shrink-0 mb-1" />
-                          ) : (
-                            <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 font-bold text-xs flex-shrink-0 mb-1">
-                              {activePeerName[0]?.toUpperCase() ?? "?"}
-                            </div>
-                          )
-                        )}
-                        <div className={`flex flex-col gap-1 ${isMe ? "items-end" : "items-start"}`}>
-                          <div className={`rounded-2xl px-4 py-2.5 shadow-sm ${isMe ? "bg-orange-500 rounded-br-sm" : "bg-white rounded-bl-sm"}`}>
-                            <p dir="auto" className={`text-sm leading-relaxed ${isMe ? "text-white" : "text-stone-800"}`}>
-                              {msg.content}
-                            </p>
-                          </div>
-                          <span className="text-[11px] text-stone-400 px-1">{formatDate(msg.created_at)}</span>
+                  return isMe ? (
+                    <div key={msg.id} className="flex justify-end mb-3 px-4">
+                      <div className="max-w-[75%]">
+                        <div className="bg-gradient-to-br from-orange-500 to-amber-500 text-white px-4 py-2.5 rounded-2xl rounded-tr-sm shadow-sm">
+                          <p className="text-sm leading-relaxed" dir="auto">
+                            {msg.content}
+                          </p>
                         </div>
+                        <p className="text-right text-[10px] text-gray-400 mt-1 mr-1">
+                          {formatTime(msg.created_at)}
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div key={msg.id} className="flex items-end gap-2 mb-3 px-4">
+                      {activePeerAvatar ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={activePeerAvatar}
+                          alt=""
+                          className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+                        />
+                      ) : (
+                        <div className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-500 flex-shrink-0">
+                          {activePeerName[0]?.toUpperCase() ?? "?"}
+                        </div>
+                      )}
+                      <div className="max-w-[75%]">
+                        <div className="bg-white text-gray-800 px-4 py-2.5 rounded-2xl rounded-tl-sm shadow-sm border border-gray-100">
+                          <p className="text-sm leading-relaxed" dir="auto">
+                            {msg.content}
+                          </p>
+                        </div>
+                        <p className="text-[10px] text-gray-400 mt-1 ml-1">
+                          {formatTime(msg.created_at)}
+                        </p>
                       </div>
                     </div>
                   );
@@ -601,123 +942,183 @@ function MessagesPageContent() {
                 <div ref={messagesEndRef} />
               </div>
 
-              <div className="px-4 py-3 bg-white border-t border-stone-200 flex-shrink-0">
-                <div className="flex gap-2" style={{ direction: "ltr" }}>
+              {/* Message input */}
+              <div className="bg-white border-t border-gray-100 px-4 py-3 flex items-center gap-3 shadow-lg flex-shrink-0">
+                <div className="flex-1 flex items-center bg-gray-100 rounded-2xl px-4 py-2.5 gap-2">
                   <input
                     value={messageText}
                     onChange={(e) => setMessageText(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                      }
+                    }}
                     placeholder={t.typeMessage}
                     dir="auto"
-                    className="flex-1 px-4 py-2.5 rounded-2xl border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-stone-50"
+                    className="flex-1 bg-transparent text-sm text-gray-800 focus:outline-none placeholder-gray-400"
                   />
-                  <button
-                    onClick={sendMessage}
-                    disabled={!messageText.trim() || sendingMessage}
-                    className="px-4 py-2.5 rounded-2xl bg-orange-500 text-white text-sm font-semibold hover:bg-orange-600 disabled:opacity-50 transition-colors flex-shrink-0"
-                  >
-                    {sendingMessage ? "…" : t.sendButton}
-                  </button>
                 </div>
+                <button
+                  onClick={sendMessage}
+                  disabled={!messageText.trim() || sendingMessage}
+                  className="w-11 h-11 rounded-full flex items-center justify-center transition-all shadow-md bg-gradient-to-br from-orange-500 to-amber-500 text-white disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
+                >
+                  <SendIcon />
+                </button>
               </div>
             </>
           ) : selectedConv === "sefira-destek" ? (
-            /* ── Support chat (legacy, sefira-destek is reached via /support-chat now) ── */
+            /* ── Support chat ── */
             <>
-              <div className="flex items-center gap-3 px-4 py-3 bg-white border-b border-stone-200 shadow-sm flex-shrink-0">
-                <button onClick={() => setMobileView("list")} className="md:hidden p-2 -ml-2 text-stone-500 hover:text-stone-800 rounded-lg hover:bg-stone-100 transition-colors">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-5 h-5"><polyline points="15 18 9 12 15 6" /></svg>
+              <div className="flex items-center gap-3 px-4 py-3 bg-white border-b border-gray-100 shadow-sm flex-shrink-0">
+                <button
+                  onClick={() => setMobileView("list")}
+                  className="md:hidden w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 text-lg font-bold"
+                >
+                  ←
                 </button>
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-black text-xs shadow-sm flex-shrink-0">SD</div>
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-black text-xs shadow-sm flex-shrink-0">
+                  SD
+                </div>
                 <div>
-                  <p className="font-bold text-stone-900 text-sm leading-tight">{t.supportChannelName}</p>
-                  <p className="text-xs text-emerald-500 font-semibold">Sefira</p>
+                  <p className="font-bold text-gray-900 text-sm">{t.supportChannelName}</p>
+                  <p className="text-xs text-green-500">● Çevrimiçi</p>
                 </div>
               </div>
-              <div className="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-3">
-                <div className="flex items-end gap-2 max-w-[80%]" style={{ direction: "ltr" }}>
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-black text-xs flex-shrink-0 mb-1 shadow-sm">SD</div>
-                  <div className="flex flex-col gap-1">
-                    <div className="bg-white rounded-2xl rounded-bl-sm px-4 py-2.5 shadow-sm">
-                      <p dir="auto" className="text-sm text-stone-800 leading-relaxed">{t.supportWelcome}</p>
+              <div
+                className="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-3"
+                style={{ direction: "ltr" }}
+              >
+                <div className="flex items-end gap-2">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-black text-xs flex-shrink-0 shadow-sm">
+                    SD
+                  </div>
+                  <div className="max-w-[75%]">
+                    <div className="bg-white text-gray-800 px-4 py-2.5 rounded-2xl rounded-tl-sm shadow-sm border border-gray-100">
+                      <p dir="auto" className="text-sm leading-relaxed">
+                        {t.supportWelcome}
+                      </p>
                     </div>
-                    <span className="text-[11px] text-stone-400 px-1">Sefira</span>
+                    <p className="text-[10px] text-gray-400 mt-1 ml-1">Sefira</p>
                   </div>
                 </div>
                 {chatMessages.map((msg) => {
                   const isUser = msg.sender === "user";
-                  return (
-                    <div key={msg.id} className={`flex w-full ${isUser ? "justify-end" : "justify-start"}`} style={{ direction: "ltr" }}>
-                      <div className={`flex items-end gap-2 max-w-[80%] ${isUser ? "flex-row-reverse" : ""}`}>
-                        {!isUser && (
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-black text-xs flex-shrink-0 mb-1 shadow-sm">SD</div>
-                        )}
-                        <div className={`flex flex-col gap-1 ${isUser ? "items-end" : "items-start"}`}>
-                          <div className={`rounded-2xl px-4 py-2.5 shadow-sm ${isUser ? "bg-orange-500 rounded-br-sm" : "bg-white rounded-bl-sm"}`}>
-                            <p dir="auto" className={`text-sm leading-relaxed whitespace-pre-line ${isUser ? "text-white" : "text-stone-800"}`}>{msg.message}</p>
-                          </div>
-                          <span className="text-[11px] text-stone-400 px-1">{formatDate(msg.created_at)}</span>
+                  return isUser ? (
+                    <div key={msg.id} className="flex justify-end">
+                      <div className="max-w-[75%]">
+                        <div className="bg-gradient-to-br from-orange-500 to-amber-500 text-white px-4 py-2.5 rounded-2xl rounded-tr-sm shadow-sm">
+                          <p dir="auto" className="text-sm leading-relaxed whitespace-pre-line">
+                            {msg.message}
+                          </p>
                         </div>
+                        <p className="text-right text-[10px] text-gray-400 mt-1 mr-1">
+                          {formatTime(msg.created_at)}
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div key={msg.id} className="flex items-end gap-2">
+                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-black text-xs flex-shrink-0 shadow-sm">
+                        SD
+                      </div>
+                      <div className="max-w-[75%]">
+                        <div className="bg-white text-gray-800 px-4 py-2.5 rounded-2xl rounded-tl-sm shadow-sm border border-gray-100">
+                          <p dir="auto" className="text-sm leading-relaxed whitespace-pre-line">
+                            {msg.message}
+                          </p>
+                        </div>
+                        <p className="text-[10px] text-gray-400 mt-1 ml-1">
+                          {formatTime(msg.created_at)}
+                        </p>
                       </div>
                     </div>
                   );
                 })}
                 <div ref={chatBottomRef} />
               </div>
-              <div className="px-4 py-3 bg-white border-t border-stone-200 flex-shrink-0">
-                <div className="flex gap-2" style={{ direction: "ltr" }}>
+              <div className="bg-white border-t border-gray-100 px-4 py-3 flex items-center gap-3 shadow-lg flex-shrink-0">
+                <div className="flex-1 flex items-center bg-gray-100 rounded-2xl px-4 py-2.5 gap-2">
                   <input
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSendChat(); } }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendChat();
+                      }
+                    }}
                     placeholder={t.supportPlaceholder}
                     dir="auto"
-                    className="flex-1 px-4 py-2.5 rounded-2xl border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-stone-50"
+                    className="flex-1 bg-transparent text-sm text-gray-800 focus:outline-none placeholder-gray-400"
                   />
-                  <button onClick={handleSendChat} disabled={!chatInput.trim() || sendingChat} className="px-4 py-2.5 rounded-2xl bg-orange-500 text-white text-sm font-semibold hover:bg-orange-600 disabled:opacity-50 transition-colors flex-shrink-0">
-                    {sendingChat ? "…" : t.sendButton}
-                  </button>
                 </div>
+                <button
+                  onClick={handleSendChat}
+                  disabled={!chatInput.trim() || sendingChat}
+                  className="w-11 h-11 rounded-full flex items-center justify-center transition-all shadow-md bg-gradient-to-br from-orange-500 to-amber-500 text-white disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
+                >
+                  <SendIcon />
+                </button>
               </div>
             </>
           ) : selectedConv === "sefira-notifications" ? (
             /* ── Notifications channel ── */
             <>
-              <div className="flex items-center gap-3 px-4 py-3 bg-white border-b border-stone-200 shadow-sm flex-shrink-0">
-                <button onClick={() => setMobileView("list")} className="md:hidden p-2 -ml-2 text-stone-500 hover:text-stone-800 rounded-lg hover:bg-stone-100 transition-colors">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-5 h-5"><polyline points="15 18 9 12 15 6" /></svg>
+              <div className="flex items-center gap-3 px-4 py-3 bg-white border-b border-gray-100 shadow-sm flex-shrink-0">
+                <button
+                  onClick={() => setMobileView("list")}
+                  className="md:hidden w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 text-lg font-bold"
+                >
+                  ←
                 </button>
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white font-black shadow-sm flex-shrink-0">S</div>
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white font-black shadow-sm flex-shrink-0">
+                  S
+                </div>
                 <div>
-                  <p className="font-bold text-stone-900 text-sm leading-tight">{t.channelName}</p>
-                  <p className="text-xs text-emerald-500 font-semibold">Sefira</p>
+                  <p className="font-bold text-gray-900 text-sm">{t.channelName}</p>
+                  <p className="text-xs text-green-500">● Sefira</p>
                 </div>
               </div>
-              <div className="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-3">
-                <div className="flex items-end gap-2 max-w-[80%]">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white font-black text-sm flex-shrink-0 mb-1 shadow-sm">S</div>
-                  <div className="flex flex-col gap-1">
-                    <div className="bg-white rounded-2xl rounded-bl-sm px-4 py-2.5 shadow-sm">
-                      <p className="text-sm text-stone-800 leading-relaxed whitespace-pre-line">{t.welcomeMessage}</p>
+              <div
+                className="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-3"
+                style={{ direction: "ltr" }}
+              >
+                <div className="flex items-end gap-2">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white font-black text-sm flex-shrink-0 shadow-sm">
+                    S
+                  </div>
+                  <div className="max-w-[75%]">
+                    <div className="bg-white text-gray-800 px-4 py-2.5 rounded-2xl rounded-tl-sm shadow-sm border border-gray-100">
+                      <p className="text-sm leading-relaxed whitespace-pre-line">
+                        {t.welcomeMessage}
+                      </p>
                     </div>
-                    <span className="text-[11px] text-stone-400 px-1">Sefira</span>
+                    <p className="text-[10px] text-gray-400 mt-1 ml-1">Sefira</p>
                   </div>
                 </div>
                 {globalSorted.map((msg) => (
-                  <div key={msg.id} className="flex items-end gap-2 max-w-[80%]">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white font-black text-sm flex-shrink-0 mb-1 shadow-sm">S</div>
-                    <div className="flex flex-col gap-1">
-                      <div className="bg-white rounded-2xl rounded-bl-sm px-4 py-2.5 shadow-sm">
+                  <div key={msg.id} className="flex items-end gap-2">
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white font-black text-sm flex-shrink-0 shadow-sm">
+                      S
+                    </div>
+                    <div className="max-w-[75%]">
+                      <div className="bg-white text-gray-800 px-4 py-2.5 rounded-2xl rounded-tl-sm shadow-sm border border-gray-100">
                         <p className="text-xs font-bold text-orange-500 mb-1">{msg.title}</p>
-                        <p className="text-sm text-stone-800 leading-relaxed whitespace-pre-line">{msg.message}</p>
+                        <p className="text-sm leading-relaxed whitespace-pre-line">
+                          {msg.message}
+                        </p>
                       </div>
-                      <span className="text-[11px] text-stone-400 px-1">{formatDate(msg.created_at)}</span>
+                      <p className="text-[10px] text-gray-400 mt-1 ml-1">
+                        {formatTime(msg.created_at)}
+                      </p>
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="px-4 py-3 bg-white border-t border-stone-200 flex-shrink-0">
-                <p className="text-xs text-stone-400 text-center">{t.systemMessage}</p>
+              <div className="bg-white border-t border-gray-100 px-4 py-3 flex-shrink-0">
+                <p className="text-xs text-gray-400 text-center">{t.systemMessage}</p>
               </div>
             </>
           ) : (
@@ -725,11 +1126,19 @@ function MessagesPageContent() {
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center px-6">
                 <div className="w-20 h-20 rounded-full bg-orange-100 flex items-center justify-center mx-auto mb-4">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10 text-orange-400">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-10 h-10 text-orange-400"
+                  >
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                   </svg>
                 </div>
-                <p className="text-stone-500 text-sm">{t.noConversation}</p>
+                <p className="text-gray-500 text-sm">{t.noConversation}</p>
               </div>
             </div>
           )}

@@ -16,18 +16,20 @@ export async function POST(request: Request) {
 
     let convId = conversationId;
     let resolvedTargetUserId: string | null = null;
+    let resolvedListingId: string | null = null;
 
     // Path A: direct conversationId (from ?convId= notification link)
     if (convId && currentUserId) {
       const { data: conv } = await supabaseAdmin
         .from("conversations")
-        .select("user1_id, user2_id")
+        .select("user1_id, user2_id, listing_id")
         .eq("id", convId)
         .maybeSingle();
 
       if (conv) {
         resolvedTargetUserId =
           conv.user1_id === currentUserId ? conv.user2_id : conv.user1_id;
+        resolvedListingId = conv.listing_id ?? null;
       }
     }
 
@@ -70,6 +72,7 @@ export async function POST(request: Request) {
       messages: data || [],
       conversationId: convId,
       ...(resolvedTargetUserId ? { targetUserId: resolvedTargetUserId } : {}),
+      ...(resolvedListingId ? { listingId: resolvedListingId } : {}),
     });
   } catch (e: any) {
     console.error("[messages/fetch] error:", e);
