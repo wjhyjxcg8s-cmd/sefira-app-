@@ -10,7 +10,7 @@ const supabaseAdmin = createClient(
 export async function POST(request: Request) {
   try {
     // currentUserId: when provided alongside conversationId, we resolve the targetUserId
-    const { conversationId, senderId, targetUserId, currentUserId } = await request.json();
+    const { conversationId, senderId, targetUserId, currentUserId, listingId } = await request.json();
 
     console.log("[messages/fetch] received:", { conversationId, senderId, targetUserId, currentUserId });
 
@@ -33,15 +33,18 @@ export async function POST(request: Request) {
       }
     }
 
-    // Path B: user-pair lookup (from ?userId= flow)
+    // Path B: user-pair + listing lookup (from ?userId= flow)
     if (!convId && senderId && targetUserId) {
-      const { data: existing } = await supabaseAdmin
+      let fetchQuery = supabaseAdmin
         .from("conversations")
         .select("id")
-        .or(
-          `and(user1_id.eq.${senderId},user2_id.eq.${targetUserId}),and(user1_id.eq.${targetUserId},user2_id.eq.${senderId})`
-        )
-        .maybeSingle();
+        .or(`and(user1_id.eq.${senderId},user2_id.eq.${targetUserId}),and(user1_id.eq.${targetUserId},user2_id.eq.${senderId})`);
+
+      if (listingId) {
+        fetchQuery = fetchQuery.eq("listing_id", listingId);
+      }
+
+      const { data: existing } = await fetchQuery.maybeSingle();
 
       console.log("[messages/fetch] pair lookup result:", existing);
 

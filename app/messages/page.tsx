@@ -217,6 +217,7 @@ function MessagesPageContent() {
   const [convListing, setConvListing] = useState<any>(null);
   const [pendingListingId, setPendingListingId] = useState<string | null>(null);
   const [pendingUserId, setPendingUserId] = useState<string | null>(null);
+  const [convListingMap, setConvListingMap] = useState<Record<string, any>>({});
 
   useEffect(() => {
     const savedLang = localStorage.getItem("sefira-lang") as Lang | null;
@@ -270,7 +271,14 @@ function MessagesPageContent() {
     })
       .then((r) => r.json())
       .then((result) => {
-        if (result.conversations) setConversations(result.conversations);
+        if (result.conversations) {
+          setConversations(result.conversations);
+          const map: Record<string, any> = {};
+          result.conversations.forEach((c: ConversationItem) => {
+            if (c.listingPreview) map[c.id] = c.listingPreview;
+          });
+          setConvListingMap(map);
+        }
       })
       .catch(() => {});
   }, [currentUserId]);
@@ -412,7 +420,7 @@ function MessagesPageContent() {
     fetch("/api/messages/fetch", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ senderId: currentUserId, targetUserId }),
+      body: JSON.stringify({ senderId: currentUserId, targetUserId, listingId: pendingListingId || targetListingId }),
     })
       .then((r) => r.json())
       .then((result) => {
@@ -599,9 +607,10 @@ function MessagesPageContent() {
   const activePeerName = targetProfile?.display_name ?? "—";
   const activePeerAvatar = targetProfile?.avatar_url ?? null;
 
-  // Is the URL-param target user already present in the loaded conversations list?
+  // Is there already a conversation for this specific user + listing?
+  const pendingLid = pendingListingId || targetListingId;
   const targetInList = targetUserId
-    ? conversations.some((c) => c.otherUserId === targetUserId)
+    ? conversations.some((c) => c.otherUserId === targetUserId && c.listingId === pendingLid)
     : false;
 
   return (
@@ -756,7 +765,7 @@ function MessagesPageContent() {
             </div>
           </button>
 
-          {/* URL-param target user — shown only if not already in conversations list */}
+          {/* URL-param new conversation — shown only if no existing conv for this user+listing */}
           {targetUserId && !targetInList && (
             <button
               onClick={() => {
@@ -768,48 +777,46 @@ function MessagesPageContent() {
               }`}
             >
               <div className="relative flex-shrink-0">
-                {activePeerAvatar ? (
+                {listingContext?.photos?.[0] ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={activePeerAvatar}
-                    alt=""
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
+                  <img src={listingContext.photos[0]} alt="" className="w-14 h-14 rounded-xl object-cover" />
                 ) : (
-                  <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 font-bold text-lg">
-                    {activePeerName[0]?.toUpperCase() ?? "?"}
-                  </div>
+                  <div className="w-14 h-14 rounded-xl bg-orange-50 flex items-center justify-center text-2xl">🏠</div>
                 )}
-                <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white" />
+                <div className="absolute -bottom-1 -right-1">
+                  {activePeerAvatar ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={activePeerAvatar} alt="" className="w-6 h-6 rounded-full border-2 border-white object-cover" />
+                  ) : (
+                    <div className="w-6 h-6 rounded-full bg-orange-400 border-2 border-white flex items-center justify-center text-white text-[10px] font-bold">
+                      {activePeerName[0]?.toUpperCase() ?? "?"}
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-center">
                   <p className="font-bold text-gray-900 text-sm truncate">{activePeerName}</p>
-                  <p className="text-[10px] text-orange-400 font-semibold flex-shrink-0 ml-1">
-                    {t.newMessage}
-                  </p>
+                  <p className="text-[10px] text-orange-400 font-semibold flex-shrink-0 ml-1">{t.newMessage}</p>
                 </div>
-                <p className="text-xs text-gray-500 truncate mt-0.5">
-                  {messages.length > 0
-                    ? messages[messages.length - 1].content
-                    : t.noMessagesYet}
-                </p>
-                {targetListingId && listingContext && (
-                  <p className="text-[10px] text-orange-400 mt-0.5">
-                    🏠 {listingContext.city}
+                {listingContext && (
+                  <p className="text-xs text-orange-500 font-medium truncate">
+                    🏠 {listingContext.city}{listingContext.district ? ` / ${listingContext.district}` : ""}
                   </p>
                 )}
+                <p className="text-xs text-gray-400 truncate mt-0.5">
+                  {messages.length > 0 ? messages[messages.length - 1].content : t.noMessagesYet}
+                </p>
               </div>
             </button>
           )}
 
-          {/* Loaded peer conversations */}
+          {/* Loaded peer conversations — grouped by listing */}
           {conversations.map((conv) => {
             const name = conv.otherUserProfile?.display_name ?? "Kullanıcı";
             const avatar = conv.otherUserProfile?.avatar_url ?? null;
-            const isSelected =
-              selectedConv === conv.id ||
-              (selectedConv === conv.otherUserId);
+            const listing = convListingMap[conv.id] ?? null;
+            const isSelected = selectedConv === conv.id;
             return (
               <button
                 key={conv.id}
@@ -818,28 +825,30 @@ function MessagesPageContent() {
                   isSelected ? "bg-orange-50" : ""
                 }`}
               >
+                {/* Listing thumbnail as primary, user avatar as overlay */}
                 <div className="relative flex-shrink-0">
-                  {avatar ? (
+                  {listing?.photos?.[0] ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={avatar}
-                      alt=""
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
+                    <img src={listing.photos[0]} alt="" className="w-14 h-14 rounded-xl object-cover" />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 font-bold text-lg">
-                      {name[0]?.toUpperCase() ?? "?"}
-                    </div>
+                    <div className="w-14 h-14 rounded-xl bg-orange-50 flex items-center justify-center text-2xl">🏠</div>
                   )}
-                  <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white" />
+                  <div className="absolute -bottom-1 -right-1">
+                    {avatar ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={avatar} alt="" className="w-6 h-6 rounded-full border-2 border-white object-cover" />
+                    ) : (
+                      <div className="w-6 h-6 rounded-full bg-orange-400 border-2 border-white flex items-center justify-center text-white text-[10px] font-bold">
+                        {name[0]?.toUpperCase() ?? "?"}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-center">
                     <p
                       className={`text-sm truncate ${
-                        conv.unreadCount > 0
-                          ? "font-extrabold text-gray-900"
-                          : "font-bold text-gray-900"
+                        conv.unreadCount > 0 ? "font-extrabold text-gray-900" : "font-bold text-gray-900"
                       }`}
                     >
                       {name}
@@ -850,20 +859,18 @@ function MessagesPageContent() {
                       </p>
                     )}
                   </div>
+                  {listing && (
+                    <p className="text-xs text-orange-500 font-medium truncate">
+                      🏠 {listing.city}{listing.district ? ` / ${listing.district}` : ""}
+                    </p>
+                  )}
                   <p
                     className={`text-xs truncate mt-0.5 ${
-                      conv.unreadCount > 0
-                        ? "text-gray-700 font-medium"
-                        : "text-gray-500"
+                      conv.unreadCount > 0 ? "text-gray-700 font-medium" : "text-gray-500"
                     }`}
                   >
                     {conv.lastMessage?.content ?? t.noMessagesYet}
                   </p>
-                  {conv.listingId && conv.listingPreview && (
-                    <p className="text-[10px] text-orange-400 mt-0.5">
-                      🏠 {conv.listingPreview.city}
-                    </p>
-                  )}
                 </div>
                 {conv.unreadCount > 0 && (
                   <span className="w-5 h-5 bg-orange-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold flex-shrink-0">

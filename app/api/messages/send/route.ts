@@ -28,13 +28,19 @@ export async function POST(request: Request) {
 
     // Find or create a real conversation if we don't have one yet
     if (!convId) {
-      const { data: existing } = await supabaseAdmin
+      // Match by user pair AND listing — each listing gets its own conversation
+      let existingQuery = supabaseAdmin
         .from("conversations")
         .select("id")
-        .or(
-          `and(user1_id.eq.${senderId},user2_id.eq.${targetUserId}),and(user1_id.eq.${targetUserId},user2_id.eq.${senderId})`
-        )
-        .maybeSingle();
+        .or(`and(user1_id.eq.${senderId},user2_id.eq.${targetUserId}),and(user1_id.eq.${targetUserId},user2_id.eq.${senderId})`);
+
+      if (listingId) {
+        existingQuery = existingQuery.eq("listing_id", listingId);
+      } else {
+        existingQuery = existingQuery.is("listing_id", null);
+      }
+
+      const { data: existing } = await existingQuery.maybeSingle();
 
       console.log("[messages/send] existing conv:", existing);
 
