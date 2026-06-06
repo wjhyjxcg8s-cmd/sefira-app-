@@ -39,36 +39,21 @@ export async function POST(req: Request) {
       .select("user_id, display_name, avatar_url, gender")
       .in("user_id", [...new Set(otherUserIds)]);
 
-    // 3. Fetch listings that are directly attached to conversations
-    const attachedListingIds = [
-      ...new Set(convs.filter((c: any) => c.listing_id).map((c: any) => c.listing_id as string)),
-    ];
-    let attachedListings: any[] = [];
-    if (attachedListingIds.length > 0) {
-      const { data: l } = await supabaseAdmin
-        .from("listings")
-        .select("id, city, district, rent, currency, photos, house_type, rooms, user_id")
-        .in("id", attachedListingIds);
-      attachedListings = l || [];
-    }
+    // 3. Fetch all relevant listings in a single query (by listing_id OR by other user_id)
+    const convListingIds = convs.filter((c: any) => c.listing_id).map((c: any) => c.listing_id)
 
-    // 4. For conversations without listing_id, find the other user's listing (fallback)
-    const convsWithoutListing = convs.filter((c: any) => !c.listing_id);
-    const fallbackUserIds = [
-      ...new Set(
-        convsWithoutListing.map((c: any) =>
-          c.user1_id === userId ? c.user2_id : c.user1_id
-        )
-      ),
-    ] as string[];
-    let fallbackListings: any[] = [];
-    if (fallbackUserIds.length > 0) {
-      const { data: fl } = await supabaseAdmin
-        .from("listings")
-        .select("id, city, district, rent, currency, photos, house_type, rooms, user_id")
-        .in("user_id", fallbackUserIds)
-        .order("created_at", { ascending: false });
-      fallbackListings = fl || [];
+    let allListings: any[] = []
+    if (otherUserIds.length > 0) {
+      const orFilter = convListingIds.length > 0
+        ? `id.in.(${convListingIds.join(',')}),user_id.in.(${otherUserIds.join(',')})`
+        : `user_id.in.(${otherUserIds.join(',')})`
+
+      const { data: fetchedListings } = await supabaseAdmin
+        .from('listings')
+        .select('id, city, district, rent, currency, photos, house_type, rooms, user_id')
+        .or(orFilter)
+
+      allListings = fetchedListings || []
     }
 
     // 5. Get last message per conversation
@@ -103,19 +88,17 @@ export async function POST(req: Request) {
       const otherUserId = conv.user1_id === userId ? conv.user2_id : conv.user1_id;
       const profile = profiles?.find((p: any) => p.user_id === otherUserId) ?? null;
 
-      // Find listing: attached first, then fallback by other user
-      let listing = attachedListings.find((l: any) => l.id === conv.listing_id) ?? null;
-      if (!listing) {
-        // Take the most recent listing for this other user (fallback array is ordered by created_at desc)
-        listing = fallbackListings.find((l: any) => l.user_id === otherUserId) ?? null;
-      }
+      const listing =
+        allListings.find((l: any) => l.id === conv.listing_id) ||
+        allListings.find((l: any) => l.user_id === otherUserId) ||
+        null;
 
       console.log(`[conversations] conv ${conv.id}: otherUser=${otherUserId}, listing=${listing?.id ?? "none"}`);
 
       return {
         ...conv,
-        otherUser: profile,
-        listing,
+        otherUser: profile || null,
+        listing: listing,
         lastMessage: lastMsgByConv[conv.id] ?? null,
         unreadCount: unreadCounts[conv.id] ?? 0,
       };
