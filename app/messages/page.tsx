@@ -210,15 +210,12 @@ function MessagesPageContent() {
   const [messageText, setMessageText] = useState("");
   const [sendingMessage, setSendingMessage] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const convListingRef = useRef<any>(null);
 
-  // Conversations list + listing context
-  const [conversations, setConversations] = useState<ConversationItem[]>([]);
+  // Conversations list (enriched — includes listing + otherUser preloaded)
+  const [enrichedConvs, setEnrichedConvs] = useState<any[]>([]);
   const [listingContext, setListingContext] = useState<ListingContextData | null>(null);
-  const [convListing, setConvListing] = useState<any>(null);
   const [pendingListingId, setPendingListingId] = useState<string | null>(null);
   const [pendingUserId, setPendingUserId] = useState<string | null>(null);
-  const [convListingMap, setConvListingMap] = useState<Record<string, any>>({});
 
   useEffect(() => {
     const savedLang = localStorage.getItem("sefira-lang") as Lang | null;
@@ -262,9 +259,10 @@ function MessagesPageContent() {
     });
   }, []);
 
-  // Load conversations list when currentUserId is ready
+  // Load enriched conversations (with listing + otherUser preloaded) when auth is ready
   useEffect(() => {
     if (!currentUserId) return;
+    console.log("[conversations] loading for userId:", currentUserId);
     fetch("/api/messages/conversations", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -272,16 +270,10 @@ function MessagesPageContent() {
     })
       .then((r) => r.json())
       .then((result) => {
-        if (result.conversations) {
-          setConversations(result.conversations);
-          const map: Record<string, any> = {};
-          result.conversations.forEach((c: ConversationItem) => {
-            if (c.listingPreview) map[c.id] = c.listingPreview;
-          });
-          setConvListingMap(map);
-        }
+        console.log("[conversations] loaded:", result.conversations?.length, "convs");
+        setEnrichedConvs(result.conversations || []);
       })
-      .catch(() => {});
+      .catch((e) => console.log("[conversations] error:", e));
   }, [currentUserId]);
 
   // Capture URL params immediately and persist in state
@@ -293,35 +285,7 @@ function MessagesPageContent() {
     if (uid) setPendingUserId(uid);
   }, [searchParams]);
 
-  // Fetch listing context reliably via conversation-detail API
-  useEffect(() => {
-    if (!selectedConv || SYSTEM_CONVS.has(selectedConv) || !currentUserId) return;
-
-    let cancelled = false;
-    console.log("[convListing] fetching for selectedConv:", selectedConv, "currentUserId:", currentUserId);
-
-    fetch("/api/messages/conversation-detail", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ conversationId: selectedConv, currentUserId }),
-    })
-      .then((r) => r.json())
-      .then((data) => {
-        if (cancelled) return;
-        console.log("[convListing] conversation-detail response:", data);
-        if (data.listing) {
-          setConvListing(data.listing);
-          convListingRef.current = data.listing;
-        }
-      })
-      .catch((e) => {
-        console.log("[convListing] error:", e);
-      });
-
-    return () => { cancelled = true; };
-  }, [selectedConv, currentUserId]);
-
-  // Fetch listing context when targetListingId changes
+// Fetch listing context when targetListingId changes
   useEffect(() => {
     if (!targetListingId) {
       setListingContext(null);
@@ -454,10 +418,11 @@ function MessagesPageContent() {
     }
   };
 
-  const openConversation = (conv: ConversationItem) => {
-    setTargetUserId(conv.otherUserId);
-    setTargetProfile(conv.otherUserProfile);
-    setTargetListingId(conv.listingId);
+  const openConversation = (conv: any) => {
+    const otherUserId = conv.user1_id === currentUserId ? conv.user2_id : conv.user1_id;
+    setTargetUserId(otherUserId);
+    setTargetProfile(conv.otherUser ?? null);
+    setTargetListingId(conv.listing_id ?? null);
     setRealConvId(conv.id);
     setSelectedConv(conv.id);
     setMessages([]);
@@ -479,7 +444,7 @@ function MessagesPageContent() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ conversationId: conv.id, userId: currentUserId }),
       }).then(() => {
-        setConversations((prev) =>
+        setEnrichedConvs((prev) =>
           prev.map((c) => (c.id === conv.id ? { ...c, unreadCount: 0 } : c))
         );
       });
@@ -571,7 +536,7 @@ function MessagesPageContent() {
 
     // Update conversation list with latest message
     if (result.conversationId) {
-      setConversations((prev) => {
+      setEnrichedConvs((prev) => {
         const updated = prev.map((c) =>
           c.id === result.conversationId
             ? {
@@ -581,28 +546,33 @@ function MessagesPageContent() {
                   created_at: new Date().toISOString(),
                   sender_id: currentUserId!,
                 },
-                updatedAt: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
               }
             : c
         );
         return updated.sort(
-          (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+          (a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
         );
       });
     }
   };
 
-  const displayListing = convListing || convListingRef.current;
+  // Derive current conversation's preloaded data
+  const currentConvData = enrichedConvs.find((c) => c.id === selectedConv);
+  const currentListing = currentConvData?.listing ?? (selectedConv === targetUserId ? listingContext : null);
 
-  const deduplicatedConvs = conversations.reduce((acc, conv) => {
-    if (!conv.listingId) {
-      const existingWithListing = acc.find(c =>
-        c.otherUserId === conv.otherUserId && c.listingId
-      );
+  // Deduplicate: for conversations without listing_id, skip if a better one for same user exists
+  const deduplicatedConvs = enrichedConvs.reduce((acc: any[], conv: any) => {
+    const otherUserId = conv.user1_id === currentUserId ? conv.user2_id : conv.user1_id;
+    if (!conv.listing_id) {
+      const existingWithListing = acc.find((c: any) => {
+        const otherId = c.user1_id === currentUserId ? c.user2_id : c.user1_id;
+        return otherId === otherUserId && c.listing_id;
+      });
       if (existingWithListing) return acc;
     }
     return [...acc, conv];
-  }, [] as typeof conversations);
+  }, []);
 
   const globalSorted = [...globalMessages].reverse();
   const isUserConv = selectedConv !== null && !SYSTEM_CONVS.has(selectedConv);
@@ -612,7 +582,10 @@ function MessagesPageContent() {
   // Is there already a conversation for this specific user + listing?
   const pendingLid = pendingListingId || targetListingId;
   const targetInList = targetUserId
-    ? conversations.some((c) => c.otherUserId === targetUserId && c.listingId === pendingLid)
+    ? enrichedConvs.some((c) => {
+        const otherId = c.user1_id === currentUserId ? c.user2_id : c.user1_id;
+        return otherId === targetUserId && (!pendingLid || c.listing_id === pendingLid);
+      })
     : false;
 
   return (
@@ -813,11 +786,11 @@ function MessagesPageContent() {
             </button>
           )}
 
-          {/* Loaded peer conversations — grouped by listing */}
-          {deduplicatedConvs.map((conv) => {
-            const name = conv.otherUserProfile?.display_name ?? "Kullanıcı";
-            const avatar = conv.otherUserProfile?.avatar_url ?? null;
-            const listing = convListingMap[conv.id] ?? null;
+          {/* Loaded peer conversations */}
+          {deduplicatedConvs.map((conv: any) => {
+            const name = conv.otherUser?.display_name ?? "Kullanıcı";
+            const avatar = conv.otherUser?.avatar_url ?? null;
+            const listing = conv.listing ?? null;
             const isSelected = selectedConv === conv.id;
             return (
               <button
@@ -829,9 +802,9 @@ function MessagesPageContent() {
               >
                 {/* Listing thumbnail as primary, user avatar as overlay */}
                 <div className="relative flex-shrink-0">
-                  {convListingMap[conv.id]?.photos?.[0] ? (
+                  {listing?.photos?.[0] ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={convListingMap[conv.id].photos[0]} alt="" className="w-14 h-14 rounded-xl object-cover" />
+                    <img src={listing.photos[0]} alt="" className="w-14 h-14 rounded-xl object-cover" />
                   ) : (
                     <div className="w-14 h-14 rounded-xl bg-orange-50 flex items-center justify-center text-2xl">🏠</div>
                   )}
@@ -922,17 +895,17 @@ function MessagesPageContent() {
                 </div>
               </div>
 
-              {/* Listing context card */}
-              {displayListing && (
+              {/* Listing context card — data is preloaded, no async fetch needed */}
+              {currentListing && (
                 <div
-                  onClick={() => router.push(`/listings/${displayListing.id}`)}
-                  className="mx-3 mt-3 mb-1 cursor-pointer active:scale-[0.98] transition-transform flex-shrink-0"
+                  onClick={() => router.push(`/listings/${currentListing.id}`)}
+                  className="mx-3 mt-3 mb-2 cursor-pointer active:scale-[0.98] transition-transform flex-shrink-0"
                 >
                   <div className="flex items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-3 shadow-lg">
-                    {displayListing.photos?.[0] ? (
+                    {currentListing.photos?.[0] ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={displayListing.photos[0]}
+                        src={currentListing.photos[0]}
                         className="w-16 h-16 rounded-xl object-cover flex-shrink-0 border-2 border-white/30"
                         alt=""
                       />
@@ -942,18 +915,20 @@ function MessagesPageContent() {
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <p className="text-white/80 text-[10px] font-bold uppercase tracking-wide">
+                      <p className="text-white/80 text-[10px] font-bold uppercase tracking-wide mb-0.5">
                         💬 Bu ilan hakkında konuşuyorsunuz
                       </p>
-                      <p className="font-bold text-white text-sm mt-0.5 truncate">
-                        {displayListing.city}
-                        {displayListing.district ? ` / ${displayListing.district}` : ""}
+                      <p className="font-bold text-white text-sm truncate">
+                        {currentListing.city}
+                        {currentListing.district ? ` / ${currentListing.district}` : ""}
                       </p>
                       <p className="text-white font-bold text-sm">
-                        {displayListing.rent?.toLocaleString()} {displayListing.currency}/ay
-                        <span className="text-white/70 font-normal text-xs ml-2">
-                          {displayListing.house_type}{displayListing.rooms ? ` • ${displayListing.rooms} oda` : ""}
-                        </span>
+                        {currentListing.rent?.toLocaleString()} {currentListing.currency}/ay
+                      </p>
+                      <p className="text-white/70 text-xs">
+                        {currentListing.house_type}
+                        {currentListing.rooms ? ` • ${currentListing.rooms} oda` : ""}
+                        {" "}• Detay için tıkla →
                       </p>
                     </div>
                     <span className="text-white/80 text-xl flex-shrink-0">›</span>

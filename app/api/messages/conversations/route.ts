@@ -7,62 +7,84 @@ const supabaseAdmin = createClient(
   { auth: { autoRefreshToken: false, persistSession: false } }
 );
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const { userId } = await request.json();
+    const { userId } = await req.json();
+    console.log("[conversations] userId:", userId);
+
     if (!userId) return NextResponse.json({ conversations: [] });
 
+    // 1. Get conversations
     const { data: convs, error: convErr } = await supabaseAdmin
       .from("conversations")
-      .select("id, user1_id, user2_id, listing_id, updated_at")
+      .select("*")
       .or(`user1_id.eq.${userId},user2_id.eq.${userId}`)
       .order("updated_at", { ascending: false });
 
     if (convErr || !convs || convs.length === 0) {
+      console.log("[conversations] none found:", convErr?.message);
       return NextResponse.json({ conversations: [] });
     }
 
-    const convIds = convs.map((c: any) => c.id);
-    const otherUserIds = [
-      ...new Set(
-        convs.map((c: any) => (c.user1_id === userId ? c.user2_id : c.user1_id))
-      ),
-    ];
+    console.log("[conversations] found:", convs.length);
 
-    // Fetch profiles for all other users
+    const convIds = convs.map((c: any) => c.id);
+    const otherUserIds = convs.map((c: any) =>
+      c.user1_id === userId ? c.user2_id : c.user1_id
+    );
+
+    // 2. Fetch profiles for other users
     const { data: profiles } = await supabaseAdmin
       .from("profiles")
-      .select("user_id, display_name, avatar_url")
-      .in("user_id", otherUserIds);
+      .select("user_id, display_name, avatar_url, gender")
+      .in("user_id", [...new Set(otherUserIds)]);
 
-    // Fetch listing previews for conversations that have listing_id
-    const listingIds = [
-      ...new Set(
-        convs.filter((c: any) => c.listing_id).map((c: any) => c.listing_id as string)
-      ),
+    // 3. Fetch listings that are directly attached to conversations
+    const attachedListingIds = [
+      ...new Set(convs.filter((c: any) => c.listing_id).map((c: any) => c.listing_id as string)),
     ];
-    let listings: any[] = [];
-    if (listingIds.length > 0) {
+    let attachedListings: any[] = [];
+    if (attachedListingIds.length > 0) {
       const { data: l } = await supabaseAdmin
         .from("listings")
-        .select("id, city, district, rent, currency, photos")
-        .in("id", listingIds);
-      listings = l || [];
+        .select("id, city, district, rent, currency, photos, house_type, rooms, user_id")
+        .in("id", attachedListingIds);
+      attachedListings = l || [];
     }
 
-    // Fetch last message per conversation (N queries but each returns 1 row)
-    const lastMessages: Record<string, any> = {};
-    for (const convId of convIds) {
-      const { data: msgs } = await supabaseAdmin
-        .from("user_messages")
-        .select("content, created_at, sender_id")
-        .eq("conversation_id", convId)
-        .order("created_at", { ascending: false })
-        .limit(1);
-      if (msgs?.[0]) lastMessages[convId] = msgs[0];
+    // 4. For conversations without listing_id, find the other user's listing (fallback)
+    const convsWithoutListing = convs.filter((c: any) => !c.listing_id);
+    const fallbackUserIds = [
+      ...new Set(
+        convsWithoutListing.map((c: any) =>
+          c.user1_id === userId ? c.user2_id : c.user1_id
+        )
+      ),
+    ] as string[];
+    let fallbackListings: any[] = [];
+    if (fallbackUserIds.length > 0) {
+      const { data: fl } = await supabaseAdmin
+        .from("listings")
+        .select("id, city, district, rent, currency, photos, house_type, rooms, user_id")
+        .in("user_id", fallbackUserIds)
+        .order("created_at", { ascending: false });
+      fallbackListings = fl || [];
     }
 
-    // Fetch unread counts in a single batch query
+    // 5. Get last message per conversation
+    const { data: allMsgs } = await supabaseAdmin
+      .from("user_messages")
+      .select("conversation_id, content, created_at, sender_id")
+      .in("conversation_id", convIds)
+      .order("created_at", { ascending: false });
+
+    const lastMsgByConv: Record<string, any> = {};
+    for (const msg of allMsgs || []) {
+      const cid = (msg as any).conversation_id;
+      if (!lastMsgByConv[cid]) lastMsgByConv[cid] = msg;
+    }
+
+    // 6. Get unread counts
     const { data: unreadMsgs } = await supabaseAdmin
       .from("user_messages")
       .select("conversation_id")
@@ -76,25 +98,32 @@ export async function POST(request: Request) {
       unreadCounts[cid] = (unreadCounts[cid] || 0) + 1;
     }
 
-    const result = convs.map((c: any) => {
-      const otherUserId = c.user1_id === userId ? c.user2_id : c.user1_id;
+    // 7. Build enriched conversations
+    const enriched = convs.map((conv: any) => {
+      const otherUserId = conv.user1_id === userId ? conv.user2_id : conv.user1_id;
       const profile = profiles?.find((p: any) => p.user_id === otherUserId) ?? null;
-      const listing = listings.find((l: any) => l.id === c.listing_id) ?? null;
+
+      // Find listing: attached first, then fallback by other user
+      let listing = attachedListings.find((l: any) => l.id === conv.listing_id) ?? null;
+      if (!listing) {
+        // Take the most recent listing for this other user (fallback array is ordered by created_at desc)
+        listing = fallbackListings.find((l: any) => l.user_id === otherUserId) ?? null;
+      }
+
+      console.log(`[conversations] conv ${conv.id}: otherUser=${otherUserId}, listing=${listing?.id ?? "none"}`);
+
       return {
-        id: c.id,
-        otherUserId,
-        otherUserProfile: profile,
-        listingId: c.listing_id ?? null,
-        listingPreview: listing,
-        lastMessage: lastMessages[c.id] ?? null,
-        unreadCount: unreadCounts[c.id] ?? 0,
-        updatedAt: c.updated_at,
+        ...conv,
+        otherUser: profile,
+        listing,
+        lastMessage: lastMsgByConv[conv.id] ?? null,
+        unreadCount: unreadCounts[conv.id] ?? 0,
       };
     });
 
-    return NextResponse.json({ conversations: result });
+    return NextResponse.json({ conversations: enriched });
   } catch (e: any) {
-    console.error("[messages/conversations] error:", e);
+    console.error("[conversations] error:", e);
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
 }
