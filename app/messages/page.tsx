@@ -210,6 +210,7 @@ function MessagesPageContent() {
   const [messageText, setMessageText] = useState("");
   const [sendingMessage, setSendingMessage] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const convListingRef = useRef<any>(null);
 
   // Conversations list + listing context
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
@@ -294,11 +295,9 @@ function MessagesPageContent() {
 
   // Fetch listing context reliably via conversation-detail API
   useEffect(() => {
-    if (!selectedConv || SYSTEM_CONVS.has(selectedConv) || !currentUserId) {
-      setConvListing(null);
-      return;
-    }
+    if (!selectedConv || SYSTEM_CONVS.has(selectedConv) || !currentUserId) return;
 
+    let cancelled = false;
     console.log("[convListing] fetching for selectedConv:", selectedConv, "currentUserId:", currentUserId);
 
     fetch("/api/messages/conversation-detail", {
@@ -308,13 +307,18 @@ function MessagesPageContent() {
     })
       .then((r) => r.json())
       .then((data) => {
+        if (cancelled) return;
         console.log("[convListing] conversation-detail response:", data);
-        setConvListing(data.listing ?? null);
+        if (data.listing) {
+          setConvListing(data.listing);
+          convListingRef.current = data.listing;
+        }
       })
       .catch((e) => {
         console.log("[convListing] error:", e);
-        setConvListing(null);
       });
+
+    return () => { cancelled = true; };
   }, [selectedConv, currentUserId]);
 
   // Fetch listing context when targetListingId changes
@@ -587,6 +591,8 @@ function MessagesPageContent() {
       });
     }
   };
+
+  const displayListing = convListing || convListingRef.current;
 
   const deduplicatedConvs = conversations.reduce((acc, conv) => {
     if (!conv.listingId) {
@@ -917,16 +923,16 @@ function MessagesPageContent() {
               </div>
 
               {/* Listing context card */}
-              {convListing && (
+              {displayListing && (
                 <div
-                  onClick={() => router.push(`/listings/${convListing.id}`)}
+                  onClick={() => router.push(`/listings/${displayListing.id}`)}
                   className="mx-3 mt-3 mb-1 cursor-pointer active:scale-[0.98] transition-transform flex-shrink-0"
                 >
                   <div className="flex items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-3 shadow-lg">
-                    {convListing.photos?.[0] ? (
+                    {displayListing.photos?.[0] ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={convListing.photos[0]}
+                        src={displayListing.photos[0]}
                         className="w-16 h-16 rounded-xl object-cover flex-shrink-0 border-2 border-white/30"
                         alt=""
                       />
@@ -940,13 +946,13 @@ function MessagesPageContent() {
                         💬 Bu ilan hakkında konuşuyorsunuz
                       </p>
                       <p className="font-bold text-white text-sm mt-0.5 truncate">
-                        {convListing.city}
-                        {convListing.district ? ` / ${convListing.district}` : ""}
+                        {displayListing.city}
+                        {displayListing.district ? ` / ${displayListing.district}` : ""}
                       </p>
                       <p className="text-white font-bold text-sm">
-                        {convListing.rent?.toLocaleString()} {convListing.currency}/ay
+                        {displayListing.rent?.toLocaleString()} {displayListing.currency}/ay
                         <span className="text-white/70 font-normal text-xs ml-2">
-                          {convListing.house_type}{convListing.rooms ? ` • ${convListing.rooms} oda` : ""}
+                          {displayListing.house_type}{displayListing.rooms ? ` • ${displayListing.rooms} oda` : ""}
                         </span>
                       </p>
                     </div>
