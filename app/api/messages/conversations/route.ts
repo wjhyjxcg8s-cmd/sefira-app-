@@ -16,10 +16,10 @@ export async function POST(req: Request) {
 
     // 1. Get conversations
     const { data: convs, error: convErr } = await supabaseAdmin
-      .from("conversations")
-      .select("*")
+      .from('conversations')
+      .select('*, listing:listings(id, photos)')
       .or(`user1_id.eq.${userId},user2_id.eq.${userId}`)
-      .order("updated_at", { ascending: false });
+      .order('updated_at', { ascending: false });
 
     if (convErr || !convs || convs.length === 0) {
       console.log("[conversations] none found:", convErr?.message);
@@ -30,18 +30,6 @@ export async function POST(req: Request) {
 
     const convIds = convs.map((c: any) => c.id);
     const otherUserIds = convs.map((c: any) => c.user1_id === userId ? c.user2_id : c.user1_id).filter(Boolean)
-    const convListingIds = convs.filter((c: any) => c.listing_id).map((c: any) => c.listing_id)
-    let allListings: any[] = []
-    if (otherUserIds.length > 0) {
-      const orFilter = convListingIds.length > 0
-        ? `id.in.(${convListingIds.join(',')}),user_id.in.(${otherUserIds.join(',')})`
-        : `user_id.in.(${otherUserIds.join(',')})`
-      const { data: fetched } = await supabaseAdmin
-        .from('listings')
-        .select('id, city, district, rent, currency, photos, house_type, rooms, user_id')
-        .or(orFilter)
-      allListings = fetched || []
-    }
 
     // 2. Fetch profiles for other users
     const { data: profiles } = await supabaseAdmin
@@ -81,10 +69,10 @@ export async function POST(req: Request) {
       const otherUserId = conv.user1_id === userId ? conv.user2_id : conv.user1_id;
       const profile = profiles?.find((p: any) => p.user_id === otherUserId) ?? null;
 
-      const listing =
-        allListings.find((l: any) => l.id === conv.listing_id) ||
-        allListings.find((l: any) => l.user_id === otherUserId) ||
-        null;
+      const listing = conv.listing ? {
+        id: conv.listing.id,
+        photos: Array.isArray(conv.listing.photos) ? conv.listing.photos : []
+      } : null;
 
       console.log(`[conversations] conv ${conv.id}: otherUser=${otherUserId}, listing=${listing?.id ?? "none"}`);
 
