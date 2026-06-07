@@ -339,44 +339,24 @@ interface LatestListingsProps {
 }
 
 const listingTypeTrans: Record<string, Record<string, string>> = {
-  owner: {
-    tr: "Ev Sahibi",
-    en: "Owner",
-    fa: "صاحب‌خانه",
-    ar: "صاحب المنزل",
-    de: "Vermieter",
-    ru: "Владелец"
-  },
-  tenant: {
-    tr: "Kiracı",
-    en: "Tenant",
-    fa: "مستأجر",
-    ar: "مستأجر",
-    de: "Mieter",
-    ru: "Арендатор"
-  }
+  has_place: { tr: "Ev Sahibi", en: "Owner", fa: "صاحب‌خانه", ar: "صاحب المنزل", de: "Vermieter", ru: "Владелец" },
+  needs_place: { tr: "Kiracı", en: "Tenant", fa: "مستأجر", ar: "مستأجر", de: "Mieter", ru: "Арендатор" }
 }
 
 export default function LatestListings({ filterCity, onClearFilter }: LatestListingsProps) {
   const router = useRouter();
-  const [lang, setLang] = useState<Lang>('tr')
+  const [lang, setLang] = useState('tr')
 
   useEffect(() => {
     const stored = localStorage.getItem('sefira-lang')
-    if (stored) setLang(stored as Lang)
+    if (stored) setLang(stored)
 
-    const handleLangChange = () => {
-      const updated = localStorage.getItem('sefira-lang')
-      if (updated) setLang(updated as Lang)
-    }
+    const interval = setInterval(() => {
+      const current = localStorage.getItem('sefira-lang')
+      if (current) setLang(prev => prev !== current ? current : prev)
+    }, 300)
 
-    window.addEventListener('storage', handleLangChange)
-    window.addEventListener('sefira-lang-change', handleLangChange)
-
-    return () => {
-      window.removeEventListener('storage', handleLangChange)
-      window.removeEventListener('sefira-lang-change', handleLangChange)
-    }
+    return () => clearInterval(interval)
   }, [])
   const [allListings, setAllListings] = useState<any[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("all");
@@ -546,9 +526,7 @@ export default function LatestListings({ filterCity, onClearFilter }: LatestList
                   </div>
                 )}
                 <span className={`absolute top-2 left-2 text-white text-xs px-2 py-1 rounded-full font-medium ${listing.type === "has_place" ? "bg-emerald-500" : "bg-blue-500"}`}>
-                  {listing.type === "has_place"
-                    ? listingTypeTrans.owner[lang] || listingTypeTrans.owner.tr
-                    : listingTypeTrans.tenant[lang] || listingTypeTrans.tenant.tr}
+                  {listingTypeTrans[listing.type]?.[lang] || listingTypeTrans[listing.type]?.tr || listing.type}
                 </span>
               </div>
 
