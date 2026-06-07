@@ -2805,7 +2805,7 @@ export default function Home() {
 
       {/* ── LATEST LISTINGS ───────────────────────────────────────────────────── */}
       <div ref={listingsRef}>
-        <LatestListings lang={lang} filterCity={filterCity} onClearFilter={() => setFilterCity(null)} />
+        <LatestListings key={lang} lang={lang} filterCity={filterCity} onClearFilter={() => setFilterCity(null)} />
       </div>
 
       {/* ── HOW IT WORKS ──────────────────────────────────────────────────────── */}

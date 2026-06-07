@@ -339,7 +339,7 @@ interface LatestListingsProps {
 }
 
 const listingTypeTrans: Record<string, Record<string, string>> = {
-  has_place: { tr: "Ev Sahibi", en: "Owner", fa: "صاحب‌خانه", ar: "صاحب المنزل", de: "Vermieter", ru: "Владелец" },
+  has_place: { tr: "Ev Sahibi", en: "Host", fa: "صاحب‌خانه", ar: "المضيف", de: "Vermieter", ru: "Владелец" },
   needs_place: { tr: "Kiracı", en: "Tenant", fa: "مستأجر", ar: "مستأجر", de: "Mieter", ru: "Арендатор" }
 }
 
@@ -513,7 +513,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                   </div>
                 )}
                 <span className={`absolute top-2 left-2 text-white text-xs px-2 py-1 rounded-full font-medium ${listing.type === "has_place" ? "bg-emerald-500" : "bg-blue-500"}`}>
-                  {listingTypeTrans[listing.type]?.[lang] || listingTypeTrans[listing.type]?.tr || listing.type}
+                  {listingTypeTrans[listing.type]?.[lang] || listingTypeTrans[listing.type]?.["tr"] || listing.type}
                 </span>
               </div>
 
