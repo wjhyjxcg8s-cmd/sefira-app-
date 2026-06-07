@@ -1054,6 +1054,11 @@ interface SupabaseListing {
   profiles: { display_name: string | null; avatar_url: string | null } | null;
 }
 
+const listingTypeTrans: Record<string, Record<string, string>> = {
+  has_place: { tr: "Ev Sahibi", en: "Owner", fa: "صاحب‌خانه", ar: "صاحب المنزل", de: "Vermieter", ru: "Владелец" },
+  needs_place: { tr: "Kiracı", en: "Tenant", fa: "مستأجر", ar: "مستأجر", de: "Mieter", ru: "Арендатор" },
+};
+
 export default function Home() {
   // ── Auth ──────────────────────────────────────────────────────────────────
   const { user, signOut: handleSignOut } = useAuth();
@@ -1753,9 +1758,7 @@ export default function Home() {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-1.5 flex-wrap">
                               <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${notif.listingType === "has_place" ? "bg-orange-500 text-white" : "bg-blue-500 text-white"}`}>
-                                {notif.listingType === "has_place"
-                                  ? (lang === "tr" ? "Ev Sahibi" : lang === "fa" ? "صاحب‌خانه" : lang === "ar" ? "صاحب المنزل" : lang === "de" ? "Vermieter" : lang === "ru" ? "Хозяин" : "Landlord")
-                                  : (lang === "tr" ? "Kiracı" : lang === "fa" ? "هم‌خانه‌یاب" : lang === "ar" ? "باحث" : lang === "de" ? "Mieter" : lang === "ru" ? "Жилец" : "Seeking")}
+                                {listingTypeTrans[notif.listingType]?.[lang] || listingTypeTrans[notif.listingType]?.["tr"] || notif.listingType}
                               </span>
                               <span className="text-xs text-stone-600 font-medium truncate">
                                 {notif.display_name || (lang === "tr" ? "Kullanıcı" : "User")}
