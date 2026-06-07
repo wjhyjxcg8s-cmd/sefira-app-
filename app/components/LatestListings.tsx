@@ -338,6 +338,25 @@ interface LatestListingsProps {
   onClearFilter?: () => void;
 }
 
+const listingTypeTrans: Record<string, Record<string, string>> = {
+  owner: {
+    tr: "Ev Sahibi",
+    en: "Owner",
+    fa: "صاحب‌خانه",
+    ar: "صاحب المنزل",
+    de: "Vermieter",
+    ru: "Владелец"
+  },
+  tenant: {
+    tr: "Kiracı",
+    en: "Tenant",
+    fa: "مستأجر",
+    ar: "مستأجر",
+    de: "Mieter",
+    ru: "Арендатор"
+  }
+}
+
 export default function LatestListings({ lang = "tr", filterCity, onClearFilter }: LatestListingsProps) {
   const router = useRouter();
   const [allListings, setAllListings] = useState<any[]>([]);
@@ -508,7 +527,9 @@ export default function LatestListings({ lang = "tr", filterCity, onClearFilter 
                   </div>
                 )}
                 <span className={`absolute top-2 left-2 text-white text-xs px-2 py-1 rounded-full font-medium ${listing.type === "has_place" ? "bg-emerald-500" : "bg-blue-500"}`}>
-                  {listing.type === "has_place" ? "Ev Sahibi" : "Kiracı"}
+                  {listing.type === "has_place"
+                    ? listingTypeTrans.owner[lang] || listingTypeTrans.owner.tr
+                    : listingTypeTrans.tenant[lang] || listingTypeTrans.tenant.tr}
                 </span>
               </div>
 
