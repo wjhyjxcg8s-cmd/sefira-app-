@@ -333,7 +333,7 @@ const titles: Record<Lang, string> = {
 const fixedCodes = new Set(countries.map((c) => c.code));
 
 interface LatestListingsProps {
-  lang?: Lang;
+  lang: string;
   filterCity?: string | null;
   onClearFilter?: () => void;
 }
@@ -343,21 +343,8 @@ const listingTypeTrans: Record<string, Record<string, string>> = {
   needs_place: { tr: "Kiracı", en: "Tenant", fa: "مستأجر", ar: "مستأجر", de: "Mieter", ru: "Арендатор" }
 }
 
-export default function LatestListings({ filterCity, onClearFilter }: LatestListingsProps) {
+export default function LatestListings({ lang, filterCity, onClearFilter }: LatestListingsProps) {
   const router = useRouter();
-  const [lang, setLang] = useState('tr')
-
-  useEffect(() => {
-    const stored = localStorage.getItem('sefira-lang')
-    if (stored) setLang(stored)
-
-    const interval = setInterval(() => {
-      const current = localStorage.getItem('sefira-lang')
-      if (current) setLang(prev => prev !== current ? current : prev)
-    }, 300)
-
-    return () => clearInterval(interval)
-  }, [])
   const [allListings, setAllListings] = useState<any[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("all");
   const [loading, setLoading] = useState(true);
