@@ -102,6 +102,7 @@ export async function POST(req: Request) {
       otherUserId: c.otherUser?.user_id,
     })));
     console.log('FINAL ENRICHED SAMPLE:', JSON.stringify(enriched[0], null, 2));
+    console.log('CONV_COUNT:', convs?.length, 'userId:', userId);
 
     return NextResponse.json({ conversations: enriched });
   } catch (e: any) {
