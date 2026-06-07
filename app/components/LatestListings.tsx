@@ -357,8 +357,27 @@ const listingTypeTrans: Record<string, Record<string, string>> = {
   }
 }
 
-export default function LatestListings({ lang = "tr", filterCity, onClearFilter }: LatestListingsProps) {
+export default function LatestListings({ filterCity, onClearFilter }: LatestListingsProps) {
   const router = useRouter();
+  const [lang, setLang] = useState<Lang>('tr')
+
+  useEffect(() => {
+    const stored = localStorage.getItem('sefira-lang')
+    if (stored) setLang(stored as Lang)
+
+    const handleLangChange = () => {
+      const updated = localStorage.getItem('sefira-lang')
+      if (updated) setLang(updated as Lang)
+    }
+
+    window.addEventListener('storage', handleLangChange)
+    window.addEventListener('sefira-lang-change', handleLangChange)
+
+    return () => {
+      window.removeEventListener('storage', handleLangChange)
+      window.removeEventListener('sefira-lang-change', handleLangChange)
+    }
+  }, [])
   const [allListings, setAllListings] = useState<any[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("all");
   const [loading, setLoading] = useState(true);
