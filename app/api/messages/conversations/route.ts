@@ -29,32 +29,25 @@ export async function POST(req: Request) {
     console.log("[conversations] found:", convs.length);
 
     const convIds = convs.map((c: any) => c.id);
-    const otherUserIds = convs.map((c: any) =>
-      c.user1_id === userId ? c.user2_id : c.user1_id
-    );
+    const otherUserIds = convs.map((c: any) => c.user1_id === userId ? c.user2_id : c.user1_id).filter(Boolean)
+    const convListingIds = convs.filter((c: any) => c.listing_id).map((c: any) => c.listing_id)
+    let allListings: any[] = []
+    if (otherUserIds.length > 0) {
+      const orFilter = convListingIds.length > 0
+        ? `id.in.(${convListingIds.join(',')}),user_id.in.(${otherUserIds.join(',')})`
+        : `user_id.in.(${otherUserIds.join(',')})`
+      const { data: fetched } = await supabaseAdmin
+        .from('listings')
+        .select('id, city, district, rent, currency, photos, house_type, rooms, user_id')
+        .or(orFilter)
+      allListings = fetched || []
+    }
 
     // 2. Fetch profiles for other users
     const { data: profiles } = await supabaseAdmin
       .from("profiles")
       .select("user_id, display_name, avatar_url, gender")
       .in("user_id", [...new Set(otherUserIds)]);
-
-    // 3. Fetch all relevant listings in a single query (by listing_id OR by other user_id)
-    const convListingIds = convs.filter((c: any) => c.listing_id).map((c: any) => c.listing_id)
-
-    let allListings: any[] = []
-    if (otherUserIds.length > 0) {
-      const orFilter = convListingIds.length > 0
-        ? `id.in.(${convListingIds.join(',')}),user_id.in.(${otherUserIds.join(',')})`
-        : `user_id.in.(${otherUserIds.join(',')})`
-
-      const { data: fetchedListings } = await supabaseAdmin
-        .from('listings')
-        .select('id, city, district, rent, currency, photos, house_type, rooms, user_id')
-        .or(orFilter)
-
-      allListings = fetchedListings || []
-    }
 
     // 5. Get last message per conversation
     const { data: allMsgs } = await supabaseAdmin
