@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     // 1. Get conversations
     const { data: convs, error: convErr } = await supabaseAdmin
       .from('conversations')
-      .select('*, listing:listings(id, photos)')
+      .select('*')
       .or(`user1_id.eq.${userId},user2_id.eq.${userId}`)
       .order('updated_at', { ascending: false });
 
@@ -31,7 +31,20 @@ export async function POST(req: Request) {
     const convIds = convs.map((c: any) => c.id);
     const otherUserIds = convs.map((c: any) => c.user1_id === userId ? c.user2_id : c.user1_id).filter(Boolean)
 
-    // 2. Fetch profiles for other users
+    // 2. Fetch listings separately by listing_id only
+    const listingIds = convs.filter((c: any) => c.listing_id).map((c: any) => c.listing_id)
+    let listingsMap: Record<string, any> = {}
+    if (listingIds.length > 0) {
+      const { data: listings } = await supabaseAdmin
+        .from('listings')
+        .select('id, photos, city, district, rent, currency')
+        .in('id', listingIds)
+      if (listings) {
+        listings.forEach((l: any) => { listingsMap[l.id] = l })
+      }
+    }
+
+    // 3. Fetch profiles for other users
     const { data: profiles } = await supabaseAdmin
       .from("profiles")
       .select("user_id, display_name, avatar_url, gender")
@@ -69,10 +82,7 @@ export async function POST(req: Request) {
       const otherUserId = conv.user1_id === userId ? conv.user2_id : conv.user1_id;
       const profile = profiles?.find((p: any) => p.user_id === otherUserId) ?? null;
 
-      const listing = conv.listing ? {
-        id: conv.listing.id,
-        photos: Array.isArray(conv.listing.photos) ? conv.listing.photos : []
-      } : null;
+      const listing = conv.listing_id ? (listingsMap[conv.listing_id] || null) : null;
 
       console.log(`[conversations] conv ${conv.id}: otherUser=${otherUserId}, listing=${listing?.id ?? "none"}`);
 
