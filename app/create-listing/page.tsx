@@ -1399,7 +1399,7 @@ export default function CreateListingPage() {
               {(["tr", "en", "fa", "ar", "de", "ru"] as const).map((l) => (
                 <button
                   key={l}
-                  onClick={() => { setLang(l); setLangMenuOpen(false); }}
+                  onClick={() => { setLang(l); localStorage.setItem('lang', l); setLangMenuOpen(false); }}
                   className={`flex items-center gap-2 w-full px-3 py-2.5 text-[12px] font-bold transition-colors hover:bg-stone-50 ${lang === l ? "text-orange-500" : "text-stone-700"}`}
                 >
                   <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : l === "fa" ? "🇮🇷" : l === "ar" ? "🇸🇦" : l === "ru" ? "🇷🇺" : "🇩🇪"}</span>
