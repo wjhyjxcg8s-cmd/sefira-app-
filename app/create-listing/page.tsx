@@ -1051,6 +1051,16 @@ const countryCityExamples: Record<string, string> = {
   'UZ': 'Tashkent, Samarkand, Bukhara...',
 }
 
+// ── Validation messages (all 6 languages) ─────────────────────────────────────
+const validationMessages = {
+  tr: { header: "Lütfen tüm zorunlu alanları doldurun", country: "Ülke seçiniz", city: "Şehir seçiniz", district: "İlçe seçiniz", rent: "Kira miktarı giriniz", houseType: "Konut tipi seçiniz", gender: "Cinsiyet tercihi seçiniz", occupation: "Meslek tercihi seçiniz", furnished: "Eşyalı durumu seçiniz", elevator: "Asansör durumu seçiniz", parking: "Otopark durumu seçiniz", smoking: "Sigara tercihi seçiniz", bio: "Kendinizi en az 20 karakter ile tanıtın", photo: "En az 1 ev fotoğrafı yükleyiniz" },
+  en: { header: "Please fill in all required fields", country: "Select a country", city: "Select a city", district: "Select a district", rent: "Enter rent amount", houseType: "Select house type", gender: "Select gender preference", occupation: "Select occupation preference", furnished: "Select furnished status", elevator: "Select elevator status", parking: "Select parking status", smoking: "Select smoking preference", bio: "Introduce yourself with at least 20 characters", photo: "Upload at least 1 photo" },
+  fa: { header: "لطفاً همه فیلدهای اجباری را پر کنید", country: "کشور را انتخاب کنید", city: "شهر را انتخاب کنید", district: "منطقه را انتخاب کنید", rent: "مبلغ اجاره را وارد کنید", houseType: "نوع مسکن را انتخاب کنید", gender: "جنسیت مورد نظر را انتخاب کنید", occupation: "شغل مورد نظر را انتخاب کنید", furnished: "وضعیت مبله را انتخاب کنید", elevator: "وضعیت آسانسور را انتخاب کنید", parking: "وضعیت پارکینگ را انتخاب کنید", smoking: "وضعیت سیگار را انتخاب کنید", bio: "خود را با حداقل ۲۰ کاراکتر معرفی کنید", photo: "حداقل ۱ عکس آپلود کنید" },
+  ar: { header: "يرجى ملء جميع الحقول المطلوبة", country: "اختر الدولة", city: "اختر المدينة", district: "اختر المنطقة", rent: "أدخل مبلغ الإيجار", houseType: "اختر نوع المسكن", gender: "اختر تفضيل الجنس", occupation: "اختر تفضيل المهنة", furnished: "اختر حالة الأثاث", elevator: "اختر حالة المصعد", parking: "اختر حالة الموقف", smoking: "اختر تفضيل التدخين", bio: "عرّف بنفسك بـ 20 حرفاً على الأقل", photo: "ارفع صورة واحدة على الأقل" },
+  de: { header: "Bitte alle Pflichtfelder ausfüllen", country: "Land auswählen", city: "Stadt auswählen", district: "Bezirk auswählen", rent: "Mietbetrag eingeben", houseType: "Haustyp auswählen", gender: "Geschlechtspräferenz wählen", occupation: "Berufspräferenz wählen", furnished: "Möblierungsstatus wählen", elevator: "Aufzugsstatus wählen", parking: "Parkplatzstatus wählen", smoking: "Raucherpräferenz wählen", bio: "Stellen Sie sich mit mindestens 20 Zeichen vor", photo: "Mindestens 1 Foto hochladen" },
+  ru: { header: "Пожалуйста, заполните все обязательные поля", country: "Выберите страну", city: "Выберите город", district: "Выберите район", rent: "Введите сумму аренды", houseType: "Выберите тип жилья", gender: "Выберите предпочтение по полу", occupation: "Выберите предпочтение по профессии", furnished: "Выберите статус меблировки", elevator: "Выберите статус лифта", parking: "Выберите статус парковки", smoking: "Выберите предпочтение по курению", bio: "Представьтесь минимум 20 символами", photo: "Загрузите минимум 1 фото" }
+};
+
 // ── Main component ────────────────────────────────────────────────────────────
 export default function CreateListingPage() {
   const { user, loading } = useAuth();
@@ -1073,6 +1083,7 @@ export default function CreateListingPage() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
   const t = translations[lang];
+  const vm = validationMessages[lang] || validationMessages['tr'];
 
   const [step, setStep] = useState(1);
   const [form, setForm] = useState<ListingForm>(initialForm);
@@ -1198,12 +1209,12 @@ export default function CreateListingPage() {
     if (step === 2) {
       const errors: string[] = [];
       const invalid: string[] = [];
-      if (!form.countryCode) { errors.push("Ülke seçiniz"); invalid.push("country"); }
-      if (!form.city) { errors.push("Şehir seçiniz"); invalid.push("city"); }
-      if (countryIso === "TR" && !form.district) { errors.push("İlçe seçiniz"); invalid.push("district"); }
-      if (!form.price || parseFloat(form.price) <= 0) { errors.push("Aylık kira miktarı giriniz"); invalid.push("price"); }
+      if (!form.countryCode) { errors.push(vm.country); invalid.push("country"); }
+      if (!form.city) { errors.push(vm.city); invalid.push("city"); }
+      if (countryIso === "TR" && !form.district) { errors.push(vm.district); invalid.push("district"); }
+      if (!form.price || parseFloat(form.price) <= 0) { errors.push(vm.rent); invalid.push("price"); }
       if (!form.rooms || form.rooms <= 0) { errors.push("Oda sayısı giriniz"); invalid.push("rooms"); }
-      if (!form.houseType) { errors.push("Konut tipi seçiniz"); invalid.push("houseType"); }
+      if (!form.houseType) { errors.push(vm.houseType); invalid.push("houseType"); }
       if (errors.length > 0) {
         setStepErrors(errors);
         setInvalidFields(invalid);
@@ -1217,18 +1228,18 @@ export default function CreateListingPage() {
     if (step === 3) {
       const errors: string[] = [];
       const invalid: string[] = [];
-      if (form.gender_preference === null) { errors.push("Cinsiyet tercihi seçiniz"); invalid.push("gender"); }
-      if (form.occupation_preference === null) { errors.push("Meslek tercihi seçiniz"); invalid.push("occupation"); }
-      if (form.furnished === null) { errors.push("Eşyalı durumu seçiniz"); invalid.push("furnished"); }
-      if (form.elevator === null) { errors.push("Asansör durumu seçiniz"); invalid.push("elevator"); }
-      if (form.parking === null) { errors.push("Otopark durumu seçiniz"); invalid.push("parking"); }
-      if (form.smoking === null) { errors.push("Sigara tercihi seçiniz"); invalid.push("smoking"); }
+      if (form.gender_preference === null) { errors.push(vm.gender); invalid.push("gender"); }
+      if (form.occupation_preference === null) { errors.push(vm.occupation); invalid.push("occupation"); }
+      if (form.furnished === null) { errors.push(vm.furnished); invalid.push("furnished"); }
+      if (form.elevator === null) { errors.push(vm.elevator); invalid.push("elevator"); }
+      if (form.parking === null) { errors.push(vm.parking); invalid.push("parking"); }
+      if (form.smoking === null) { errors.push(vm.smoking); invalid.push("smoking"); }
       if (!form.description || form.description.trim().length < 20) {
-        errors.push("Kendinizi en az 20 karakter ile tanıtın");
+        errors.push(vm.bio);
         invalid.push("description");
       }
       if (!form.photos || form.photos.length === 0) {
-        errors.push("En az 1 ev fotoğrafı yükleyiniz");
+        errors.push(vm.photo);
         invalid.push("photos");
       }
       if (errors.length > 0) {
@@ -1443,7 +1454,7 @@ export default function CreateListingPage() {
 
           {stepErrors.length > 0 && (
             <div className="bg-red-50 border border-red-300 rounded-2xl p-4 mb-4">
-              <p className="text-red-600 font-bold text-sm mb-2">⚠️ Lütfen tüm zorunlu alanları doldurun:</p>
+              <p className="text-red-600 font-bold text-sm mb-2">⚠️ {vm.header}:</p>
               <ul className="text-red-500 text-sm list-disc list-inside">
                 {stepErrors.map((e, i) => <li key={i}>{e}</li>)}
               </ul>
@@ -1559,7 +1570,7 @@ export default function CreateListingPage() {
 
           {stepErrors.length > 0 && (
             <div className="bg-red-50 border border-red-300 rounded-2xl p-4 mb-4">
-              <p className="text-red-600 font-bold text-sm mb-2">⚠️ Lütfen tüm zorunlu alanları doldurun:</p>
+              <p className="text-red-600 font-bold text-sm mb-2">⚠️ {vm.header}:</p>
               <ul className="text-red-500 text-sm list-disc list-inside">
                 {stepErrors.map((e, i) => <li key={i}>{e}</li>)}
               </ul>
@@ -2002,7 +2013,7 @@ export default function CreateListingPage() {
 
           {stepErrors.length > 0 && (
             <div className="bg-red-50 border border-red-300 rounded-2xl p-4 mb-4">
-              <p className="text-red-600 font-bold text-sm mb-2">⚠️ Lütfen tüm zorunlu alanları doldurun:</p>
+              <p className="text-red-600 font-bold text-sm mb-2">⚠️ {vm.header}:</p>
               <ul className="text-red-500 text-sm list-disc list-inside">
                 {stepErrors.map((e, i) => <li key={i}>{e}</li>)}
               </ul>

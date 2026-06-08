@@ -418,8 +418,8 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
   return (
     <section className="max-w-7xl mx-auto px-5 mt-14 mb-14">
       <div className="flex flex-col items-center mb-6">
-        <h2 className="text-2xl font-black text-gray-900">{titles[lang]}</h2>
-        <p className="text-sm text-gray-400 mt-1">{subtitles[lang]}</p>
+        <h2 className="text-2xl font-black text-gray-900">{titles[lang as Lang]}</h2>
+        <p className="text-sm text-gray-400 mt-1">{subtitles[lang as Lang]}</p>
       </div>
 
       {/* City filter badge */}
@@ -452,7 +452,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
             }`}
           >
             <span className="text-lg">{c.flag}</span>
-            <span>{c.name[lang] || c.name.tr}</span>
+            <span>{c.name[lang as Lang] || c.name.tr}</span>
           </button>
         ))}
 
