@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useLang } from "@/app/lib/LangContext";
 import Link from "next/link";
 import { useAuth } from "@/app/lib/AuthContext";
 
@@ -163,7 +164,7 @@ function StarRow({
 
 export default function MyReviewsPage() {
   const { user, loading } = useAuth();
-  const [lang, setLang] = useState<Lang>("tr");
+  const { lang } = useLang();
 
   // review presence (removed = empty state)
   const [visible, setVisible] = useState(true);
@@ -181,11 +182,6 @@ export default function MyReviewsPage() {
 
   // delete confirmation
   const [confirmDelete, setConfirmDelete] = useState(false);
-
-  useEffect(() => {
-    const saved = localStorage.getItem("sefira-lang") as Lang | null;
-    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de" || saved === "ru") setLang(saved);
-  }, []);
 
   const t = translations[lang];
   const isFa = lang === "fa" || lang === "ar";

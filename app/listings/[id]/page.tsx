@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLang } from "@/app/lib/LangContext";
 import { useRouter, useParams } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 
@@ -126,12 +127,7 @@ export default function ListingDetailPage() {
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [activePhoto, setActivePhoto] = useState(0);
-  const [lang, setLang] = useState<Lang>("tr");
-
-  useEffect(() => {
-    const saved = localStorage.getItem("lang") as Lang | null;
-    if (saved && labels[saved]) setLang(saved);
-  }, []);
+  const { lang } = useLang();
 
   useEffect(() => {
     async function load() {

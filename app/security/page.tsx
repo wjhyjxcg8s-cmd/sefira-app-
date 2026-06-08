@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useLang } from "@/app/lib/LangContext";
 
 type Section = {
   heading: string;
@@ -467,12 +467,7 @@ function renderSection(section: Section, isRtl: boolean, isContact: boolean, con
 }
 
 export default function SecurityPage() {
-  const [lang, setLang] = useState("tr");
-
-  useEffect(() => {
-    const savedLang = localStorage.getItem("sefira-lang") || "tr";
-    setLang(savedLang);
-  }, []);
+  const { lang } = useLang();
 
   const content = SECURITY_CONTENT[lang] || SECURITY_CONTENT["tr"];
   const isRtl = lang === "fa" || lang === "ar";

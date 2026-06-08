@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/app/lib/supabase";
+import { useLang } from "@/app/lib/LangContext";
 
 const t = {
   tr: {
@@ -95,7 +96,7 @@ const t = {
 
 export default function ResetPasswordPage() {
   const router = useRouter();
-  const [lang, setLang] = useState<"tr" | "en" | "fa" | "ar" | "de" | "ru">("tr");
+  const { lang } = useLang();
   const tr = t[lang];
 
   // null = still checking, true = valid token, false = invalid/missing
@@ -105,11 +106,6 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-
-  useEffect(() => {
-    const saved = localStorage.getItem("sefira-lang") as "tr" | "en" | "fa" | "ar" | "de" | "ru" | null;
-    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de" || saved === "ru") setLang(saved);
-  }, []);
 
   useEffect(() => {
     // Abort early if there's an explicit error in the hash (e.g. expired link)

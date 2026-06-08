@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, Suspense } from "react";
+import { useLang } from "@/app/lib/LangContext";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -184,7 +185,7 @@ function MessagesPageContent() {
 
   console.log("URL params - userId:", searchParams.get("userId"), "listingId:", searchParams.get("listingId"));
 
-  const [lang, setLang] = useState<Lang>("tr");
+  const { lang } = useLang();
   const [mounted, setMounted] = useState(false);
   const [selectedConv, setSelectedConv] = useState<string | null>(null);
   const [mobileView, setMobileView] = useState<"list" | "chat">("list");
@@ -218,8 +219,6 @@ function MessagesPageContent() {
   const [pendingUserId, setPendingUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    const savedLang = localStorage.getItem("sefira-lang") as Lang | null;
-    if (savedLang && savedLang in translations) setLang(savedLang as Lang);
     setMounted(true);
   }, []);
 

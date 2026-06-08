@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useLang } from "@/app/lib/LangContext";
 
 const COOKIES_CONTENT: Record<string, {
   title: string;
@@ -397,12 +397,7 @@ function renderSectionContent(
 }
 
 export default function CookiesPage() {
-  const [lang, setLang] = useState("tr");
-
-  useEffect(() => {
-    const savedLang = localStorage.getItem("sefira-lang") || "tr";
-    setLang(savedLang);
-  }, []);
+  const { lang } = useLang();
 
   const content = COOKIES_CONTENT[lang] || COOKIES_CONTENT["tr"];
   const isRtl = lang === "fa" || lang === "ar";

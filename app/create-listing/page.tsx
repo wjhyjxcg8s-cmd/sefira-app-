@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
+import { useLang } from "@/app/lib/LangContext";
 import { City, Country, State } from 'country-state-city'
 
 // ── Countries ─────────────────────────────────────────────────────────────────
@@ -1065,15 +1066,9 @@ const validationMessages = {
 export default function CreateListingPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const [lang, setLang] = useState<"tr" | "en" | "fa" | "ar" | "de" | "ru">("tr");
+  const { lang, setLang } = useLang();
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const langMenuRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const saved = localStorage.getItem("sefira-lang");
-    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de" || saved === "ru") setLang(saved);
-  }, []);
-  useEffect(() => { localStorage.setItem("sefira-lang", lang); }, [lang]);
-  useEffect(() => { const handleLangChange = () => { const newLang = (localStorage.getItem('lang') || 'tr') as "tr" | "en" | "fa" | "ar" | "de" | "ru"; setLang(newLang); }; window.addEventListener('storage', handleLangChange); const interval = setInterval(() => { const newLang = (localStorage.getItem('lang') || 'tr') as "tr" | "en" | "fa" | "ar" | "de" | "ru"; setLang(prev => prev !== newLang ? newLang : prev); }, 500); return () => { window.removeEventListener('storage', handleLangChange); clearInterval(interval); }; }, []);
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (langMenuRef.current && !langMenuRef.current.contains(e.target as Node)) {
@@ -1399,7 +1394,7 @@ export default function CreateListingPage() {
               {(["tr", "en", "fa", "ar", "de", "ru"] as const).map((l) => (
                 <button
                   key={l}
-                  onClick={() => { setLang(l); localStorage.setItem('lang', l); setLangMenuOpen(false); }}
+                  onClick={() => { setLang(l); setLangMenuOpen(false); }}
                   className={`flex items-center gap-2 w-full px-3 py-2.5 text-[12px] font-bold transition-colors hover:bg-stone-50 ${lang === l ? "text-orange-500" : "text-stone-700"}`}
                 >
                   <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : l === "fa" ? "🇮🇷" : l === "ar" ? "🇸🇦" : l === "ru" ? "🇷🇺" : "🇩🇪"}</span>

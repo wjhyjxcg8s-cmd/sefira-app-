@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
+import { useLang } from "@/app/lib/LangContext";
 import CountrySelect from "@/app/components/CountrySelect";
 
 const translations = {
@@ -417,16 +418,10 @@ const translations = {
 export default function ProfilePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const [lang, setLang] = useState<"tr" | "en" | "fa" | "ar" | "de" | "ru">("tr");
+  const { lang, setLang } = useLang();
   const t = translations[lang];
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const langMenuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const saved = localStorage.getItem("sefira-lang") as "tr" | "en" | "fa" | "ar" | "de" | "ru" | null;
-    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de" || saved === "ru") setLang(saved);
-  }, []);
-  useEffect(() => { localStorage.setItem("sefira-lang", lang); }, [lang]);
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {

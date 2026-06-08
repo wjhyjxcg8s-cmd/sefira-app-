@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
+import { useLang } from "@/app/lib/LangContext";
 
 const CURRENCY_OPTIONS = [
   { value: "USD", label: "$ USD" },
@@ -408,7 +409,7 @@ export default function EditListingPage() {
   const params = useParams<{ id: string }>();
   const listingId = params.id;
 
-  const [lang, setLang] = useState<Lang>("tr");
+  const { lang } = useLang();
   const t = translations[lang];
   const dir = lang === "fa" || lang === "ar" ? "rtl" : "ltr";
 
@@ -440,11 +441,6 @@ export default function EditListingPage() {
     rooms: 2,
     description: "",
   });
-
-  useEffect(() => {
-    const saved = localStorage.getItem("sefira-lang") as Lang | null;
-    if (saved && saved in translations) setLang(saved);
-  }, []);
 
   useEffect(() => {
     if (loading) return;

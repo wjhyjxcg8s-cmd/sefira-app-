@@ -13,6 +13,7 @@ import AuthModal from "@/app/components/AuthModal";
 import OnboardingFlow from "@/app/components/OnboardingFlow";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
+import { useLang } from "@/app/lib/LangContext";
 import {
   type Currency,
   CURRENCY_SYMBOLS,
@@ -1239,17 +1240,7 @@ export default function Home() {
   const [cities, setCities] = useState<string[]>([]);
   const [selectedCity, setSelectedCity] = useState("");
   const [loadingCities, setLoadingCities] = useState(false);
-  const [lang, setLang] = useState<Lang>("tr");
-  useEffect(() => {
-    const saved = localStorage.getItem("sefira-lang") as Lang | null;
-    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de" || saved === "ru") setLang(saved);
-  }, []);
-  useEffect(() => { localStorage.setItem("sefira-lang", lang); }, [lang]);
-  useEffect(() => {
-    const handler = (e: CustomEvent) => { setLang(e.detail as Lang); };
-    window.addEventListener('languageChanged', handler as EventListener);
-    return () => window.removeEventListener('languageChanged', handler as EventListener);
-  }, []);
+  const { lang, setLang } = useLang();
 
   // ── Unread messages badge ─────────────────────────────────────────────────
   const [unreadSupportCount, setUnreadSupportCount] = useState(0);

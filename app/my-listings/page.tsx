@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLang } from "@/app/lib/LangContext";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
@@ -154,17 +155,12 @@ function houseTypeLabel(
 export default function MyListingsPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const [lang, setLang] = useState<Lang>("tr");
+  const { lang } = useLang();
   const t = translations[lang];
 
   const [listings, setListings] = useState<Listing[]>([]);
   const [fetching, setFetching] = useState(true);
   const [deletingId, setDeletingId] = useState<number | null>(null);
-
-  useEffect(() => {
-    const saved = localStorage.getItem("sefira-lang") as Lang | null;
-    if (saved && saved in translations) setLang(saved);
-  }, []);
 
   useEffect(() => {
     if (loading) return;

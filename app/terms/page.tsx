@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useLang } from "@/app/lib/LangContext";
 
 const TERMS_CONTENT: Record<string, {
   title: string;
@@ -434,12 +434,7 @@ function renderSectionContent(content: string, isRtl: boolean) {
 }
 
 export default function TermsPage() {
-  const [lang, setLang] = useState("tr");
-
-  useEffect(() => {
-    const savedLang = localStorage.getItem("sefira-lang") || "tr";
-    setLang(savedLang);
-  }, []);
+  const { lang } = useLang();
 
   const content = TERMS_CONTENT[lang] || TERMS_CONTENT["tr"];
   const isRtl = lang === "fa" || lang === "ar";

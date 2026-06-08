@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLang } from "@/app/lib/LangContext";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useAuth } from "@/app/lib/AuthContext";
@@ -89,13 +90,8 @@ interface SavedListing {
 
 export default function SavedListingsPage() {
   const { user, loading } = useAuth();
-  const [lang, setLang] = useState<Lang>("tr");
+  const { lang } = useLang();
   const t = translations[lang];
-
-  useEffect(() => {
-    const saved = localStorage.getItem("sefira-lang") as Lang | null;
-    if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de" || saved === "ru") setLang(saved);
-  }, []);
 
   const [savedIds, setSavedIds] = useState<number[]>([]);
   const [listings, setListings] = useState<SavedListing[]>([]);
