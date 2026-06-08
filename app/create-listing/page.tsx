@@ -1073,6 +1073,7 @@ export default function CreateListingPage() {
     if (saved === "tr" || saved === "en" || saved === "fa" || saved === "ar" || saved === "de" || saved === "ru") setLang(saved);
   }, []);
   useEffect(() => { localStorage.setItem("sefira-lang", lang); }, [lang]);
+  useEffect(() => { const handleLangChange = () => { const newLang = (localStorage.getItem('lang') || 'tr') as "tr" | "en" | "fa" | "ar" | "de" | "ru"; setLang(newLang); }; window.addEventListener('storage', handleLangChange); const interval = setInterval(() => { const newLang = (localStorage.getItem('lang') || 'tr') as "tr" | "en" | "fa" | "ar" | "de" | "ru"; setLang(prev => prev !== newLang ? newLang : prev); }, 500); return () => { window.removeEventListener('storage', handleLangChange); clearInterval(interval); }; }, []);
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (langMenuRef.current && !langMenuRef.current.contains(e.target as Node)) {
