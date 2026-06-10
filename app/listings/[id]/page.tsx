@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useLang } from "@/app/lib/LangContext";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -121,6 +121,7 @@ function formatDate(dateStr: string, lang: Lang): string {
 export default function ListingDetailPage() {
   const router = useRouter();
   const params = useParams();
+  const searchParams = useSearchParams();
 
   const [listing, setListing] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
@@ -221,7 +222,11 @@ export default function ListingDetailPage() {
       {/* Header */}
       <div className="flex items-center justify-between p-4 bg-white sticky top-0 z-10 border-b border-gray-100">
         <button
-          onClick={() => window.history.length > 1 ? router.back() : router.push("/")}
+          onClick={() => {
+            if (searchParams.get("from") === "admin") router.push("/admin-sefira-2026/listings");
+            else if (window.history.length > 1) router.back();
+            else router.push("/");
+          }}
           className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 text-lg"
         >
           ←

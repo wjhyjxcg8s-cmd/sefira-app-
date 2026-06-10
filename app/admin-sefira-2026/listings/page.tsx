@@ -233,7 +233,7 @@ export default function AdminListingsPage() {
                     {/* Actions */}
                     <div className="flex flex-col gap-1.5 shrink-0">
                       <a
-                        href={`/listings/${l.id}`}
+                        href={`/listings/${l.id}?from=admin`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors text-center"
