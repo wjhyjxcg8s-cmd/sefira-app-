@@ -94,15 +94,6 @@ function GenderBadge({ gender }: { gender: string | null }) {
   return null;
 }
 
-function filterByCountry(listings: any[], countryCode: string) {
-  if (countryCode === "all") return listings;
-  return listings.filter((l) => {
-    if (l.country_code) return l.country_code === countryCode;
-    const normalizedLocation = normalizeTR((l.city || "") + " " + (l.district || ""));
-    const cities = cityMap[countryCode] || [];
-    return cities.some((c) => normalizedLocation.includes(normalizeTR(c)));
-  });
-}
 
 const countries = [
   { code: "all", flag: "🌍", name: { tr: "Tümü", en: "All", fa: "همه", ar: "الكل", de: "Alle", ru: "Все" } },
@@ -332,6 +323,31 @@ const titles: Record<Lang, string> = {
 
 const fixedCodes = new Set(countries.map((c) => c.code));
 
+const countryNameToCode: Record<string, string> = {};
+for (const c of allCountries) {
+  countryNameToCode[c.name.toLowerCase()] = c.code;
+}
+for (const c of countries) {
+  if (c.code !== "all") {
+    for (const name of Object.values(c.name)) {
+      if (!countryNameToCode[name.toLowerCase()]) {
+        countryNameToCode[name.toLowerCase()] = c.code;
+      }
+    }
+  }
+}
+
+function filterByCountry(listings: any[], countryCode: string) {
+  if (countryCode === "all") return listings;
+  return listings.filter((l) => {
+    if (l.country_code && l.country_code.toUpperCase() === countryCode.toUpperCase()) return true;
+    if (l.country && countryNameToCode[l.country.toLowerCase()] === countryCode) return true;
+    const normalizedLocation = normalizeTR((l.city || "") + " " + (l.district || ""));
+    const cities = cityMap[countryCode] || [];
+    return cities.some((c) => normalizedLocation.includes(normalizeTR(c)));
+  });
+}
+
 interface LatestListingsProps {
   lang: string;
   filterCity?: string | null;
@@ -357,7 +373,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
       setLoading(true);
       const { data, error } = await supabaseClient
         .from("listings")
-        .select("id, type, city, district, rent, currency, photos, house_type, rooms, smoking, user_id, country_code")
+        .select("id, type, city, district, rent, currency, photos, house_type, rooms, smoking, user_id, country_code, country")
         .order("created_at", { ascending: false })
         .limit(50);
 
@@ -523,9 +539,13 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                 </p>
                 {(() => {
                   const countryInfo = detectCountry(listing.city, listing.district);
+                  const code = listing.country_code;
+                  const flag = code && /^[A-Za-z]{2}$/.test(code)
+                    ? String.fromCodePoint(...[...code.toUpperCase()].map(c => 0x1F1E6 - 65 + c.charCodeAt(0)))
+                    : countryInfo.flag;
                   return (
                     <div className="flex items-center gap-2 mt-1 mb-2">
-                      <span className="text-base">{countryInfo.flag}</span>
+                      <span className="text-base">{flag}</span>
                       {countryInfo.plate && (
                         <div className="flex items-center border border-gray-300 rounded overflow-hidden text-xs font-bold shadow-sm">
                           <div className="bg-blue-700 text-white px-1 py-0.5 flex flex-col items-center leading-tight">
