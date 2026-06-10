@@ -1878,11 +1878,15 @@ export default function AdminPage() {
 // ─── Telegram-style inbox ────────────────────────────────────────────────────
 
 interface Conversation {
+  key: string;
   user_id: string;
   email: string | null;
+  display_name: string | null;
   last_message: string;
   last_date: string;
   unread_count: number;
+  source: "admin" | "listing";
+  conversation_id?: string;
 }
 
 interface ThreadMsg {
@@ -1898,6 +1902,7 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
   const router = useRouter();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedConvObj, setSelectedConvObj] = useState<Conversation | null>(null);
   const [thread, setThread] = useState<ThreadMsg[]>([]);
   const [replyText, setReplyText] = useState("");
   const [sending, setSending] = useState(false);
@@ -1921,11 +1926,13 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
     setLoadingConvs(false);
   };
 
-  const fetchThread = async (userId: string) => {
+  const fetchThread = async (conv: Conversation) => {
     setLoadingThread(true);
-    const res = await fetch(`/api/admin/conversations?userId=${userId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const url =
+      conv.source === "listing" && conv.conversation_id
+        ? `/api/admin/conversations?convId=${conv.conversation_id}`
+        : `/api/admin/conversations?userId=${conv.user_id}`;
+    const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
     const json = await res.json();
     if (json.messages) setThread(json.messages);
     setLoadingThread(false);
@@ -1934,34 +1941,39 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
 
   useEffect(() => { fetchConversations(); }, []);
 
-  const selectConversation = async (userId: string) => {
-    setSelectedId(userId);
+  const selectConversation = async (conv: Conversation) => {
+    setSelectedId(conv.key);
+    setSelectedConvObj(conv);
     setMobileView("chat");
-    fetchThread(userId);
+    fetchThread(conv);
     // Zero the badge immediately in local state
     setConversations((prev) =>
-      prev.map((c) => c.user_id === userId ? { ...c, unread_count: 0 } : c)
+      prev.map((c) => c.key === conv.key ? { ...c, unread_count: 0 } : c)
     );
-    // Persist read status via service-role API route (bypasses RLS)
+    // Persist read status
+    const markReadBody =
+      conv.source === "listing" && conv.conversation_id
+        ? JSON.stringify({ convId: conv.conversation_id })
+        : JSON.stringify({ userId: conv.user_id });
     await fetch("/api/admin/mark-read", {
       method: "POST",
       headers: authJson,
-      body: JSON.stringify({ userId }),
+      body: markReadBody,
     });
     fetchConversations();
   };
 
   const handleSend = async () => {
-    if (!replyText.trim() || !selectedId || sending) return;
+    if (!replyText.trim() || !selectedId || !selectedConvObj || sending) return;
     setSending(true);
     const text = replyText.trim();
     setReplyText("");
 
-    // Feature 1: Optimistic update — show message immediately
+    // Optimistic update
     const tempId = "temp-" + Date.now();
     const optimistic: ThreadMsg = {
       id: tempId,
-      user_id: selectedId,
+      user_id: selectedConvObj.user_id,
       message: text,
       sender: "admin",
       is_read: false,
@@ -1970,21 +1982,19 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
     setThread((prev) => [...prev, optimistic]);
     setTimeout(() => threadEndRef.current?.scrollIntoView({ behavior: "smooth" }), 30);
 
+    const isListing = selectedConvObj.source === "listing" && selectedConvObj.conversation_id;
+    const sendBody = isListing
+      ? JSON.stringify({ convId: selectedConvObj.conversation_id, message: text })
+      : JSON.stringify({ userId: selectedConvObj.user_id, userEmail: "", title: "reply", message: text, sendToAll: false, sender: "admin" });
+
     const res = await fetch("/api/admin/send-message", {
       method: "POST",
       headers: authJson,
-      body: JSON.stringify({
-        userId: selectedId,
-        userEmail: "",
-        title: "reply",
-        message: text,
-        sendToAll: false,
-        sender: "admin",
-      }),
+      body: sendBody,
     });
     const result = await res.json();
     if (!result.error) {
-      await fetchThread(selectedId);
+      await fetchThread(selectedConvObj);
       fetchConversations();
     } else {
       setThread((prev) => prev.filter((m) => m.id !== tempId));
@@ -2014,9 +2024,9 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
       : date.toLocaleDateString("tr-TR", { day: "numeric", month: "short" });
   };
 
-  const selectedConv = conversations.find((c) => c.user_id === selectedId);
-  const displayEmail = (conv: Conversation | undefined, uid: string) =>
-    conv?.email ?? uid.slice(0, 8) + "…";
+  const selectedConv = conversations.find((c) => c.key === selectedId) ?? selectedConvObj;
+  const displayName = (conv: Conversation | null | undefined, uid: string | null) =>
+    conv?.display_name ?? conv?.email ?? (uid ? uid.slice(0, 8) + "…" : "?");
 
   return (
     <div className="flex flex-col overflow-hidden" style={{ height: "calc(100vh - 57px)" }}>
@@ -2079,17 +2089,17 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
           ) : (
             conversations.map((conv) => (
               <button
-                key={conv.user_id}
-                onClick={() => selectConversation(conv.user_id)}
+                key={conv.key}
+                onClick={() => selectConversation(conv)}
                 className={`w-full flex items-center gap-3 px-4 py-3.5 text-left border-b border-gray-50 transition-colors ${
-                  selectedId === conv.user_id ? "bg-orange-50" : "hover:bg-gray-50"
+                  selectedId === conv.key ? "bg-orange-50" : "hover:bg-gray-50"
                 }`}
               >
                 <div
                   className="w-11 h-11 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
                   style={{ backgroundColor: "#f97316" }}
                 >
-                  {(conv.email?.[0] ?? "?").toUpperCase()}
+                  {(conv.display_name?.[0] ?? conv.email?.[0] ?? "?").toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-1 mb-0.5">
@@ -2098,7 +2108,7 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
                         conv.unread_count > 0 ? "font-bold text-gray-900" : "font-semibold text-gray-700"
                       }`}
                     >
-                      {conv.email ?? conv.user_id.slice(0, 8) + "…"}
+                      {conv.display_name ?? conv.email ?? conv.user_id.slice(0, 8) + "…"}
                     </span>
                     <span className="text-[11px] text-gray-400 flex-shrink-0">
                       {fmtTime(conv.last_date)}
@@ -2171,16 +2181,18 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
                   className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
                   style={{ backgroundColor: "#f97316" }}
                 >
-                  {(selectedConv?.email?.[0] ?? "?").toUpperCase()}
+                  {(selectedConv?.display_name?.[0] ?? selectedConv?.email?.[0] ?? "?").toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-bold text-gray-900 text-sm leading-tight truncate">
-                    {displayEmail(selectedConv, selectedId)}
+                    {displayName(selectedConv, selectedId)}
                   </p>
-                  <p className="text-xs text-emerald-500 font-semibold">Kullanıcı</p>
+                  <p className="text-xs text-emerald-500 font-semibold">
+                    {selectedConv?.source === "listing" ? "İlan Mesajı" : "Kullanıcı"}
+                  </p>
                 </div>
                 <button
-                  onClick={() => router.push(`/admin-sefira-2026/user/${selectedId}`)}
+                  onClick={() => router.push(`/admin-sefira-2026/user/${selectedConv?.user_id ?? selectedId}`)}
                   className="px-3 py-1.5 text-xs font-medium rounded-lg bg-orange-50 hover:bg-orange-100 text-orange-600 transition-colors flex-shrink-0"
                 >
                   👤 Kullanıcı Bilgileri
@@ -2208,7 +2220,7 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
                         >
                           {!isAdmin && (
                             <div className="w-7 h-7 rounded-full bg-gray-400 flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mb-1">
-                              {(selectedConv?.email?.[0] ?? "?").toUpperCase()}
+                              {(selectedConv?.display_name?.[0] ?? selectedConv?.email?.[0] ?? "?").toUpperCase()}
                             </div>
                           )}
                           <div

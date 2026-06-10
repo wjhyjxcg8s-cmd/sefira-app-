@@ -39,7 +39,25 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     console.log('API RECEIVED:', JSON.stringify(body));
-    const { userId, userEmail, title, message, sendToAll } = body;
+    const { userId, userEmail, title, message, sendToAll, convId } = body;
+
+    // Write reply into a listing conversation (user_messages table)
+    if (convId) {
+      if (!message) return NextResponse.json({ error: "Missing message" }, { status: 400 });
+      const { error: msgErr } = await supabaseAdmin.from("user_messages").insert({
+        conversation_id: convId,
+        sender_id: adminUser.id,
+        content: message,
+      });
+      if (!msgErr) {
+        await supabaseAdmin
+          .from("conversations")
+          .update({ updated_at: new Date().toISOString() })
+          .eq("id", convId);
+      }
+      return NextResponse.json({ error: msgErr?.message ?? null });
+    }
+
     if (!title || !message) {
       return NextResponse.json({ error: "Missing title or message" }, { status: 400 });
     }

@@ -28,8 +28,20 @@ export async function POST(req: NextRequest) {
   const admin = await verifyAdmin(req)
   if (!admin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  const { userId } = await req.json()
-  if (!userId) return NextResponse.json({ error: 'userId required' }, { status: 400 })
+  const body = await req.json()
+  const { userId, convId } = body
+
+  // Mark user_messages as read for a listing conversation
+  if (convId) {
+    const { error } = await supabaseAdmin
+      .from('user_messages')
+      .update({ is_read: true })
+      .eq('conversation_id', convId)
+      .neq('sender_id', admin.id)
+    return NextResponse.json({ error: error?.message ?? null })
+  }
+
+  if (!userId) return NextResponse.json({ error: 'userId or convId required' }, { status: 400 })
 
   const { error } = await supabaseAdmin
     .from('admin_messages')
