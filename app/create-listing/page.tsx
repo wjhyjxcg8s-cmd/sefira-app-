@@ -1284,6 +1284,8 @@ export default function CreateListingPage() {
       rooms:             form.rooms,
       photos:            photoUrls,
       address:           form.address || null,
+      country_code:      form.countryCode || null,
+      country:           form.country || null,
     };
 
     console.log('Insert payload:', JSON.stringify(payload, null, 2));
