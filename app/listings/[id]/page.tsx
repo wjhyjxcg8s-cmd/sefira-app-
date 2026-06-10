@@ -221,7 +221,7 @@ export default function ListingDetailPage() {
       {/* Header */}
       <div className="flex items-center justify-between p-4 bg-white sticky top-0 z-10 border-b border-gray-100">
         <button
-          onClick={() => router.back()}
+          onClick={() => window.history.length > 1 ? router.back() : router.push("/")}
           className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 text-lg"
         >
           ←
