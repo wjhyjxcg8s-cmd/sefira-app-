@@ -610,7 +610,7 @@ function MessagesPageContent() {
 
   const globalSorted = [...globalMessages].reverse();
   const isUserConv = selectedConv !== null && !SYSTEM_CONVS.has(selectedConv);
-  const activePeerName = targetProfile?.display_name ?? "—";
+  const activePeerName = (targetProfile?.display_name === "Admin" ? "Sefira Destek" : targetProfile?.display_name) ?? "—";
   const activePeerAvatar = targetProfile?.avatar_url ?? null;
 
   // Is there already a conversation for this specific user + listing?
@@ -822,7 +822,7 @@ function MessagesPageContent() {
 
           {/* Loaded peer conversations */}
           {deduplicatedConvs.map((conv: any) => {
-            const name = conv.otherUser?.display_name ?? "Kullanıcı";
+            const name = (conv.otherUser?.display_name === "Admin" ? "Sefira Destek" : conv.otherUser?.display_name) ?? "Kullanıcı";
             const avatar = conv.otherUser?.avatar_url ?? null;
             const listing = conv.listing ?? null;
             const isSelected = selectedConv === conv.id;
