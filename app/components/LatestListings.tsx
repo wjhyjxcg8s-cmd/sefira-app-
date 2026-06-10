@@ -374,6 +374,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
       const { data, error } = await supabaseClient
         .from("listings")
         .select("id, type, city, district, rent, currency, photos, house_type, rooms, smoking, user_id, country_code, country")
+        .eq("is_deleted", false)
         .order("created_at", { ascending: false })
         .limit(50);
 

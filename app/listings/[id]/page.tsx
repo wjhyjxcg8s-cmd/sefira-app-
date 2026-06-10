@@ -410,7 +410,11 @@ export default function ListingDetailPage() {
 
       {/* Fixed contact button */}
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100 shadow-lg z-20">
-        {isOwner ? (
+        {listing.is_deleted ? (
+          <button disabled className="w-full py-4 rounded-2xl bg-gray-100 text-gray-400 font-bold text-lg cursor-not-allowed">
+            Bu ilan kaldırıldı
+          </button>
+        ) : isOwner ? (
           <button className="w-full py-4 rounded-2xl bg-gray-200 text-gray-500 font-bold text-lg">
             {t.ownListing}
           </button>

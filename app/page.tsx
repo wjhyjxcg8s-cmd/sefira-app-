@@ -1301,6 +1301,7 @@ export default function Home() {
         user_id,
         profiles(display_name, avatar_url)
       `)
+      .eq("is_deleted", false)
       .order("created_at", { ascending: false })
       .limit(6)
       .then(({ data }) => {

@@ -110,6 +110,7 @@ export default function SavedListingsPage() {
       .from("listings")
       .select("*")
       .in("id", savedIds)
+      .eq("is_deleted", false)
       .then(({ data }) => {
         setListings((data as SavedListing[]) ?? []);
         setFetching(false);

@@ -734,6 +734,7 @@ export default function AdminPage() {
                 icon: "🏠",
                 bg: "#f0fdf4",
                 color: "#16a34a",
+                link: "/admin-sefira-2026/listings",
               },
               {
                 label: "Deletion Feedback",
@@ -752,8 +753,9 @@ export default function AdminPage() {
             ].map((card) => (
               <div
                 key={card.label}
-                className="bg-white rounded-2xl p-6 border border-gray-100"
+                className={`bg-white rounded-2xl p-6 border border-gray-100 ${"link" in card && card.link ? "cursor-pointer hover:border-orange-200 hover:shadow-md transition-all" : ""}`}
                 style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
+                onClick={"link" in card && card.link ? () => router.push(card.link as string) : undefined}
               >
                 <div
                   className="inline-flex items-center justify-center w-12 h-12 rounded-xl text-2xl mb-4"

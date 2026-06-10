@@ -169,6 +169,7 @@ export default function MyListingsPage() {
       .from("listings")
       .select("id, photos, city, district, rent, currency, house_type, created_at")
       .eq("user_id", user.id)
+      .eq("is_deleted", false)
       .order("created_at", { ascending: false })
       .then(({ data }) => {
         setListings((data as Listing[]) ?? []);
@@ -179,7 +180,7 @@ export default function MyListingsPage() {
   const handleDelete = async (id: number) => {
     if (!window.confirm(t.deleteConfirm)) return;
     setDeletingId(id);
-    await supabase.from("listings").delete().eq("id", id);
+    await supabase.from("listings").update({ is_deleted: true }).eq("id", id);
     setListings((prev) => prev.filter((l) => l.id !== id));
     setDeletingId(null);
   };
