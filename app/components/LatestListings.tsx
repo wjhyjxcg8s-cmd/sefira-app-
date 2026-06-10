@@ -410,7 +410,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
           normalizeTR(l.district || "").includes(q)
       );
     }
-    return base.slice(0, 6);
+    return base.slice(0, 12);
   }, [allListings, selectedCountry, filterCity]);
 
   function selectFromModal(country: { code: string; flag: string; name: string }) {
