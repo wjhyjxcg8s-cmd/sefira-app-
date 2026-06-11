@@ -2184,7 +2184,7 @@ export default function Home() {
                       whileTap={{ scale: 0.97 }}
                       whileHover={{ y: -4 }}
                       onClick={() => router.push('/create-listing?type=has_place')}
-                      className="w-full relative overflow-hidden rounded-3xl p-6 text-left shadow-[0_12px_40px_-12px_rgba(255,107,53,0.6)]"
+                      className="w-full relative overflow-hidden rounded-3xl p-6 text-left shadow-[0_12px_40px_-12px_rgba(255,107,53,0.6)] active:scale-[0.98] transition-transform"
                       style={{ background: 'linear-gradient(135deg,#FF8A3D 0%,#FF6B35 55%,#F7501E 100%)' }}
                     >
                       <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/15 rounded-full blur-xl" />
@@ -2227,7 +2227,7 @@ export default function Home() {
                       whileTap={{ scale: 0.97 }}
                       whileHover={{ y: -4 }}
                       onClick={() => router.push('/create-listing?type=needs_place')}
-                      className="w-full relative overflow-hidden rounded-3xl p-6 text-left shadow-[0_12px_40px_-12px_rgba(79,70,229,0.6)]"
+                      className="w-full relative overflow-hidden rounded-3xl p-6 text-left shadow-[0_12px_40px_-12px_rgba(79,70,229,0.6)] active:scale-[0.98] transition-transform"
                       style={{ background: 'linear-gradient(135deg,#7C8CF8 0%,#5B6EE8 55%,#4F46E5 100%)' }}
                     >
                       <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/15 rounded-full blur-xl" />

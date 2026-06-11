@@ -1081,8 +1081,12 @@ function CreateListingPage() {
   const t = translations[lang];
   const vm = validationMessages[lang] || validationMessages['tr'];
 
-  const [step, setStep] = useState(1);
-  const [form, setForm] = useState<ListingForm>(initialForm);
+  const searchParams = useSearchParams();
+  const _typeParam = searchParams.get('type') as ListingType | null;
+  const _preselectedType = (_typeParam === 'has_place' || _typeParam === 'needs_place') ? _typeParam : null;
+
+  const [step, setStep] = useState(() => _preselectedType === 'needs_place' ? 4 : _preselectedType === 'has_place' ? 2 : 1);
+  const [form, setForm] = useState<ListingForm>(() => _preselectedType ? { ...initialForm, type: _preselectedType } : initialForm);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
@@ -1090,16 +1094,6 @@ function CreateListingPage() {
   const [invalidFields, setInvalidFields] = useState<string[]>([]);
   const [uploadingCount, setUploadingCount] = useState(0);
   const [photoError, setPhotoError] = useState<string | null>(null);
-
-  const searchParams = useSearchParams();
-  useEffect(() => {
-    const type = searchParams.get('type') as ListingType | null;
-    if (type === 'has_place' || type === 'needs_place') {
-      setForm(f => ({ ...f, type }));
-      setStep(type === 'needs_place' ? 4 : 2);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const [countryIso, setCountryIso] = useState('TR')
   const [turkiyeData, setTurkiyeData] = useState<Record<string, Record<string, string[]>>>({})
