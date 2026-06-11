@@ -1089,6 +1089,18 @@ export default function Home() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // ── Restore scroll position after back-navigation from a listing ──────────
+  useEffect(() => {
+    const saved = sessionStorage.getItem("sefira-scroll");
+    if (!saved) return;
+    sessionStorage.removeItem("sefira-scroll");
+    const top = parseInt(saved, 10);
+    if (!top) return;
+    requestAnimationFrame(() => {
+      window.scrollTo({ top, behavior: "instant" as ScrollBehavior });
+    });
+  }, []);
+
   // ── Lock body scroll when profile drawer is open ──────────────────────────
   useEffect(() => {
     if (profileMenuOpen) {
