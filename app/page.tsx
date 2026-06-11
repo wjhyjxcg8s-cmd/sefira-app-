@@ -1929,16 +1929,24 @@ export default function Home() {
 
             {/* Menu items */}
             <div style={{ flex: 1, overflowY: "auto" }} className="px-3 py-4 flex flex-col gap-1.5">
+              <style>{`
+                @keyframes drawerItemIn {
+                  from { opacity: 0; transform: translateY(8px); }
+                  to   { opacity: 1; transform: translateY(0); }
+                }
+                .drawer-item {
+                  opacity: 0;
+                  animation: drawerItemIn 0.22s ease-out forwards;
+                }
+              `}</style>
 
               {/* Edit Profile */}
               <motion.button
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0 * 0.07, type: "spring", stiffness: 300 }}
-                whileHover={{ x: 4, backgroundColor: "#FFF7F0" }}
+                whileHover={{ x: 4 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => { setProfileMenuOpen(false); router.push("/profile"); }}
-                className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 group"
+                className="drawer-item w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-150 group hover:bg-gray-50 active:scale-[0.97] active:bg-gray-100"
+                style={{ animationDelay: '0ms' }}
               >
                 <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-violet-400 to-purple-500">
                   <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
@@ -1949,22 +1957,16 @@ export default function Home() {
                 <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-600 transition-colors">
                   {lang === "tr" ? "Profilimi Düzenle" : lang === "fa" ? "ویرایش پروفایل" : lang === "ar" ? "تعدیل الملف الشخصی" : lang === "de" ? "Profil bearbeiten" : lang === "ru" ? "Редактировать профиль" : "Edit Profile"}
                 </span>
-                <motion.span
-                  animate={{ x: [0, 3, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 0 * 0.3 }}
-                  className="text-gray-300 group-hover:text-orange-400 text-lg"
-                >›</motion.span>
+                <span className="text-gray-300 group-hover:text-orange-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
               </motion.button>
 
               {/* Saved */}
               <motion.button
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 1 * 0.07, type: "spring", stiffness: 300 }}
-                whileHover={{ x: 4, backgroundColor: "#FFF7F0" }}
+                whileHover={{ x: 4 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => { setProfileMenuOpen(false); router.push("/saved-listings"); }}
-                className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 group"
+                className="drawer-item w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-150 group hover:bg-gray-50 active:scale-[0.97] active:bg-gray-100"
+                style={{ animationDelay: '40ms' }}
               >
                 <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-blue-400 to-blue-500">
                   <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
@@ -1974,22 +1976,16 @@ export default function Home() {
                 <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-600 transition-colors">
                   {lang === "tr" ? "Kaydedilenler" : lang === "fa" ? "ذخیره‌ها" : lang === "ar" ? "المحفوظات" : lang === "de" ? "Gespeichert" : lang === "ru" ? "Сохранённые" : "Saved"}
                 </span>
-                <motion.span
-                  animate={{ x: [0, 3, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 1 * 0.3 }}
-                  className="text-gray-300 group-hover:text-orange-400 text-lg"
-                >›</motion.span>
+                <span className="text-gray-300 group-hover:text-orange-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
               </motion.button>
 
               {/* Post Listing */}
               <motion.button
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 2 * 0.07, type: "spring", stiffness: 300 }}
-                whileHover={{ x: 4, backgroundColor: "#FFF7F0" }}
+                whileHover={{ x: 4 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => { handleCreateListing(); setProfileMenuOpen(false); }}
-                className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 group"
+                className="drawer-item w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-150 group hover:bg-gray-50 active:scale-[0.97] active:bg-gray-100"
+                style={{ animationDelay: '80ms' }}
               >
                 <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-green-400 to-emerald-500">
                   <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" className="w-5 h-5">
@@ -1999,22 +1995,16 @@ export default function Home() {
                 <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-600 transition-colors">
                   {lang === "tr" ? "İlan Ver" : lang === "fa" ? "ثبت آگهی" : lang === "ar" ? "نشر إعلان" : lang === "de" ? "Inserat aufgeben" : lang === "ru" ? "Разместить объявление" : "Post Listing"}
                 </span>
-                <motion.span
-                  animate={{ x: [0, 3, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 2 * 0.3 }}
-                  className="text-gray-300 group-hover:text-orange-400 text-lg"
-                >›</motion.span>
+                <span className="text-gray-300 group-hover:text-orange-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
               </motion.button>
 
               {/* My Listings */}
               <motion.button
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 3 * 0.07, type: "spring", stiffness: 300 }}
-                whileHover={{ x: 4, backgroundColor: "#FFF7F0" }}
+                whileHover={{ x: 4 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => { setProfileMenuOpen(false); router.push("/my-listings"); }}
-                className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 group"
+                className="drawer-item w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-150 group hover:bg-gray-50 active:scale-[0.97] active:bg-gray-100"
+                style={{ animationDelay: '120ms' }}
               >
                 <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-orange-400 to-orange-500">
                   <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
@@ -2026,22 +2016,16 @@ export default function Home() {
                 <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-600 transition-colors">
                   {lang === "tr" ? "İlanlarım" : lang === "fa" ? "آگهی‌های من" : lang === "ar" ? "إعلاناتی" : lang === "de" ? "Meine Inserate" : lang === "ru" ? "Мои объявления" : "My Listings"}
                 </span>
-                <motion.span
-                  animate={{ x: [0, 3, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 3 * 0.3 }}
-                  className="text-gray-300 group-hover:text-orange-400 text-lg"
-                >›</motion.span>
+                <span className="text-gray-300 group-hover:text-orange-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
               </motion.button>
 
               {/* My Messages */}
               <motion.button
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 4 * 0.07, type: "spring", stiffness: 300 }}
-                whileHover={{ x: 4, backgroundColor: "#FFF7F0" }}
+                whileHover={{ x: 4 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => { setProfileMenuOpen(false); router.push("/messages"); }}
-                className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 group"
+                className="drawer-item w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-150 group hover:bg-gray-50 active:scale-[0.97] active:bg-gray-100"
+                style={{ animationDelay: '160ms' }}
               >
                 <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-teal-400 to-cyan-500" style={{ position: "relative" }}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
@@ -2058,22 +2042,16 @@ export default function Home() {
                 <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-600 transition-colors">
                   {lang === "tr" ? "Mesajlarım" : lang === "fa" ? "پیام‌های من" : lang === "ar" ? "رسائلی" : lang === "de" ? "Meine Nachrichten" : lang === "ru" ? "Мои сооبщения" : "My Messages"}
                 </span>
-                <motion.span
-                  animate={{ x: [0, 3, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 4 * 0.3 }}
-                  className="text-gray-300 group-hover:text-orange-400 text-lg"
-                >›</motion.span>
+                <span className="text-gray-300 group-hover:text-orange-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
               </motion.button>
 
               {/* Reviews & Ratings */}
               <motion.button
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 5 * 0.07, type: "spring", stiffness: 300 }}
-                whileHover={{ x: 4, backgroundColor: "#FFF7F0" }}
+                whileHover={{ x: 4 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => { setProfileMenuOpen(false); router.push("/my-reviews"); }}
-                className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 group"
+                className="drawer-item w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-150 group hover:bg-gray-50 active:scale-[0.97] active:bg-gray-100"
+                style={{ animationDelay: '200ms' }}
               >
                 <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-yellow-400 to-amber-500">
                   <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
@@ -2083,11 +2061,7 @@ export default function Home() {
                 <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-600 transition-colors">
                   {lang === "tr" ? "Yorumlarım ve Puanım" : lang === "fa" ? "کامنت‌ها و امتیازهای من" : lang === "ar" ? "تعلیقاتی وتقییماتی" : lang === "de" ? "Meine Bewertungen" : lang === "ru" ? "Мои отзывы и оценки" : "Reviews & Ratings"}
                 </span>
-                <motion.span
-                  animate={{ x: [0, 3, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 5 * 0.3 }}
-                  className="text-gray-300 group-hover:text-orange-400 text-lg"
-                >›</motion.span>
+                <span className="text-gray-300 group-hover:text-orange-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
               </motion.button>
 
               {/* Divider */}
@@ -2095,13 +2069,11 @@ export default function Home() {
 
               {/* Sign Out */}
               <motion.button
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 6 * 0.07, type: "spring", stiffness: 300 }}
-                whileHover={{ x: 4, backgroundColor: "#FFF7F0" }}
+                whileHover={{ x: 4 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => { handleSignOut(); setProfileMenuOpen(false); }}
-                className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 group"
+                className="drawer-item w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-150 group hover:bg-gray-50 active:scale-[0.97] active:bg-red-50"
+                style={{ animationDelay: '240ms' }}
               >
                 <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-red-400 to-rose-500">
                   <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
@@ -2113,11 +2085,7 @@ export default function Home() {
                 <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-600 transition-colors">
                   {t.signOut}
                 </span>
-                <motion.span
-                  animate={{ x: [0, 3, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 6 * 0.3 }}
-                  className="text-gray-300 group-hover:text-orange-400 text-lg"
-                >›</motion.span>
+                <span className="text-gray-300 group-hover:text-orange-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
               </motion.button>
             </div>
           </div>
