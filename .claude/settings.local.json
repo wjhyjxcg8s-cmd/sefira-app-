@@ -38,7 +38,8 @@
       "Read(//e/sefira-web/**)",
       "PowerShell(pm2 logs sefira --lines 50 --nostream 2>&1)",
       "Bash(pm2 logs *)",
-      "Bash(npx pm2 *)"
+      "Bash(npx pm2 *)",
+      "Bash(node -e \"const p=require\\('./package.json'\\);console.log\\(p.dependencies.next\\)\")"
     ],
     "additionalDirectories": [
       "e:\\sefıra-web\\sefira-app\\app\\api\\admin\\channels",

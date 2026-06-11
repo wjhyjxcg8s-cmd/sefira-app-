@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, Suspense } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
 import { useLang } from "@/app/lib/LangContext";
@@ -1063,7 +1063,7 @@ const validationMessages = {
 };
 
 // ── Main component ────────────────────────────────────────────────────────────
-export default function CreateListingPage() {
+function CreateListingPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const { lang, setLang } = useLang();
@@ -1090,6 +1090,16 @@ export default function CreateListingPage() {
   const [invalidFields, setInvalidFields] = useState<string[]>([]);
   const [uploadingCount, setUploadingCount] = useState(0);
   const [photoError, setPhotoError] = useState<string | null>(null);
+
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const type = searchParams.get('type') as ListingType | null;
+    if (type === 'has_place' || type === 'needs_place') {
+      setForm(f => ({ ...f, type }));
+      setStep(type === 'needs_place' ? 4 : 2);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [countryIso, setCountryIso] = useState('TR')
   const [turkiyeData, setTurkiyeData] = useState<Record<string, Record<string, string[]>>>({})
@@ -2341,4 +2351,12 @@ export default function CreateListingPage() {
   }
 
   return null;
+}
+
+export default function CreateListingPageRoot() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-stone-50 flex items-center justify-center"><div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" /></div>}>
+      <CreateListingPage />
+    </Suspense>
+  );
 }

@@ -2183,7 +2183,7 @@ export default function Home() {
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
                       whileTap={{ scale: 0.97 }}
                       whileHover={{ y: -4 }}
-                      onClick={() => { setWizardMode("seeking"); setWizardStep(1); }}
+                      onClick={() => router.push('/create-listing?type=has_place')}
                       className="w-full relative overflow-hidden rounded-3xl p-6 text-left shadow-[0_12px_40px_-12px_rgba(255,107,53,0.6)]"
                       style={{ background: 'linear-gradient(135deg,#FF8A3D 0%,#FF6B35 55%,#F7501E 100%)' }}
                     >
@@ -2226,7 +2226,7 @@ export default function Home() {
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.25 }}
                       whileTap={{ scale: 0.97 }}
                       whileHover={{ y: -4 }}
-                      onClick={() => { setWizardMode("offering"); setWizardStep(1); }}
+                      onClick={() => router.push('/create-listing?type=needs_place')}
                       className="w-full relative overflow-hidden rounded-3xl p-6 text-left shadow-[0_12px_40px_-12px_rgba(79,70,229,0.6)]"
                       style={{ background: 'linear-gradient(135deg,#7C8CF8 0%,#5B6EE8 55%,#4F46E5 100%)' }}
                     >
