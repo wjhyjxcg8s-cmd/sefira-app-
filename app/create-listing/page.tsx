@@ -156,6 +156,34 @@ const translations = {
     requiredField: "Bu alan zorunludur.",
     selectType: "Lütfen bir ilan türü seçin.",
     fillRequired: "Lütfen zorunlu alanları doldurun.",
+    // Needs-place step 2
+    step2SeekerTitle: "Profil Bilgileri",
+    step2SeekerHeading: "Kendinizi Tanıtın",
+    step2SeekerSub: "Ne kadar detay verirseniz, o kadar iyi eşleşme bulursunuz 🎯",
+    seekerGenderLabel: "Cinsiyetiniz",
+    preferredRoommateGenderLabel: "Tercih Ettiğiniz Ev Arkadaşı Cinsiyeti",
+    seekerAgeLabel: "Yaşınız",
+    seekerOccLabel: "Mesleğiniz",
+    seekerOccWorking: "Çalışıyorum",
+    seekerOccStudent: "Öğrenciyim",
+    maxBudgetLabel: "Maksimum Aylık Bütçe",
+    privateRoomLabel: "Özel Oda Tercihi",
+    privateRoomRequired: "Özel oda şart",
+    privateRoomAny: "Farketmez",
+    seekerSmokingLabel: "Sigara",
+    seekerSmokingYes: "Sigara içiyorum",
+    seekerSmokingNo: "İçmiyorum",
+    quietLabel: "Sessizlik Tercihi",
+    quietYes: "Sessizlik benim için önemli",
+    quietAny: "Farketmez",
+    petsLabel: "Evcil Hayvan",
+    petsOk: "Evcil hayvan olabilir",
+    petsNo: "Olmasın",
+    cleanlinessLabel: "Temizlik Tercihi",
+    cleanlinessYes: "Temizlik benim için önemli",
+    cleanlinessAny: "Farketmez",
+    aboutTextLabel: "Kendinizi Tanıtın (İsteğe Bağlı)",
+    aboutTextPlaceholder: "Kendinizi tanıtın, nasıl bir ev/ev arkadaşı arıyorsunuz...",
   },
   en: {
     pageTitle: "Create Listing",
@@ -267,6 +295,34 @@ const translations = {
     requiredField: "This field is required.",
     selectType: "Please select a listing type.",
     fillRequired: "Please fill in all required fields.",
+    // Needs-place step 2
+    step2SeekerTitle: "Your Profile",
+    step2SeekerHeading: "Tell Us About Yourself",
+    step2SeekerSub: "The more details you share, the better your match 🎯",
+    seekerGenderLabel: "Your Gender",
+    preferredRoommateGenderLabel: "Preferred Housemate Gender",
+    seekerAgeLabel: "Your Age",
+    seekerOccLabel: "Your Occupation",
+    seekerOccWorking: "Employed",
+    seekerOccStudent: "Student",
+    maxBudgetLabel: "Maximum Monthly Budget",
+    privateRoomLabel: "Private Room Preference",
+    privateRoomRequired: "Private room required",
+    privateRoomAny: "No preference",
+    seekerSmokingLabel: "Smoking",
+    seekerSmokingYes: "I smoke",
+    seekerSmokingNo: "I don't smoke",
+    quietLabel: "Quietness Preference",
+    quietYes: "Quiet environment is important to me",
+    quietAny: "No preference",
+    petsLabel: "Pets",
+    petsOk: "Pets are OK",
+    petsNo: "No pets please",
+    cleanlinessLabel: "Cleanliness Preference",
+    cleanlinessYes: "Cleanliness is important to me",
+    cleanlinessAny: "No preference",
+    aboutTextLabel: "About You (Optional)",
+    aboutTextPlaceholder: "Introduce yourself, what kind of home / housemate are you looking for...",
   },
   fa: {
     pageTitle: "ثبت آگهی",
@@ -378,6 +434,34 @@ const translations = {
     requiredField: "این فیلد الزامی است.",
     selectType: "لطفاً نوع آگهی را انتخاب کنید.",
     fillRequired: "لطفاً همه فیلدهای الزامی را پر کنید.",
+    // Needs-place step 2
+    step2SeekerTitle: "پروفایل شما",
+    step2SeekerHeading: "درباره خودتان بگویید",
+    step2SeekerSub: "هرچه جزئیات بیشتری بدید، بهتر هم‌خانه پیدا می‌کنید 🎯",
+    seekerGenderLabel: "جنسیت شما",
+    preferredRoommateGenderLabel: "جنسیت هم‌خانه مورد نظر",
+    seekerAgeLabel: "سن شما",
+    seekerOccLabel: "شغل شما",
+    seekerOccWorking: "شاغلم",
+    seekerOccStudent: "دانشجوام",
+    maxBudgetLabel: "حداکثر بودجه ماهانه",
+    privateRoomLabel: "ترجیح اتاق خصوصی",
+    privateRoomRequired: "اتاق خصوصی لازم دارم",
+    privateRoomAny: "فرقی نمیکنه",
+    seekerSmokingLabel: "سیگار",
+    seekerSmokingYes: "سیگار می‌کشم",
+    seekerSmokingNo: "سیگار نمی‌کشم",
+    quietLabel: "ترجیح آرامش",
+    quietYes: "آرامش برام مهمه",
+    quietAny: "فرقی نمیکنه",
+    petsLabel: "حیوان خانگی",
+    petsOk: "حیوان خانگی مشکلی نیست",
+    petsNo: "نباشه",
+    cleanlinessLabel: "ترجیح تمیزی",
+    cleanlinessYes: "تمیزی برام مهمه",
+    cleanlinessAny: "فرقی نمیکنه",
+    aboutTextLabel: "درباره خودتون (اختیاری)",
+    aboutTextPlaceholder: "خودتون رو معرفی کنید، دنبال چه خانه / هم‌خانه‌ای می‌گردید...",
   },
   de: {
     pageTitle: "Inserat aufgeben",
@@ -486,6 +570,34 @@ const translations = {
     requiredField: "Dieses Feld ist erforderlich.",
     selectType: "Bitte wählen Sie einen Inseratstyp.",
     fillRequired: "Bitte füllen Sie alle Pflichtfelder aus.",
+    // Needs-place step 2
+    step2SeekerTitle: "Ihr Profil",
+    step2SeekerHeading: "Erzählen Sie uns über sich",
+    step2SeekerSub: "Je mehr Details Sie angeben, desto besser finden wir einen passenden Mitbewohner 🎯",
+    seekerGenderLabel: "Ihr Geschlecht",
+    preferredRoommateGenderLabel: "Bevorzugtes Geschlecht des Mitbewohners",
+    seekerAgeLabel: "Ihr Alter",
+    seekerOccLabel: "Ihr Beruf",
+    seekerOccWorking: "Berufstätig",
+    seekerOccStudent: "Student/in",
+    maxBudgetLabel: "Maximales Monatsbudget",
+    privateRoomLabel: "Zimmer-Präferenz",
+    privateRoomRequired: "Eigenes Zimmer erforderlich",
+    privateRoomAny: "Egal",
+    seekerSmokingLabel: "Rauchen",
+    seekerSmokingYes: "Ich rauche",
+    seekerSmokingNo: "Ich rauche nicht",
+    quietLabel: "Ruhe-Präferenz",
+    quietYes: "Ruhe ist mir wichtig",
+    quietAny: "Egal",
+    petsLabel: "Haustiere",
+    petsOk: "Haustiere OK",
+    petsNo: "Keine Haustiere",
+    cleanlinessLabel: "Sauberkeits-Präferenz",
+    cleanlinessYes: "Sauberkeit ist mir wichtig",
+    cleanlinessAny: "Egal",
+    aboutTextLabel: "Über Sie (Optional)",
+    aboutTextPlaceholder: "Stellen Sie sich vor, welche Art von Wohnung / Mitbewohner suchen Sie...",
   },
   ar: {
     pageTitle: "نشر إعلان",
@@ -597,6 +709,34 @@ const translations = {
     requiredField: "هذا الحقل مطلوب.",
     selectType: "يرجى اختيار نوع الإعلان.",
     fillRequired: "يرجى تعبئة جميع الحقول المطلوبة.",
+    // Needs-place step 2
+    step2SeekerTitle: "ملفك الشخصي",
+    step2SeekerHeading: "أخبرنا عن نفسك",
+    step2SeekerSub: "كلما أعطيت تفاصيل أكثر، وجدنا تطابقاً أفضل 🎯",
+    seekerGenderLabel: "جنسك",
+    preferredRoommateGenderLabel: "الجنس المفضل لشريك السكن",
+    seekerAgeLabel: "عمرك",
+    seekerOccLabel: "مهنتك",
+    seekerOccWorking: "موظف",
+    seekerOccStudent: "طالب",
+    maxBudgetLabel: "الحد الأقصى للميزانية الشهرية",
+    privateRoomLabel: "تفضيل الغرفة الخاصة",
+    privateRoomRequired: "غرفة خاصة ضرورية",
+    privateRoomAny: "لا يهم",
+    seekerSmokingLabel: "التدخين",
+    seekerSmokingYes: "أدخن",
+    seekerSmokingNo: "لا أدخن",
+    quietLabel: "تفضيل الهدوء",
+    quietYes: "الهدوء مهم بالنسبة لي",
+    quietAny: "لا يهم",
+    petsLabel: "الحيوانات الأليفة",
+    petsOk: "الحيوانات الأليفة مقبولة",
+    petsNo: "لا أريد حيوانات أليفة",
+    cleanlinessLabel: "تفضيل النظافة",
+    cleanlinessYes: "النظافة مهمة بالنسبة لي",
+    cleanlinessAny: "لا يهم",
+    aboutTextLabel: "عن نفسك (اختياري)",
+    aboutTextPlaceholder: "عرّف بنفسك، ماذا تبحث في المسكن أو في شريك السكن...",
   },
   ru: {
     pageTitle: "Разместить объявление",
@@ -708,6 +848,34 @@ const translations = {
     requiredField: "Это поле обязательно.",
     selectType: "Пожалуйста, выберите тип объявления.",
     fillRequired: "Пожалуйста, заполните все обязательные поля.",
+    // Needs-place step 2
+    step2SeekerTitle: "Ваш профиль",
+    step2SeekerHeading: "Расскажите о себе",
+    step2SeekerSub: "Чем больше деталей вы укажете, тем лучше подберём соседа 🎯",
+    seekerGenderLabel: "Ваш пол",
+    preferredRoommateGenderLabel: "Предпочтительный пол соседа",
+    seekerAgeLabel: "Ваш возраст",
+    seekerOccLabel: "Ваша профессия",
+    seekerOccWorking: "Работаю",
+    seekerOccStudent: "Студент/ка",
+    maxBudgetLabel: "Максимальный месячный бюджет",
+    privateRoomLabel: "Предпочтение по комнате",
+    privateRoomRequired: "Отдельная комната обязательна",
+    privateRoomAny: "Не важно",
+    seekerSmokingLabel: "Курение",
+    seekerSmokingYes: "Курю",
+    seekerSmokingNo: "Не курю",
+    quietLabel: "Предпочтение тишины",
+    quietYes: "Тишина для меня важна",
+    quietAny: "Не важно",
+    petsLabel: "Домашние животные",
+    petsOk: "Домашние животные — ОК",
+    petsNo: "Без животных",
+    cleanlinessLabel: "Предпочтение чистоты",
+    cleanlinessYes: "Чистота для меня важна",
+    cleanlinessAny: "Не важно",
+    aboutTextLabel: "О себе (необязательно)",
+    aboutTextPlaceholder: "Расскажите о себе, какое жильё / каких соседей вы ищете...",
   },
 };
 
@@ -742,6 +910,17 @@ interface ListingForm {
   gender_preference: GenderPref | null;
   occupation_preference: OccupationPref | null;
   description: string;
+  // Needs-place seeker fields
+  seeker_gender: string | null;
+  preferred_roommate_gender: string | null;
+  seeker_age: string;
+  occupation: string | null;
+  max_budget: string;
+  private_room_required: boolean | null;
+  quiet_important: boolean | null;
+  pets_ok: boolean | null;
+  cleanliness_important: boolean | null;
+  about_text: string;
 }
 
 const initialForm: ListingForm = {
@@ -768,6 +947,16 @@ const initialForm: ListingForm = {
   gender_preference: null,
   occupation_preference: null,
   description: "",
+  seeker_gender: null,
+  preferred_roommate_gender: null,
+  seeker_age: "",
+  occupation: null,
+  max_budget: "",
+  private_room_required: null,
+  quiet_important: null,
+  pets_ok: null,
+  cleanliness_important: null,
+  about_text: "",
 };
 
 const CURRENCY_SYMBOLS: Record<Currency, string> = {
@@ -1054,12 +1243,12 @@ const countryCityExamples: Record<string, string> = {
 
 // ── Validation messages (all 6 languages) ─────────────────────────────────────
 const validationMessages = {
-  tr: { header: "Lütfen tüm zorunlu alanları doldurun", country: "Ülke seçiniz", city: "Şehir seçiniz", district: "İlçe seçiniz", rent: "Kira miktarı giriniz", houseType: "Konut tipi seçiniz", gender: "Cinsiyet tercihi seçiniz", occupation: "Meslek tercihi seçiniz", furnished: "Eşyalı durumu seçiniz", elevator: "Asansör durumu seçiniz", parking: "Otopark durumu seçiniz", smoking: "Sigara tercihi seçiniz", bio: "Kendinizi en az 20 karakter ile tanıtın", photo: "En az 1 ev fotoğrafı yükleyiniz" },
-  en: { header: "Please fill in all required fields", country: "Select a country", city: "Select a city", district: "Select a district", rent: "Enter rent amount", houseType: "Select house type", gender: "Select gender preference", occupation: "Select occupation preference", furnished: "Select furnished status", elevator: "Select elevator status", parking: "Select parking status", smoking: "Select smoking preference", bio: "Introduce yourself with at least 20 characters", photo: "Upload at least 1 photo" },
-  fa: { header: "لطفاً همه فیلدهای اجباری را پر کنید", country: "کشور را انتخاب کنید", city: "شهر را انتخاب کنید", district: "منطقه را انتخاب کنید", rent: "مبلغ اجاره را وارد کنید", houseType: "نوع مسکن را انتخاب کنید", gender: "جنسیت مورد نظر را انتخاب کنید", occupation: "شغل مورد نظر را انتخاب کنید", furnished: "وضعیت مبله را انتخاب کنید", elevator: "وضعیت آسانسور را انتخاب کنید", parking: "وضعیت پارکینگ را انتخاب کنید", smoking: "وضعیت سیگار را انتخاب کنید", bio: "خود را با حداقل ۲۰ کاراکتر معرفی کنید", photo: "حداقل ۱ عکس آپلود کنید" },
-  ar: { header: "يرجى ملء جميع الحقول المطلوبة", country: "اختر الدولة", city: "اختر المدينة", district: "اختر المنطقة", rent: "أدخل مبلغ الإيجار", houseType: "اختر نوع المسكن", gender: "اختر تفضيل الجنس", occupation: "اختر تفضيل المهنة", furnished: "اختر حالة الأثاث", elevator: "اختر حالة المصعد", parking: "اختر حالة الموقف", smoking: "اختر تفضيل التدخين", bio: "عرّف بنفسك بـ 20 حرفاً على الأقل", photo: "ارفع صورة واحدة على الأقل" },
-  de: { header: "Bitte alle Pflichtfelder ausfüllen", country: "Land auswählen", city: "Stadt auswählen", district: "Bezirk auswählen", rent: "Mietbetrag eingeben", houseType: "Haustyp auswählen", gender: "Geschlechtspräferenz wählen", occupation: "Berufspräferenz wählen", furnished: "Möblierungsstatus wählen", elevator: "Aufzugsstatus wählen", parking: "Parkplatzstatus wählen", smoking: "Raucherpräferenz wählen", bio: "Stellen Sie sich mit mindestens 20 Zeichen vor", photo: "Mindestens 1 Foto hochladen" },
-  ru: { header: "Пожалуйста, заполните все обязательные поля", country: "Выберите страну", city: "Выберите город", district: "Выберите район", rent: "Введите сумму аренды", houseType: "Выберите тип жилья", gender: "Выберите предпочтение по полу", occupation: "Выберите предпочтение по профессии", furnished: "Выберите статус меблировки", elevator: "Выберите статус лифта", parking: "Выберите статус парковки", smoking: "Выберите предпочтение по курению", bio: "Представьтесь минимум 20 символами", photo: "Загрузите минимум 1 фото" }
+  tr: { header: "Lütfen tüm zorunlu alanları doldurun", country: "Ülke seçiniz", city: "Şehir seçiniz", district: "İlçe seçiniz", rent: "Kira miktarı giriniz", houseType: "Konut tipi seçiniz", gender: "Cinsiyet tercihi seçiniz", occupation: "Meslek tercihi seçiniz", furnished: "Eşyalı durumu seçiniz", elevator: "Asansör durumu seçiniz", parking: "Otopark durumu seçiniz", smoking: "Sigara tercihi seçiniz", bio: "Kendinizi en az 20 karakter ile tanıtın", photo: "En az 1 ev fotoğrafı yükleyiniz", seekerGender: "Cinsiyetinizi seçiniz", preferredRoommateGender: "Tercih ettiğiniz ev arkadaşı cinsiyetini seçiniz", seekerAge: "Yaşınızı giriniz (16-99)", seekerOccupation: "Mesleğinizi seçiniz", maxBudget: "Maksimum bütçenizi giriniz", privateRoom: "Özel oda tercihini seçiniz", seekerSmoking: "Sigara durumunuzu seçiniz", quiet: "Sessizlik tercihini seçiniz", pets: "Evcil hayvan tercihini seçiniz", cleanliness: "Temizlik tercihini seçiniz" },
+  en: { header: "Please fill in all required fields", country: "Select a country", city: "Select a city", district: "Select a district", rent: "Enter rent amount", houseType: "Select house type", gender: "Select gender preference", occupation: "Select occupation preference", furnished: "Select furnished status", elevator: "Select elevator status", parking: "Select parking status", smoking: "Select smoking preference", bio: "Introduce yourself with at least 20 characters", photo: "Upload at least 1 photo", seekerGender: "Select your gender", preferredRoommateGender: "Select preferred housemate gender", seekerAge: "Enter your age (16-99)", seekerOccupation: "Select your occupation", maxBudget: "Enter your maximum budget", privateRoom: "Select private room preference", seekerSmoking: "Select your smoking status", quiet: "Select quietness preference", pets: "Select pet preference", cleanliness: "Select cleanliness preference" },
+  fa: { header: "لطفاً همه فیلدهای اجباری را پر کنید", country: "کشور را انتخاب کنید", city: "شهر را انتخاب کنید", district: "منطقه را انتخاب کنید", rent: "مبلغ اجاره را وارد کنید", houseType: "نوع مسکن را انتخاب کنید", gender: "جنسیت مورد نظر را انتخاب کنید", occupation: "شغل مورد نظر را انتخاب کنید", furnished: "وضعیت مبله را انتخاب کنید", elevator: "وضعیت آسانسور را انتخاب کنید", parking: "وضعیت پارکینگ را انتخاب کنید", smoking: "وضعیت سیگار را انتخاب کنید", bio: "خود را با حداقل ۲۰ کاراکتر معرفی کنید", photo: "حداقل ۱ عکس آپلود کنید", seekerGender: "جنسیت خود را انتخاب کنید", preferredRoommateGender: "جنسیت هم‌خانه مورد نظر را انتخاب کنید", seekerAge: "سن خود را وارد کنید (۱۶-۹۹)", seekerOccupation: "شغل خود را انتخاب کنید", maxBudget: "حداکثر بودجه را وارد کنید", privateRoom: "ترجیح اتاق خصوصی را انتخاب کنید", seekerSmoking: "وضعیت سیگار خود را انتخاب کنید", quiet: "ترجیح آرامش را انتخاب کنید", pets: "ترجیح حیوان خانگی را انتخاب کنید", cleanliness: "ترجیح تمیزی را انتخاب کنید" },
+  ar: { header: "يرجى ملء جميع الحقول المطلوبة", country: "اختر الدولة", city: "اختر المدينة", district: "اختر المنطقة", rent: "أدخل مبلغ الإيجار", houseType: "اختر نوع المسكن", gender: "اختر تفضيل الجنس", occupation: "اختر تفضيل المهنة", furnished: "اختر حالة الأثاث", elevator: "اختر حالة المصعد", parking: "اختر حالة الموقف", smoking: "اختر تفضيل التدخين", bio: "عرّف بنفسك بـ 20 حرفاً على الأقل", photo: "ارفع صورة واحدة على الأقل", seekerGender: "اختر جنسك", preferredRoommateGender: "اختر الجنس المفضل لشريك السكن", seekerAge: "أدخل عمرك (16-99)", seekerOccupation: "اختر مهنتك", maxBudget: "أدخل الحد الأقصى للميزانية", privateRoom: "اختر تفضيل الغرفة الخاصة", seekerSmoking: "اختر وضع التدخين", quiet: "اختر تفضيل الهدوء", pets: "اختر تفضيل الحيوانات الأليفة", cleanliness: "اختر تفضيل النظافة" },
+  de: { header: "Bitte alle Pflichtfelder ausfüllen", country: "Land auswählen", city: "Stadt auswählen", district: "Bezirk auswählen", rent: "Mietbetrag eingeben", houseType: "Haustyp auswählen", gender: "Geschlechtspräferenz wählen", occupation: "Berufspräferenz wählen", furnished: "Möblierungsstatus wählen", elevator: "Aufzugsstatus wählen", parking: "Parkplatzstatus wählen", smoking: "Raucherpräferenz wählen", bio: "Stellen Sie sich mit mindestens 20 Zeichen vor", photo: "Mindestens 1 Foto hochladen", seekerGender: "Geschlecht auswählen", preferredRoommateGender: "Bevorzugtes Geschlecht des Mitbewohners wählen", seekerAge: "Alter eingeben (16-99)", seekerOccupation: "Beruf auswählen", maxBudget: "Maximales Budget eingeben", privateRoom: "Zimmer-Präferenz wählen", seekerSmoking: "Raucherstatus wählen", quiet: "Ruhe-Präferenz wählen", pets: "Haustierpräferenz wählen", cleanliness: "Sauberkeits-Präferenz wählen" },
+  ru: { header: "Пожалуйста, заполните все обязательные поля", country: "Выберите страну", city: "Выберите город", district: "Выберите район", rent: "Введите сумму аренды", houseType: "Выберите тип жилья", gender: "Выберите предпочтение по полу", occupation: "Выберите предпочтение по профессии", furnished: "Выберите статус меблировки", elevator: "Выберите статус лифта", parking: "Выберите статус парковки", smoking: "Выберите предпочтение по курению", bio: "Представьтесь минимум 20 символами", photo: "Загрузите минимум 1 фото", seekerGender: "Выберите ваш пол", preferredRoommateGender: "Выберите предпочтительный пол соседа", seekerAge: "Введите ваш возраст (16-99)", seekerOccupation: "Выберите вашу профессию", maxBudget: "Введите максимальный бюджет", privateRoom: "Выберите предпочтение по комнате", seekerSmoking: "Выберите статус курения", quiet: "Выберите предпочтение тишины", pets: "Выберите отношение к животным", cleanliness: "Выберите предпочтение чистоты" }
 };
 
 // ── Main component ────────────────────────────────────────────────────────────
@@ -1085,7 +1274,7 @@ function CreateListingPage() {
   const _typeParam = searchParams.get('type') as ListingType | null;
   const _preselectedType = (_typeParam === 'has_place' || _typeParam === 'needs_place') ? _typeParam : null;
 
-  const [step, setStep] = useState(() => _preselectedType === 'needs_place' ? 4 : _preselectedType === 'has_place' ? 2 : 1);
+  const [step, setStep] = useState(() => _preselectedType ? 2 : 1);
   const [form, setForm] = useState<ListingForm>(() => _preselectedType ? { ...initialForm, type: _preselectedType } : initialForm);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -1202,11 +1391,11 @@ function CreateListingPage() {
         window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
-      setStep(form.type === "needs_place" ? 4 : 2);
+      setStep(2);
       return;
     }
 
-    if (step === 2) {
+    if (step === 2 && form.type === "has_place") {
       const errors: string[] = [];
       const invalid: string[] = [];
       if (!form.countryCode) { errors.push(vm.country); invalid.push("country"); }
@@ -1222,6 +1411,33 @@ function CreateListingPage() {
         return;
       }
       setStep(3);
+      return;
+    }
+
+    if (step === 2 && form.type === "needs_place") {
+      const errors: string[] = [];
+      const invalid: string[] = [];
+      if (!form.seeker_gender) { errors.push(vm.seekerGender); invalid.push("seeker_gender"); }
+      if (!form.preferred_roommate_gender) { errors.push(vm.preferredRoommateGender); invalid.push("preferred_roommate_gender"); }
+      const age = parseInt(form.seeker_age);
+      if (!form.seeker_age || isNaN(age) || age < 16 || age > 99) { errors.push(vm.seekerAge); invalid.push("seeker_age"); }
+      if (!form.occupation) { errors.push(vm.seekerOccupation); invalid.push("occupation"); }
+      if (!form.max_budget || parseFloat(form.max_budget) <= 0) { errors.push(vm.maxBudget); invalid.push("max_budget"); }
+      if (!form.countryCode) { errors.push(vm.country); invalid.push("country"); }
+      if (!form.city) { errors.push(vm.city); invalid.push("city"); }
+      if (countryIso === "TR" && !form.district) { errors.push(vm.district); invalid.push("district"); }
+      if (form.private_room_required === null) { errors.push(vm.privateRoom); invalid.push("private_room_required"); }
+      if (form.smoking === null) { errors.push(vm.seekerSmoking); invalid.push("smoking"); }
+      if (form.quiet_important === null) { errors.push(vm.quiet); invalid.push("quiet_important"); }
+      if (form.pets_ok === null) { errors.push(vm.pets); invalid.push("pets_ok"); }
+      if (form.cleanliness_important === null) { errors.push(vm.cleanliness); invalid.push("cleanliness_important"); }
+      if (errors.length > 0) {
+        setStepErrors(errors);
+        setInvalidFields(invalid);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+      setStep(4);
       return;
     }
 
@@ -1255,7 +1471,7 @@ function CreateListingPage() {
   const goBack = () => {
     setStepErrors([]);
     setInvalidFields([]);
-    if (step === 4 && form.type === "needs_place") { setStep(1); return; }
+    if (step === 4 && form.type === "needs_place") { setStep(2); return; }
     if (step === 4) { setStep(3); return; }
     if (step === 3) { setStep(2); return; }
     if (step === 2) { setStep(1); }
@@ -1270,26 +1486,44 @@ function CreateListingPage() {
     const photoUrls: string[] = form.photos.filter(Boolean);
 
     const payload: Record<string, unknown> = {
-      user_id:           user.id,
-      type:              form.type,
-      house_type:        form.houseType || null,
-      floor:             form.floor || null,
-      elevator:          form.elevator,
-      parking:           form.parking,
-      furnished:         form.furnished,
-      city:              form.city || null,
-      district:          form.district || null,
-      neighborhood:      form.neighborhood || null,
-      rent:              parseFloat(form.price) || null,
-      currency:          form.currency,
-      smoking:           form.smoking,
-      current_residents: form.current_residents,
-      needed_roommates:  form.needed_roommates,
-      rooms:             form.rooms,
-      photos:            photoUrls,
-      address:           form.address || null,
-      country_code:      form.countryCode || null,
-      country:           form.country || null,
+      user_id:      user.id,
+      type:         form.type,
+      city:         form.city || null,
+      district:     form.district || null,
+      neighborhood: form.neighborhood || null,
+      country_code: form.countryCode || null,
+      country:      form.country || null,
+      ...(form.type === "has_place" ? {
+        house_type:        form.houseType || null,
+        floor:             form.floor || null,
+        elevator:          form.elevator,
+        parking:           form.parking,
+        furnished:         form.furnished,
+        rent:              parseFloat(form.price) || null,
+        currency:          form.currency,
+        smoking:           form.smoking,
+        current_residents: form.current_residents,
+        needed_roommates:  form.needed_roommates,
+        rooms:             form.rooms,
+        photos:            photoUrls,
+        address:           form.address || null,
+        gender_preference:     form.gender_preference,
+        occupation_preference: form.occupation_preference,
+        description:           form.description || null,
+      } : {
+        seeker_gender:            form.seeker_gender,
+        preferred_roommate_gender: form.preferred_roommate_gender,
+        seeker_age:               parseInt(form.seeker_age) || null,
+        occupation:               form.occupation,
+        max_budget:               parseFloat(form.max_budget) || null,
+        currency:                 form.currency,
+        private_room_required:    form.private_room_required,
+        smoking:                  form.smoking,
+        quiet_important:          form.quiet_important,
+        pets_ok:                  form.pets_ok,
+        cleanliness_important:    form.cleanliness_important,
+        about_text:               form.about_text || null,
+      }),
     };
 
     console.log('Insert payload:', JSON.stringify(payload, null, 2));
@@ -1416,8 +1650,8 @@ function CreateListingPage() {
 
   // ── Progress bar ──────────────────────────────────────────────────────────
   const ProgressBar = () => {
-    const displayTotal = form.type === "needs_place" ? 2 : 4;
-    const displayStep = form.type === "needs_place" && step === 4 ? 2 : step;
+    const displayTotal = form.type === "needs_place" ? 3 : 4;
+    const displayStep = form.type === "needs_place" ? (step === 4 ? 3 : step) : step;
     return (
       <div className="mb-8">
         <div className="flex items-center justify-between mb-2">
@@ -1982,6 +2216,510 @@ function CreateListingPage() {
     );
   }
 
+  // ── STEP 2: Seeker profile (needs_place only) ────────────────────────────
+  if (step === 2 && form.type === "needs_place") {
+    return (
+      <div dir={dir} className="min-h-screen bg-stone-50">
+        <Navbar />
+        <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
+          <div className="flex items-center gap-3 mb-6">
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={goBack}
+              className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-5 py-2.5 rounded-2xl transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              {t.back}
+            </motion.button>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
+              <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span>{t.home}</span>
+              </Link>
+            </motion.div>
+          </div>
+
+          <ProgressBar />
+          <h1 className="text-2xl font-black text-stone-900 mb-2">{t.pageTitle}</h1>
+          <p className="text-stone-500 mb-4 text-sm">{t.step2SeekerTitle}</p>
+
+          {stepErrors.length > 0 && (
+            <div className="bg-red-50 border border-red-300 rounded-2xl p-4 mb-4">
+              <p className="text-red-600 font-bold text-sm mb-2">⚠️ {vm.header}:</p>
+              <ul className="text-red-500 text-sm list-disc list-inside">
+                {stepErrors.map((e, i) => <li key={i}>{e}</li>)}
+              </ul>
+            </div>
+          )}
+
+          <div className="bg-gradient-to-r from-orange-50 to-orange-100 border border-orange-200 rounded-2xl p-4 mb-6">
+            <div className="flex items-start gap-3">
+              <div className="text-2xl">🏠</div>
+              <div>
+                <p className="font-black text-gray-900 text-base">{t.step2SeekerHeading}</p>
+                <p className="text-gray-500 text-sm mt-1">{t.step2SeekerSub}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl border border-stone-100 shadow-sm divide-y divide-stone-100">
+
+            {/* 1. Seeker gender */}
+            <div className="p-5">
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.seekerGenderLabel}<span className="text-red-500 ml-1">*</span></label>
+              <OptionGroup
+                value={form.seeker_gender}
+                onChange={(v) => set("seeker_gender", v)}
+                options={[
+                  { label: t.genderMale, value: "male" },
+                  { label: t.genderFemale, value: "female" },
+                ]}
+                hasError={invalidFields.includes("seeker_gender") && !form.seeker_gender}
+              />
+            </div>
+
+            {/* 2. Preferred roommate gender */}
+            <div className="p-5">
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.preferredRoommateGenderLabel}<span className="text-red-500 ml-1">*</span></label>
+              <OptionGroup
+                value={form.preferred_roommate_gender}
+                onChange={(v) => set("preferred_roommate_gender", v)}
+                options={[
+                  { label: t.genderMale, value: "male" },
+                  { label: t.genderFemale, value: "female" },
+                  { label: t.genderAny, value: "any" },
+                ]}
+                hasError={invalidFields.includes("preferred_roommate_gender") && !form.preferred_roommate_gender}
+              />
+            </div>
+
+            {/* 3. Seeker age */}
+            <div className="p-5">
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.seekerAgeLabel}<span className="text-red-500 ml-1">*</span></label>
+              <input
+                type="number"
+                min={16}
+                max={99}
+                value={form.seeker_age}
+                onChange={(e) => set("seeker_age", e.target.value)}
+                placeholder="25"
+                className={`w-full border rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm ${invalidFields.includes("seeker_age") ? "border-red-400 border-2" : "border-gray-200"}`}
+              />
+            </div>
+
+            {/* 4. Occupation */}
+            <div className="p-5">
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.seekerOccLabel}<span className="text-red-500 ml-1">*</span></label>
+              <OptionGroup
+                value={form.occupation}
+                onChange={(v) => set("occupation", v)}
+                options={[
+                  { label: t.seekerOccWorking, value: "working" },
+                  { label: t.seekerOccStudent, value: "student" },
+                ]}
+                hasError={invalidFields.includes("occupation") && !form.occupation}
+              />
+            </div>
+
+            {/* 5. Max budget */}
+            <div className="p-5">
+              <label className="block text-sm font-semibold text-stone-700 mb-1">{t.maxBudgetLabel}<span className="text-red-500 ml-1">*</span></label>
+              <label className="block text-sm font-semibold text-stone-700 mb-2 mt-3">{t.currency}</label>
+              <div className="flex gap-2 overflow-x-auto pb-1 mb-3">
+                {CURRENCY_OPTIONS.map((c) => (
+                  <button
+                    key={c.value}
+                    type="button"
+                    onClick={() => set("currency", c.value as Currency)}
+                    className={`flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-bold transition-all duration-200 ${
+                      form.currency === c.value
+                        ? "bg-orange-500 text-white shadow-md shadow-orange-500/30"
+                        : "bg-gray-100 text-stone-600 hover:bg-gray-200"
+                    }`}
+                  >
+                    {c.label}
+                  </button>
+                ))}
+              </div>
+              <input
+                type="number"
+                min={0}
+                value={form.max_budget}
+                onChange={(e) => set("max_budget", e.target.value)}
+                placeholder="0"
+                className={`w-full border rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm ${invalidFields.includes("max_budget") && (!form.max_budget || parseFloat(form.max_budget) <= 0) ? "border-red-400 border-2" : "border-gray-200"}`}
+              />
+            </div>
+
+            {/* 6. Location */}
+            <div className="p-5 flex flex-col gap-4">
+              <CountrySelect
+                countryCode={form.countryCode}
+                lang={lang}
+                onSelect={(code, name) => { set("countryCode", code); setCountryIso(code); setSehirQ(''); setIlceQ(''); setSelectedStateIso(''); setSelectedIl(''); setSelectedIlce(''); setMahalleQ(''); setForm(f => ({ ...f, country: name, city: '', district: '', neighborhood: '' })); }}
+                label={t.countryLabel}
+                placeholder={t.countryPlaceholder}
+                hasError={invalidFields.includes("country") && !form.countryCode}
+                required
+              />
+              {/* Şehir / İl */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  {countryIso === 'TR' ? t.il : t.city}<span className="text-red-500 ml-1">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={sehirQ}
+                    onChange={e => {
+                      const v = e.target.value
+                      setSehirQ(v)
+                      setForm(f => ({...f, city: v}))
+                      const q = normalize(v)
+                      if (countryIso === 'TR') {
+                        const all = Object.keys(turkiyeData)
+                        if (v.length === 0) {
+                          setSehirSug(all.slice(0, 6))
+                          setSehirOpen(true)
+                        } else {
+                          const starts = all.filter(name => normalize(name).startsWith(q))
+                          const includes = all.filter(name =>
+                            !normalize(name).startsWith(q) && normalize(name).includes(q)
+                          )
+                          setSehirSug([...starts, ...includes].slice(0, 6))
+                          setSehirOpen(starts.length + includes.length > 0)
+                        }
+                      } else if (!(lang === 'ar' && ARAB_COUNTRIES.has(countryIso))) {
+                        const cityList = countryIso === 'IR' && lang === 'fa'
+                          ? iranCities
+                          : countryIso === 'RU' && lang === 'ru'
+                          ? russiaCitiesRU
+                          : (() => {
+                              const countryName = Country.getCountryByCode(countryIso)?.name || ''
+                              return worldCities[countryName]?.length
+                                ? worldCities[countryName]
+                                : (State.getStatesOfCountry(countryIso) || []).map(s => s.name)
+                            })()
+                        if (v.length === 0) {
+                          setSehirSug(cityList.slice(0, 8))
+                          setSehirOpen(true)
+                        } else {
+                          const starts = cityList.filter(name => normalize(name).startsWith(q))
+                          const includes = cityList.filter(name =>
+                            !normalize(name).startsWith(q) && normalize(name).includes(q)
+                          )
+                          setSehirSug([...starts, ...includes].slice(0, 8))
+                          setSehirOpen(starts.length + includes.length > 0)
+                        }
+                      }
+                    }}
+                    onFocus={() => {
+                      if (countryIso === 'TR') {
+                        const all = Object.keys(turkiyeData)
+                        setSehirSug(all.slice(0, 6))
+                        setSehirOpen(all.length > 0)
+                      } else if (!(lang === 'ar' && ARAB_COUNTRIES.has(countryIso))) {
+                        const cityList = countryIso === 'IR' && lang === 'fa'
+                          ? iranCities
+                          : countryIso === 'RU' && lang === 'ru'
+                          ? russiaCitiesRU
+                          : (() => {
+                              const countryName = Country.getCountryByCode(countryIso)?.name || ''
+                              return worldCities[countryName]?.length
+                                ? worldCities[countryName]
+                                : (State.getStatesOfCountry(countryIso) || []).map(s => s.name)
+                            })()
+                        setSehirSug(cityList.slice(0, 8))
+                        setSehirOpen(cityList.length > 0)
+                      }
+                    }}
+                    onBlur={() => setTimeout(() => setSehirOpen(false), 150)}
+                    placeholder={lang === 'ar' && ARAB_COUNTRIES.has(countryIso) ? 'اكتب اسم مدينتك...' : (countryCityExamples[countryIso] || 'City...')}
+                    className={`w-full px-4 py-3 border-2 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-colors ${invalidFields.includes("city") && !form.city ? "border-red-400" : "border-gray-200"}`}
+                  />
+                  {sehirOpen && sehirSug.length > 0 && (
+                    <div className="absolute left-0 right-0 top-full mt-1 z-30 bg-white border border-gray-200 rounded-xl shadow-lg overflow-y-auto max-h-48">
+                      {sehirSug.map((s, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onMouseDown={e => e.preventDefault()}
+                          onClick={() => {
+                            setSehirQ(s)
+                            setSelectedIl(s)
+                            setForm(f => ({...f, city: s}))
+                            setSehirOpen(false)
+                            setIlceQ('')
+                            setSelectedIlce('')
+                            setMahalleQ('')
+                            setForm(f => ({...f, district: '', neighborhood: ''}))
+                            if (countryIso !== 'TR') {
+                              const stateObj = (State.getStatesOfCountry(countryIso) || []).find(st => st.name === s)
+                              if (stateObj) setSelectedStateIso(stateObj.isoCode)
+                            }
+                          }}
+                          className="w-full text-left px-4 py-3 text-[15px] text-gray-700 hover:bg-orange-50 hover:text-orange-600 border-b border-gray-100 last:border-0 transition-colors"
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* İlçe — Turkey only */}
+              {countryIso === 'TR' && <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  {t.district}<span className="text-red-500 ml-1">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={ilceQ}
+                    disabled={!sehirQ}
+                    onChange={e => {
+                      const v = e.target.value
+                      setIlceQ(v)
+                      setForm(f => ({...f, district: v}))
+                      const q = normalize(v)
+                      if (countryIso === 'TR') {
+                        const ilceler = Object.keys(turkiyeData[selectedIl] || {})
+                        if (v.length === 0) {
+                          setIlceSug(ilceler.slice(0, 6))
+                          setIlceOpen(true)
+                        } else {
+                          const starts = ilceler.filter(name => normalize(name).startsWith(q))
+                          const includes = ilceler.filter(name =>
+                            !normalize(name).startsWith(q) && normalize(name).includes(q)
+                          )
+                          setIlceSug([...starts, ...includes].slice(0, 6))
+                          setIlceOpen(starts.length + includes.length > 0)
+                        }
+                      } else {
+                        const cities = City.getCitiesOfState(countryIso, selectedStateIso) || []
+                        if (v.length === 0) {
+                          setIlceSug(cities.slice(0, 6).map(c => c.name))
+                          setIlceOpen(true)
+                        } else {
+                          const starts = cities.filter(c => normalize(c.name).startsWith(q))
+                          const includes = cities.filter(c =>
+                            !normalize(c.name).startsWith(q) && normalize(c.name).includes(q)
+                          )
+                          setIlceSug([...starts, ...includes].slice(0, 6).map(c => c.name))
+                          setIlceOpen(starts.length + includes.length > 0)
+                        }
+                      }
+                    }}
+                    onFocus={() => {
+                      if (countryIso === 'TR') {
+                        const ilceler = Object.keys(turkiyeData[selectedIl] || {})
+                        setIlceSug(ilceler.slice(0, 6))
+                        setIlceOpen(ilceler.length > 0)
+                      } else {
+                        const cities = City.getCitiesOfState(countryIso, selectedStateIso) || []
+                        setIlceSug(cities.slice(0, 6).map(c => c.name))
+                        setIlceOpen(cities.length > 0)
+                      }
+                    }}
+                    onBlur={() => setTimeout(() => setIlceOpen(false), 150)}
+                    placeholder="Esenyurt, Kadıköy, Beşiktaş..."
+                    className={`w-full px-4 py-3 border-2 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 ${invalidFields.includes("district") && !form.district ? "border-red-400" : "border-gray-200"}`}
+                  />
+                  {ilceOpen && ilceSug.length > 0 && (
+                    <div className="absolute left-0 right-0 top-full mt-1 z-30 bg-white border border-gray-200 rounded-xl shadow-lg overflow-y-auto max-h-48">
+                      {ilceSug.map((c, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onMouseDown={e => e.preventDefault()}
+                          onClick={() => {
+                            setIlceQ(c)
+                            setSelectedIlce(c)
+                            setForm(f => ({...f, district: c}))
+                            setIlceOpen(false)
+                            if (countryIso === 'TR') {
+                              setMahalleQ('')
+                              setForm(f => ({...f, neighborhood: ''}))
+                            }
+                          }}
+                          className="w-full text-left px-4 py-3 text-[15px] text-gray-700 hover:bg-orange-50 hover:text-orange-600 border-b border-gray-100 last:border-0 transition-colors"
+                        >
+                          {c}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>}
+
+              {/* Mahalle — optional */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  {t.neighborhood}
+                </label>
+                {countryIso === 'TR' && selectedIl && selectedIlce ? (
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={mahalleQ}
+                      onChange={e => {
+                        const v = e.target.value
+                        setMahalleQ(v)
+                        setForm(f => ({...f, neighborhood: v}))
+                        const mahalleler = turkiyeData[selectedIl]?.[selectedIlce] || []
+                        const q = normalize(v)
+                        if (v.length === 0) {
+                          setMahalleSug(mahalleler.slice(0, 6))
+                          setMahalleOpen(true)
+                        } else {
+                          const starts = mahalleler.filter(m => normalize(m).startsWith(q))
+                          const includes = mahalleler.filter(m =>
+                            !normalize(m).startsWith(q) && normalize(m).includes(q)
+                          )
+                          setMahalleSug([...starts, ...includes].slice(0, 6))
+                          setMahalleOpen(starts.length + includes.length > 0)
+                        }
+                      }}
+                      onFocus={() => {
+                        const mahalleler = turkiyeData[selectedIl]?.[selectedIlce] || []
+                        setMahalleSug(mahalleler.slice(0, 6))
+                        setMahalleOpen(mahalleler.length > 0)
+                      }}
+                      onBlur={() => setTimeout(() => setMahalleOpen(false), 150)}
+                      placeholder="Zafer Mh., Cumhuriyet Mh..."
+                      className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-gray-900 bg-white text-sm"
+                    />
+                    {mahalleOpen && mahalleSug.length > 0 && (
+                      <div className="absolute left-0 right-0 top-full mt-1 z-30 bg-white border border-gray-200 rounded-xl shadow-lg overflow-y-auto max-h-48">
+                        {mahalleSug.map((m, i) => (
+                          <button
+                            key={i}
+                            type="button"
+                            onMouseDown={e => e.preventDefault()}
+                            onClick={() => {
+                              setMahalleQ(m)
+                              setForm(f => ({...f, neighborhood: m}))
+                              setMahalleOpen(false)
+                            }}
+                            className="w-full text-left px-4 py-3 text-[15px] text-gray-700 hover:bg-orange-50 hover:text-orange-600 border-b border-gray-100 last:border-0 transition-colors"
+                          >
+                            {m}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <input
+                    type="text"
+                    value={form.neighborhood || ''}
+                    onChange={(e) => setForm(f => ({ ...f, neighborhood: e.target.value }))}
+                    placeholder={countryIso === 'TR' ? "Zafer Mh., Cumhuriyet Mh..." : ""}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-gray-900 bg-white text-sm"
+                  />
+                )}
+              </div>
+            </div>
+
+            {/* 7. Private room required */}
+            <div className="p-5">
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.privateRoomLabel}<span className="text-red-500 ml-1">*</span></label>
+              <Toggle
+                value={form.private_room_required}
+                labelOn={t.privateRoomRequired}
+                labelOff={t.privateRoomAny}
+                onChange={(v) => set("private_room_required", v)}
+                hasError={invalidFields.includes("private_room_required") && form.private_room_required === null}
+              />
+            </div>
+
+            {/* 8. Smoking */}
+            <div className="p-5">
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.seekerSmokingLabel}<span className="text-red-500 ml-1">*</span></label>
+              <Toggle
+                value={form.smoking}
+                labelOn={t.seekerSmokingYes}
+                labelOff={t.seekerSmokingNo}
+                onChange={(v) => set("smoking", v)}
+                hasError={invalidFields.includes("smoking") && form.smoking === null}
+              />
+            </div>
+
+            {/* 9. Quiet important */}
+            <div className="p-5">
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.quietLabel}<span className="text-red-500 ml-1">*</span></label>
+              <Toggle
+                value={form.quiet_important}
+                labelOn={t.quietYes}
+                labelOff={t.quietAny}
+                onChange={(v) => set("quiet_important", v)}
+                hasError={invalidFields.includes("quiet_important") && form.quiet_important === null}
+              />
+            </div>
+
+            {/* 10. Pets OK */}
+            <div className="p-5">
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.petsLabel}<span className="text-red-500 ml-1">*</span></label>
+              <Toggle
+                value={form.pets_ok}
+                labelOn={t.petsOk}
+                labelOff={t.petsNo}
+                onChange={(v) => set("pets_ok", v)}
+                hasError={invalidFields.includes("pets_ok") && form.pets_ok === null}
+              />
+            </div>
+
+            {/* 11. Cleanliness important */}
+            <div className="p-5">
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.cleanlinessLabel}<span className="text-red-500 ml-1">*</span></label>
+              <Toggle
+                value={form.cleanliness_important}
+                labelOn={t.cleanlinessYes}
+                labelOff={t.cleanlinessAny}
+                onChange={(v) => set("cleanliness_important", v)}
+                hasError={invalidFields.includes("cleanliness_important") && form.cleanliness_important === null}
+              />
+            </div>
+
+            {/* 12. About text (optional) */}
+            <div className="p-5">
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.aboutTextLabel}</label>
+              <textarea
+                rows={4}
+                maxLength={500}
+                value={form.about_text}
+                onChange={(e) => set("about_text", e.target.value)}
+                placeholder={t.aboutTextPlaceholder}
+                className="w-full border border-gray-200 rounded-2xl p-3 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm resize-none"
+              />
+              <p className="text-xs text-stone-400 text-right mt-1">{form.about_text.length}/500</p>
+            </div>
+          </div>
+
+          <div className="flex gap-3 mt-8">
+            <button
+              onClick={goBack}
+              className="flex-1 py-3.5 rounded-xl font-bold text-stone-700 border border-stone-200 bg-white hover:bg-stone-50 active:scale-95 transition-all duration-200 text-sm"
+            >
+              {t.back}
+            </button>
+            <button
+              onClick={goNext}
+              className="flex-[2] py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg shadow-orange-500/25 hover:opacity-90 active:scale-95 transition-all duration-200 text-sm"
+            >
+              {t.next}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // ── STEP 3: Housemate preferences (was step 2) ────────────────────────────
   if (step === 3 && form.type === "has_place") {
     return (
@@ -2229,6 +2967,12 @@ function CreateListingPage() {
       independent: t.houseTypeIndependent,
     };
 
+    const perLabel = lang === "tr" ? "ay" : lang === "fa" ? "ماه" : lang === "ar" ? "شهر" : lang === "de" ? "Mo." : lang === "ru" ? "мес." : "mo";
+    const formatBudget = (amount: string) =>
+      !amount ? "—" : form.currency === "TOMAN"
+        ? `${amount} تومان / ${perLabel}`
+        : `${CURRENCY_SYMBOLS[form.currency]}${amount} / ${perLabel}`;
+
     const rows: { label: string; value: string }[] = [
       { label: t.typeLabel, value: isHasPlace ? t.hasPlaceLabel : t.needsPlaceLabel },
       ...(isHasPlace
@@ -2239,21 +2983,24 @@ function CreateListingPage() {
             { label: t.parkingLabel, value: form.parking === true ? t.yes : form.parking === false ? t.no : '—' },
             { label: t.furnishedReviewLabel, value: form.furnished === true ? t.furnishedYes : form.furnished === false ? t.furnishedNo : '—' },
             { label: t.locationReviewLabel, value: locationStr },
-            {
-              label: t.priceReviewLabel,
-              value: form.price
-                ? (() => {
-                    const per = lang === "tr" ? "ay" : lang === "fa" ? "ماه" : lang === "ar" ? "شهر" : lang === "de" ? "Mo." : lang === "ru" ? "мес." : "mo";
-                    return form.currency === "TOMAN"
-                      ? `${form.price} تومان / ${per}`
-                      : `${CURRENCY_SYMBOLS[form.currency]}${form.price} / ${per}`;
-                  })()
-                : "—",
-            },
+            { label: t.priceReviewLabel, value: formatBudget(form.price) },
             { label: t.smokingLabel, value: form.smoking === true ? t.smokingYes : form.smoking === false ? t.smokingNo : '—' },
             { label: t.residentsLabel, value: `${form.current_residents} ${t.person}` },
           ]
-        : []),
+        : [
+            { label: t.seekerGenderLabel, value: form.seeker_gender === "male" ? t.genderMale : form.seeker_gender === "female" ? t.genderFemale : "—" },
+            { label: t.preferredRoommateGenderLabel, value: form.preferred_roommate_gender === "male" ? t.genderMale : form.preferred_roommate_gender === "female" ? t.genderFemale : form.preferred_roommate_gender === "any" ? t.genderAny : "—" },
+            { label: t.seekerAgeLabel, value: form.seeker_age || "—" },
+            { label: t.seekerOccLabel, value: form.occupation === "working" ? t.seekerOccWorking : form.occupation === "student" ? t.seekerOccStudent : "—" },
+            { label: t.maxBudgetLabel, value: formatBudget(form.max_budget) },
+            { label: t.locationReviewLabel, value: locationStr },
+            { label: t.privateRoomLabel, value: form.private_room_required === true ? t.privateRoomRequired : form.private_room_required === false ? t.privateRoomAny : "—" },
+            { label: t.seekerSmokingLabel, value: form.smoking === true ? t.seekerSmokingYes : form.smoking === false ? t.seekerSmokingNo : "—" },
+            { label: t.quietLabel, value: form.quiet_important === true ? t.quietYes : form.quiet_important === false ? t.quietAny : "—" },
+            { label: t.petsLabel, value: form.pets_ok === true ? t.petsOk : form.pets_ok === false ? t.petsNo : "—" },
+            { label: t.cleanlinessLabel, value: form.cleanliness_important === true ? t.cleanlinessYes : form.cleanliness_important === false ? t.cleanlinessAny : "—" },
+            ...(form.about_text ? [{ label: t.aboutTextLabel, value: form.about_text }] : []),
+          ]),
     ];
 
     return (
