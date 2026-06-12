@@ -370,6 +370,15 @@ function filterByCountry(listings: any[], countryCode: string) {
   });
 }
 
+const langPriorityCountry: Record<string, string> = {
+  tr: 'TR',
+  ru: 'RU',
+  fa: 'IR',
+  de: 'DE',
+  ar: 'EG',
+  en: 'US',
+};
+
 interface LatestListingsProps {
   lang: string;
   filterCity?: string | null;
@@ -450,14 +459,26 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
     onClearFilter?.();
   }
 
-  const pillList = [
-    ...countries,
-    ...extraPills.map((p) => ({
-      code: p.code,
-      flag: p.flag,
-      name: { tr: p.name, en: p.name, fa: p.name, ar: p.name, de: p.name, ru: p.name } as Record<Lang, string>,
-    })),
-  ];
+  const pillList = (() => {
+    const allPill = countries[0];
+    const rest = [
+      ...countries.slice(1),
+      ...extraPills.map((p) => ({
+        code: p.code,
+        flag: p.flag,
+        name: { tr: p.name, en: p.name, fa: p.name, ar: p.name, de: p.name, ru: p.name } as Record<Lang, string>,
+      })),
+    ];
+    const priority = langPriorityCountry[lang] ?? null;
+    if (priority) {
+      rest.sort((a, b) => {
+        if (a.code === priority) return -1;
+        if (b.code === priority) return 1;
+        return 0;
+      });
+    }
+    return [allPill, ...rest];
+  })();
 
   const lbl = cardLabels[lang as Lang] ?? cardLabels.tr;
 
