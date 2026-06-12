@@ -526,22 +526,22 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                     className="w-full h-full object-cover"
                   />
                 ) : listing.type === "needs_place" ? (
-                  <div className="w-full h-full bg-gradient-to-br from-orange-50 to-blue-50 flex flex-col items-center justify-center gap-2">
+                  <div className="w-full h-full bg-gradient-to-br from-blue-100 to-orange-50 relative">
                     {listing.profile?.avatar_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={listing.profile.avatar_url}
                         alt=""
-                        className="w-20 h-20 rounded-full object-cover ring-2 ring-orange-200"
+                        className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-20 h-20 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-semibold text-xl ring-2 ring-orange-200">
+                      <div className="absolute inset-0 flex items-center justify-center text-4xl text-blue-300 font-semibold">
                         {listing.profile?.display_name
                           ? listing.profile.display_name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase()
-                          : "?"}
+                          : "👤"}
                       </div>
                     )}
-                    <span className="text-xs bg-blue-100 text-blue-700 rounded-full px-2 py-0.5">🔍 Ev Arıyor</span>
+                    <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black/30 to-transparent" />
                   </div>
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center">
