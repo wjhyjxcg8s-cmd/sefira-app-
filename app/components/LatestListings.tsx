@@ -322,6 +322,18 @@ const titles: Record<Lang, string> = {
   ru: "Последние объявления",
 };
 
+const cardLabels: Record<Lang, {
+  furnished: string; unfurnished: string; residents: string;
+  maxBudget: string; age: string; working: string; student: string; privateRoom: string;
+}> = {
+  tr: { furnished:"Eşyalı",      unfurnished:"Eşyasız",      residents:"kişi var",     maxBudget:"Max", age:"yaş",  working:"Çalışıyor", student:"Öğrenci",   privateRoom:"Özel oda şart" },
+  en: { furnished:"Furnished",   unfurnished:"Unfurnished",  residents:"residents",    maxBudget:"Max", age:"yrs",  working:"Working",   student:"Student",   privateRoom:"Private room required" },
+  fa: { furnished:"مبله",        unfurnished:"بدون مبل",     residents:"نفر ساکن",     maxBudget:"حداکثر", age:"سال", working:"شاغل",  student:"دانشجو",    privateRoom:"اتاق خصوصی لازم" },
+  ar: { furnished:"مفروش",       unfurnished:"غير مفروش",    residents:"ساكن",         maxBudget:"الحد الأقصى", age:"سنة", working:"موظف", student:"طالب", privateRoom:"غرفة خاصة مطلوبة" },
+  de: { furnished:"Möbliert",    unfurnished:"Unmöbliert",   residents:"Bewohner",     maxBudget:"Max", age:"J.",   working:"Berufstätig", student:"Student/in", privateRoom:"Eigenes Zimmer nötig" },
+  ru: { furnished:"Меблированная", unfurnished:"Без мебели", residents:"жильцов",      maxBudget:"Макс", age:"лет", working:"Работающий", student:"Студент",  privateRoom:"Нужна отд. комната" },
+};
+
 const cityFilterUI: Record<Lang, { label: string; clear: string; backToAll: string }> = {
   tr: { label: "ilanları gösteriliyor", clear: "✕ Temizle",    backToAll: "← Tüm İlanlara Dön" },
   en: { label: "listings shown",        clear: "✕ Clear",       backToAll: "← Back to All Listings" },
@@ -383,7 +395,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
       setLoading(true);
       const { data, error } = await supabaseClient
         .from("listings")
-        .select("id, type, city, district, rent, currency, photos, house_type, rooms, smoking, user_id, country_code, country")
+        .select("id, type, city, district, neighborhood, rent, currency, photos, house_type, rooms, smoking, furnished, elevator, current_residents, user_id, country_code, country, max_budget, seeker_age, seeker_gender, occupation, private_room_required, about_text")
         .eq("is_deleted", false)
         .order("created_at", { ascending: false })
         .limit(50);
@@ -446,6 +458,8 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
       name: { tr: p.name, en: p.name, fa: p.name, ar: p.name, de: p.name, ru: p.name } as Record<Lang, string>,
     })),
   ];
+
+  const lbl = cardLabels[lang as Lang] ?? cardLabels.tr;
 
   return (
     <section className="max-w-7xl mx-auto px-5 mt-6 mb-14">
@@ -579,9 +593,19 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
               </div>
 
               <div className="p-4">
+                {/* City */}
                 <p className="font-bold text-sm text-gray-900">
-                  {listing.city}{listing.district ? ` / ${listing.district}` : ""}
+                  {listing.type === "has_place"
+                    ? listing.city
+                    : `${listing.city}${listing.district ? ` / ${listing.district}` : ""}`}
                 </p>
+                {listing.type === "has_place" && (listing.neighborhood || listing.district) && (
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    {listing.neighborhood || listing.district}
+                  </p>
+                )}
+
+                {/* Country flag + plate */}
                 {(() => {
                   const countryInfo = detectCountry(listing.city, listing.district);
                   const code = listing.country_code;
@@ -605,22 +629,69 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                     </div>
                   );
                 })()}
-                {listing.rent && listing.currency && (
-                  <p className="text-orange-500 font-bold text-sm mt-1">
-                    {listing.rent} {listing.currency}/ay
-                  </p>
-                )}
-                {(listing.house_type || listing.rooms) && (
-                  <p className="text-gray-500 text-xs mt-1">
-                    {listing.house_type ?? ""}
-                    {listing.house_type && listing.rooms ? " • " : ""}
-                    {listing.rooms ? `${listing.rooms} oda` : ""}
-                  </p>
-                )}
-                {listing.smoking === false && (
-                  <p className="text-gray-400 text-xs mt-1">🚭 Sigara İçilmez</p>
+
+                {listing.type === "has_place" ? (
+                  <>
+                    {listing.rent && listing.currency && (
+                      <p className="text-orange-500 font-bold text-sm mt-1">
+                        {listing.rent} {listing.currency}/ay
+                      </p>
+                    )}
+                    {(listing.house_type || listing.rooms || listing.furnished != null || listing.elevator) && (
+                      <p className="text-gray-500 text-xs mt-1">
+                        {[
+                          listing.house_type,
+                          listing.rooms ? `${listing.rooms} oda` : null,
+                          listing.furnished === true ? lbl.furnished : listing.furnished === false ? lbl.unfurnished : null,
+                          listing.elevator ? "🛗" : null,
+                        ].filter(Boolean).join(" • ")}
+                      </p>
+                    )}
+                    {listing.current_residents > 0 && (
+                      <p className="text-gray-400 text-xs mt-1">👥 {listing.current_residents} {lbl.residents}</p>
+                    )}
+                    {listing.smoking === false && (
+                      <p className="text-gray-400 text-xs mt-1">🚭 Sigara İçilmez</p>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {listing.max_budget && listing.currency && (
+                      <p className="text-orange-500 font-bold text-sm mt-1">
+                        {lbl.maxBudget}: {listing.max_budget} {listing.currency}/ay
+                      </p>
+                    )}
+                    <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                      {listing.seeker_age && (
+                        <span className="text-gray-500 text-xs">{listing.seeker_age} {lbl.age}</span>
+                      )}
+                      <GenderBadge gender={listing.seeker_gender ?? null} />
+                      {listing.occupation && (
+                        <span className="text-xs bg-gray-100 text-gray-600 rounded-full px-2 py-0.5">
+                          {(() => {
+                            const o = listing.occupation.toLowerCase();
+                            if (o.includes("student") || o.includes("öğrenci")) return lbl.student;
+                            if (o.includes("employ") || o.includes("work") || o.includes("çalış")) return lbl.working;
+                            return listing.occupation;
+                          })()}
+                        </span>
+                      )}
+                    </div>
+                    {listing.private_room_required && (
+                      <p className="text-gray-500 text-xs mt-1">🚪 {lbl.privateRoom}</p>
+                    )}
+                    {listing.smoking === false && (
+                      <p className="text-gray-400 text-xs mt-1">🚭 Sigara İçilmez</p>
+                    )}
+                    {listing.about_text && (
+                      <p className="text-gray-400 text-xs mt-1 italic">
+                        {listing.about_text.length > 60 ? listing.about_text.slice(0, 60) + "…" : listing.about_text}
+                      </p>
+                    )}
+                  </>
                 )}
 
+                {/* Avatar row */}
                 {listing.profile?.avatar_url && (
                   <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
