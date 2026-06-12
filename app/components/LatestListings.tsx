@@ -525,6 +525,24 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                     alt={listing.city}
                     className="w-full h-full object-cover"
                   />
+                ) : listing.type === "needs_place" ? (
+                  <div className="w-full h-full bg-gradient-to-br from-orange-50 to-blue-50 flex flex-col items-center justify-center gap-2">
+                    {listing.profile?.avatar_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={listing.profile.avatar_url}
+                        alt=""
+                        className="w-20 h-20 rounded-full object-cover ring-2 ring-orange-200"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-semibold text-xl ring-2 ring-orange-200">
+                        {listing.profile?.display_name
+                          ? listing.profile.display_name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase()
+                          : "?"}
+                      </div>
+                    )}
+                    <span className="text-xs bg-blue-100 text-blue-700 rounded-full px-2 py-0.5">🔍 Ev Arıyor</span>
+                  </div>
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-10 h-10 text-stone-400">
