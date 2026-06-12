@@ -521,7 +521,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
               sessionStorage.setItem("sefira-scroll", String(window.scrollY));
               router.push(`/listings/${listing.id}`);
             }}
-              className="rounded-2xl overflow-hidden shadow-md bg-white hover:shadow-xl transition-shadow cursor-pointer"
+              className={`rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow cursor-pointer ${listing.type === "needs_place" ? "bg-blue-50" : "bg-white"}`}
             >
               <div className="aspect-video bg-gray-100 relative">
                 {listing.photos?.[0] ? (
