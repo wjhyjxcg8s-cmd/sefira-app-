@@ -2768,11 +2768,6 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <div className="text-center mt-10">
-          <button className="bg-stone-100 border border-stone-200 text-stone-800 px-8 py-3.5 rounded-xl font-bold hover:bg-stone-200 hover:border-stone-300 transition-all duration-200 hover:shadow-lg active:scale-95">
-            {t.viewAllBtn}
-          </button>
-        </div>
       </section>
 
       {/* ── LATEST LISTINGS ───────────────────────────────────────────────────── */}
