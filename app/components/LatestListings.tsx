@@ -13,6 +13,7 @@ type Lang = "tr" | "en" | "fa" | "ar" | "de" | "ru";
 
 function normalizeTR(str: string): string {
   return str
+    .replace(/İ/g, "i")
     .toLowerCase()
     .replace(/ğ/g, "g")
     .replace(/ü/g, "u")
@@ -401,8 +402,12 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
     fetchListings();
   }, []);
 
+  useEffect(() => {
+    if (filterCity) setSelectedCountry("all");
+  }, [filterCity]);
+
   const listings = useMemo(() => {
-    let base = filterByCountry(allListings, selectedCountry);
+    let base = filterByCountry(allListings, filterCity ? "all" : selectedCountry);
     if (filterCity) {
       const q = normalizeTR(filterCity);
       base = base.filter(
@@ -421,6 +426,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
     setSelectedCountry(country.code);
     setShowCountryModal(false);
     setCountrySearch("");
+    onClearFilter?.();
   }
 
   const pillList = [
@@ -459,7 +465,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
         {pillList.map((c) => (
           <button
             key={c.code}
-            onClick={() => setSelectedCountry(c.code)}
+            onClick={() => { setSelectedCountry(c.code); onClearFilter?.(); }}
             className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-all ${
               selectedCountry === c.code
                 ? c.code === "all"
