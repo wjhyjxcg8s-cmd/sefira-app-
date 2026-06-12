@@ -322,6 +322,15 @@ const titles: Record<Lang, string> = {
   ru: "Последние объявления",
 };
 
+const cityFilterUI: Record<Lang, { label: string; clear: string; backToAll: string }> = {
+  tr: { label: "ilanları gösteriliyor", clear: "✕ Temizle",    backToAll: "← Tüm İlanlara Dön" },
+  en: { label: "listings shown",        clear: "✕ Clear",       backToAll: "← Back to All Listings" },
+  fa: { label: "آگهی‌ها نمایش داده می‌شوند", clear: "✕ پاک کردن", backToAll: "← بازگشت به همه آگهی‌ها" },
+  ar: { label: "إعلانات معروضة",       clear: "✕ مسح",         backToAll: "← العودة إلى جميع الإعلانات" },
+  de: { label: "Inserate angezeigt",    clear: "✕ Löschen",     backToAll: "← Zurück zu allen Inseraten" },
+  ru: { label: "объявлений показано",   clear: "✕ Очистить",    backToAll: "← Вернуться ко всем объявлениям" },
+};
+
 const fixedCodes = new Set(countries.map((c) => c.code));
 
 const countryNameToCode: Record<string, string> = {};
@@ -450,20 +459,20 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
         <>
           <div className="flex items-center gap-2 mb-3 bg-orange-50 border border-orange-200 rounded-2xl px-4 py-2">
             <span className="text-orange-600 text-sm font-medium">
-              📍 {filterCity} ilanları gösteriliyor
+              📍 {filterCity} {cityFilterUI[lang as Lang]?.label ?? cityFilterUI.tr.label}
             </span>
             <button
               onClick={onClearFilter}
               className="ml-auto text-xs text-gray-400 hover:text-red-400 transition-colors"
             >
-              ✕ Temizle
+              {cityFilterUI[lang as Lang]?.clear ?? cityFilterUI.tr.clear}
             </button>
           </div>
           <button
             onClick={onClearFilter}
             className="w-full mb-4 border border-orange-400 text-orange-500 rounded-xl py-2 text-sm font-medium hover:bg-orange-50 transition-colors"
           >
-            ← Tüm İlanlara Dön
+            {cityFilterUI[lang as Lang]?.backToAll ?? cityFilterUI.tr.backToAll}
           </button>
         </>
       )}
