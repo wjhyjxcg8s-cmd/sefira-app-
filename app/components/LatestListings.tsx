@@ -447,17 +447,25 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
 
       {/* City filter badge */}
       {filterCity && (
-        <div className="flex items-center gap-2 mb-4 bg-orange-50 border border-orange-200 rounded-2xl px-4 py-2">
-          <span className="text-orange-600 text-sm font-medium">
-            📍 {filterCity} ilanları gösteriliyor
-          </span>
+        <>
+          <div className="flex items-center gap-2 mb-3 bg-orange-50 border border-orange-200 rounded-2xl px-4 py-2">
+            <span className="text-orange-600 text-sm font-medium">
+              📍 {filterCity} ilanları gösteriliyor
+            </span>
+            <button
+              onClick={onClearFilter}
+              className="ml-auto text-xs text-gray-400 hover:text-red-400 transition-colors"
+            >
+              ✕ Temizle
+            </button>
+          </div>
           <button
             onClick={onClearFilter}
-            className="ml-auto text-xs text-gray-400 hover:text-red-400 transition-colors"
+            className="w-full mb-4 border border-orange-400 text-orange-500 rounded-xl py-2 text-sm font-medium hover:bg-orange-50 transition-colors"
           >
-            ✕ Temizle
+            ← Tüm İlanlara Dön
           </button>
-        </div>
+        </>
       )}
 
       {/* Country filter pills */}
