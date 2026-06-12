@@ -2123,7 +2123,7 @@ export default function Home() {
 
             {/* Pill badge */}
             <span className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 text-xs font-bold px-4 py-1.5 rounded-full">
-              🏠 #1 Ev Arkadaşı Platformu
+              {({ tr: "🏠 #1 Ev Arkadaşı Platformu", en: "🏠 #1 Roommate Platform", fa: "🏠 پلتفرم شماره ۱ هم‌خانه", ar: "🏠 منصة رقم 1 لزملاء السكن", de: "🏠 #1 Mitbewohner Plattform", ru: "🏠 Платформа №1 для соседей" } as Record<string, string>)[lang] ?? "🏠 #1 Roommate Platform"}
             </span>
 
             {/* Headline */}
@@ -2149,9 +2149,9 @@ export default function Home() {
                 <>
                   {/* Inline trust stats */}
                   <div className="flex flex-wrap gap-2 mb-6">
-                    <span className="bg-gray-50 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700">✅ 127K+ Kullanıcı</span>
-                    <span className="bg-gray-50 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700">⭐ 4.9 Puan</span>
-                    <span className="bg-gray-50 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700">🏙️ 52 Şehir</span>
+                    <span className="bg-gray-50 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700">✅ {({ tr: "127K+ Kullanıcı", en: "127K+ Users", fa: "۱۲۷ هزار+ کاربر", ar: "١٢٧ألف+ مستخدم", de: "127K+ Nutzer", ru: "127K+ Пользователей" } as Record<string, string>)[lang] ?? "127K+ Users"}</span>
+                    <span className="bg-gray-50 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700">⭐ {({ tr: "4.9 Puan", en: "4.9 Rating", fa: "۴.۹ امتیاز", ar: "٤.٩ تقييم", de: "4.9 Bewertung", ru: "4.9 Рейтинг" } as Record<string, string>)[lang] ?? "4.9 Rating"}</span>
+                    <span className="bg-gray-50 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700">🏙️ {({ tr: "52 Şehir", en: "52 Cities", fa: "۵۲ شهر", ar: "٥٢ مدينة", de: "52 Städte", ru: "52 Города" } as Record<string, string>)[lang] ?? "52 Cities"}</span>
                   </div>
 
                   {/* CTA buttons */}
