@@ -1267,19 +1267,46 @@ export default function Home() {
     let active = true;
     const SMART_REC_SELECT = `id, type, city, country_code, rent, max_budget, currency, photos, house_type, rooms, seeker_age, occupation, gender_preference, seeker_gender, profiles(display_name, avatar_url)`;
 
+    // Build reverse map: lowercased localized country name -> ISO-3166-1 alpha-2 code.
+    // Covers all 6 app locales so profile.country matches regardless of how it was stored.
+    function buildCountryReverseMap(): Record<string, string> {
+      const locales = ["tr", "en", "fa", "ar", "de", "ru"];
+      const map: Record<string, string> = {};
+      // All alpha-2 codes (A–Z × A–Z that are valid regions)
+      for (let i = 65; i <= 90; i++) {
+        for (let j = 65; j <= 90; j++) {
+          const code = String.fromCharCode(i) + String.fromCharCode(j);
+          for (const locale of locales) {
+            try {
+              const dn = new Intl.DisplayNames([locale], { type: "region" });
+              const name = dn.of(code);
+              // Intl.DisplayNames returns the code itself when it's not a valid region
+              if (name && name !== code) map[name.toLowerCase().trim()] = code;
+            } catch { /* ignore */ }
+          }
+        }
+      }
+      return map;
+    }
+
+    async function fetchRecent(dismissed: string[]) {
+      const { data } = await supabase
+        .from("listings")
+        .select(SMART_REC_SELECT)
+        .eq("is_deleted", false)
+        .order("created_at", { ascending: false })
+        .limit(6);
+      return (data as unknown as SmartRec[] | null)?.filter((r) => !dismissed.includes(r.id)) ?? [];
+    }
+
     async function fetchRecs() {
       const dismissed: string[] = (() => {
         try { return JSON.parse(sessionStorage.getItem("sefira-dismissed") || "[]"); } catch { return []; }
       })();
 
       if (!user) {
-        const { data } = await supabase
-          .from("listings")
-          .select(SMART_REC_SELECT)
-          .eq("is_deleted", false)
-          .order("created_at", { ascending: false })
-          .limit(6);
-        if (active && data) setSmartRecs((data as unknown as SmartRec[]).filter((r) => !dismissed.includes(r.id)));
+        const recs = await fetchRecent(dismissed);
+        if (active) setSmartRecs(recs);
         return;
       }
 
@@ -1291,22 +1318,32 @@ export default function Home() {
         .limit(1);
 
       if (!userListings || userListings.length === 0) {
+        // No listing: try to match by country code resolved from profile country name
         const { data: profile } = await supabase
           .from("profiles")
           .select("country")
           .eq("user_id", user.id)
           .single();
 
-        let q = supabase
-          .from("listings")
-          .select(SMART_REC_SELECT)
-          .eq("is_deleted", false)
-          .neq("user_id", user.id)
-          .order("created_at", { ascending: false })
-          .limit(12);
-        if (profile?.country) q = q.eq("country_code", profile.country);
-        const { data } = await q;
-        if (active && data) setSmartRecs((data as unknown as SmartRec[]).filter((r) => !dismissed.includes(r.id)).slice(0, 6));
+        let recs: SmartRec[] = [];
+        if (profile?.country) {
+          const reverseMap = buildCountryReverseMap();
+          const code = reverseMap[profile.country.toLowerCase().trim()];
+          if (code) {
+            const { data } = await supabase
+              .from("listings")
+              .select(SMART_REC_SELECT)
+              .eq("is_deleted", false)
+              .eq("country_code", code)
+              .neq("user_id", user.id)
+              .order("created_at", { ascending: false })
+              .limit(12);
+            recs = ((data as unknown as SmartRec[] | null) ?? []).filter((r) => !dismissed.includes(r.id)).slice(0, 6);
+          }
+        }
+        // Fallback to most recent if country lookup failed or returned nothing
+        if (recs.length === 0) recs = await fetchRecent(dismissed);
+        if (active) setSmartRecs(recs);
         return;
       }
 
@@ -1329,7 +1366,10 @@ export default function Home() {
       }
 
       const { data } = await q;
-      if (active && data) setSmartRecs((data as unknown as SmartRec[]).filter((r) => !dismissed.includes(r.id)).slice(0, 6));
+      let recs = ((data as unknown as SmartRec[] | null) ?? []).filter((r) => !dismissed.includes(r.id)).slice(0, 6);
+      // Fallback to most recent if city-match query returned nothing
+      if (recs.length === 0) recs = await fetchRecent(dismissed);
+      if (active) setSmartRecs(recs);
     }
 
     fetchRecs();
