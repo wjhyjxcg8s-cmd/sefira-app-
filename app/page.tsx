@@ -1060,6 +1060,24 @@ const listingTypeTrans: Record<string, Record<string, string>> = {
   needs_place: { tr: "Kiracı", en: "Tenant", fa: "مستأجر", ar: "مستأجر", de: "Mieter", ru: "Арендатор" },
 };
 
+interface SmartRec {
+  id: string;
+  type: string;
+  city: string;
+  country_code: string | null;
+  rent: number | null;
+  max_budget: number | null;
+  currency: string | null;
+  photos: string[] | null;
+  house_type: string | null;
+  rooms: number | null;
+  seeker_age: string | null;
+  occupation: string | null;
+  gender_preference: string | null;
+  seeker_gender: string | null;
+  profiles: { display_name: string | null; avatar_url: string | null } | null;
+}
+
 export default function Home() {
   // ── Auth ──────────────────────────────────────────────────────────────────
   const { user, signOut: handleSignOut } = useAuth();
@@ -1234,6 +1252,91 @@ export default function Home() {
       .then(({ data }) => setProfileAvatarUrl(data?.avatar_url ?? null));
   }, [user]);
 
+  // ── Load saved/dismissed IDs from storage ─────────────────────────────────
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("sefira-saved") || "[]");
+      setSavedRecIds(saved);
+      const dismissed = JSON.parse(sessionStorage.getItem("sefira-dismissed") || "[]");
+      setDismissedRecIds(dismissed);
+    } catch { /* ignore */ }
+  }, []);
+
+  // ── Fetch smart recommendations ──────────────────────────────────────────
+  useEffect(() => {
+    let active = true;
+    const SMART_REC_SELECT = `id, type, city, country_code, rent, max_budget, currency, photos, house_type, rooms, seeker_age, occupation, gender_preference, seeker_gender, profiles(display_name, avatar_url)`;
+
+    async function fetchRecs() {
+      const dismissed: string[] = (() => {
+        try { return JSON.parse(sessionStorage.getItem("sefira-dismissed") || "[]"); } catch { return []; }
+      })();
+
+      if (!user) {
+        const { data } = await supabase
+          .from("listings")
+          .select(SMART_REC_SELECT)
+          .eq("is_deleted", false)
+          .order("created_at", { ascending: false })
+          .limit(6);
+        if (active && data) setSmartRecs((data as unknown as SmartRec[]).filter((r) => !dismissed.includes(r.id)));
+        return;
+      }
+
+      const { data: userListings } = await supabase
+        .from("listings")
+        .select("type, city, country_code, max_budget, gender_preference")
+        .eq("user_id", user.id)
+        .eq("is_deleted", false)
+        .limit(1);
+
+      if (!userListings || userListings.length === 0) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("country")
+          .eq("user_id", user.id)
+          .single();
+
+        let q = supabase
+          .from("listings")
+          .select(SMART_REC_SELECT)
+          .eq("is_deleted", false)
+          .neq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(12);
+        if (profile?.country) q = q.eq("country_code", profile.country);
+        const { data } = await q;
+        if (active && data) setSmartRecs((data as unknown as SmartRec[]).filter((r) => !dismissed.includes(r.id)).slice(0, 6));
+        return;
+      }
+
+      const mine = userListings[0];
+      let q = supabase
+        .from("listings")
+        .select(SMART_REC_SELECT)
+        .eq("is_deleted", false)
+        .neq("user_id", user.id)
+        .ilike("city", mine.city)
+        .order("created_at", { ascending: false })
+        .limit(12);
+
+      if (mine.type === "has_place") {
+        q = q.eq("type", "needs_place");
+        if (mine.gender_preference && mine.gender_preference !== "any") q = q.eq("seeker_gender", mine.gender_preference);
+      } else {
+        q = q.eq("type", "has_place");
+        if (mine.max_budget) q = q.lte("rent", mine.max_budget);
+      }
+
+      const { data } = await q;
+      if (active && data) setSmartRecs((data as unknown as SmartRec[]).filter((r) => !dismissed.includes(r.id)).slice(0, 6));
+    }
+
+    fetchRecs();
+    return () => { active = false; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
+
   // ── City filter for LatestListings ───────────────────────────────────────
   const [filterCity, setFilterCity] = useState<string | null>(null);
   const listingsRef = useRef<HTMLDivElement>(null);
@@ -1253,6 +1356,11 @@ export default function Home() {
   const [selectedCity, setSelectedCity] = useState("");
   const [loadingCities, setLoadingCities] = useState(false);
   const { lang, setLang } = useLang();
+
+  // ── Smart Recommendations ─────────────────────────────────────────────────
+  const [smartRecs, setSmartRecs] = useState<SmartRec[]>([]);
+  const [savedRecIds, setSavedRecIds] = useState<string[]>([]);
+  const [dismissedRecIds, setDismissedRecIds] = useState<string[]>([]);
 
   // ── Unread messages badge ─────────────────────────────────────────────────
   const [unreadSupportCount, setUnreadSupportCount] = useState(0);
@@ -2770,108 +2878,110 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── LATEST LISTINGS ───────────────────────────────────────────────────── */}
-      <div ref={listingsRef}>
-        <LatestListings key={lang} lang={lang} filterCity={filterCity} onClearFilter={() => setFilterCity(null)} />
-      </div>
+      {/* ── POPULAR CITIES ────────────────────────────────────────────────────── */}
+      <PopularCities lang={lang} onCityClick={handleCityClick} />
 
-      {/* ── HOW IT WORKS ──────────────────────────────────────────────────────── */}
-      <section className="bg-amber-50/80 border-y border-amber-100 pb-20 mt-0 pt-6">
-        <div className="max-w-4xl mx-auto px-5">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-4 tracking-tight">{t.howH2}</h2>
-            <p className="text-stone-600 text-lg max-w-xl mx-auto">{t.howP}</p>
-          </div>
-          <div className="relative">
-            {/* Connecting line — desktop only, aligned to icon center (~top-10 + half of w-20) */}
-            <div
-              className="hidden md:block absolute top-10 left-[calc(12.5%+2.5rem)] right-[calc(12.5%+2.5rem)] h-px -z-10"
-              style={{ background: "linear-gradient(to right, transparent, #FF6B35 20%, #FF6B35 80%, transparent)", opacity: 0.3, borderTop: "1px dashed #FF6B35" }}
-            />
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-              {t.howItWorks.map((step, i) => {
-                const iconGradients = [
-                  "bg-gradient-to-br from-blue-400 to-blue-600",
-                  "bg-gradient-to-br from-violet-400 to-purple-600",
-                  "bg-gradient-to-br from-pink-400 to-rose-500",
-                  "bg-gradient-to-br from-emerald-400 to-green-600",
-                ];
-                const glowColors = [
-                  "bg-blue-400/30",
-                  "bg-violet-400/30",
-                  "bg-pink-400/30",
-                  "bg-emerald-400/30",
-                ];
-                const icons = [
-                  /* Step 1 — person silhouette + sparkle */
-                  <svg key="1" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
-                    <circle cx="12" cy="8" r="3.5" />
-                    <path d="M5 21c0-3.87 3.13-7 7-7s7 3.13 7 7" />
-                    <path d="M20 2l.6 1.4L22 4l-1.4.6L20 6l-.6-1.4L18 4l1.4-.6z" fill="white" stroke="none" />
-                  </svg>,
-                  /* Step 2 — neural network nodes */
-                  <svg key="2" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" className="w-10 h-10">
-                    <circle cx="12" cy="12" r="2.5" />
-                    <circle cx="4.5" cy="5.5" r="1.5" />
-                    <circle cx="19.5" cy="5.5" r="1.5" />
-                    <circle cx="4.5" cy="18.5" r="1.5" />
-                    <circle cx="19.5" cy="18.5" r="1.5" />
-                    <path d="M12 9.5L5.5 7" strokeOpacity={0.5} strokeWidth={1} />
-                    <path d="M12 9.5L18.5 7" strokeOpacity={0.5} strokeWidth={1} />
-                    <path d="M12 14.5L5.5 17" strokeOpacity={0.5} strokeWidth={1} />
-                    <path d="M12 14.5L18.5 17" strokeOpacity={0.5} strokeWidth={1} />
-                    <path d="M4.5 7v10" strokeOpacity={0.25} strokeWidth={1} />
-                    <path d="M19.5 7v10" strokeOpacity={0.25} strokeWidth={1} />
-                  </svg>,
-                  /* Step 3 — two speech bubbles with heart */
-                  <svg key="3" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
-                    <path d="M4 5a2 2 0 012-2h8a2 2 0 012 2v5a2 2 0 01-2 2H9l-3 3V12H6a2 2 0 01-2-2V5z" />
-                    <path d="M16 9h1a2 2 0 012 2v4a2 2 0 01-2 2h-1l-2 2v-2h-1" />
-                    <path d="M9.5 7c0-.83.67-1.5 1.5-1.5.41 0 .78.16 1.05.43.27-.27.64-.43 1.05-.43.83 0 1.5.67 1.5 1.5 0 1.5-2.55 2.7-2.55 2.7S9.5 8.5 9.5 7z" fill="white" strokeWidth={0} />
-                  </svg>,
-                  /* Step 4 — house with keyhole */
-                  <svg key="4" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
-                    <path d="M3 11.5L12 3l9 8.5" />
-                    <path d="M5 10v10h5v-5h4v5h5V10" />
-                    <circle cx="12" cy="15.5" r="1.2" fill="white" strokeWidth={0} />
-                    <line x1="12" y1="16.7" x2="12" y2="18.5" />
-                  </svg>,
-                ];
+      {/* ── SMART RECOMMENDATIONS ─────────────────────────────────────────────── */}
+      {smartRecs.length > 0 && (
+        <section className="py-10 px-4 bg-white border-b border-stone-100">
+          <div className="max-w-2xl mx-auto">
+            <div className="mb-6">
+              <h2 className="text-2xl font-black text-stone-900">
+                {({ tr: "✨ Senin İçin Seçilenler", en: "✨ Picked For You", fa: "✨ پیشنهاد ویژه برای شما", ar: "✨ مختارة لك", de: "✨ Für dich ausgewählt", ru: "✨ Подобрано для вас" } as Record<string, string>)[lang] ?? "✨ Picked For You"}
+              </h2>
+              <p className="text-sm text-stone-500 mt-1">
+                {({ tr: "Profiline göre en uygun ilanlar", en: "Best matches based on your profile", fa: "بهترین آگهی‌ها بر اساس پروفایل شما", ar: "أفضل الإعلانات بناءً على ملفك", de: "Beste Treffer basierend auf deinem Profil", ru: "Лучшие объявления по вашему профилю" } as Record<string, string>)[lang] ?? "Best matches based on your profile"}
+              </p>
+            </div>
+            <div className="flex flex-col gap-3">
+              {smartRecs.map((rec) => {
+                const isSaved = savedRecIds.includes(rec.id);
+                const flagEmoji = rec.country_code && rec.country_code.length === 2
+                  ? String.fromCodePoint(...(rec.country_code.toUpperCase().split("").map((c: string) => 0x1F1E6 + c.charCodeAt(0) - 65)))
+                  : "🌍";
+                const thumbnail = rec.photos?.[0] ?? null;
+                const isHasPlace = rec.type === "has_place";
+                const summary = isHasPlace
+                  ? [rec.house_type, rec.rooms ? `${rec.rooms} oda` : null].filter(Boolean).join(" · ")
+                  : [rec.seeker_age, rec.occupation].filter(Boolean).join(" · ");
+                const priceDisplay = isHasPlace
+                  ? rec.rent ? `${rec.rent} ${rec.currency ?? ""}` : null
+                  : rec.max_budget ? `max ${rec.max_budget} ${rec.currency ?? ""}` : null;
                 return (
-                  <motion.div
-                    key={step.step}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: i * 0.15 }}
-                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                    className="bg-white rounded-3xl p-6 shadow-md border border-gray-100 text-center flex flex-col items-center"
-                  >
-                    <div className="relative mb-2">
-                      {/* Pulse glow behind icon */}
-                      <div className={`absolute inset-0 rounded-3xl ${glowColors[i]} animate-pulse scale-110`} />
-                      <motion.div
-                        whileHover={{ scale: 1.1, rotate: 5, transition: { type: "spring", stiffness: 300 } }}
-                        className={`relative w-20 h-20 rounded-3xl ${iconGradients[i]} flex items-center justify-center shadow-lg`}
-                      >
-                        {icons[i]}
-                      </motion.div>
-                      <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-orange-500 text-white text-xs font-bold flex items-center justify-center shadow-md z-10">
-                        {i + 1}
-                      </span>
+                  <div key={rec.id} className="bg-stone-50 border border-stone-200 rounded-2xl p-3 flex items-center gap-3">
+                    <div className="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-stone-200">
+                      {thumbnail ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={thumbnail} alt="" className="w-full h-full object-cover" />
+                      ) : rec.profiles?.avatar_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={rec.profiles.avatar_url} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-3xl">
+                          {isHasPlace ? "🏠" : "🔍"}
+                        </div>
+                      )}
                     </div>
-                    <h3 className="text-base font-bold text-gray-900 mt-4">{step.title}</h3>
-                    <p className="text-xs text-gray-400 mt-1 leading-relaxed text-center">{step.desc}</p>
-                  </motion.div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap mb-1">
+                        <span className="text-sm font-bold text-stone-800 truncate">
+                          {flagEmoji} {rec.city}
+                        </span>
+                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${isHasPlace ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"}`}>
+                          {listingTypeTrans[rec.type]?.[lang] ?? rec.type}
+                        </span>
+                        {priceDisplay && (
+                          <span className="text-xs font-bold text-orange-600">{priceDisplay}</span>
+                        )}
+                      </div>
+                      {summary && (
+                        <p className="text-xs text-stone-500 truncate">{summary}</p>
+                      )}
+                      <div className="flex items-center gap-2 mt-2 flex-wrap">
+                        <Link
+                          href={`/listings/${rec.id}`}
+                          onClick={() => { try { sessionStorage.setItem("sefira-scroll", String(window.scrollY)); } catch { /* ignore */ } }}
+                          className="flex items-center gap-1 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-colors"
+                        >
+                          💬 {({ tr: "Mesaj Gönder", en: "Message", fa: "ارسال پیام", ar: "إرسال رسالة", de: "Nachricht", ru: "Написать" } as Record<string, string>)[lang] ?? "Message"}
+                        </Link>
+                        <button
+                          onClick={() => {
+                            const next = isSaved ? savedRecIds.filter((x: string) => x !== rec.id) : [...savedRecIds, rec.id];
+                            setSavedRecIds(next);
+                            try { localStorage.setItem("sefira-saved", JSON.stringify(next)); } catch { /* ignore */ }
+                          }}
+                          className={`flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-lg border transition-colors ${isSaved ? "bg-orange-50 border-orange-400 text-orange-600" : "border-stone-300 text-stone-600 hover:border-orange-300 hover:text-orange-600"}`}
+                        >
+                          🔖 {isSaved
+                            ? ({ tr: "Kaydedildi", en: "Saved", fa: "ذخیره شد", ar: "محفوظ", de: "Gespeichert", ru: "Сохранено" } as Record<string, string>)[lang] ?? "Saved"
+                            : ({ tr: "Kaydet", en: "Save", fa: "ذخیره", ar: "حفظ", de: "Speichern", ru: "Сохранить" } as Record<string, string>)[lang] ?? "Save"}
+                        </button>
+                        <button
+                          onClick={() => {
+                            const next = [...dismissedRecIds, rec.id];
+                            setDismissedRecIds(next);
+                            try { sessionStorage.setItem("sefira-dismissed", JSON.stringify(next)); } catch { /* ignore */ }
+                            setSmartRecs((prev) => prev.filter((r) => r.id !== rec.id));
+                          }}
+                          className="flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-lg border border-stone-200 text-stone-400 hover:text-stone-600 transition-colors"
+                        >
+                          ✕ {({ tr: "Geç", en: "Skip", fa: "رد کن", ar: "تخطَّ", de: "Überspringen", ru: "Пропустить" } as Record<string, string>)[lang] ?? "Skip"}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 );
               })}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* ── POPULAR CITIES ────────────────────────────────────────────────────── */}
-      <PopularCities lang={lang} onCityClick={handleCityClick} />
+      {/* ── LATEST LISTINGS ───────────────────────────────────────────────────── */}
+      <div ref={listingsRef}>
+        <LatestListings key={lang} lang={lang} filterCity={filterCity} onClearFilter={() => setFilterCity(null)} />
+      </div>
 
       {/* ── SOCIAL MEDIA ──────────────────────────────────────────────────────── */}
       <section className="py-10 px-4">
