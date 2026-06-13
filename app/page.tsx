@@ -2938,9 +2938,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── POPULAR CITIES ────────────────────────────────────────────────────── */}
-      <PopularCities lang={lang} onCityClick={handleCityClick} />
-
       {/* ── SMART RECOMMENDATIONS ─────────────────────────────────────────────── */}
       {smartRecs.length > 0 && (
         <section className="py-10 bg-white border-b border-stone-100">
@@ -3072,6 +3069,9 @@ export default function Home() {
       <div ref={listingsRef}>
         <LatestListings key={lang} lang={lang} filterCity={filterCity} onClearFilter={() => setFilterCity(null)} />
       </div>
+
+      {/* ── POPULAR CITIES ────────────────────────────────────────────────────── */}
+      <PopularCities lang={lang} onCityClick={handleCityClick} />
 
       {/* ── SOCIAL MEDIA ──────────────────────────────────────────────────────── */}
       <section className="py-10 px-4">
