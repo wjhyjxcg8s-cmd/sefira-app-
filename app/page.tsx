@@ -1075,7 +1075,7 @@ interface SmartRec {
   occupation: string | null;
   gender_preference: string | null;
   seeker_gender: string | null;
-  profiles: { display_name: string | null; avatar_url: string | null } | null;
+  user_id: string;
 }
 
 export default function Home() {
@@ -1265,7 +1265,7 @@ export default function Home() {
   // ── Fetch smart recommendations ──────────────────────────────────────────
   useEffect(() => {
     let active = true;
-    const SMART_REC_SELECT = `id, type, city, country_code, rent, max_budget, currency, photos, house_type, rooms, seeker_age, occupation, gender_preference, seeker_gender, profiles(display_name, avatar_url)`;
+    const SMART_REC_SELECT = `id, type, city, country_code, rent, max_budget, currency, photos, house_type, rooms, seeker_age, occupation, gender_preference, seeker_gender, user_id`;
 
     // Build reverse map: lowercased localized country name -> ISO-3166-1 alpha-2 code.
     // Covers all 6 app locales so profile.country matches regardless of how it was stored.
@@ -1290,12 +1290,13 @@ export default function Home() {
     }
 
     async function fetchRecent(dismissed: string[]) {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("listings")
         .select(SMART_REC_SELECT)
         .eq("is_deleted", false)
         .order("created_at", { ascending: false })
         .limit(6);
+      if (error) console.error("SmartRec fetchRecent error:", error.message);
       return (data as unknown as SmartRec[] | null)?.filter((r) => !dismissed.includes(r.id)) ?? [];
     }
 
@@ -1330,7 +1331,7 @@ export default function Home() {
           const reverseMap = buildCountryReverseMap();
           const code = reverseMap[profile.country.toLowerCase().trim()];
           if (code) {
-            const { data } = await supabase
+            const { data, error } = await supabase
               .from("listings")
               .select(SMART_REC_SELECT)
               .eq("is_deleted", false)
@@ -1338,6 +1339,7 @@ export default function Home() {
               .neq("user_id", user.id)
               .order("created_at", { ascending: false })
               .limit(12);
+            if (error) console.error("SmartRec country query error:", error.message);
             recs = ((data as unknown as SmartRec[] | null) ?? []).filter((r) => !dismissed.includes(r.id)).slice(0, 6);
           }
         }
@@ -1365,7 +1367,8 @@ export default function Home() {
         if (mine.max_budget) q = q.lte("rent", mine.max_budget);
       }
 
-      const { data } = await q;
+      const { data, error } = await q;
+      if (error) console.error("SmartRec city query error:", error.message);
       let recs = ((data as unknown as SmartRec[] | null) ?? []).filter((r) => !dismissed.includes(r.id)).slice(0, 6);
       // Fallback to most recent if city-match query returned nothing
       if (recs.length === 0) recs = await fetchRecent(dismissed);
@@ -2953,9 +2956,6 @@ export default function Home() {
                       {thumbnail ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={thumbnail} alt="" className="w-full h-full object-cover" />
-                      ) : rec.profiles?.avatar_url ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={rec.profiles.avatar_url} alt="" className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-3xl">
                           {isHasPlace ? "🏠" : "🔍"}
