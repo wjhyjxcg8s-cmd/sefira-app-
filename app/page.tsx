@@ -1143,9 +1143,6 @@ export default function Home() {
   const videoParallax = useTransform(scrollY, [0, 600], [0, 30]);
   const badgeTopParallax = useTransform(scrollY, [0, 600], [0, -20]);
   const badgeBottomParallax = useTransform(scrollY, [0, 600], [0, 18]);
-  const heroOpacity = useTransform(scrollY, [0, 500], [1, 0.7]);
-  const heroScale = useTransform(scrollY, [0, 500], [1, 0.97]);
-  const badgeOpacity = useTransform(scrollY, [0, 400], [1, 0.5]);
 
   // ── Scroll detection ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -2334,7 +2331,7 @@ export default function Home() {
       )}
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
-      <motion.div style={{ opacity: heroOpacity, scale: heroScale }}>
+      <motion.div>
       <section className="relative overflow-hidden bg-white pt-16 mb-0 pb-0">
 
         {/* Decorative blur circles */}
@@ -2796,7 +2793,7 @@ export default function Home() {
               <motion.div
                 variants={{ hidden: { opacity: 0, y: 24, scale: 0.96 }, show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 110, damping: 18 } } }}
                 whileTap={{ scale: 0.94 }}
-                style={{ y: badgeTopParallax, opacity: badgeOpacity }}
+                style={{ y: badgeTopParallax }}
                 className="absolute -top-4 -left-4"
               >
                 <motion.div
@@ -2816,7 +2813,7 @@ export default function Home() {
               <motion.div
                 variants={{ hidden: { opacity: 0, y: 24, scale: 0.96 }, show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 110, damping: 18 } } }}
                 whileTap={{ scale: 0.94 }}
-                style={{ y: badgeBottomParallax, opacity: badgeOpacity }}
+                style={{ y: badgeBottomParallax }}
                 className="absolute -bottom-4 -right-4"
               >
                 <motion.div
