@@ -88,7 +88,7 @@ export default function SupportChat() {
 
   return (
     <div style={{display:'flex',flexDirection:'column',height:'100vh',background:'#f0ebe4'}}>
-      <div style={{padding:'16px',background:'#f97316',color:'white',fontWeight:'bold',fontSize:'18px'}}>
+      <div style={{padding:'16px',background:'#0D9488',color:'white',fontWeight:'bold',fontSize:'18px'}}>
         Sefira Destek
       </div>
       <div style={{flex:1,overflowY:'auto',padding:'16px',display:'flex',flexDirection:'column',gap:'8px'}}>
@@ -96,7 +96,7 @@ export default function SupportChat() {
         {messages.map((msg) => (
           <div key={msg.id} style={{display:'flex',justifyContent:msg.sender==='user'?'flex-end':'flex-start'}}>
             <div style={{
-              background:msg.sender==='user'?'#f97316':'white',
+              background:msg.sender==='user'?'#0D9488':'white',
               color:msg.sender==='user'?'white':'black',
               padding:'10px 14px',borderRadius:'16px',maxWidth:'75%'
             }}>
@@ -128,7 +128,7 @@ export default function SupportChat() {
         <button
           onClick={sendMessage}
           disabled={!input.trim()}
-          style={{padding:'12px 20px',background:'#f97316',color:'white',borderRadius:'24px',border:'none',cursor:'pointer',fontWeight:'bold'}}
+          style={{padding:'12px 20px',background:'#0D9488',color:'white',borderRadius:'24px',border:'none',cursor:'pointer',fontWeight:'bold'}}
         >
           Gönder
         </button>

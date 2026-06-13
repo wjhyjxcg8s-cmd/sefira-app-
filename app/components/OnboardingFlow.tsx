@@ -132,7 +132,7 @@ function ProgressBar({ current, total }: { current: number; total: number }) {
   return (
     <div className="h-1.5 bg-stone-100 w-full">
       <div
-        className="h-full bg-gradient-to-r from-orange-500 to-amber-400 transition-all duration-700"
+        className="h-full bg-gradient-to-r from-teal-500 to-amber-400 transition-all duration-700"
         style={{ width: `${pct}%` }}
       />
     </div>
@@ -271,7 +271,7 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
   const ThanksOverlay = () => (
     <div className="text-center py-8 ob-thanks-pop">
       <div className="text-5xl mb-3">❤️❤️❤️</div>
-      <p className="font-black text-orange-500 text-xl">{t.thanks}</p>
+      <p className="font-black text-teal-500 text-xl">{t.thanks}</p>
     </div>
   );
 
@@ -302,7 +302,7 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
               <button
                 key={l}
                 onClick={() => handleLangChange(l)}
-                className={`flex items-center gap-2.5 w-full px-3 py-2.5 text-sm font-bold transition-colors hover:bg-stone-50 ${lang === l ? "text-orange-500 bg-orange-50" : "text-stone-700"}`}
+                className={`flex items-center gap-2.5 w-full px-3 py-2.5 text-sm font-bold transition-colors hover:bg-stone-50 ${lang === l ? "text-teal-500 bg-teal-50" : "text-stone-700"}`}
               >
                 <span className="text-base">{FLAG[l]}</span>
                 {CODE[l]}
@@ -323,7 +323,7 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
                 animationDelay: `${i * 0.35}s`,
               }}>❤️</div>
           ))}
-          <div className="relative bg-gradient-to-br from-orange-500 via-amber-500 to-rose-500 rounded-3xl p-8 shadow-2xl overflow-hidden">
+          <div className="relative bg-gradient-to-br from-teal-500 via-amber-500 to-rose-500 rounded-3xl p-8 shadow-2xl overflow-hidden">
             <div className="absolute -top-10 -right-10 w-36 h-36 rounded-full bg-white/10" />
             <div className="absolute -bottom-8 -left-8 w-28 h-28 rounded-full bg-white/10" />
             <div className="relative flex justify-center mb-6">
@@ -335,7 +335,7 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
             <p className="text-white/88 text-sm text-center leading-relaxed mb-7">{t.welcomeMsg}</p>
             <button
               onClick={goToFirstStep}
-              className="w-full py-4 rounded-2xl bg-white font-black text-orange-500 text-sm hover:bg-orange-50 active:scale-95 transition-all duration-200 shadow-xl"
+              className="w-full py-4 rounded-2xl bg-white font-black text-teal-500 text-sm hover:bg-teal-50 active:scale-95 transition-all duration-200 shadow-xl"
             >
               {t.letsGo} ✨
             </button>
@@ -361,10 +361,10 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
                     onChange={(e) => setDisplayName(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && saveDisplayName()}
                     autoFocus
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm text-stone-800 placeholder:text-stone-400 outline-none focus:border-orange-400 transition-colors mb-5"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm text-stone-800 placeholder:text-stone-400 outline-none focus:border-teal-400 transition-colors mb-5"
                   />
                   <button onClick={saveDisplayName} disabled={!displayName.trim() || saving}
-                    className="w-full py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 font-black text-white text-sm disabled:opacity-40 hover:opacity-95 active:scale-95 transition-all duration-200 shadow-lg shadow-orange-500/25">
+                    className="w-full py-4 rounded-2xl bg-gradient-to-r from-teal-500 to-amber-500 font-black text-white text-sm disabled:opacity-40 hover:opacity-95 active:scale-95 transition-all duration-200 shadow-lg shadow-teal-500/25">
                     {t.confirm} 👋
                   </button>
                 </>
@@ -389,23 +389,23 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
                 <>
                   <div className="grid grid-cols-3 gap-2 mb-5">
                     <select value={bdDay} onChange={(e) => setBdDay(e.target.value)}
-                      className="bg-stone-50 border border-stone-200 rounded-xl px-2 py-3 text-sm text-stone-700 outline-none focus:border-orange-400 transition-colors cursor-pointer">
+                      className="bg-stone-50 border border-stone-200 rounded-xl px-2 py-3 text-sm text-stone-700 outline-none focus:border-teal-400 transition-colors cursor-pointer">
                       <option value="">{t.day}</option>
                       {DAYS.map((d) => <option key={d} value={d}>{d}</option>)}
                     </select>
                     <select value={bdMonth} onChange={(e) => setBdMonth(e.target.value)}
-                      className="bg-stone-50 border border-stone-200 rounded-xl px-2 py-3 text-sm text-stone-700 outline-none focus:border-orange-400 transition-colors cursor-pointer">
+                      className="bg-stone-50 border border-stone-200 rounded-xl px-2 py-3 text-sm text-stone-700 outline-none focus:border-teal-400 transition-colors cursor-pointer">
                       <option value="">{t.month}</option>
                       {MONTHS.map((m, i) => <option key={m} value={m}>{i + 1}</option>)}
                     </select>
                     <select value={bdYear} onChange={(e) => setBdYear(e.target.value)}
-                      className="bg-stone-50 border border-stone-200 rounded-xl px-2 py-3 text-sm text-stone-700 outline-none focus:border-orange-400 transition-colors cursor-pointer">
+                      className="bg-stone-50 border border-stone-200 rounded-xl px-2 py-3 text-sm text-stone-700 outline-none focus:border-teal-400 transition-colors cursor-pointer">
                       <option value="">{t.year}</option>
                       {YEARS.map((y) => <option key={y} value={y}>{y}</option>)}
                     </select>
                   </div>
                   <button onClick={saveBirthDate} disabled={!bdDay || !bdMonth || !bdYear || saving}
-                    className="w-full py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 font-black text-white text-sm disabled:opacity-40 hover:opacity-95 active:scale-95 transition-all duration-200 shadow-lg shadow-orange-500/25">
+                    className="w-full py-4 rounded-2xl bg-gradient-to-r from-teal-500 to-amber-500 font-black text-white text-sm disabled:opacity-40 hover:opacity-95 active:scale-95 transition-all duration-200 shadow-lg shadow-teal-500/25">
                     {t.confirm} ❤️
                   </button>
                 </>
@@ -436,8 +436,8 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
                     <button key={value} onClick={() => saveGender(value)} disabled={saving}
                       className={`flex items-center gap-3 p-4 rounded-2xl border-2 font-bold text-sm transition-all duration-200 active:scale-95 hover:-translate-y-0.5 hover:shadow-lg ${
                         gender === value
-                          ? "border-orange-400 bg-orange-50 text-orange-700 shadow-md shadow-orange-500/20"
-                          : "border-stone-200 text-stone-700 hover:border-orange-300 hover:bg-orange-50/60"
+                          ? "border-teal-400 bg-teal-50 text-teal-800 shadow-md shadow-teal-500/20"
+                          : "border-stone-200 text-stone-700 hover:border-teal-300 hover:bg-teal-50/60"
                       }`}
                     >
                       <span className="text-2xl">{icon}</span>
@@ -474,7 +474,7 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
                 />
               </div>
               <button onClick={saveCountry} disabled={!country || !countryValid || saving}
-                className="w-full py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 font-black text-white text-sm disabled:opacity-40 hover:opacity-95 active:scale-95 transition-all duration-200 shadow-lg shadow-orange-500/25">
+                className="w-full py-4 rounded-2xl bg-gradient-to-r from-teal-500 to-amber-500 font-black text-white text-sm disabled:opacity-40 hover:opacity-95 active:scale-95 transition-all duration-200 shadow-lg shadow-teal-500/25">
                 {t.countryConfirm} 🌍
               </button>
             </div>
@@ -496,14 +496,14 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
               <div className="flex justify-center mb-6">
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="relative w-28 h-28 rounded-full border-4 border-dashed border-orange-300 hover:border-orange-500 bg-orange-50 hover:bg-orange-100 flex items-center justify-center transition-all duration-200 active:scale-95 overflow-hidden group"
+                  className="relative w-28 h-28 rounded-full border-4 border-dashed border-teal-300 hover:border-teal-500 bg-teal-50 hover:bg-teal-100 flex items-center justify-center transition-all duration-200 active:scale-95 overflow-hidden group"
                 >
                   {photoPreview ? (
                     <img src={photoPreview} alt="preview" className="w-full h-full object-cover rounded-full" />
                   ) : (
                     <div className="flex flex-col items-center gap-1.5">
                       <span className="text-3xl">📷</span>
-                      <span className="text-[10px] font-black text-orange-400 uppercase tracking-wide">{t.choosePhoto}</span>
+                      <span className="text-[10px] font-black text-teal-400 uppercase tracking-wide">{t.choosePhoto}</span>
                     </div>
                   )}
                   {photoPreview && (
@@ -515,7 +515,7 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
                 <input ref={fileInputRef} type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
               </div>
               <button onClick={savePhoto} disabled={!photoFile || saving}
-                className="w-full py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 font-black text-white text-sm disabled:opacity-40 hover:opacity-95 active:scale-95 transition-all duration-200 shadow-lg shadow-orange-500/25 mb-3">
+                className="w-full py-4 rounded-2xl bg-gradient-to-r from-teal-500 to-amber-500 font-black text-white text-sm disabled:opacity-40 hover:opacity-95 active:scale-95 transition-all duration-200 shadow-lg shadow-teal-500/25 mb-3">
                 {saving ? "..." : `${t.photoConfirm} 📸`}
               </button>
               <button onClick={skipPhoto}
@@ -547,7 +547,7 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
               }}>❤️</div>
           ))}
           <div className="relative w-full max-w-sm ob-celebrate-in">
-            <div className="bg-gradient-to-br from-rose-500 via-pink-500 to-orange-500 rounded-3xl p-10 shadow-2xl text-center overflow-hidden">
+            <div className="bg-gradient-to-br from-rose-500 via-pink-500 to-teal-500 rounded-3xl p-10 shadow-2xl text-center overflow-hidden">
               <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-white/10" />
               <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-white/10" />
               <div className="relative text-6xl mb-5">🌹❤️🌹</div>

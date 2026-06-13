@@ -205,12 +205,12 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
                 gap: '3px',
                 padding: '4px 8px',
                 borderRadius: '50px',
-                border: currentLang === l.code ? '2px solid #f97316' : '2px solid #eee',
-                background: currentLang === l.code ? '#fff7ed' : 'white',
+                border: currentLang === l.code ? '2px solid #0D9488' : '2px solid #eee',
+                background: currentLang === l.code ? '#ccfbf1' : 'white',
                 cursor: 'pointer',
                 fontSize: '12px',
                 fontWeight: currentLang === l.code ? '700' : '500',
-                color: currentLang === l.code ? '#f97316' : '#666',
+                color: currentLang === l.code ? '#0D9488' : '#666',
                 transition: 'all 0.2s ease',
               }}
             >
@@ -240,7 +240,7 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
         {/* Badge */}
         <div style={{
           display: 'inline-block',
-          background: 'linear-gradient(135deg, #f97316, #fb923c)',
+          background: 'linear-gradient(135deg, #0D9488, #14B8A6)',
           color: 'white',
           padding: '3px 12px',
           borderRadius: '50px',
@@ -285,7 +285,7 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
           onClick={handleRegister}
           style={{
             width: '100%',
-            background: 'linear-gradient(135deg, #f97316, #ea580c)',
+            background: 'linear-gradient(135deg, #0D9488, #0F766E)',
             color: 'white',
             border: 'none',
             borderRadius: '10px',
@@ -309,12 +309,12 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
           style={{
             width: '100%',
             background: 'transparent',
-            border: '2px solid #f97316',
+            border: '2px solid #0D9488',
             borderRadius: '10px',
             padding: '8px',
             fontSize: '13px',
             fontWeight: '600',
-            color: '#f97316',
+            color: '#0D9488',
             cursor: 'pointer',
             marginBottom: '6px',
           }}
@@ -350,8 +350,8 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
           to { opacity: 1; }
         }
         @keyframes ctaPulse {
-          0%, 100% { box-shadow: 0 4px 20px rgba(249,115,22,0.4); }
-          50%       { box-shadow: 0 4px 35px rgba(249,115,22,0.7); }
+          0%, 100% { box-shadow: 0 4px 20px rgba(13,148,136,0.4); }
+          50%       { box-shadow: 0 4px 35px rgba(13,148,136,0.7); }
         }
       `}</style>
     </>

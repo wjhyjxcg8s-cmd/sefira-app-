@@ -177,7 +177,7 @@ export default function ChannelsPage() {
         <div className="p-5 border-b border-gray-100 flex items-center gap-3">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-base font-black shrink-0"
-            style={{ backgroundColor: "#f97316" }}
+            style={{ backgroundColor: "#0D9488" }}
           >
             S
           </div>
@@ -200,15 +200,15 @@ export default function ChannelsPage() {
                 }}
                 className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-left"
                 style={{
-                  backgroundColor: active ? "#f97316" : "transparent",
+                  backgroundColor: active ? "#0D9488" : "transparent",
                   color: active ? "white" : "#374151",
-                  boxShadow: active ? "0 2px 8px rgba(249,115,22,0.3)" : "none",
+                  boxShadow: active ? "0 2px 8px rgba(13,148,136,0.3)" : "none",
                   cursor: active ? "default" : "pointer",
                 }}
                 onMouseEnter={(e) => {
                   if (!active) {
-                    e.currentTarget.style.backgroundColor = "#fff7ed";
-                    e.currentTarget.style.color = "#f97316";
+                    e.currentTarget.style.backgroundColor = "#ccfbf1";
+                    e.currentTarget.style.color = "#0D9488";
                   }
                 }}
                 onMouseLeave={(e) => {
@@ -229,7 +229,7 @@ export default function ChannelsPage() {
           <div className="flex items-center gap-3">
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-              style={{ backgroundColor: "#fff7ed", color: "#f97316" }}
+              style={{ backgroundColor: "#ccfbf1", color: "#0D9488" }}
             >
               A
             </div>
@@ -265,7 +265,7 @@ export default function ChannelsPage() {
             <div className="ml-auto">
               <span
                 className="text-xs font-medium px-2.5 py-1 rounded-full"
-                style={{ backgroundColor: "#fff7ed", color: "#f97316" }}
+                style={{ backgroundColor: "#ccfbf1", color: "#0D9488" }}
               >
                 Admin
               </span>
@@ -287,7 +287,7 @@ export default function ChannelsPage() {
                   onChange={(e) => setNewTitle(e.target.value)}
                   className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none transition-colors"
                   style={{ backgroundColor: "#fafafa" }}
-                  onFocus={(e) => (e.currentTarget.style.borderColor = "#f97316")}
+                  onFocus={(e) => (e.currentTarget.style.borderColor = "#0D9488")}
                   onBlur={(e) => (e.currentTarget.style.borderColor = "#e5e7eb")}
                 />
                 <textarea
@@ -297,7 +297,7 @@ export default function ChannelsPage() {
                   rows={4}
                   className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none transition-colors resize-none"
                   style={{ backgroundColor: "#fafafa" }}
-                  onFocus={(e) => (e.currentTarget.style.borderColor = "#f97316")}
+                  onFocus={(e) => (e.currentTarget.style.borderColor = "#0D9488")}
                   onBlur={(e) => (e.currentTarget.style.borderColor = "#e5e7eb")}
                 />
                 {formError && <p className="text-sm text-red-500">{formError}</p>}
@@ -306,12 +306,12 @@ export default function ChannelsPage() {
                   onClick={handleCreate}
                   disabled={sending || !newTitle.trim() || !newMessage.trim()}
                   className="px-6 py-2.5 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ backgroundColor: "#f97316" }}
+                  style={{ backgroundColor: "#0D9488" }}
                   onMouseEnter={(e) => {
                     if (!sending) e.currentTarget.style.backgroundColor = "#ea6c10";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "#f97316";
+                    e.currentTarget.style.backgroundColor = "#0D9488";
                   }}
                 >
                   {sending ? "Gönderiliyor..." : "Tüm Kullanıcılara Gönder"}
@@ -355,7 +355,7 @@ export default function ChannelsPage() {
                             onChange={(e) => setEditTitle(e.target.value)}
                             className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none transition-colors"
                             style={{ backgroundColor: "#fafafa" }}
-                            onFocus={(e) => (e.currentTarget.style.borderColor = "#f97316")}
+                            onFocus={(e) => (e.currentTarget.style.borderColor = "#0D9488")}
                             onBlur={(e) => (e.currentTarget.style.borderColor = "#e5e7eb")}
                           />
                           <textarea
@@ -364,7 +364,7 @@ export default function ChannelsPage() {
                             rows={4}
                             className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none transition-colors resize-none"
                             style={{ backgroundColor: "#fafafa" }}
-                            onFocus={(e) => (e.currentTarget.style.borderColor = "#f97316")}
+                            onFocus={(e) => (e.currentTarget.style.borderColor = "#0D9488")}
                             onBlur={(e) => (e.currentTarget.style.borderColor = "#e5e7eb")}
                           />
                           <div className="flex gap-2">
@@ -372,7 +372,7 @@ export default function ChannelsPage() {
                               onClick={() => handleSaveEdit(ann.id)}
                               disabled={saving}
                               className="px-4 py-2 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-50"
-                              style={{ backgroundColor: "#f97316" }}
+                              style={{ backgroundColor: "#0D9488" }}
                             >
                               {saving ? "Kaydediliyor..." : "Kaydet"}
                             </button>

@@ -758,7 +758,7 @@ export default function ProfilePage() {
   if (loading || profileLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-stone-50">
-        <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-10 h-10 border-4 border-teal-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -766,7 +766,7 @@ export default function ProfilePage() {
   if (!user) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-stone-50 gap-5 p-6">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/30">
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500 to-amber-500 flex items-center justify-center shadow-lg shadow-teal-500/30">
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-white">
             <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
           </svg>
@@ -774,7 +774,7 @@ export default function ProfilePage() {
         <p className="text-stone-600 text-center font-medium">{t.notLoggedIn}</p>
         <Link
           href="/"
-          className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-orange-500/25 hover:opacity-90 transition-all active:scale-95"
+          className="bg-gradient-to-r from-teal-500 to-amber-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-teal-500/25 hover:opacity-90 transition-all active:scale-95"
         >
           {t.goHome}
         </Link>
@@ -788,10 +788,10 @@ export default function ProfilePage() {
       <nav dir="ltr" style={{ transform: "translateZ(0)", WebkitTransform: "translateZ(0)", willChange: "transform" }} className="fixed top-0 left-0 right-0 w-full z-[9999] bg-white border-b border-stone-200 shadow-sm">
         <div className="max-w-2xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-sm text-white shadow-lg shadow-orange-500/30 group-hover:scale-110 transition-all duration-300">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-teal-500 to-amber-500 flex items-center justify-center font-black text-sm text-white shadow-lg shadow-teal-500/30 group-hover:scale-110 transition-all duration-300">
               S
             </div>
-            <span className="text-xl font-black tracking-tight bg-gradient-to-r from-orange-500 to-amber-600 bg-clip-text text-transparent">
+            <span className="text-xl font-black tracking-tight bg-gradient-to-r from-teal-500 to-amber-600 bg-clip-text text-transparent">
               Sefira
             </span>
           </Link>
@@ -799,7 +799,7 @@ export default function ProfilePage() {
           <div className="flex items-center gap-2">
             <Link
               href="/create-listing"
-              className="hidden sm:block text-sm font-bold bg-gradient-to-r from-orange-500 to-amber-500 text-white px-4 py-2 rounded-xl shadow-lg shadow-orange-500/25 hover:opacity-90 transition-all active:scale-95"
+              className="hidden sm:block text-sm font-bold bg-gradient-to-r from-teal-500 to-amber-500 text-white px-4 py-2 rounded-xl shadow-lg shadow-teal-500/25 hover:opacity-90 transition-all active:scale-95"
             >
               {t.createListing}
             </Link>
@@ -824,7 +824,7 @@ export default function ProfilePage() {
                     <button
                       key={l}
                       onClick={() => { setLang(l); setLangMenuOpen(false); }}
-                      className={`flex items-center gap-2 w-full px-3 py-2.5 text-[12px] font-bold transition-colors hover:bg-stone-50 ${lang === l ? "text-orange-500" : "text-stone-700"}`}
+                      className={`flex items-center gap-2 w-full px-3 py-2.5 text-[12px] font-bold transition-colors hover:bg-stone-50 ${lang === l ? "text-teal-500" : "text-stone-700"}`}
                     >
                       <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : l === "fa" ? "🇮🇷" : l === "ar" ? "🇸🇦" : l === "ru" ? "🇷🇺" : "🇩🇪"}</span>
                       {l === "tr" ? "TR" : l === "en" ? "EN" : l === "fa" ? "FA" : l === "ar" ? "AR" : l === "ru" ? "RU" : "DE"}
@@ -847,7 +847,7 @@ export default function ProfilePage() {
             <div className="flex gap-3">
               <button
                 onClick={handleConfirmEdit}
-                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-bold shadow-md shadow-orange-500/25 hover:opacity-90 transition-all active:scale-95"
+                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-teal-500 to-amber-500 text-white text-sm font-bold shadow-md shadow-teal-500/25 hover:opacity-90 transition-all active:scale-95"
               >
                 {t.confirmEditBtn}
               </button>
@@ -903,7 +903,7 @@ export default function ProfilePage() {
                     const checked = deleteReasons.includes(key);
                     return (
                       <label key={key} className="flex items-start gap-3 cursor-pointer group">
-                        <div className={`mt-0.5 w-5 h-5 flex-shrink-0 rounded border-2 flex items-center justify-center transition-all ${checked ? "bg-orange-500 border-orange-500" : "border-stone-300 group-hover:border-orange-300"}`}>
+                        <div className={`mt-0.5 w-5 h-5 flex-shrink-0 rounded border-2 flex items-center justify-center transition-all ${checked ? "bg-teal-500 border-teal-500" : "border-stone-300 group-hover:border-teal-300"}`}>
                           {checked && (
                             <svg viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-white">
                               <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
@@ -924,13 +924,13 @@ export default function ProfilePage() {
                 <button
                   disabled={deleteReasons.length === 0}
                   onClick={() => setDeleteStep(3)}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-bold shadow-md shadow-orange-500/25 hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-teal-500 to-amber-500 text-white text-sm font-bold shadow-md shadow-teal-500/25 hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {t.deleteContinue}
                 </button>
                 <button
                   onClick={handleCancelAndGoHome}
-                  className="w-full flex items-center gap-4 rounded-2xl bg-gradient-to-r from-orange-50 to-pink-50 border border-orange-200 py-4 px-5 hover:from-orange-100 hover:to-pink-100 active:scale-95 transition-all"
+                  className="w-full flex items-center gap-4 rounded-2xl bg-gradient-to-r from-teal-50 to-pink-50 border border-teal-200 py-4 px-5 hover:from-teal-100 hover:to-pink-100 active:scale-95 transition-all"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src="/images/sefira-cat.jpg" alt="cat" style={{ borderRadius: "50%", width: "50px", height: "50px", objectFit: "cover", flexShrink: 0 }} />
@@ -951,7 +951,7 @@ export default function ProfilePage() {
                     <button
                       key={n}
                       onClick={() => setDeleteRating(n)}
-                      className={`py-2.5 rounded-xl text-sm font-bold border-2 transition-all active:scale-95 ${deleteRating === n ? "bg-orange-500 border-orange-500 text-white shadow-md shadow-orange-500/25" : "border-stone-200 text-stone-600 hover:border-orange-300 hover:text-orange-600"}`}
+                      className={`py-2.5 rounded-xl text-sm font-bold border-2 transition-all active:scale-95 ${deleteRating === n ? "bg-teal-500 border-teal-500 text-white shadow-md shadow-teal-500/25" : "border-stone-200 text-stone-600 hover:border-teal-300 hover:text-teal-700"}`}
                     >
                       {n}
                     </button>
@@ -960,13 +960,13 @@ export default function ProfilePage() {
                 <button
                   disabled={deleteRating === null}
                   onClick={() => setDeleteStep(4)}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-bold shadow-md shadow-orange-500/25 hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-teal-500 to-amber-500 text-white text-sm font-bold shadow-md shadow-teal-500/25 hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {t.deleteContinue}
                 </button>
                 <button
                   onClick={handleCancelAndGoHome}
-                  className="w-full flex items-center gap-4 rounded-2xl bg-gradient-to-r from-orange-50 to-pink-50 border border-orange-200 py-4 px-5 hover:from-orange-100 hover:to-pink-100 active:scale-95 transition-all"
+                  className="w-full flex items-center gap-4 rounded-2xl bg-gradient-to-r from-teal-50 to-pink-50 border border-teal-200 py-4 px-5 hover:from-teal-100 hover:to-pink-100 active:scale-95 transition-all"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src="/images/sefira-cat.jpg" alt="cat" style={{ borderRadius: "50%", width: "50px", height: "50px", objectFit: "cover", flexShrink: 0 }} />
@@ -987,19 +987,19 @@ export default function ProfilePage() {
                   onChange={e => setDeleteExtraFeedback(e.target.value)}
                   placeholder={t.deleteFeedbackPlaceholder}
                   rows={4}
-                  className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all resize-none"
+                  className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all resize-none"
                 />
                 <button
                   disabled={deleteLoading}
                   onClick={handleSendOtp}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-bold shadow-md shadow-orange-500/25 hover:opacity-90 active:scale-95 transition-all disabled:opacity-60"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-teal-500 to-amber-500 text-white text-sm font-bold shadow-md shadow-teal-500/25 hover:opacity-90 active:scale-95 transition-all disabled:opacity-60"
                 >
                   {deleteLoading ? t.deleteSending : t.deleteContinue}
                 </button>
                 <button
                   onClick={handleCancelAndGoHome}
                   disabled={deleteLoading}
-                  className="w-full flex items-center gap-4 rounded-2xl bg-gradient-to-r from-orange-50 to-pink-50 border border-orange-200 py-4 px-5 hover:from-orange-100 hover:to-pink-100 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="w-full flex items-center gap-4 rounded-2xl bg-gradient-to-r from-teal-50 to-pink-50 border border-teal-200 py-4 px-5 hover:from-teal-100 hover:to-pink-100 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src="/images/sefira-cat.jpg" alt="cat" style={{ borderRadius: "50%", width: "50px", height: "50px", objectFit: "cover", flexShrink: 0 }} />
@@ -1053,7 +1053,7 @@ export default function ProfilePage() {
       <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
         {/* Back to home */}
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block mb-5">
-          <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
+          <Link href="/" className="flex items-center gap-2 bg-teal-500 hover:bg-teal-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -1075,13 +1075,13 @@ export default function ProfilePage() {
                   className="w-24 h-24 rounded-full object-cover shadow-md"
                 />
               ) : (
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-2xl text-white shadow-md shadow-orange-500/30">
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-teal-500 to-amber-500 flex items-center justify-center font-black text-2xl text-white shadow-md shadow-teal-500/30">
                   {initials}
                 </div>
               )}
               <button
                 onClick={() => setConfirmField("avatar")}
-                className="absolute -bottom-1 -right-1 w-8 h-8 bg-white border-2 border-stone-200 rounded-full flex items-center justify-center shadow-sm hover:border-orange-400 hover:bg-orange-50 transition-all"
+                className="absolute -bottom-1 -right-1 w-8 h-8 bg-white border-2 border-stone-200 rounded-full flex items-center justify-center shadow-sm hover:border-teal-400 hover:bg-teal-50 transition-all"
                 title={avatarPreview || avatarUrl ? t.changePhoto : t.uploadPhoto}
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-3.5 h-3.5 text-stone-600">
@@ -1116,7 +1116,7 @@ export default function ProfilePage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => fileInputRef.current?.click()}
-                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-bold shadow-sm hover:opacity-90 transition-all active:scale-95"
+                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-500 to-amber-500 text-white text-sm font-bold shadow-sm hover:opacity-90 transition-all active:scale-95"
                     >
                       {t.choosePhoto}
                     </button>
@@ -1132,7 +1132,7 @@ export default function ProfilePage() {
                     <button
                       onClick={() => handleSaveField("avatar")}
                       disabled={saving}
-                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-bold shadow-sm hover:opacity-90 transition-all active:scale-95 disabled:opacity-60"
+                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-500 to-amber-500 text-white text-sm font-bold shadow-sm hover:opacity-90 transition-all active:scale-95 disabled:opacity-60"
                     >
                       {saving ? t.saving : t.save}
                     </button>
@@ -1164,7 +1164,7 @@ export default function ProfilePage() {
                       onChange={(e) => { setEditDisplayName(e.target.value); setFieldError(null); }}
                       placeholder={t.displayNamePlaceholder}
                       autoFocus
-                      className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+                      className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all text-sm"
                     />
                     <p className="text-[11px] text-stone-400">{t.fieldRequired}</p>
                     {fieldError && (
@@ -1177,7 +1177,7 @@ export default function ProfilePage() {
                       <button
                         onClick={() => handleSaveField("displayName")}
                         disabled={saving}
-                        className="flex-1 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold shadow-sm hover:opacity-90 transition-all active:scale-95 disabled:opacity-60"
+                        className="flex-1 py-2 rounded-lg bg-gradient-to-r from-teal-500 to-amber-500 text-white text-xs font-bold shadow-sm hover:opacity-90 transition-all active:scale-95 disabled:opacity-60"
                       >
                         {saving ? t.saving : t.save}
                       </button>
@@ -1198,7 +1198,7 @@ export default function ProfilePage() {
               {editingField !== "displayName" && (
                 <button
                   onClick={() => setConfirmField("displayName")}
-                  className="mt-5 w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:text-orange-500 hover:bg-orange-50 transition-all flex-shrink-0"
+                  className="mt-5 w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:text-teal-500 hover:bg-teal-50 transition-all flex-shrink-0"
                 >
                   <EditIcon />
                 </button>
@@ -1225,7 +1225,7 @@ export default function ProfilePage() {
                       onChange={(e) => { setEditBirthDate(e.target.value); setFieldError(null); }}
                       max={new Date().toISOString().split("T")[0]}
                       autoFocus
-                      className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+                      className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all text-sm"
                     />
                     <p className="text-[11px] text-stone-400">{t.fieldRequired}</p>
                     {fieldError && (
@@ -1238,7 +1238,7 @@ export default function ProfilePage() {
                       <button
                         onClick={() => handleSaveField("birthDate")}
                         disabled={saving}
-                        className="flex-1 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold shadow-sm hover:opacity-90 transition-all active:scale-95 disabled:opacity-60"
+                        className="flex-1 py-2 rounded-lg bg-gradient-to-r from-teal-500 to-amber-500 text-white text-xs font-bold shadow-sm hover:opacity-90 transition-all active:scale-95 disabled:opacity-60"
                       >
                         {saving ? t.saving : t.save}
                       </button>
@@ -1259,7 +1259,7 @@ export default function ProfilePage() {
               {editingField !== "birthDate" && (
                 <button
                   onClick={() => setConfirmField("birthDate")}
-                  className="mt-5 w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:text-orange-500 hover:bg-orange-50 transition-all flex-shrink-0"
+                  className="mt-5 w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:text-teal-500 hover:bg-teal-50 transition-all flex-shrink-0"
                 >
                   <EditIcon />
                 </button>
@@ -1286,14 +1286,14 @@ export default function ProfilePage() {
                             onClick={() => setEditGender(selected ? "" : g)}
                             className={`relative flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl border-2 font-bold text-xs transition-all duration-200 active:scale-95 ${
                               selected
-                                ? "border-orange-400 bg-orange-50 text-orange-700 shadow-md shadow-orange-500/15"
+                                ? "border-teal-400 bg-teal-50 text-teal-800 shadow-md shadow-teal-500/15"
                                 : "border-stone-200 bg-stone-50 text-stone-500 hover:border-stone-300 hover:bg-white hover:text-stone-700"
                             }`}
                           >
                             <span className="text-xl leading-none">{icon}</span>
                             <span className="font-black tracking-tight text-[11px]">{label}</span>
                             {selected && (
-                              <span className="absolute top-1.5 right-1.5 w-3.5 h-3.5 rounded-full bg-orange-500/20 flex items-center justify-center text-[8px] text-orange-600">✓</span>
+                              <span className="absolute top-1.5 right-1.5 w-3.5 h-3.5 rounded-full bg-teal-500/20 flex items-center justify-center text-[8px] text-teal-700">✓</span>
                             )}
                           </button>
                         );
@@ -1310,7 +1310,7 @@ export default function ProfilePage() {
                       <button
                         onClick={() => handleSaveField("gender")}
                         disabled={saving}
-                        className="flex-1 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold shadow-sm hover:opacity-90 transition-all active:scale-95 disabled:opacity-60"
+                        className="flex-1 py-2 rounded-lg bg-gradient-to-r from-teal-500 to-amber-500 text-white text-xs font-bold shadow-sm hover:opacity-90 transition-all active:scale-95 disabled:opacity-60"
                       >
                         {saving ? t.saving : t.save}
                       </button>
@@ -1340,7 +1340,7 @@ export default function ProfilePage() {
               {editingField !== "gender" && (
                 <button
                   onClick={() => setConfirmField("gender")}
-                  className="mt-5 w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:text-orange-500 hover:bg-orange-50 transition-all flex-shrink-0"
+                  className="mt-5 w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:text-teal-500 hover:bg-teal-50 transition-all flex-shrink-0"
                 >
                   <EditIcon />
                 </button>
@@ -1372,7 +1372,7 @@ export default function ProfilePage() {
                         onClick={() => handleSaveField("country")}
                         disabled={saving || !countryValid}
                         className="flex-1 py-2 rounded-lg text-white text-xs font-bold shadow-sm transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                        style={{ background: countryValid ? 'linear-gradient(to right, #f97316, #f59e0b)' : '#9ca3af' }}
+                        style={{ background: countryValid ? 'linear-gradient(to right, #0D9488, #f59e0b)' : '#9ca3af' }}
                       >
                         {saving ? t.saving : t.save}
                       </button>
@@ -1393,7 +1393,7 @@ export default function ProfilePage() {
               {editingField !== "country" && (
                 <button
                   onClick={() => setConfirmField("country")}
-                  className="mt-5 w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:text-orange-500 hover:bg-orange-50 transition-all flex-shrink-0"
+                  className="mt-5 w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:text-teal-500 hover:bg-teal-50 transition-all flex-shrink-0"
                 >
                   <EditIcon />
                 </button>
@@ -1412,21 +1412,21 @@ export default function ProfilePage() {
                       onChange={(e) => setEditCurrentPassword(e.target.value)}
                       placeholder={t.currentPassword}
                       autoFocus
-                      className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+                      className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all text-sm"
                     />
                     <input
                       type="password"
                       value={editNewPassword}
                       onChange={(e) => setEditNewPassword(e.target.value)}
                       placeholder={t.newPassword}
-                      className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+                      className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all text-sm"
                     />
                     <input
                       type="password"
                       value={editConfirmPassword}
                       onChange={(e) => setEditConfirmPassword(e.target.value)}
                       placeholder={t.confirmNewPassword}
-                      className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+                      className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all text-sm"
                     />
                     {passwordError && (
                       <div className="flex items-start gap-2 text-xs text-rose-600 bg-rose-50 border border-rose-100 rounded-xl px-3 py-2">
@@ -1440,7 +1440,7 @@ export default function ProfilePage() {
                       <button
                         onClick={() => handleSaveField("changePassword")}
                         disabled={saving}
-                        className="flex-1 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold shadow-sm hover:opacity-90 transition-all active:scale-95 disabled:opacity-60"
+                        className="flex-1 py-2 rounded-lg bg-gradient-to-r from-teal-500 to-amber-500 text-white text-xs font-bold shadow-sm hover:opacity-90 transition-all active:scale-95 disabled:opacity-60"
                       >
                         {saving ? t.saving : t.save}
                       </button>
@@ -1459,7 +1459,7 @@ export default function ProfilePage() {
               {editingField !== "changePassword" && (
                 <button
                   onClick={() => setConfirmField("changePassword")}
-                  className="mt-5 w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:text-orange-500 hover:bg-orange-50 transition-all flex-shrink-0"
+                  className="mt-5 w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:text-teal-500 hover:bg-teal-50 transition-all flex-shrink-0"
                 >
                   <EditIcon />
                 </button>
@@ -1492,7 +1492,7 @@ export default function ProfilePage() {
             {/* Create listing button */}
             <Link
               href="/create-listing"
-              className="w-full py-3.5 rounded-xl font-bold text-white text-sm text-center bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg shadow-orange-500/20 hover:opacity-90 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-xl font-bold text-white text-sm text-center bg-gradient-to-r from-teal-500 to-amber-500 shadow-lg shadow-teal-500/20 hover:opacity-90 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2"
             >
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
                 <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
@@ -1504,7 +1504,7 @@ export default function ProfilePage() {
             <div className="grid grid-cols-2 gap-3">
               <Link
                 href="/my-listings"
-                className="py-3.5 rounded-xl font-bold text-sm text-center border-2 border-stone-200 text-stone-700 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-700 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2"
+                className="py-3.5 rounded-xl font-bold text-sm text-center border-2 border-stone-200 text-stone-700 hover:border-teal-300 hover:bg-teal-50 hover:text-teal-800 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
                   <rect x="3" y="3" width="18" height="18" rx="2" /><line x1="3" y1="9" x2="21" y2="9" /><line x1="9" y1="21" x2="9" y2="3" />
@@ -1513,7 +1513,7 @@ export default function ProfilePage() {
               </Link>
               <Link
                 href="/saved-listings"
-                className="py-3.5 rounded-xl font-bold text-sm text-center border-2 border-stone-200 text-stone-700 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-700 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2"
+                className="py-3.5 rounded-xl font-bold text-sm text-center border-2 border-stone-200 text-stone-700 hover:border-teal-300 hover:bg-teal-50 hover:text-teal-800 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
                   <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />

@@ -243,12 +243,12 @@ export default function CountrySelect({ value, onChange, lang = 'tr', placeholde
                 style={{
                   padding: '10px 12px',
                   cursor: 'pointer',
-                  borderBottom: showDivider ? '2px solid #f97316' : 'none',
+                  borderBottom: showDivider ? '2px solid #0D9488' : 'none',
                   background: 'white',
                   fontSize: '15px',
                   textAlign: isRtl ? 'right' : 'left',
                 }}
-                onMouseEnter={e => (e.currentTarget.style.background = '#fff7ed')}
+                onMouseEnter={e => (e.currentTarget.style.background = '#ccfbf1')}
                 onMouseLeave={e => (e.currentTarget.style.background = 'white')}
               >
                 {isPriority ? '⭐ ' : ''}{country}

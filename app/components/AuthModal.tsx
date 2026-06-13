@@ -269,7 +269,7 @@ export default function AuthModal({ lang, onClose, initialTab = "login" }: AuthM
       >
 
         {/* Top gradient bar */}
-        <div className="h-1.5 bg-gradient-to-r from-orange-500 via-amber-400 to-orange-500" />
+        <div className="h-1.5 bg-gradient-to-r from-teal-500 via-amber-400 to-teal-500" />
 
         <div className="p-8">
           {/* Close button */}
@@ -284,10 +284,10 @@ export default function AuthModal({ lang, onClose, initialTab = "login" }: AuthM
 
           {/* Logo */}
           <div className="flex items-center gap-2 mb-6">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-sm shadow-lg shadow-orange-500/30">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-500 to-amber-500 flex items-center justify-center font-black text-sm shadow-lg shadow-teal-500/30">
               S
             </div>
-            <span className="text-xl font-black tracking-tight bg-gradient-to-r from-orange-500 to-amber-600 bg-clip-text text-transparent">
+            <span className="text-xl font-black tracking-tight bg-gradient-to-r from-teal-500 to-amber-600 bg-clip-text text-transparent">
               Sefira
             </span>
           </div>
@@ -307,7 +307,7 @@ export default function AuthModal({ lang, onClose, initialTab = "login" }: AuthM
                   <p className="text-stone-700 font-medium text-sm mb-4">{t.resetSuccess}</p>
                   <button
                     onClick={closeForgot}
-                    className="text-sm font-bold text-orange-500 hover:text-orange-600 underline underline-offset-2"
+                    className="text-sm font-bold text-teal-500 hover:text-teal-700 underline underline-offset-2"
                   >
                     {t.backToLogin}
                   </button>
@@ -325,7 +325,7 @@ export default function AuthModal({ lang, onClose, initialTab = "login" }: AuthM
                       placeholder={t.emailPlaceholder}
                       required
                       autoFocus
-                      className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50 text-stone-900 placeholder-stone-400 text-sm focus:outline-none focus:border-orange-400 focus:bg-white focus:ring-2 focus:ring-orange-100 transition-all duration-200"
+                      className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50 text-stone-900 placeholder-stone-400 text-sm focus:outline-none focus:border-teal-400 focus:bg-white focus:ring-2 focus:ring-teal-100 transition-all duration-200"
                     />
                   </div>
 
@@ -341,7 +341,7 @@ export default function AuthModal({ lang, onClose, initialTab = "login" }: AuthM
                   <button
                     type="submit"
                     disabled={forgotLoading}
-                    className="w-full py-3.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:opacity-95 transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/40 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full py-3.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-teal-500 to-amber-500 hover:opacity-95 transition-all duration-200 shadow-lg shadow-teal-500/25 hover:shadow-xl hover:shadow-teal-500/40 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     {forgotLoading ? (
                       <span className="flex items-center justify-center gap-2">
@@ -358,7 +358,7 @@ export default function AuthModal({ lang, onClose, initialTab = "login" }: AuthM
                     <button
                       type="button"
                       onClick={closeForgot}
-                      className="text-sm font-bold text-orange-500 hover:text-orange-600 underline underline-offset-2"
+                      className="text-sm font-bold text-teal-500 hover:text-teal-700 underline underline-offset-2"
                     >
                       {t.backToLogin}
                     </button>
@@ -402,7 +402,7 @@ export default function AuthModal({ lang, onClose, initialTab = "login" }: AuthM
                   <p className="text-stone-700 font-medium text-sm">{t.successRegister}</p>
                   <button
                     onClick={() => switchTab("login")}
-                    className="mt-4 text-sm font-bold text-orange-500 hover:text-orange-600 underline underline-offset-2"
+                    className="mt-4 text-sm font-bold text-teal-500 hover:text-teal-700 underline underline-offset-2"
                   >
                     {t.switchLoginLink}
                   </button>
@@ -421,7 +421,7 @@ export default function AuthModal({ lang, onClose, initialTab = "login" }: AuthM
                         onChange={(e) => setName(e.target.value)}
                         placeholder={t.namePlaceholder}
                         required
-                        className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50 text-stone-900 placeholder-stone-400 text-sm focus:outline-none focus:border-orange-400 focus:bg-white focus:ring-2 focus:ring-orange-100 transition-all duration-200"
+                        className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50 text-stone-900 placeholder-stone-400 text-sm focus:outline-none focus:border-teal-400 focus:bg-white focus:ring-2 focus:ring-teal-100 transition-all duration-200"
                       />
                     </div>
                   )}
@@ -437,7 +437,7 @@ export default function AuthModal({ lang, onClose, initialTab = "login" }: AuthM
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder={t.emailPlaceholder}
                       required
-                      className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50 text-stone-900 placeholder-stone-400 text-sm focus:outline-none focus:border-orange-400 focus:bg-white focus:ring-2 focus:ring-orange-100 transition-all duration-200"
+                      className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50 text-stone-900 placeholder-stone-400 text-sm focus:outline-none focus:border-teal-400 focus:bg-white focus:ring-2 focus:ring-teal-100 transition-all duration-200"
                     />
                   </div>
 
@@ -453,7 +453,7 @@ export default function AuthModal({ lang, onClose, initialTab = "login" }: AuthM
                       placeholder={t.passwordPlaceholder}
                       required
                       minLength={6}
-                      className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50 text-stone-900 placeholder-stone-400 text-sm focus:outline-none focus:border-orange-400 focus:bg-white focus:ring-2 focus:ring-orange-100 transition-all duration-200"
+                      className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50 text-stone-900 placeholder-stone-400 text-sm focus:outline-none focus:border-teal-400 focus:bg-white focus:ring-2 focus:ring-teal-100 transition-all duration-200"
                     />
                     {/* Forgot password link — login tab only */}
                     {tab === "login" && (
@@ -461,7 +461,7 @@ export default function AuthModal({ lang, onClose, initialTab = "login" }: AuthM
                         <button
                           type="button"
                           onClick={openForgot}
-                          className="text-xs font-semibold text-orange-500 hover:text-orange-600 transition-colors"
+                          className="text-xs font-semibold text-teal-500 hover:text-teal-700 transition-colors"
                         >
                           {t.forgotPassword}
                         </button>
@@ -483,7 +483,7 @@ export default function AuthModal({ lang, onClose, initialTab = "login" }: AuthM
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:opacity-95 transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/40 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full py-3.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-teal-500 to-amber-500 hover:opacity-95 transition-all duration-200 shadow-lg shadow-teal-500/25 hover:shadow-xl hover:shadow-teal-500/40 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     {loading ? (
                       <span className="flex items-center justify-center gap-2">
@@ -504,7 +504,7 @@ export default function AuthModal({ lang, onClose, initialTab = "login" }: AuthM
                     <button
                       type="button"
                       onClick={() => switchTab(tab === "login" ? "register" : "login")}
-                      className="font-bold text-orange-500 hover:text-orange-600 underline underline-offset-2"
+                      className="font-bold text-teal-500 hover:text-teal-700 underline underline-offset-2"
                     >
                       {tab === "login" ? t.switchRegisterLink : t.switchLoginLink}
                     </button>

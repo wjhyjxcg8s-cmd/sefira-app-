@@ -83,7 +83,7 @@ const translations = {
     compatBars: [
       { label: "Yaşam Tarzı Uyumu", value: 97,  color: "from-blue-500 to-violet-600" },
       { label: "Uyku Düzeni",       value: 94,  color: "from-emerald-500 to-teal-600" },
-      { label: "Temizlik",          value: 100, color: "from-amber-500 to-orange-600" },
+      { label: "Temizlik",          value: 100, color: "from-amber-500 to-teal-700" },
       { label: "Bütçe Aralığı",     value: 88,  color: "from-rose-500 to-pink-600" },
     ],
     findMatchesBtn: "Eşleşmelerimi Bul",
@@ -213,7 +213,7 @@ const translations = {
     compatBars: [
       { label: "Lifestyle Match", value: 97,  color: "from-blue-500 to-violet-600" },
       { label: "Sleep Schedule",  value: 94,  color: "from-emerald-500 to-teal-600" },
-      { label: "Cleanliness",     value: 100, color: "from-amber-500 to-orange-600" },
+      { label: "Cleanliness",     value: 100, color: "from-amber-500 to-teal-700" },
       { label: "Budget Range",    value: 88,  color: "from-rose-500 to-pink-600" },
     ],
     findMatchesBtn: "Find My Matches",
@@ -343,7 +343,7 @@ const translations = {
     compatBars: [
       { label: "تطابق سبک زندگی", value: 97,  color: "from-blue-500 to-violet-600" },
       { label: "برنامه خواب",      value: 94,  color: "from-emerald-500 to-teal-600" },
-      { label: "نظافت",            value: 100, color: "from-amber-500 to-orange-600" },
+      { label: "نظافت",            value: 100, color: "from-amber-500 to-teal-700" },
       { label: "محدوده بودجه",     value: 88,  color: "from-rose-500 to-pink-600" },
     ],
     findMatchesBtn: "پیدا کردن تطابق‌هایم",
@@ -472,7 +472,7 @@ const translations = {
     compatBars: [
       { label: "Lebensstil-Kompatibilität", value: 97,  color: "from-blue-500 to-violet-600" },
       { label: "Schlafrhythmus",             value: 94,  color: "from-emerald-500 to-teal-600" },
-      { label: "Sauberkeit",                 value: 100, color: "from-amber-500 to-orange-600" },
+      { label: "Sauberkeit",                 value: 100, color: "from-amber-500 to-teal-700" },
       { label: "Budgetrahmen",               value: 88,  color: "from-rose-500 to-pink-600" },
     ],
     findMatchesBtn: "Meine Matches finden",
@@ -603,7 +603,7 @@ const translations = {
     compatBars: [
       { label: "توافق أسلوب الحياة", value: 97,  color: "from-blue-500 to-violet-600" },
       { label: "جدول النوم",          value: 94,  color: "from-emerald-500 to-teal-600" },
-      { label: "النظافة",             value: 100, color: "from-amber-500 to-orange-600" },
+      { label: "النظافة",             value: 100, color: "from-amber-500 to-teal-700" },
       { label: "نطاق الميزانية",      value: 88,  color: "from-rose-500 to-pink-600" },
     ],
     findMatchesBtn: "ابحث عن مطابقاتي",
@@ -732,7 +732,7 @@ const translations = {
     compatBars: [
       { label: "Образ жизни", value: 97,  color: "from-blue-500 to-violet-600" },
       { label: "Расписание",  value: 94,  color: "from-emerald-500 to-teal-600" },
-      { label: "Чистота",     value: 100, color: "from-amber-500 to-orange-600" },
+      { label: "Чистота",     value: 100, color: "from-amber-500 to-teal-700" },
       { label: "Бюджет",      value: 88,  color: "from-rose-500 to-pink-600" },
     ],
     findMatchesBtn: "Найти совпадения",
@@ -812,7 +812,7 @@ const stories = [
   { id: 2, name: "Sarah K.", isAdd: false, gradient: "from-pink-500 to-rose-600",      initials: "SK", city: "Berlin", online: true  },
   { id: 3, name: "Ahmed M.", isAdd: false, gradient: "from-blue-500 to-indigo-600",    initials: "AM", city: "Dubai",  online: true  },
   { id: 4, name: "Yuki T.",  isAdd: false, gradient: "from-violet-500 to-purple-600",  initials: "YT", city: "Tokyo",  online: false },
-  { id: 5, name: "Maria L.", isAdd: false, gradient: "from-amber-500 to-orange-600",   initials: "ML", city: "BCN",    online: true  },
+  { id: 5, name: "Maria L.", isAdd: false, gradient: "from-amber-500 to-teal-700",   initials: "ML", city: "BCN",    online: true  },
   { id: 6, name: "James W.", isAdd: false, gradient: "from-emerald-500 to-teal-600",   initials: "JW", city: "London", online: false },
   { id: 7, name: "Priya S.", isAdd: false, gradient: "from-rose-500 to-pink-600",      initials: "PS", city: "Mumbai", online: true  },
   { id: 8, name: "Carlos R.",isAdd: false, gradient: "from-cyan-500 to-blue-600",      initials: "CR", city: "Madrid", online: true  },
@@ -859,9 +859,9 @@ const listings = [
   {
     id: 2, title: "Luxury Sea-View Apartment", city: "Dubai", country: "UAE",
     price: 1200, sym: "USD" as const, rating: 4.8, reviews: 89, type: "Entire Flat",
-    available: "Now", gradient: "from-amber-500 via-orange-600 to-rose-700",
+    available: "Now", gradient: "from-amber-500 via-teal-700 to-rose-700",
     verified: true, amenities: ["Pool", "Gym", "Concierge"], tag: "New",
-    tagColor: "from-amber-500 to-orange-600", gender: "Male",
+    tagColor: "from-amber-500 to-teal-700", gender: "Male",
     image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
   },
   {
@@ -907,9 +907,9 @@ const listings = [
   {
     id: 8, title: "Trastevere Apartment with Terrace", city: "Rome", country: "Italy",
     price: 720, sym: "EUR" as const, rating: 4.8, reviews: 61, type: "Entire Flat",
-    available: "Now", gradient: "from-orange-500 via-amber-600 to-yellow-600",
+    available: "Now", gradient: "from-teal-500 via-amber-600 to-yellow-600",
     verified: true, amenities: ["WiFi", "Terrace", "Kitchen"], tag: "Top Rated",
-    tagColor: "from-orange-500 to-amber-500", gender: "Any",
+    tagColor: "from-teal-500 to-amber-500", gender: "Any",
     image: "https://images.unsplash.com/photo-1529260830199-42c24126f198?auto=format&fit=crop&w=800&q=80",
   },
   {
@@ -939,15 +939,15 @@ const listings = [
   {
     id: 12, title: "Penthouse Suite, Downtown Dubai", city: "Dubai", country: "UAE",
     price: 1800, sym: "USD" as const, rating: 5.0, reviews: 29, type: "Entire Flat",
-    available: "Now", gradient: "from-yellow-500 via-amber-500 to-orange-600",
+    available: "Now", gradient: "from-yellow-500 via-amber-500 to-teal-700",
     verified: true, amenities: ["Pool", "Gym", "Valet"], tag: "Top Rated",
-    tagColor: "from-yellow-500 to-orange-500", gender: "Any",
+    tagColor: "from-yellow-500 to-teal-500", gender: "Any",
     image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80",
   },
 ];
 
 const trendingCities = [
-  { name: "Istanbul",  country: "Turkey",      listings: "2,847", growth: "+23%", glow: "bg-orange-500/10", border: "border-orange-500/20", emoji: "🕌" },
+  { name: "Istanbul",  country: "Turkey",      listings: "2,847", growth: "+23%", glow: "bg-teal-500/10", border: "border-teal-500/20", emoji: "🕌" },
   { name: "Berlin",    country: "Germany",     listings: "1,923", growth: "+18%", glow: "bg-blue-500/10",   border: "border-blue-500/20",   emoji: "🐻" },
   { name: "Dubai",     country: "UAE",         listings: "1,456", growth: "+31%", glow: "bg-amber-500/10",  border: "border-amber-500/20",  emoji: "🏙️" },
   { name: "Barcelona", country: "Spain",       listings: "1,234", growth: "+15%", glow: "bg-yellow-500/10", border: "border-yellow-500/20", emoji: "🏖️" },
@@ -1722,7 +1722,7 @@ export default function Home() {
               height={36}
               className="rounded-xl object-contain"
             />
-            <span className="text-xl font-black tracking-tight bg-gradient-to-r from-orange-500 to-amber-600 bg-clip-text text-transparent">
+            <span className="text-xl font-black tracking-tight bg-gradient-to-r from-teal-500 to-amber-600 bg-clip-text text-transparent">
               Sefira
             </span>
           </div>
@@ -1730,7 +1730,7 @@ export default function Home() {
           {/* Nav links */}
           <div className="hidden lg:flex items-center gap-7">
             {t.navLinks.map((l) => (
-              <a key={l.label} href={l.href} className="text-sm text-stone-500 hover:text-stone-900 transition-all duration-200 font-medium relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-orange-500 after:transition-all after:duration-300 hover:after:w-full">
+              <a key={l.label} href={l.href} className="text-sm text-stone-500 hover:text-stone-900 transition-all duration-200 font-medium relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-teal-500 after:transition-all after:duration-300 hover:after:w-full">
                 {l.label}
               </a>
             ))}
@@ -1768,13 +1768,13 @@ export default function Home() {
                       <button
                         key={cur}
                         onClick={() => { setCurrency(cur); setCurrencyMenuOpen(false); }}
-                        className={`flex items-center gap-2.5 w-full px-3 py-2.5 transition-colors ${currency === cur ? "bg-orange-50 text-orange-700 font-black" : "text-stone-700 hover:bg-stone-50 font-semibold"}`}
+                        className={`flex items-center gap-2.5 w-full px-3 py-2.5 transition-colors ${currency === cur ? "bg-teal-50 text-teal-800 font-black" : "text-stone-700 hover:bg-stone-50 font-semibold"}`}
                       >
                         <span className="text-base leading-none flex-shrink-0">{meta.icon}</span>
                         <span className="text-[12px]">{CURRENCY_SYMBOLS[cur]}&thinsp;{cur}</span>
                         <span className="text-[11px] text-stone-400 ml-auto">{meta.name}</span>
                         {currency === cur && (
-                          <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 text-orange-500 flex-shrink-0">
+                          <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 text-teal-500 flex-shrink-0">
                             <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
                           </svg>
                         )}
@@ -1799,12 +1799,12 @@ export default function Home() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
-                  background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                  background: 'linear-gradient(135deg, #0D9488, #0F766E)',
                   border: 'none',
                   borderRadius: '50px',
                   padding: '8px 14px',
                   cursor: 'pointer',
-                  boxShadow: '0 2px 12px rgba(249,115,22,0.4)',
+                  boxShadow: '0 2px 12px rgba(13,148,136,0.4)',
                   transition: 'all 0.2s ease',
                   animation: 'langPulse 3s infinite',
                 }}
@@ -1855,7 +1855,7 @@ export default function Home() {
                     <button
                       key={l}
                       onClick={() => { setLang(l); setLangMenuOpen(false); }}
-                      className={`flex items-center gap-2 w-full px-3 py-2.5 text-[12px] font-bold transition-colors hover:bg-stone-50 ${lang === l ? "text-orange-500" : "text-stone-700"}`}
+                      className={`flex items-center gap-2 w-full px-3 py-2.5 text-[12px] font-bold transition-colors hover:bg-stone-50 ${lang === l ? "text-teal-500" : "text-stone-700"}`}
                     >
                       <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : l === "fa" ? "🇮🇷" : l === "ar" ? "🇸🇦" : l === "ru" ? "🇷🇺" : "🇩🇪"}</span>
                       {l === "tr" ? "TR" : l === "en" ? "EN" : l === "fa" ? "FA" : l === "ar" ? "AR" : l === "ru" ? "RU" : "DE"}
@@ -1886,7 +1886,7 @@ export default function Home() {
                     // Message notifications remain until individually clicked
                   }
                 }}
-                className="relative w-9 h-9 flex items-center justify-center rounded-lg border border-stone-200 text-stone-500 hover:text-orange-500 hover:border-orange-300 hover:bg-orange-50 transition-all duration-200"
+                className="relative w-9 h-9 flex items-center justify-center rounded-lg border border-stone-200 text-stone-500 hover:text-teal-500 hover:border-teal-300 hover:bg-teal-50 transition-all duration-200"
                 aria-label="Bildirimler"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
@@ -1943,17 +1943,17 @@ export default function Home() {
                               setNotifOpen(false);
                               router.push(`/messages?convId=${notif.conversationId}`);
                             }}
-                            className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-orange-50 transition-colors text-left"
+                            className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-teal-50 transition-colors text-left"
                           >
                             {notif.senderAvatar ? (
                               // eslint-disable-next-line @next/next/no-img-element
                               <img
                                 src={notif.senderAvatar}
-                                className="w-9 h-9 rounded-full object-cover border-2 border-orange-200 flex-shrink-0"
+                                className="w-9 h-9 rounded-full object-cover border-2 border-teal-200 flex-shrink-0"
                                 alt=""
                               />
                             ) : (
-                              <div className="w-9 h-9 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 font-bold text-sm flex-shrink-0">
+                              <div className="w-9 h-9 rounded-full bg-teal-100 flex items-center justify-center text-teal-500 font-bold text-sm flex-shrink-0">
                                 {notif.senderName[0]?.toUpperCase() ?? "?"}
                               </div>
                             )}
@@ -1961,7 +1961,7 @@ export default function Home() {
                               <p className="text-xs font-bold text-stone-800 truncate">{notif.senderName}</p>
                               <p className="text-[11px] text-stone-500 truncate">{notif.content}</p>
                             </div>
-                            <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0" />
+                            <div className="w-2 h-2 rounded-full bg-teal-500 flex-shrink-0" />
                           </button>
                         ))}
                       </div>
@@ -1975,19 +1975,19 @@ export default function Home() {
                       notifications.map((notif) => (
                         <div
                           key={notif.id}
-                          className={`flex items-center gap-3 px-4 py-3 border-b border-stone-50 last:border-0 transition-colors ${!notif.read ? "bg-orange-50" : "hover:bg-stone-50"}`}
+                          className={`flex items-center gap-3 px-4 py-3 border-b border-stone-50 last:border-0 transition-colors ${!notif.read ? "bg-teal-50" : "hover:bg-stone-50"}`}
                         >
                           {notif.avatar_url ? (
                             // eslint-disable-next-line @next/next/no-img-element
-                            <img src={notif.avatar_url} className="w-8 h-8 rounded-full object-cover border-2 border-orange-200 flex-shrink-0" alt="" />
+                            <img src={notif.avatar_url} className="w-8 h-8 rounded-full object-cover border-2 border-teal-200 flex-shrink-0" alt="" />
                           ) : (
-                            <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 text-xs font-bold border-2 border-orange-200 flex-shrink-0">
+                            <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center text-teal-500 text-xs font-bold border-2 border-teal-200 flex-shrink-0">
                               {notif.display_name?.[0]?.toUpperCase() || "?"}
                             </div>
                           )}
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-1.5 flex-wrap">
-                              <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${notif.listingType === "has_place" ? "bg-orange-500 text-white" : "bg-blue-500 text-white"}`}>
+                              <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${notif.listingType === "has_place" ? "bg-teal-500 text-white" : "bg-blue-500 text-white"}`}>
                                 {listingTypeTrans[notif.listingType]?.[lang] || listingTypeTrans[notif.listingType]?.["tr"] || notif.listingType}
                               </span>
                               <span className="text-xs text-stone-600 font-medium truncate">
@@ -1998,7 +1998,7 @@ export default function Home() {
                               {notif.city}{notif.district ? ` / ${notif.district}` : ""}
                             </p>
                             {notif.rent && notif.currency && (
-                              <p className="text-xs font-bold text-orange-500 mt-0.5">{notif.rent} {notif.currency}/ay</p>
+                              <p className="text-xs font-bold text-teal-500 mt-0.5">{notif.rent} {notif.currency}/ay</p>
                             )}
                           </div>
                           <button
@@ -2028,7 +2028,7 @@ export default function Home() {
               /* Avatar button — opens profile side panel */
               <button
                 onClick={() => { setProfileMenuOpen((o) => !o); setLangMenuOpen(false); setCurrencyMenuOpen(false); }}
-                className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-[10px] sm:text-xs text-white shadow-md shadow-orange-500/40 flex-shrink-0 hover:scale-105 active:scale-90 transition-all duration-200 overflow-hidden ring-2 ${profileMenuOpen ? "ring-orange-500 ring-offset-2 scale-95" : "ring-orange-300 ring-offset-1"}`}
+                className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-teal-500 to-amber-500 flex items-center justify-center font-black text-[10px] sm:text-xs text-white shadow-md shadow-teal-500/40 flex-shrink-0 hover:scale-105 active:scale-90 transition-all duration-200 overflow-hidden ring-2 ${profileMenuOpen ? "ring-teal-500 ring-offset-2 scale-95" : "ring-teal-300 ring-offset-1"}`}
               >
                 {profileAvatarUrl ? (
                   <img src={profileAvatarUrl} alt="avatar" className="w-full h-full object-cover" />
@@ -2049,8 +2049,8 @@ export default function Home() {
                   aria-label={t.signIn}
                   className="sm:hidden relative w-9 h-9 flex-shrink-0 flex items-center justify-center"
                 >
-                  <span className="absolute inset-0 rounded-xl bg-orange-400 animate-ping opacity-40" />
-                  <span className="relative w-full h-full rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/50 active:scale-90 transition-transform duration-150">
+                  <span className="absolute inset-0 rounded-xl bg-teal-400 animate-ping opacity-40" />
+                  <span className="relative w-full h-full rounded-xl bg-gradient-to-br from-teal-500 to-amber-500 flex items-center justify-center shadow-lg shadow-teal-500/50 active:scale-90 transition-transform duration-150">
                     <svg viewBox="0 0 24 24" fill="currentColor" className="w-[18px] h-[18px] text-white">
                       <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                     </svg>
@@ -2078,7 +2078,7 @@ export default function Home() {
               </svg>
             </a>
 
-            <button className="hidden sm:block text-sm font-bold bg-gradient-to-r from-orange-500 to-amber-500 text-white px-5 py-2.5 rounded-xl hover:opacity-95 transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/40 active:scale-95">
+            <button className="hidden sm:block text-sm font-bold bg-gradient-to-r from-teal-500 to-amber-500 text-white px-5 py-2.5 rounded-xl hover:opacity-95 transition-all duration-200 shadow-lg shadow-teal-500/25 hover:shadow-xl hover:shadow-teal-500/40 active:scale-95">
               {t.getStarted}
             </button>
           </div>
@@ -2121,7 +2121,7 @@ export default function Home() {
           >
             {/* Gradient header */}
             <div
-              className="bg-gradient-to-br from-orange-400 via-orange-500 to-pink-500"
+              className="bg-gradient-to-br from-teal-400 via-teal-500 to-pink-500"
               style={{
                 paddingTop: "64px", paddingBottom: "28px",
                 paddingLeft: "24px", paddingRight: "24px",
@@ -2140,7 +2140,7 @@ export default function Home() {
                 onClick={() => { setProfileMenuOpen(false); router.push("/profile"); }}
                 style={{
                   width: "80px", height: "80px", borderRadius: "50%",
-                  background: "linear-gradient(135deg, #ea580c, #d97706)",
+                  background: "linear-gradient(135deg, #0F766E, #d97706)",
                   border: "4px solid rgba(255,255,255,0.4)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   fontWeight: 900, fontSize: "28px", color: "white",
@@ -2192,10 +2192,10 @@ export default function Home() {
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                   </svg>
                 </div>
-                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-600 transition-colors">
+                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-teal-700 transition-colors">
                   {lang === "tr" ? "Profilimi Düzenle" : lang === "fa" ? "ویرایش پروفایل" : lang === "ar" ? "تعدیل الملف الشخصی" : lang === "de" ? "Profil bearbeiten" : lang === "ru" ? "Редактировать профиль" : "Edit Profile"}
                 </span>
-                <span className="text-gray-300 group-hover:text-orange-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
+                <span className="text-gray-300 group-hover:text-teal-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
               </motion.button>
 
               {/* Saved */}
@@ -2211,10 +2211,10 @@ export default function Home() {
                     <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
                   </svg>
                 </div>
-                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-600 transition-colors">
+                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-teal-700 transition-colors">
                   {lang === "tr" ? "Kaydedilenler" : lang === "fa" ? "ذخیره‌ها" : lang === "ar" ? "المحفوظات" : lang === "de" ? "Gespeichert" : lang === "ru" ? "Сохранённые" : "Saved"}
                 </span>
-                <span className="text-gray-300 group-hover:text-orange-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
+                <span className="text-gray-300 group-hover:text-teal-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
               </motion.button>
 
               {/* Post Listing */}
@@ -2230,10 +2230,10 @@ export default function Home() {
                     <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
                   </svg>
                 </div>
-                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-600 transition-colors">
+                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-teal-700 transition-colors">
                   {lang === "tr" ? "İlan Ver" : lang === "fa" ? "ثبت آگهی" : lang === "ar" ? "نشر إعلان" : lang === "de" ? "Inserat aufgeben" : lang === "ru" ? "Разместить объявление" : "Post Listing"}
                 </span>
-                <span className="text-gray-300 group-hover:text-orange-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
+                <span className="text-gray-300 group-hover:text-teal-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
               </motion.button>
 
               {/* My Listings */}
@@ -2244,17 +2244,17 @@ export default function Home() {
                 className="drawer-item w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-150 group hover:bg-gray-50 active:scale-[0.97] active:bg-gray-100"
                 style={{ animationDelay: '120ms' }}
               >
-                <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-orange-400 to-orange-500">
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-teal-400 to-teal-500">
                   <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
                     <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
                     <rect x="9" y="3" width="6" height="4" rx="1" />
                     <line x1="9" y1="12" x2="15" y2="12" /><line x1="9" y1="16" x2="13" y2="16" />
                   </svg>
                 </div>
-                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-600 transition-colors">
+                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-teal-700 transition-colors">
                   {lang === "tr" ? "İlanlarım" : lang === "fa" ? "آگهی‌های من" : lang === "ar" ? "إعلاناتی" : lang === "de" ? "Meine Inserate" : lang === "ru" ? "Мои объявления" : "My Listings"}
                 </span>
-                <span className="text-gray-300 group-hover:text-orange-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
+                <span className="text-gray-300 group-hover:text-teal-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
               </motion.button>
 
               {/* My Messages */}
@@ -2277,10 +2277,10 @@ export default function Home() {
                     </div>
                   )}
                 </div>
-                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-600 transition-colors">
+                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-teal-700 transition-colors">
                   {lang === "tr" ? "Mesajlarım" : lang === "fa" ? "پیام‌های من" : lang === "ar" ? "رسائلی" : lang === "de" ? "Meine Nachrichten" : lang === "ru" ? "Мои сооبщения" : "My Messages"}
                 </span>
-                <span className="text-gray-300 group-hover:text-orange-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
+                <span className="text-gray-300 group-hover:text-teal-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
               </motion.button>
 
               {/* Reviews & Ratings */}
@@ -2296,10 +2296,10 @@ export default function Home() {
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                   </svg>
                 </div>
-                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-600 transition-colors">
+                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-teal-700 transition-colors">
                   {lang === "tr" ? "Yorumlarım ve Puanım" : lang === "fa" ? "کامنت‌ها و امتیازهای من" : lang === "ar" ? "تعلیقاتی وتقییماتی" : lang === "de" ? "Meine Bewertungen" : lang === "ru" ? "Мои отзывы и оценки" : "Reviews & Ratings"}
                 </span>
-                <span className="text-gray-300 group-hover:text-orange-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
+                <span className="text-gray-300 group-hover:text-teal-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
               </motion.button>
 
               {/* Divider */}
@@ -2320,10 +2320,10 @@ export default function Home() {
                     <line x1="21" y1="12" x2="9" y2="12" />
                   </svg>
                 </div>
-                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-600 transition-colors">
+                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-teal-700 transition-colors">
                   {t.signOut}
                 </span>
-                <span className="text-gray-300 group-hover:text-orange-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
+                <span className="text-gray-300 group-hover:text-teal-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
               </motion.button>
             </div>
           </div>
@@ -2335,7 +2335,7 @@ export default function Home() {
       <section className="relative overflow-hidden bg-white pt-16 mb-0 pb-0">
 
         {/* Decorative blur circles */}
-        <div className="absolute w-96 h-96 rounded-full bg-orange-50 blur-3xl opacity-60 -top-20 -right-20 pointer-events-none" />
+        <div className="absolute w-96 h-96 rounded-full bg-teal-50 blur-3xl opacity-60 -top-20 -right-20 pointer-events-none" />
         <div className="absolute w-72 h-72 rounded-full bg-blue-50 blur-3xl opacity-40 bottom-0 -left-10 pointer-events-none" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-5 py-16 md:grid md:grid-cols-2 gap-8 items-center w-full">
@@ -2349,7 +2349,7 @@ export default function Home() {
           >
 
             {/* Pill badge */}
-            <span className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 text-xs font-bold px-4 py-1.5 rounded-full">
+            <span className="inline-flex items-center gap-2 bg-teal-100 text-teal-700 text-xs font-bold px-4 py-1.5 rounded-full">
               {({ tr: "🏠 #1 Ev Arkadaşı Platformu", en: "🏠 #1 Roommate Platform", fa: "🏠 پلتفرم شماره ۱ هم‌خانه", ar: "🏠 منصة رقم 1 لزملاء السكن", de: "🏠 #1 Mitbewohner Plattform", ru: "🏠 Платформа №1 для соседей" } as Record<string, string>)[lang] ?? "🏠 #1 Roommate Platform"}
             </span>
 
@@ -2357,7 +2357,7 @@ export default function Home() {
             <h1 className="text-4xl md:text-5xl font-black text-gray-900 leading-tight mt-4">
               <span>{t.heroLine1}</span>
               <br />
-              <span className="bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-teal-500 to-pink-500 bg-clip-text text-transparent">
                 {t.heroLine2}
               </span>
               <br />
@@ -2391,8 +2391,8 @@ export default function Home() {
                       whileTap={{ scale: 0.97 }}
                       whileHover={{ y: -4 }}
                       onClick={() => router.push('/create-listing?type=has_place')}
-                      className="w-full relative overflow-hidden rounded-3xl p-6 text-left shadow-[0_12px_40px_-12px_rgba(255,107,53,0.6)] active:scale-[0.98] transition-transform"
-                      style={{ background: 'linear-gradient(135deg,#FF8A3D 0%,#FF6B35 55%,#F7501E 100%)' }}
+                      className="w-full relative overflow-hidden rounded-3xl p-6 text-left shadow-[0_12px_40px_-12px_rgba(13,148,136,0.6)] active:scale-[0.98] transition-transform"
+                      style={{ background: 'linear-gradient(135deg,#0D9488 0%,#0F766E 55%,#115E59 100%)' }}
                     >
                       <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/15 rounded-full blur-xl" />
                       <div className="absolute right-8 bottom-2 w-20 h-20 bg-white/10 rounded-full blur-md" />
@@ -2497,7 +2497,7 @@ export default function Home() {
                           key={s}
                           className={`rounded-full transition-all duration-400 ${
                             wizardStep >= s
-                              ? "w-6 h-2 bg-gradient-to-r from-orange-500 to-amber-500 shadow-sm shadow-orange-500/40"
+                              ? "w-6 h-2 bg-gradient-to-r from-teal-500 to-amber-500 shadow-sm shadow-teal-500/40"
                               : "w-2 h-2 bg-stone-200"
                           }`}
                         />
@@ -2507,7 +2507,7 @@ export default function Home() {
                     {/* Mode chip */}
                     <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black ${
                       wizardMode === "seeking"
-                        ? "bg-orange-50 text-orange-600 border border-orange-200"
+                        ? "bg-teal-50 text-teal-700 border border-teal-200"
                         : "bg-violet-50 text-violet-600 border border-violet-200"
                     }`}>
                       <span>{wizardMode === "seeking" ? "🔍" : "🏠"}</span>
@@ -2538,7 +2538,7 @@ export default function Home() {
                                     ? "border-blue-400 bg-blue-50 text-blue-700 shadow-lg shadow-blue-500/15 scale-[1.02]"
                                     : g === "female"
                                     ? "border-rose-400 bg-rose-50 text-rose-700 shadow-lg shadow-rose-500/15 scale-[1.02]"
-                                    : "border-orange-400 bg-orange-50 text-orange-700 shadow-lg shadow-orange-500/15 scale-[1.02]"
+                                    : "border-teal-400 bg-teal-50 text-teal-800 shadow-lg shadow-teal-500/15 scale-[1.02]"
                                   : "border-stone-200 bg-stone-50/80 text-stone-500 hover:border-stone-300 hover:bg-white hover:text-stone-700"
                               }`}
                             >
@@ -2587,7 +2587,7 @@ export default function Home() {
 
                         {/* Live budget display */}
                         <div className="text-center mb-6">
-                          <span className="text-5xl font-black bg-gradient-to-r from-orange-500 via-fuchsia-500 to-violet-600 bg-clip-text text-transparent tracking-tight">
+                          <span className="text-5xl font-black bg-gradient-to-r from-teal-500 via-fuchsia-500 to-violet-600 bg-clip-text text-transparent tracking-tight">
                             {displayPrice(budgetUSD, "USD", currency)}
                           </span>
                           <span className="text-stone-400 font-medium ml-2 text-sm">{t.perMonth}</span>
@@ -2604,7 +2604,7 @@ export default function Home() {
                             onChange={(e) => setBudgetUSD(Number(e.target.value))}
                             className="budget-slider w-full"
                             style={{
-                              background: `linear-gradient(to right, #f97316 ${sliderPct}%, #e7e5e4 ${sliderPct}%)`,
+                              background: `linear-gradient(to right, #0D9488 ${sliderPct}%, #e7e5e4 ${sliderPct}%)`,
                             }}
                           />
                           <div className="flex justify-between text-xs text-stone-400 font-medium mt-2.5">
@@ -2628,7 +2628,7 @@ export default function Home() {
                           <select
                             value={selectedCountry}
                             onChange={(e) => { setSelectedCountry(e.target.value); setSelectedCity(""); }}
-                            className="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2.5 text-sm text-stone-600 outline-none cursor-pointer hover:border-stone-400 focus:border-orange-400 transition-colors duration-200"
+                            className="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2.5 text-sm text-stone-600 outline-none cursor-pointer hover:border-stone-400 focus:border-teal-400 transition-colors duration-200"
                           >
                             <option value="">{t.countryPlaceholder}</option>
                             <optgroup label={t.priorityGroupLabel}>
@@ -2648,7 +2648,7 @@ export default function Home() {
                             value={selectedCity}
                             onChange={(e) => setSelectedCity(e.target.value)}
                             disabled={!selectedCountry || loadingCities}
-                            className="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2.5 text-sm text-stone-600 outline-none cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed hover:border-stone-400 focus:border-orange-400 transition-colors duration-200"
+                            className="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2.5 text-sm text-stone-600 outline-none cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed hover:border-stone-400 focus:border-teal-400 transition-colors duration-200"
                           >
                             <option value="">{loadingCities ? t.loadingText : t.cityPlaceholder}</option>
                             {cities.map((c) => (
@@ -2660,7 +2660,7 @@ export default function Home() {
                             placeholder={t.searchPlaceholder}
                             value={searchInput}
                             onChange={(e) => setSearchInput(e.target.value)}
-                            className="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2.5 text-stone-800 placeholder:text-stone-400 outline-none text-sm focus:border-orange-400 transition-colors duration-200 min-w-0"
+                            className="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2.5 text-stone-800 placeholder:text-stone-400 outline-none text-sm focus:border-teal-400 transition-colors duration-200 min-w-0"
                           />
                         </div>
                         {/* Quick city chips */}
@@ -2676,7 +2676,7 @@ export default function Home() {
                               onClick={() => setSelectedCity(city)}
                               className={`px-3.5 py-1.5 text-xs font-medium rounded-full border transition-all duration-200 active:scale-95 hover:scale-105 ${
                                 selectedCity === city
-                                  ? "bg-gradient-to-r from-orange-500 to-fuchsia-500 text-white border-transparent shadow-md shadow-orange-500/25"
+                                  ? "bg-gradient-to-r from-teal-500 to-fuchsia-500 text-white border-transparent shadow-md shadow-teal-500/25"
                                   : "text-stone-600 bg-stone-100 border-stone-200 hover:border-stone-400 hover:text-stone-900 hover:bg-stone-200"
                               }`}
                             >
@@ -2692,7 +2692,7 @@ export default function Home() {
                   <div className="px-5 pb-5">
                     <button
                       onClick={() => { if (wizardStep < 3) setWizardStep((s) => s + 1); }}
-                      className="w-full py-3.5 rounded-xl font-black text-sm bg-gradient-to-r from-orange-500 via-fuchsia-500 to-violet-600 text-white hover:opacity-95 transition-all duration-200 shadow-xl shadow-orange-500/25 hover:shadow-2xl hover:shadow-violet-500/30 active:scale-[0.98] flex items-center justify-center gap-2.5"
+                      className="w-full py-3.5 rounded-xl font-black text-sm bg-gradient-to-r from-teal-500 via-fuchsia-500 to-violet-600 text-white hover:opacity-95 transition-all duration-200 shadow-xl shadow-teal-500/25 hover:shadow-2xl hover:shadow-violet-500/30 active:scale-[0.98] flex items-center justify-center gap-2.5"
                     >
                       {wizardStep === 3 ? (
                         <>
@@ -2719,7 +2719,7 @@ export default function Home() {
             {/* İlan Ver — desktop hero button */}
             <button
               onClick={handleCreateListing}
-              className="hidden sm:flex mt-8 items-center gap-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black text-sm px-7 py-3.5 rounded-2xl shadow-xl shadow-orange-500/30 hover:shadow-2xl hover:shadow-orange-500/50 hover:-translate-y-0.5 active:scale-95 transition-all duration-200"
+              className="hidden sm:flex mt-8 items-center gap-2.5 bg-gradient-to-r from-teal-500 to-amber-500 text-white font-black text-sm px-7 py-3.5 rounded-2xl shadow-xl shadow-teal-500/30 hover:shadow-2xl hover:shadow-teal-500/50 hover:-translate-y-0.5 active:scale-95 transition-all duration-200"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4">
                 <line x1="12" y1="5" x2="12" y2="19" />
@@ -2742,7 +2742,7 @@ export default function Home() {
               className="relative mx-auto max-w-xs"
             >
               {/* Background glow */}
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-300 via-pink-300 to-purple-300 rounded-3xl blur-2xl opacity-40 scale-110" />
+              <div className="absolute inset-0 bg-gradient-to-br from-teal-300 via-pink-300 to-purple-300 rounded-3xl blur-2xl opacity-40 scale-110" />
 
               {/* Video with shimmer border + particles */}
               <motion.div
@@ -2760,7 +2760,7 @@ export default function Home() {
                     left: '-50%',
                     width: '200%',
                     height: '200%',
-                    background: 'conic-gradient(from 0deg, #f97316, #ec4899, #8b5cf6, #3b82f6, #f97316)',
+                    background: 'conic-gradient(from 0deg, #0D9488, #ec4899, #8b5cf6, #3b82f6, #0D9488)',
                     animation: 'sefira-rotate 4s linear infinite',
                   }} />
                   {/* Inner video container */}
@@ -2781,11 +2781,11 @@ export default function Home() {
                 </div>
 
                 {/* Floating particles */}
-                <div style={{ position: 'absolute', top: '-8px',  left: '-8px',   width: '8px', height: '8px', backgroundColor: '#fb923c', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.2s ease-in-out alternate infinite' }} />
+                <div style={{ position: 'absolute', top: '-8px',  left: '-8px',   width: '8px', height: '8px', backgroundColor: '#14B8A6', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.2s ease-in-out alternate infinite' }} />
                 <div style={{ position: 'absolute', top: '-8px',  right: '-8px',  width: '8px', height: '8px', backgroundColor: '#f472b6', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.8s ease-in-out alternate infinite 0.4s' }} />
                 <div style={{ position: 'absolute', top: '45%',   left: '-10px',  width: '8px', height: '8px', backgroundColor: '#a78bfa', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.5s ease-in-out alternate infinite 0.8s' }} />
                 <div style={{ position: 'absolute', top: '45%',   right: '-10px', width: '8px', height: '8px', backgroundColor: '#60a5fa', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 3.0s ease-in-out alternate infinite 1.2s' }} />
-                <div style={{ position: 'absolute', bottom: '-8px', left: '-8px', width: '8px', height: '8px', backgroundColor: '#fb923c', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.6s ease-in-out alternate infinite 0.6s' }} />
+                <div style={{ position: 'absolute', bottom: '-8px', left: '-8px', width: '8px', height: '8px', backgroundColor: '#14B8A6', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.6s ease-in-out alternate infinite 0.6s' }} />
                 <div style={{ position: 'absolute', bottom: '-8px', right: '-8px',width: '8px', height: '8px', backgroundColor: '#ec4899', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.3s ease-in-out alternate infinite 1.0s' }} />
               </motion.div>
 
@@ -2799,7 +2799,7 @@ export default function Home() {
                 <motion.div
                   animate={{ y: [0, -7, 0] }}
                   transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-                  className="bg-white rounded-2xl shadow-xl px-3 py-2 flex items-center gap-2 border border-orange-100"
+                  className="bg-white rounded-2xl shadow-xl px-3 py-2 flex items-center gap-2 border border-teal-100"
                 >
                   <div className="w-8 h-8 bg-green-500 rounded-xl flex items-center justify-center text-white text-sm">✓</div>
                   <div>
@@ -2819,9 +2819,9 @@ export default function Home() {
                 <motion.div
                   animate={{ y: [0, -7, 0] }}
                   transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut' }}
-                  className="bg-white rounded-2xl shadow-xl px-3 py-2 flex items-center gap-2 border border-orange-100"
+                  className="bg-white rounded-2xl shadow-xl px-3 py-2 flex items-center gap-2 border border-teal-100"
                 >
-                  <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-pink-500 rounded-xl flex items-center justify-center text-white text-sm">⭐</div>
+                  <div className="w-8 h-8 bg-gradient-to-br from-teal-400 to-pink-500 rounded-xl flex items-center justify-center text-white text-sm">⭐</div>
                   <div>
                     <p className="text-xs font-black text-gray-900">{countStars.toFixed(1)} Stars</p>
                     <p className="text-[10px] text-gray-400">12K+ Reviews</p>
@@ -2833,7 +2833,7 @@ export default function Home() {
               <motion.div
                 animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
                 transition={{ duration: 2, repeat: Infinity }}
-                className="absolute top-1/4 -right-3 w-3 h-3 bg-orange-400 rounded-full"
+                className="absolute top-1/4 -right-3 w-3 h-3 bg-teal-400 rounded-full"
               />
               <motion.div
                 animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
@@ -2868,7 +2868,7 @@ export default function Home() {
                 {/* Gradient ring: 70px total on mobile, 90px on desktop */}
                 <div
                   className="p-[3px] rounded-full"
-                  style={{ background: "linear-gradient(135deg, #f97316, #f59e0b, #ec4899)" }}
+                  style={{ background: "linear-gradient(135deg, #0D9488, #f59e0b, #ec4899)" }}
                 >
                   <div className="w-[64px] h-[64px] sm:w-[84px] sm:h-[84px] rounded-full overflow-hidden bg-stone-100 border-2 border-white">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -2973,7 +2973,7 @@ export default function Home() {
                 onClick={() => setActiveFilter(f)}
                 className={`px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 whitespace-nowrap ${
                   activeFilter === f
-                    ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/25"
+                    ? "bg-gradient-to-r from-teal-500 to-amber-500 text-white shadow-lg shadow-teal-500/25"
                     : "bg-stone-100 text-stone-600 hover:text-stone-900 border border-stone-200 hover:border-stone-300"
                 }`}
               >
@@ -2986,7 +2986,7 @@ export default function Home() {
           {listings.map((listing) => (
             <div
               key={listing.id}
-              className="group bg-white border border-stone-200 rounded-2xl overflow-hidden hover:border-orange-200 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/5 hover:-translate-y-1 cursor-pointer hover:ring-1 hover:ring-orange-200"
+              className="group bg-white border border-stone-200 rounded-2xl overflow-hidden hover:border-teal-200 transition-all duration-300 hover:shadow-2xl hover:shadow-teal-500/5 hover:-translate-y-1 cursor-pointer hover:ring-1 hover:ring-teal-200"
             >
               <div className="relative h-32 overflow-hidden">
                 <div className={`absolute inset-0 bg-gradient-to-br ${listing.gradient}`} />
@@ -3019,7 +3019,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="p-2">
-                <h3 className="text-xs font-bold text-stone-900 group-hover:text-orange-600 transition-colors truncate">
+                <h3 className="text-xs font-bold text-stone-900 group-hover:text-teal-700 transition-colors truncate">
                   {listing.title}
                 </h3>
                 <p className="text-xs text-gray-400 truncate">
@@ -3052,7 +3052,7 @@ export default function Home() {
             {smartRecs.length > 3 && (
               <div className="flex items-center gap-1.5 pb-1 flex-shrink-0">
                 {smartRecs.map((_, i) => (
-                  <div key={i} className={`rounded-full transition-all duration-200 ${i === 0 ? "w-4 h-1.5 bg-orange-500" : "w-1.5 h-1.5 bg-stone-300"}`} />
+                  <div key={i} className={`rounded-full transition-all duration-200 ${i === 0 ? "w-4 h-1.5 bg-teal-500" : "w-1.5 h-1.5 bg-stone-300"}`} />
                 ))}
               </div>
             )}
@@ -3090,7 +3090,7 @@ export default function Home() {
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={recAvatarMap[rec.user_id]!} alt="" className="absolute inset-0 w-full h-full object-cover" />
                     ) : (
-                      <div className={`absolute inset-0 flex items-center justify-center ${isHasPlace ? "bg-gradient-to-br from-orange-400 to-amber-500" : "bg-gradient-to-br from-violet-500 to-blue-500"}`}>
+                      <div className={`absolute inset-0 flex items-center justify-center ${isHasPlace ? "bg-gradient-to-br from-teal-400 to-amber-500" : "bg-gradient-to-br from-violet-500 to-blue-500"}`}>
                         {isHasPlace ? (
                           <div className="w-12 h-12 rounded-full bg-white/25 flex items-center justify-center text-2xl">🏠</div>
                         ) : (
@@ -3117,7 +3117,7 @@ export default function Home() {
                       </div>
                       {/* Middle row: price + summary */}
                       {priceDisplay && (
-                        <p className="text-xs font-bold text-orange-500">{priceDisplay}</p>
+                        <p className="text-xs font-bold text-teal-500">{priceDisplay}</p>
                       )}
                       {summary && (
                         <p className="text-xs text-stone-400 truncate mt-0.5">{summary}</p>
@@ -3129,7 +3129,7 @@ export default function Home() {
                       <Link
                         href={`/listings/${rec.id}`}
                         onClick={() => { try { sessionStorage.setItem("sefira-scroll", String(window.scrollY)); } catch { /* ignore */ } }}
-                        className="flex-1 flex items-center justify-center gap-1 bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium px-3 py-2 rounded-xl transition-colors"
+                        className="flex-1 flex items-center justify-center gap-1 bg-teal-500 hover:bg-teal-700 text-white text-xs font-medium px-3 py-2 rounded-xl transition-colors"
                       >
                         💬 {({ tr: "Mesaj Gönder", en: "Message", fa: "ارسال پیام", ar: "إرسال رسالة", de: "Nachricht", ru: "Написать" } as Record<string, string>)[lang] ?? "Message"}
                       </Link>
@@ -3139,7 +3139,7 @@ export default function Home() {
                           setSavedRecIds(next);
                           try { localStorage.setItem("sefira-saved", JSON.stringify(next)); } catch { /* ignore */ }
                         }}
-                        className={`flex items-center justify-center gap-1 px-3 py-2 rounded-xl border-2 text-xs font-medium transition-colors ${isSaved ? "bg-orange-500 border-orange-500 text-white" : "border-orange-400 text-orange-500 bg-white"}`}
+                        className={`flex items-center justify-center gap-1 px-3 py-2 rounded-xl border-2 text-xs font-medium transition-colors ${isSaved ? "bg-teal-500 border-teal-500 text-white" : "border-teal-400 text-teal-500 bg-white"}`}
                       >
                         🔖 {isSaved
                           ? ({ tr: "Kaydedildi", en: "Saved", fa: "ذخیره شد", ar: "محفوظ", de: "Gespeichert", ru: "Сохранено" } as Record<string, string>)[lang] ?? "Saved"
@@ -3267,8 +3267,8 @@ export default function Home() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-12 mb-14">
             <div className="lg:col-span-2">
               <div className="flex items-center gap-2 mb-5">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-sm shadow-lg shadow-orange-500/25">S</div>
-                <span className="text-xl font-black tracking-tight bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">Sefira</span>
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-teal-500 to-amber-500 flex items-center justify-center font-black text-sm shadow-lg shadow-teal-500/25">S</div>
+                <span className="text-xl font-black tracking-tight bg-gradient-to-r from-teal-400 to-amber-400 bg-clip-text text-transparent">Sefira</span>
               </div>
               <p className="text-sm text-stone-400 leading-relaxed max-w-xs mb-7">{t.footerDesc}</p>
               <div className="flex gap-2.5">
@@ -3413,8 +3413,8 @@ export default function Home() {
           <div
             className="relative w-full max-w-sm overflow-hidden rounded-3xl transition-all duration-300"
             style={{
-              background: "linear-gradient(145deg, #ff6b35 0%, #f97316 35%, #ec4899 75%, #f43f5e 100%)",
-              boxShadow: "0 32px 80px -12px rgba(249,115,22,0.6), 0 16px 40px -8px rgba(236,72,153,0.45)",
+              background: "linear-gradient(145deg, #0D9488 0%, #0F766E 35%, #ec4899 75%, #f43f5e 100%)",
+              boxShadow: "0 32px 80px -12px rgba(13,148,136,0.6), 0 16px 40px -8px rgba(236,72,153,0.45)",
               transform: stayMessageVisible ? "scale(1) translateY(0)" : "scale(0.85) translateY(24px)",
             }}
             onClick={(e) => e.stopPropagation()}
@@ -3485,7 +3485,7 @@ export default function Home() {
             className="relative w-full max-w-[480px] overflow-hidden rounded-3xl select-none"
             style={{
               animation: "sefira-welcome-in 0.55s cubic-bezier(0.34,1.56,0.64,1) forwards",
-              background: "linear-gradient(145deg, #ff6b35 0%, #f59e0b 30%, #ec4899 65%, #8b5cf6 100%)",
+              background: "linear-gradient(145deg, #0D9488 0%, #f59e0b 30%, #ec4899 65%, #8b5cf6 100%)",
               boxShadow: "0 32px 80px -12px rgba(236,72,153,0.55), 0 16px 40px -8px rgba(139,92,246,0.45), 0 4px 16px rgba(0,0,0,0.3)",
             }}
             onClick={(e) => e.stopPropagation()}
@@ -3515,7 +3515,7 @@ export default function Home() {
               {/* Gradient fade into card background */}
               <div
                 className="absolute inset-0 pointer-events-none"
-                style={{ background: "linear-gradient(to bottom, transparent 40%, rgba(255,107,53,0.55) 75%, rgba(139,92,246,0.85) 100%)" }}
+                style={{ background: "linear-gradient(to bottom, transparent 40%, rgba(13,148,136,0.55) 75%, rgba(139,92,246,0.85) 100%)" }}
               />
             </div>
 
@@ -3567,7 +3567,7 @@ export default function Home() {
       <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 px-4 py-3 bg-white/95 backdrop-blur-xl border-t border-stone-200 shadow-2xl shadow-stone-900/10">
         <button
           onClick={handleCreateListing}
-          className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black text-sm px-6 py-4 rounded-2xl shadow-lg shadow-orange-500/30 active:scale-95 transition-all duration-200"
+          className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-teal-500 to-amber-500 text-white font-black text-sm px-6 py-4 rounded-2xl shadow-lg shadow-teal-500/30 active:scale-95 transition-all duration-200"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4">
             <line x1="12" y1="5" x2="12" y2="19" />
@@ -3603,7 +3603,7 @@ export default function Home() {
           >
             {/* Drag handle (mobile) */}
             <div className="w-10 h-1 rounded-full bg-stone-200 mx-auto mb-5 sm:hidden" />
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-orange-500/30 mb-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-500 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-teal-500/30 mb-4">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-5 h-5">
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
@@ -3615,13 +3615,13 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => { setShowListingModal(false); setShowAuth(true); }}
-                className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black text-sm py-3 rounded-xl shadow-lg shadow-orange-500/25 hover:opacity-95 active:scale-95 transition-all duration-200"
+                className="flex-1 bg-gradient-to-r from-teal-500 to-amber-500 text-white font-black text-sm py-3 rounded-xl shadow-lg shadow-teal-500/25 hover:opacity-95 active:scale-95 transition-all duration-200"
               >
                 {t.girisYap}
               </button>
               <button
                 onClick={() => { setShowListingModal(false); setShowAuth(true); }}
-                className="flex-1 border-2 border-stone-200 text-stone-700 font-black text-sm py-3 rounded-xl hover:border-orange-300 hover:bg-orange-50 hover:text-orange-700 active:scale-95 transition-all duration-200"
+                className="flex-1 border-2 border-stone-200 text-stone-700 font-black text-sm py-3 rounded-xl hover:border-teal-300 hover:bg-teal-50 hover:text-teal-800 active:scale-95 transition-all duration-200"
               >
                 {t.kayitOl}
               </button>

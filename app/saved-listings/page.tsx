@@ -120,7 +120,7 @@ export default function SavedListingsPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-stone-50">
-        <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-10 h-10 border-4 border-teal-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -128,7 +128,7 @@ export default function SavedListingsPage() {
   if (!user) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-stone-50 gap-5 p-6">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/30">
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-600 to-amber-500 flex items-center justify-center shadow-lg shadow-teal-600/30">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-white">
             <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
           </svg>
@@ -136,7 +136,7 @@ export default function SavedListingsPage() {
         <p className="text-stone-600 text-center font-medium">{t.notLoggedIn}</p>
         <Link
           href="/"
-          className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-orange-500/25 hover:opacity-90 transition-all active:scale-95"
+          className="bg-gradient-to-r from-teal-600 to-amber-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-teal-600/25 hover:opacity-90 transition-all active:scale-95"
         >
           {t.goHome}
         </Link>
@@ -150,10 +150,10 @@ export default function SavedListingsPage() {
       <nav dir="ltr" style={{ transform: "translateZ(0)", WebkitTransform: "translateZ(0)", willChange: "transform" }} className="fixed top-0 left-0 right-0 w-full z-[9999] bg-white border-b border-stone-200 shadow-sm">
         <div className="max-w-2xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-sm text-white shadow-lg shadow-orange-500/30 group-hover:scale-110 transition-all duration-300">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-teal-600 to-amber-500 flex items-center justify-center font-black text-sm text-white shadow-lg shadow-teal-600/30 group-hover:scale-110 transition-all duration-300">
               S
             </div>
-            <span className="text-xl font-black tracking-tight bg-gradient-to-r from-orange-500 to-amber-600 bg-clip-text text-transparent">
+            <span className="text-xl font-black tracking-tight bg-gradient-to-r from-teal-600 to-amber-600 bg-clip-text text-transparent">
               Sefira
             </span>
           </Link>
@@ -166,7 +166,7 @@ export default function SavedListingsPage() {
       <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
         {/* Back to home */}
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block mb-5">
-          <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
+          <Link href="/" className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -175,7 +175,7 @@ export default function SavedListingsPage() {
         </motion.div>
 
         <h1 className="text-2xl font-black text-stone-900 mb-6 flex items-center gap-3">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-orange-500">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-teal-600">
             <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
           </svg>
           {t.title}
@@ -183,7 +183,7 @@ export default function SavedListingsPage() {
 
         {fetching ? (
           <div className="flex justify-center py-20">
-            <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : listings.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 gap-5 text-center">
@@ -195,7 +195,7 @@ export default function SavedListingsPage() {
             <p className="text-stone-500 font-medium max-w-xs">{t.empty}</p>
             <Link
               href="/"
-              className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-orange-500/25 hover:opacity-90 transition-all active:scale-95 text-sm"
+              className="bg-gradient-to-r from-teal-600 to-amber-500 text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-teal-600/25 hover:opacity-90 transition-all active:scale-95 text-sm"
             >
               {t.emptyAction}
             </Link>
@@ -217,7 +217,7 @@ export default function SavedListingsPage() {
                     </p>
                   </div>
                   {l.rent != null && (
-                    <span className="flex-shrink-0 text-sm font-black text-orange-500">
+                    <span className="flex-shrink-0 text-sm font-black text-teal-600">
                       {l.currency ?? "$"}{l.rent}<span className="text-stone-400 font-normal text-xs">/mo</span>
                     </span>
                   )}

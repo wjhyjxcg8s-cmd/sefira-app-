@@ -168,16 +168,16 @@ export default function ResetPasswordPage() {
       <div className="w-full max-w-md">
         {/* Card */}
         <div className="bg-white rounded-3xl shadow-2xl shadow-black/10 overflow-hidden">
-          <div className="h-1.5 bg-gradient-to-r from-orange-500 via-amber-400 to-orange-500" />
+          <div className="h-1.5 bg-gradient-to-r from-teal-600 via-amber-400 to-teal-600" />
 
           <div className="p-8">
             {/* Logo */}
             <div className="flex items-center gap-2 mb-8">
               <Link href="/" className="flex items-center gap-2">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-sm text-white shadow-lg shadow-orange-500/30">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-600 to-amber-500 flex items-center justify-center font-black text-sm text-white shadow-lg shadow-teal-600/30">
                   S
                 </div>
-                <span className="text-xl font-black tracking-tight bg-gradient-to-r from-orange-500 to-amber-600 bg-clip-text text-transparent">
+                <span className="text-xl font-black tracking-tight bg-gradient-to-r from-teal-600 to-amber-600 bg-clip-text text-transparent">
                   Sefira
                 </span>
               </Link>
@@ -193,14 +193,14 @@ export default function ResetPasswordPage() {
                 <p className="text-stone-700 font-medium text-sm mb-5">{tr.invalidLink}</p>
                 <Link
                   href="/"
-                  className="inline-block px-6 py-2.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg shadow-orange-500/25 hover:opacity-90 transition-all active:scale-95"
+                  className="inline-block px-6 py-2.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-teal-600 to-amber-500 shadow-lg shadow-teal-600/25 hover:opacity-90 transition-all active:scale-95"
                 >
                   {tr.goHome}
                 </Link>
               </div>
             ) : tokenValid === null ? (
               <div className="py-12 flex justify-center">
-                <svg className="animate-spin w-8 h-8 text-orange-500" viewBox="0 0 24 24" fill="none">
+                <svg className="animate-spin w-8 h-8 text-teal-600" viewBox="0 0 24 24" fill="none">
                   <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.25" />
                   <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
                 </svg>
@@ -231,7 +231,7 @@ export default function ResetPasswordPage() {
                     placeholder={tr.placeholder}
                     required
                     minLength={6}
-                    className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50 text-stone-900 placeholder-stone-400 text-sm focus:outline-none focus:border-orange-400 focus:bg-white focus:ring-2 focus:ring-orange-100 transition-all duration-200"
+                    className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50 text-stone-900 placeholder-stone-400 text-sm focus:outline-none focus:border-teal-400 focus:bg-white focus:ring-2 focus:ring-teal-100 transition-all duration-200"
                   />
                 </div>
 
@@ -246,7 +246,7 @@ export default function ResetPasswordPage() {
                     placeholder={tr.placeholder}
                     required
                     minLength={6}
-                    className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50 text-stone-900 placeholder-stone-400 text-sm focus:outline-none focus:border-orange-400 focus:bg-white focus:ring-2 focus:ring-orange-100 transition-all duration-200"
+                    className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50 text-stone-900 placeholder-stone-400 text-sm focus:outline-none focus:border-teal-400 focus:bg-white focus:ring-2 focus:ring-teal-100 transition-all duration-200"
                   />
                 </div>
 
@@ -262,7 +262,7 @@ export default function ResetPasswordPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:opacity-95 transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/40 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full py-3.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-teal-600 to-amber-500 hover:opacity-95 transition-all duration-200 shadow-lg shadow-teal-600/25 hover:shadow-xl hover:shadow-teal-600/40 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <span className="flex items-center justify-center gap-2">

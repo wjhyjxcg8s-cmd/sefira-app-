@@ -410,7 +410,7 @@ export default function CookiesPage() {
       >
         <Link
           href="/"
-          className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold px-4 py-2 rounded-2xl transition-colors duration-200 mb-8"
+          className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold px-4 py-2 rounded-2xl transition-colors duration-200 mb-8"
         >
           {content.backButton}
         </Link>
@@ -433,13 +433,13 @@ export default function CookiesPage() {
                 <ul className="text-sm text-gray-600 leading-relaxed mt-2 space-y-1">
                   <li>
                     {content.contactLabel}:{" "}
-                    <span className="text-orange-500 font-medium" dir="ltr">
+                    <span className="text-teal-600 font-medium" dir="ltr">
                       {content.contactEmail}
                     </span>
                   </li>
                   <li>
                     {content.websiteLabel}:{" "}
-                    <span className="text-orange-500 font-medium" dir="ltr">
+                    <span className="text-teal-600 font-medium" dir="ltr">
                       {content.contactWebsite}
                     </span>
                   </li>
@@ -453,7 +453,7 @@ export default function CookiesPage() {
         <div className="mt-6 mb-4">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold px-4 py-2 rounded-2xl transition-colors duration-200"
+            className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold px-4 py-2 rounded-2xl transition-colors duration-200"
           >
             {content.backButton}
           </Link>

@@ -156,7 +156,7 @@ function ConfirmModal({
             onClick={onConfirm}
             disabled={loading}
             className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
-            style={{ backgroundColor: dangerous ? "#ef4444" : "#f97316" }}
+            style={{ backgroundColor: dangerous ? "#ef4444" : "#0D9488" }}
             onMouseEnter={(e) => {
               if (!loading)
                 e.currentTarget.style.backgroundColor = dangerous
@@ -167,7 +167,7 @@ function ConfirmModal({
               if (!loading)
                 e.currentTarget.style.backgroundColor = dangerous
                   ? "#ef4444"
-                  : "#f97316";
+                  : "#0D9488";
             }}
           >
             {loading ? "…" : confirmLabel}
@@ -696,7 +696,7 @@ export default function UserDetailPage() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-white">
         <div
-          className="w-9 h-9 rounded-full border-4 border-gray-200 border-t-orange-500 animate-spin"
+          className="w-9 h-9 rounded-full border-4 border-gray-200 border-t-teal-600 animate-spin"
           style={{ animationDuration: "0.7s" }}
         />
       </div>
@@ -711,7 +711,7 @@ export default function UserDetailPage() {
         {/* Back */}
         <button
           onClick={() => router.push("/admin-sefira-2026")}
-          className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-orange-500 transition-colors mb-6"
+          className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-teal-600 transition-colors mb-6"
         >
           <span>←</span>
           <span>Back to Users</span>
@@ -720,7 +720,7 @@ export default function UserDetailPage() {
         {dataLoading ? (
           <div className="flex items-center justify-center h-64">
             <div
-              className="w-9 h-9 rounded-full border-4 border-gray-200 border-t-orange-500 animate-spin"
+              className="w-9 h-9 rounded-full border-4 border-gray-200 border-t-teal-600 animate-spin"
               style={{ animationDuration: "0.7s" }}
             />
           </div>
@@ -750,8 +750,8 @@ export default function UserDetailPage() {
                         style={{
                           width: 100,
                           height: 100,
-                          backgroundColor: "#fff7ed",
-                          color: "#f97316",
+                          backgroundColor: "#ccfbf1",
+                          color: "#0D9488",
                           flexShrink: 0,
                         }}
                       >
@@ -782,14 +782,14 @@ export default function UserDetailPage() {
                       value={editDisplayName}
                       onChange={(e) => setEditDisplayName(e.target.value)}
                       placeholder="Display name"
-                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
                     />
                   </Field>
                   <Field label="Gender">
                     <select
                       value={editGender}
                       onChange={(e) => setEditGender(e.target.value)}
-                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white"
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 bg-white"
                     >
                       <option value="">— Not set —</option>
                       <option value="male">Male</option>
@@ -802,7 +802,7 @@ export default function UserDetailPage() {
                       type="date"
                       value={editBirthDate}
                       onChange={(e) => setEditBirthDate(e.target.value)}
-                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
                     />
                   </Field>
                   <Field label="Country">
@@ -810,7 +810,7 @@ export default function UserDetailPage() {
                       value={editCountry}
                       onChange={(e) => setEditCountry(e.target.value)}
                       placeholder="Country"
-                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
                     />
                   </Field>
                 </div>
@@ -829,14 +829,14 @@ export default function UserDetailPage() {
                     onClick={handleSaveProfile}
                     disabled={profileSaving}
                     className="px-6 py-2.5 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
-                    style={{ backgroundColor: "#f97316" }}
+                    style={{ backgroundColor: "#0D9488" }}
                     onMouseEnter={(e) => {
                       if (!profileSaving)
                         e.currentTarget.style.backgroundColor = "#ea6c08";
                     }}
                     onMouseLeave={(e) => {
                       if (!profileSaving)
-                        e.currentTarget.style.backgroundColor = "#f97316";
+                        e.currentTarget.style.backgroundColor = "#0D9488";
                     }}
                   >
                     {profileSaving ? "Saving…" : "Save Changes"}
@@ -879,7 +879,7 @@ export default function UserDetailPage() {
                     value={msgTitle}
                     onChange={(e) => setMsgTitle(e.target.value)}
                     placeholder="Announcement title"
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
                   />
                 </Field>
                 <Field label="Message">
@@ -888,7 +888,7 @@ export default function UserDetailPage() {
                     onChange={(e) => setMsgMessage(e.target.value)}
                     placeholder="Write your announcement here…"
                     rows={3}
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 resize-none"
                   />
                 </Field>
 
@@ -899,9 +899,9 @@ export default function UserDetailPage() {
                   onClick={handleSendToAll}
                   disabled={sendingMsg}
                   className="px-5 py-2.5 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
-                  style={{ backgroundColor: "#ea580c" }}
+                  style={{ backgroundColor: "#0F766E" }}
                   onMouseEnter={(e) => { if (!sendingMsg) e.currentTarget.style.backgroundColor = "#c2410c"; }}
-                  onMouseLeave={(e) => { if (!sendingMsg) e.currentTarget.style.backgroundColor = "#ea580c"; }}
+                  onMouseLeave={(e) => { if (!sendingMsg) e.currentTarget.style.backgroundColor = "#0F766E"; }}
                 >
                   {sendingMsg ? "Sending…" : "Send to ALL Users"}
                 </button>
@@ -932,7 +932,7 @@ export default function UserDetailPage() {
                         <div
                           className={`w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mb-1 ${
                             isUser
-                              ? "bg-gradient-to-br from-orange-400 to-orange-600"
+                              ? "bg-gradient-to-br from-teal-400 to-teal-700"
                               : "bg-gradient-to-br from-gray-400 to-gray-500"
                           }`}
                         >
@@ -944,7 +944,7 @@ export default function UserDetailPage() {
                           <div
                             className={`rounded-2xl px-4 py-2.5 shadow-sm ${
                               isUser
-                                ? "bg-orange-500 text-white rounded-br-sm"
+                                ? "bg-teal-600 text-white rounded-br-sm"
                                 : "bg-white text-gray-800 rounded-bl-sm"
                             }`}
                           >
@@ -990,7 +990,7 @@ export default function UserDetailPage() {
                       }
                     }}
                     placeholder="Type a reply…"
-                    className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                    className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
                   />
                   <button
                     onClick={async () => {
@@ -1013,9 +1013,9 @@ export default function UserDetailPage() {
                     }}
                     disabled={!supportInput.trim() || sendingSupport}
                     className="px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60"
-                    style={{ backgroundColor: "#f97316" }}
+                    style={{ backgroundColor: "#0D9488" }}
                     onMouseEnter={(e) => { if (!sendingSupport) e.currentTarget.style.backgroundColor = "#ea6c08"; }}
-                    onMouseLeave={(e) => { if (!sendingSupport) e.currentTarget.style.backgroundColor = "#f97316"; }}
+                    onMouseLeave={(e) => { if (!sendingSupport) e.currentTarget.style.backgroundColor = "#0D9488"; }}
                   >
                     {sendingSupport ? "…" : "Send Reply"}
                   </button>
@@ -1048,7 +1048,7 @@ export default function UserDetailPage() {
                         <div
                           className={`w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mb-1 ${
                             isAdmin
-                              ? "bg-gradient-to-br from-orange-400 to-orange-600"
+                              ? "bg-gradient-to-br from-teal-400 to-teal-700"
                               : "bg-gradient-to-br from-gray-400 to-gray-500"
                           }`}
                         >
@@ -1060,7 +1060,7 @@ export default function UserDetailPage() {
                           <div
                             className={`rounded-2xl px-4 py-2.5 shadow-sm ${
                               isAdmin
-                                ? "bg-orange-500 text-white rounded-br-sm"
+                                ? "bg-teal-600 text-white rounded-br-sm"
                                 : "bg-white text-gray-800 rounded-bl-sm"
                             }`}
                           >
@@ -1101,15 +1101,15 @@ export default function UserDetailPage() {
                     }}
                     placeholder="Type a reply…"
                     rows={2}
-                    className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
+                    className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 resize-none"
                   />
                   <button
                     onClick={handleSendReply}
                     disabled={!adminReply.trim() || sendingReply}
                     className="px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-colors disabled:opacity-60 self-end"
-                    style={{ backgroundColor: "#f97316" }}
+                    style={{ backgroundColor: "#0D9488" }}
                     onMouseEnter={(e) => { if (!sendingReply) e.currentTarget.style.backgroundColor = "#ea6c08"; }}
-                    onMouseLeave={(e) => { if (!sendingReply) e.currentTarget.style.backgroundColor = "#f97316"; }}
+                    onMouseLeave={(e) => { if (!sendingReply) e.currentTarget.style.backgroundColor = "#0D9488"; }}
                   >
                     {sendingReply ? "…" : "Send"}
                   </button>
@@ -1134,14 +1134,14 @@ export default function UserDetailPage() {
                             value={editReviewText}
                             onChange={(e) => setEditReviewText(e.target.value)}
                             rows={3}
-                            className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
+                            className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 resize-none"
                           />
                           <div className="flex gap-2">
                             <button
                               onClick={() => handleSaveReview(r.id)}
                               disabled={savingReview}
                               className="px-4 py-1.5 rounded-lg text-xs font-medium text-white disabled:opacity-60"
-                              style={{ backgroundColor: "#f97316" }}
+                              style={{ backgroundColor: "#0D9488" }}
                             >
                               {savingReview ? "Saving…" : "Save"}
                             </button>
@@ -1244,7 +1244,7 @@ export default function UserDetailPage() {
                               i % 2 === 1 ? "#fafafa" : "white",
                           }}
                           onMouseEnter={(e) =>
-                            (e.currentTarget.style.backgroundColor = "#fff7ed")
+                            (e.currentTarget.style.backgroundColor = "#ccfbf1")
                           }
                           onMouseLeave={(e) =>
                             (e.currentTarget.style.backgroundColor =
@@ -1255,8 +1255,8 @@ export default function UserDetailPage() {
                             <span
                               className="px-2.5 py-1 rounded-lg text-xs font-medium capitalize"
                               style={{
-                                backgroundColor: "#fff7ed",
-                                color: "#f97316",
+                                backgroundColor: "#ccfbf1",
+                                color: "#0D9488",
                               }}
                             >
                               {l.listing_type?.replace(/_/g, " ") ?? "—"}
@@ -1484,7 +1484,7 @@ export default function UserDetailPage() {
           <>
             This will send the message to every user on the platform.
             <br />
-            <span className="font-semibold text-orange-600">This action cannot be undone.</span>
+            <span className="font-semibold text-teal-700">This action cannot be undone.</span>
           </>
         }
         confirmLabel="Yes, Send to All"

@@ -114,7 +114,7 @@ export default function BannedPage() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-white">
         <div
-          className="w-9 h-9 rounded-full border-4 border-gray-200 border-t-orange-500 animate-spin"
+          className="w-9 h-9 rounded-full border-4 border-gray-200 border-t-teal-600 animate-spin"
           style={{ animationDuration: "0.7s" }}
         />
       </div>
@@ -139,7 +139,7 @@ export default function BannedPage() {
             ←
           </button>
           <h1 className="text-xl font-bold text-gray-800">🚫 Engelliler</h1>
-          <button onClick={fetchBanned} className="bg-orange-500 text-white px-4 py-2 rounded-xl text-sm font-bold">
+          <button onClick={fetchBanned} className="bg-teal-600 text-white px-4 py-2 rounded-xl text-sm font-bold">
             🔄 Yenile
           </button>
           <span
@@ -161,7 +161,7 @@ export default function BannedPage() {
         {pageLoading ? (
           <div className="flex items-center justify-center h-64">
             <div
-              className="w-9 h-9 rounded-full border-4 border-gray-200 border-t-orange-500 animate-spin"
+              className="w-9 h-9 rounded-full border-4 border-gray-200 border-t-teal-600 animate-spin"
               style={{ animationDuration: "0.7s" }}
             />
           </div>

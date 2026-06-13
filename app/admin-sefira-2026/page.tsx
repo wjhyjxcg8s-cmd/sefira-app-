@@ -103,7 +103,7 @@ function Pagination({
         <button
           onClick={() => onPageChange(page - 1)}
           disabled={page === 1}
-          className="px-3 py-1.5 text-sm rounded-lg border border-gray-200 text-gray-600 disabled:opacity-40 hover:border-orange-400 hover:text-orange-500 transition-colors"
+          className="px-3 py-1.5 text-sm rounded-lg border border-gray-200 text-gray-600 disabled:opacity-40 hover:border-teal-400 hover:text-teal-500 transition-colors"
         >
           Previous
         </button>
@@ -113,7 +113,7 @@ function Pagination({
         <button
           onClick={() => onPageChange(page + 1)}
           disabled={page >= totalPages}
-          className="px-3 py-1.5 text-sm rounded-lg border border-gray-200 text-gray-600 disabled:opacity-40 hover:border-orange-400 hover:text-orange-500 transition-colors"
+          className="px-3 py-1.5 text-sm rounded-lg border border-gray-200 text-gray-600 disabled:opacity-40 hover:border-teal-400 hover:text-teal-500 transition-colors"
         >
           Next
         </button>
@@ -126,7 +126,7 @@ function LoadingSpinner() {
   return (
     <div className="flex items-center justify-center h-64">
       <div
-        className="w-9 h-9 rounded-full border-4 border-gray-200 border-t-orange-500 animate-spin"
+        className="w-9 h-9 rounded-full border-4 border-gray-200 border-t-teal-500 animate-spin"
         style={{ animationDuration: "0.7s" }}
       />
     </div>
@@ -681,7 +681,7 @@ export default function AdminPage() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-white">
         <div
-          className="w-9 h-9 rounded-full border-4 border-gray-200 border-t-orange-500 animate-spin"
+          className="w-9 h-9 rounded-full border-4 border-gray-200 border-t-teal-500 animate-spin"
           style={{ animationDuration: "0.7s" }}
         />
       </div>
@@ -713,7 +713,7 @@ export default function AdminPage() {
     <div>
       <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
         <h2 className="text-2xl font-bold text-gray-800">Dashboard</h2>
-        <button onClick={() => setDashboardRefresh(n => n + 1)} className="bg-orange-500 text-white px-4 py-2 rounded-xl text-sm font-bold">
+        <button onClick={() => setDashboardRefresh(n => n + 1)} className="bg-teal-500 text-white px-4 py-2 rounded-xl text-sm font-bold">
           🔄 Yenile
         </button>
       </div>
@@ -747,13 +747,13 @@ export default function AdminPage() {
                 label: "New This Week",
                 value: stats.newUsersThisWeek,
                 icon: "🆕",
-                bg: "#fff7ed",
-                color: "#f97316",
+                bg: "#ccfbf1",
+                color: "#0D9488",
               },
             ].map((card) => (
               <div
                 key={card.label}
-                className={`bg-white rounded-2xl p-6 border border-gray-100 ${"link" in card && card.link ? "cursor-pointer hover:border-orange-200 hover:shadow-md transition-all" : ""}`}
+                className={`bg-white rounded-2xl p-6 border border-gray-100 ${"link" in card && card.link ? "cursor-pointer hover:border-teal-200 hover:shadow-md transition-all" : ""}`}
                 style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
                 onClick={"link" in card && card.link ? () => router.push(card.link as string) : undefined}
               >
@@ -841,7 +841,7 @@ export default function AdminPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <h2 className="text-2xl font-bold text-gray-800">Users</h2>
-          <button onClick={() => setUsersRefresh(n => n + 1)} className="bg-orange-500 text-white px-4 py-2 rounded-xl text-sm font-bold">
+          <button onClick={() => setUsersRefresh(n => n + 1)} className="bg-teal-500 text-white px-4 py-2 rounded-xl text-sm font-bold">
             🔄 Yenile
           </button>
         </div>
@@ -851,7 +851,7 @@ export default function AdminPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className={card} style={shadow}>
             <p className="text-xs text-gray-400 uppercase font-semibold mb-1">👥 Toplam Kullanıcı</p>
-            <p className="text-4xl font-black" style={{ color: "#f97316" }}>{total}</p>
+            <p className="text-4xl font-black" style={{ color: "#0D9488" }}>{total}</p>
           </div>
           <div className={card} style={shadow}>
             <p className="text-xs text-gray-400 uppercase font-semibold mb-1">✅ Aktif Kullanıcı</p>
@@ -866,7 +866,7 @@ export default function AdminPage() {
         {/* ── Row 2: Announcements ──────────────────────────────────────────── */}
         <div className={card} style={shadow}>
           <p className="text-xs text-gray-400 uppercase font-semibold mb-1">📢 Aktif Duyurular</p>
-          <p className="text-4xl font-black" style={{ color: "#f97316" }}>{announcementCount}</p>
+          <p className="text-4xl font-black" style={{ color: "#0D9488" }}>{announcementCount}</p>
         </div>
 
         {/* ── Row 3: Countries ──────────────────────────────────────────────── */}
@@ -888,12 +888,12 @@ export default function AdminPage() {
                       <div className="flex items-center justify-between mb-0.5 gap-2">
                         <span className="text-sm text-gray-700 truncate">{country}</span>
                         <div className="flex items-center gap-2 shrink-0">
-                          <span className="text-sm font-black" style={{ color: "#f97316" }}>{count}</span>
+                          <span className="text-sm font-black" style={{ color: "#0D9488" }}>{count}</span>
                           <span className="text-xs text-gray-400 w-8 text-right">{p}%</span>
                         </div>
                       </div>
                       <div className="h-1.5 rounded-full bg-gray-100 overflow-hidden">
-                        <div className="h-full rounded-full" style={{ width: `${barW}%`, backgroundColor: "#f97316" }} />
+                        <div className="h-full rounded-full" style={{ width: `${barW}%`, backgroundColor: "#0D9488" }} />
                       </div>
                     </div>
                   </div>
@@ -952,7 +952,7 @@ export default function AdminPage() {
                     <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
                       <div
                         className="h-full rounded-full"
-                        style={{ width: `${Math.round((count / maxAge) * 100)}%`, backgroundColor: "#f97316" }}
+                        style={{ width: `${Math.round((count / maxAge) * 100)}%`, backgroundColor: "#0D9488" }}
                       />
                     </div>
                   </div>
@@ -979,12 +979,12 @@ export default function AdminPage() {
                       <div className="flex items-center justify-between mb-0.5 gap-2">
                         <span className="text-sm text-gray-700 truncate">{city}</span>
                         <div className="flex items-center gap-2 shrink-0">
-                          <span className="text-sm font-black" style={{ color: "#f97316" }}>{count}</span>
+                          <span className="text-sm font-black" style={{ color: "#0D9488" }}>{count}</span>
                           <span className="text-xs text-gray-400 w-8 text-right">{p}%</span>
                         </div>
                       </div>
                       <div className="h-1.5 rounded-full bg-gray-100 overflow-hidden">
-                        <div className="h-full rounded-full" style={{ width: `${barW}%`, backgroundColor: "#f97316" }} />
+                        <div className="h-full rounded-full" style={{ width: `${barW}%`, backgroundColor: "#0D9488" }} />
                       </div>
                     </div>
                   </div>
@@ -1008,14 +1008,14 @@ export default function AdminPage() {
                   if (e.key === "Enter") { setUsersSearch(usersSearchInput); setUsersPage(1); }
                 }}
                 placeholder="Search by name or email…"
-                className="px-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 w-56 sm:w-72"
+                className="px-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 w-56 sm:w-72"
               />
               <button
                 onClick={() => { setUsersSearch(usersSearchInput); setUsersPage(1); }}
                 className="px-4 py-2 rounded-xl text-sm font-medium text-white transition-colors"
-                style={{ backgroundColor: "#f97316" }}
+                style={{ backgroundColor: "#0D9488" }}
                 onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ea6c08")}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#f97316")}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#0D9488")}
               >
                 Search
               </button>
@@ -1043,7 +1043,7 @@ export default function AdminPage() {
                       className="border-t border-gray-50 transition-colors cursor-pointer"
                       style={{ backgroundColor: i % 2 === 1 ? "#fafafa" : "white" }}
                       onClick={() => router.push(`/admin-sefira-2026/user/${u.user_id}`)}
-                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#fff7ed")}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ccfbf1")}
                       onMouseLeave={(e) =>
                         (e.currentTarget.style.backgroundColor = i % 2 === 1 ? "#fafafa" : "white")
                       }
@@ -1054,7 +1054,7 @@ export default function AdminPage() {
                         ) : (
                           <div
                             className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
-                            style={{ backgroundColor: "#fff7ed", color: "#f97316" }}
+                            style={{ backgroundColor: "#ccfbf1", color: "#0D9488" }}
                           >
                             {u.display_name?.[0]?.toUpperCase() ?? u.email?.[0]?.toUpperCase() ?? "?"}
                           </div>
@@ -1107,9 +1107,9 @@ export default function AdminPage() {
                               onClick={(e) => { e.stopPropagation(); setBanConfirm(u); }}
                               disabled={banningUserId === u.user_id}
                               className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
-                              style={{ backgroundColor: "#fff7ed", color: "#f97316" }}
+                              style={{ backgroundColor: "#ccfbf1", color: "#0D9488" }}
                               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ffedd5")}
-                              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#fff7ed")}
+                              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ccfbf1")}
                             >
                               {banningUserId === u.user_id ? "…" : "🚫 Engelle"}
                             </button>
@@ -1147,7 +1147,7 @@ export default function AdminPage() {
     <div>
       <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
         <h2 className="text-2xl font-bold text-gray-800">Listings</h2>
-        <button onClick={() => setListingsRefresh(n => n + 1)} className="bg-orange-500 text-white px-4 py-2 rounded-xl text-sm font-bold">
+        <button onClick={() => setListingsRefresh(n => n + 1)} className="bg-teal-500 text-white px-4 py-2 rounded-xl text-sm font-bold">
           🔄 Yenile
         </button>
       </div>
@@ -1171,7 +1171,7 @@ export default function AdminPage() {
                   key={l.id}
                   className="border-t border-gray-50 transition-colors"
                   style={{ backgroundColor: i % 2 === 1 ? "#fafafa" : "white" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#fff7ed")}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ccfbf1")}
                   onMouseLeave={(e) =>
                     (e.currentTarget.style.backgroundColor = i % 2 === 1 ? "#fafafa" : "white")
                   }
@@ -1180,7 +1180,7 @@ export default function AdminPage() {
                   <td className="px-4 py-3">
                     <span
                       className="px-2.5 py-1 rounded-lg text-xs font-medium capitalize"
-                      style={{ backgroundColor: "#fff7ed", color: "#f97316" }}
+                      style={{ backgroundColor: "#ccfbf1", color: "#0D9488" }}
                     >
                       {l.listing_type?.replace(/_/g, " ") ?? "—"}
                     </span>
@@ -1283,7 +1283,7 @@ export default function AdminPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <h2 className="text-2xl font-bold text-gray-800">Deletion Feedback</h2>
-          <button onClick={() => setFeedbackRefresh(n => n + 1)} className="bg-orange-500 text-white px-4 py-2 rounded-xl text-sm font-bold">
+          <button onClick={() => setFeedbackRefresh(n => n + 1)} className="bg-teal-500 text-white px-4 py-2 rounded-xl text-sm font-bold">
             🔄 Yenile
           </button>
         </div>
@@ -1294,13 +1294,13 @@ export default function AdminPage() {
           {/* Total */}
           <div className={card} style={cardShadow}>
             <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Toplam Silme</p>
-            <p className="text-4xl font-black" style={{ color: "#f97316" }}>{total}</p>
+            <p className="text-4xl font-black" style={{ color: "#0D9488" }}>{total}</p>
             <p className="text-xs text-gray-400 mt-1">kayıtlı kullanıcı</p>
           </div>
           {/* Avg rating */}
           <div className={card} style={cardShadow}>
             <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Ortalama Puan</p>
-            <p className="text-4xl font-black" style={{ color: "#f97316" }}>
+            <p className="text-4xl font-black" style={{ color: "#0D9488" }}>
               {avgRating > 0 ? avgRating.toFixed(1) : "—"}
             </p>
             <div className="mt-1">
@@ -1310,7 +1310,7 @@ export default function AdminPage() {
           {/* This month */}
           <div className={card} style={cardShadow}>
             <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Bu Ay</p>
-            <p className="text-4xl font-black" style={{ color: "#f97316" }}>{thisMonthCount}</p>
+            <p className="text-4xl font-black" style={{ color: "#0D9488" }}>{thisMonthCount}</p>
             <p className="text-xs text-gray-400 mt-1">{formatMonth(thisMonthKey)} silmesi</p>
           </div>
         </div>
@@ -1335,7 +1335,7 @@ export default function AdminPage() {
                         <div className="flex items-center gap-2 shrink-0">
                           <span
                             className="text-xs font-bold px-2 py-0.5 rounded-full text-white"
-                            style={{ backgroundColor: "#f97316" }}
+                            style={{ backgroundColor: "#0D9488" }}
                           >
                             {count}
                           </span>
@@ -1345,7 +1345,7 @@ export default function AdminPage() {
                       <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
                         <div
                           className="h-full rounded-full transition-all"
-                          style={{ width: `${barPct}%`, backgroundColor: "#f97316" }}
+                          style={{ width: `${barPct}%`, backgroundColor: "#0D9488" }}
                         />
                       </div>
                     </div>
@@ -1374,7 +1374,7 @@ export default function AdminPage() {
                       <div className="flex-1 min-w-0">
                         <span className="text-sm text-gray-700 truncate block">{country}</span>
                       </div>
-                      <span className="text-lg font-black shrink-0" style={{ color: "#f97316" }}>
+                      <span className="text-lg font-black shrink-0" style={{ color: "#0D9488" }}>
                         {count}
                       </span>
                       <span className="text-xs text-gray-400 w-8 text-right shrink-0">{pct}%</span>
@@ -1404,7 +1404,7 @@ export default function AdminPage() {
                       <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
                         <div
                           className="h-full rounded-full"
-                          style={{ width: `${barPct}%`, backgroundColor: "#f97316" }}
+                          style={{ width: `${barPct}%`, backgroundColor: "#0D9488" }}
                         />
                       </div>
                     </div>
@@ -1435,7 +1435,7 @@ export default function AdminPage() {
                     className="border-t border-gray-50 transition-colors"
                     style={{ backgroundColor: i % 2 === 1 ? "#fafafa" : "white", cursor: "pointer" }}
                     onClick={() => setSelectedFeedback(f)}
-                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#fff7ed")}
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ccfbf1")}
                     onMouseLeave={(e) =>
                       (e.currentTarget.style.backgroundColor = i % 2 === 1 ? "#fafafa" : "white")
                     }
@@ -1496,7 +1496,7 @@ export default function AdminPage() {
     <div>
       <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
         <h2 className="text-2xl font-bold text-gray-800">Reviews</h2>
-        <button onClick={() => setReviewsRefresh(n => n + 1)} className="bg-orange-500 text-white px-4 py-2 rounded-xl text-sm font-bold">
+        <button onClick={() => setReviewsRefresh(n => n + 1)} className="bg-teal-500 text-white px-4 py-2 rounded-xl text-sm font-bold">
           🔄 Yenile
         </button>
       </div>
@@ -1519,7 +1519,7 @@ export default function AdminPage() {
                   key={r.id}
                   className="border-t border-gray-50 transition-colors"
                   style={{ backgroundColor: i % 2 === 1 ? "#fafafa" : "white" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#fff7ed")}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ccfbf1")}
                   onMouseLeave={(e) =>
                     (e.currentTarget.style.backgroundColor = i % 2 === 1 ? "#fafafa" : "white")
                   }
@@ -1649,7 +1649,7 @@ export default function AdminPage() {
         <div className="p-5 border-b border-gray-100 flex items-center gap-3">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-base font-black shrink-0"
-            style={{ backgroundColor: "#f97316" }}
+            style={{ backgroundColor: "#0D9488" }}
           >
             S
           </div>
@@ -1672,14 +1672,14 @@ export default function AdminPage() {
                 }}
                 className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-left"
                 style={{
-                  backgroundColor: active ? "#f97316" : "transparent",
+                  backgroundColor: active ? "#0D9488" : "transparent",
                   color: active ? "white" : "#374151",
-                  boxShadow: active ? "0 2px 8px rgba(249,115,22,0.3)" : "none",
+                  boxShadow: active ? "0 2px 8px rgba(13,148,136,0.3)" : "none",
                 }}
                 onMouseEnter={(e) => {
                   if (!active) {
-                    e.currentTarget.style.backgroundColor = "#fff7ed";
-                    e.currentTarget.style.color = "#f97316";
+                    e.currentTarget.style.backgroundColor = "#ccfbf1";
+                    e.currentTarget.style.color = "#0D9488";
                   }
                 }}
                 onMouseLeave={(e) => {
@@ -1701,7 +1701,7 @@ export default function AdminPage() {
           <div className="flex items-center gap-3">
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-              style={{ backgroundColor: "#fff7ed", color: "#f97316" }}
+              style={{ backgroundColor: "#ccfbf1", color: "#0D9488" }}
             >
               A
             </div>
@@ -1759,7 +1759,7 @@ export default function AdminPage() {
             <div className="ml-auto">
               <span
                 className="text-xs font-medium px-2.5 py-1 rounded-full"
-                style={{ backgroundColor: "#fff7ed", color: "#f97316" }}
+                style={{ backgroundColor: "#ccfbf1", color: "#0D9488" }}
               >
                 Admin
               </span>
@@ -1793,7 +1793,7 @@ export default function AdminPage() {
           >
             <div
               className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4"
-              style={{ backgroundColor: "#fff7ed" }}
+              style={{ backgroundColor: "#ccfbf1" }}
             >
               🚫
             </div>
@@ -1816,9 +1816,9 @@ export default function AdminPage() {
               <button
                 onClick={() => { handleQuickBan(banConfirm); setBanConfirm(null); }}
                 className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white transition-colors"
-                style={{ backgroundColor: "#f97316" }}
+                style={{ backgroundColor: "#0D9488" }}
                 onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ea6c08")}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#f97316")}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#0D9488")}
               >
                 Engelle
               </button>
@@ -2080,7 +2080,7 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
         >
           {loadingConvs ? (
             <div className="flex items-center justify-center flex-1 py-12">
-              <div className="w-7 h-7 rounded-full border-[3px] border-gray-200 border-t-orange-500 animate-spin" />
+              <div className="w-7 h-7 rounded-full border-[3px] border-gray-200 border-t-teal-500 animate-spin" />
             </div>
           ) : conversations.length === 0 ? (
             <p className="text-center text-gray-400 text-sm py-12 px-4">
@@ -2092,12 +2092,12 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
                 key={conv.key}
                 onClick={() => selectConversation(conv)}
                 className={`w-full flex items-center gap-3 px-4 py-3.5 text-left border-b border-gray-50 transition-colors ${
-                  selectedId === conv.key ? "bg-orange-50" : "hover:bg-gray-50"
+                  selectedId === conv.key ? "bg-teal-50" : "hover:bg-gray-50"
                 }`}
               >
                 <div
                   className="w-11 h-11 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
-                  style={{ backgroundColor: "#f97316" }}
+                  style={{ backgroundColor: "#0D9488" }}
                 >
                   {(conv.display_name?.[0] ?? conv.email?.[0] ?? "?").toUpperCase()}
                 </div>
@@ -2123,7 +2123,7 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
                       {conv.last_message}
                     </p>
                     {conv.unread_count > 0 && (
-                      <span className="flex-shrink-0 min-w-[18px] h-[18px] rounded-full bg-orange-500 text-white text-[10px] font-bold flex items-center justify-center px-1">
+                      <span className="flex-shrink-0 min-w-[18px] h-[18px] rounded-full bg-teal-500 text-white text-[10px] font-bold flex items-center justify-center px-1">
                         {conv.unread_count}
                       </span>
                     )}
@@ -2142,7 +2142,7 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
           {!selectedId ? (
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center px-6">
-                <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center mx-auto mb-3">
+                <div className="w-16 h-16 rounded-full bg-teal-100 flex items-center justify-center mx-auto mb-3">
                   <svg
                     viewBox="0 0 24 24"
                     fill="none"
@@ -2150,7 +2150,7 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
                     strokeWidth="1.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="w-8 h-8 text-orange-400"
+                    className="w-8 h-8 text-teal-400"
                   >
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                   </svg>
@@ -2179,7 +2179,7 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
                 </button>
                 <div
                   className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
-                  style={{ backgroundColor: "#f97316" }}
+                  style={{ backgroundColor: "#0D9488" }}
                 >
                   {(selectedConv?.display_name?.[0] ?? selectedConv?.email?.[0] ?? "?").toUpperCase()}
                 </div>
@@ -2193,7 +2193,7 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
                 </div>
                 <button
                   onClick={() => router.push(`/admin-sefira-2026/user/${selectedConv?.user_id ?? selectedId}`)}
-                  className="px-3 py-1.5 text-xs font-medium rounded-lg bg-orange-50 hover:bg-orange-100 text-orange-600 transition-colors flex-shrink-0"
+                  className="px-3 py-1.5 text-xs font-medium rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-700 transition-colors flex-shrink-0"
                 >
                   👤 Kullanıcı Bilgileri
                 </button>
@@ -2203,7 +2203,7 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
               <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3">
                 {loadingThread ? (
                   <div className="flex items-center justify-center flex-1 py-12">
-                    <div className="w-7 h-7 rounded-full border-[3px] border-gray-200 border-t-orange-500 animate-spin" />
+                    <div className="w-7 h-7 rounded-full border-[3px] border-gray-200 border-t-teal-500 animate-spin" />
                   </div>
                 ) : thread.length === 0 ? (
                   <p className="text-center text-gray-400 text-sm py-8">Henüz mesaj yok</p>
@@ -2229,7 +2229,7 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
                             <div
                               className={`rounded-2xl px-4 py-2.5 shadow-sm ${
                                 isAdmin
-                                  ? "bg-orange-500 text-white rounded-br-sm"
+                                  ? "bg-teal-500 text-white rounded-br-sm"
                                   : "bg-white text-gray-800 rounded-bl-sm"
                               }`}
                             >
@@ -2268,18 +2268,18 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
                       }
                     }}
                     placeholder="Mesaj yaz…"
-                    className="flex-1 px-4 py-2.5 rounded-2xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-gray-50"
+                    className="flex-1 px-4 py-2.5 rounded-2xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 bg-gray-50"
                   />
                   <button
                     onClick={handleSend}
                     disabled={!replyText.trim() || sending}
                     className="px-4 py-2.5 rounded-2xl text-white text-sm font-semibold disabled:opacity-50 transition-colors flex-shrink-0"
-                    style={{ backgroundColor: "#f97316" }}
+                    style={{ backgroundColor: "#0D9488" }}
                     onMouseEnter={(e) => {
                       if (!sending) e.currentTarget.style.backgroundColor = "#ea6c08";
                     }}
                     onMouseLeave={(e) => {
-                      if (!sending) e.currentTarget.style.backgroundColor = "#f97316";
+                      if (!sending) e.currentTarget.style.backgroundColor = "#0D9488";
                     }}
                   >
                     {sending ? "…" : "Gönder"}

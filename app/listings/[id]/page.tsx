@@ -192,7 +192,7 @@ export default function ListingDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="w-10 h-10 border-4 border-orange-400 border-t-transparent rounded-full animate-spin" />
+        <div className="w-10 h-10 border-4 border-teal-400 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -203,7 +203,7 @@ export default function ListingDetailPage() {
         <div className="text-center">
           <p className="text-4xl mb-3">🏚️</p>
           <p className="text-gray-500">İlan bulunamadı</p>
-          <button onClick={() => router.push("/")} className="mt-4 text-orange-500 underline text-sm">
+          <button onClick={() => router.push("/")} className="mt-4 text-teal-600 underline text-sm">
             Geri dön
           </button>
         </div>
@@ -265,7 +265,7 @@ export default function ListingDetailPage() {
                     src={p}
                     alt=""
                     className={`w-16 h-12 object-cover rounded-lg border-2 transition-all ${
-                      i === activePhoto ? "border-orange-400" : "border-transparent opacity-60"
+                      i === activePhoto ? "border-teal-400" : "border-transparent opacity-60"
                     }`}
                   />
                 </button>
@@ -300,7 +300,7 @@ export default function ListingDetailPage() {
         )}
 
         {listing.rent && listing.currency && (
-          <p className="text-3xl font-black text-orange-500 mt-3">
+          <p className="text-3xl font-black text-teal-600 mt-3">
             {Number(listing.rent).toLocaleString()} {listing.currency}
             <span className="text-base font-normal text-gray-400 ml-1">{t.perMonth}</span>
           </p>
@@ -355,10 +355,10 @@ export default function ListingDetailPage() {
               <img
                 src={profile.avatar_url}
                 alt=""
-                className="w-14 h-14 rounded-full object-cover border-2 border-orange-200"
+                className="w-14 h-14 rounded-full object-cover border-2 border-teal-200"
               />
             ) : (
-              <div className="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center text-2xl font-bold text-orange-500">
+              <div className="w-14 h-14 rounded-full bg-teal-100 flex items-center justify-center text-2xl font-bold text-teal-600">
                 {(profile.display_name ?? "?")[0].toUpperCase()}
               </div>
             )}
@@ -426,14 +426,14 @@ export default function ListingDetailPage() {
         ) : isLoggedIn ? (
           <button
             onClick={handleSendMessage}
-            className="w-full py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold text-lg shadow-lg active:scale-95 transition-transform"
+            className="w-full py-4 rounded-2xl bg-gradient-to-r from-teal-600 to-amber-500 text-white font-bold text-lg shadow-lg active:scale-95 transition-transform"
           >
             💬 {t.contact}
           </button>
         ) : (
           <button
             onClick={() => router.push("/login")}
-            className="w-full py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold text-lg shadow-lg"
+            className="w-full py-4 rounded-2xl bg-gradient-to-r from-teal-600 to-amber-500 text-white font-bold text-lg shadow-lg"
           >
             {t.loginPrompt}
           </button>

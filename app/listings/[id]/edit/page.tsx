@@ -350,7 +350,7 @@ function Toggle({
         onClick={() => onChange(true)}
         className={`flex-1 py-2.5 rounded-xl font-bold text-sm transition-all ${
           value
-            ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/20"
+            ? "bg-gradient-to-r from-teal-500 to-amber-500 text-white shadow-md shadow-teal-500/20"
             : "bg-stone-100 text-stone-600 hover:bg-stone-200"
         }`}
       >
@@ -361,7 +361,7 @@ function Toggle({
         onClick={() => onChange(false)}
         className={`flex-1 py-2.5 rounded-xl font-bold text-sm transition-all ${
           !value
-            ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/20"
+            ? "bg-gradient-to-r from-teal-500 to-amber-500 text-white shadow-md shadow-teal-500/20"
             : "bg-stone-100 text-stone-600 hover:bg-stone-200"
         }`}
       >
@@ -548,7 +548,7 @@ export default function EditListingPage() {
   if (loading || fetching) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-stone-50">
-        <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-10 h-10 border-4 border-teal-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -558,7 +558,7 @@ export default function EditListingPage() {
     return (
       <div dir={dir} className="min-h-screen flex flex-col items-center justify-center bg-stone-50 gap-5 p-6">
         <p className="text-stone-600 text-center font-medium">{t.notOwner}</p>
-        <Link href="/" className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg hover:opacity-90 transition-all active:scale-95">
+        <Link href="/" className="bg-gradient-to-r from-teal-500 to-amber-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg hover:opacity-90 transition-all active:scale-95">
           Ana Sayfa
         </Link>
       </div>
@@ -570,7 +570,7 @@ export default function EditListingPage() {
     return (
       <div dir={dir} className="min-h-screen flex flex-col items-center justify-center bg-stone-50 gap-5 p-6">
         <p className="text-stone-600 text-center font-medium">{t.notFound}</p>
-        <Link href="/my-listings" className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg hover:opacity-90 transition-all active:scale-95">
+        <Link href="/my-listings" className="bg-gradient-to-r from-teal-500 to-amber-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg hover:opacity-90 transition-all active:scale-95">
           {t.goBack}
         </Link>
       </div>
@@ -587,7 +587,7 @@ export default function EditListingPage() {
           </svg>
         </div>
         <p className="text-stone-600 text-center font-medium">{t.notOwner}</p>
-        <Link href="/" className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg hover:opacity-90 transition-all active:scale-95">
+        <Link href="/" className="bg-gradient-to-r from-teal-500 to-amber-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg hover:opacity-90 transition-all active:scale-95">
           Ana Sayfa
         </Link>
       </div>
@@ -601,10 +601,10 @@ export default function EditListingPage() {
       <nav dir="ltr" style={{ transform: "translateZ(0)", WebkitTransform: "translateZ(0)", willChange: "transform" }} className="fixed top-0 left-0 right-0 w-full z-[9999] bg-white border-b border-stone-200 shadow-sm">
         <div className="max-w-2xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-sm text-white shadow-lg shadow-orange-500/30 group-hover:scale-110 transition-all duration-300">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-teal-500 to-amber-500 flex items-center justify-center font-black text-sm text-white shadow-lg shadow-teal-500/30 group-hover:scale-110 transition-all duration-300">
               S
             </div>
-            <span className="text-xl font-black tracking-tight bg-gradient-to-r from-orange-500 to-amber-600 bg-clip-text text-transparent">
+            <span className="text-xl font-black tracking-tight bg-gradient-to-r from-teal-500 to-amber-600 bg-clip-text text-transparent">
               Sefira
             </span>
           </Link>
@@ -629,7 +629,7 @@ export default function EditListingPage() {
         </motion.div>
 
         <h1 className="text-2xl font-black text-stone-900 mb-8 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/30">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-500 to-amber-500 flex items-center justify-center shadow-lg shadow-teal-500/30">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-5 h-5 text-white">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
@@ -666,7 +666,7 @@ export default function EditListingPage() {
                 ))}
                 {Array.from({ length: uploadingCount }).map((_, i) => (
                   <div key={`uploading-${i}`} className="aspect-square rounded-xl bg-stone-100 flex items-center justify-center">
-                    <span className="w-6 h-6 border-2 border-orange-300 border-t-orange-500 rounded-full animate-spin" />
+                    <span className="w-6 h-6 border-2 border-teal-300 border-t-teal-500 rounded-full animate-spin" />
                   </div>
                 ))}
               </div>
@@ -675,10 +675,10 @@ export default function EditListingPage() {
             {form.photos.length + uploadingCount < 3 && (
               <div
                 onClick={() => photoInputRef.current?.click()}
-                className="border-2 border-dashed border-orange-300 rounded-2xl p-6 flex flex-col items-center gap-2 cursor-pointer bg-orange-50 hover:bg-orange-100 active:bg-orange-100 transition-colors"
+                className="border-2 border-dashed border-teal-300 rounded-2xl p-6 flex flex-col items-center gap-2 cursor-pointer bg-teal-50 hover:bg-teal-100 active:bg-teal-100 transition-colors"
               >
                 <span className="text-3xl">📷</span>
-                <p className="text-sm font-medium text-orange-600">{t.addPhoto}</p>
+                <p className="text-sm font-medium text-teal-700">{t.addPhoto}</p>
               </div>
             )}
 
@@ -697,7 +697,7 @@ export default function EditListingPage() {
                   value={form.city}
                   onChange={(e) => setField("city", e.target.value)}
                   placeholder={t.cityPlaceholder}
-                  className="w-full border border-stone-200 rounded-xl px-4 py-3 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+                  className="w-full border border-stone-200 rounded-xl px-4 py-3 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all text-sm"
                 />
               </div>
               <div>
@@ -707,7 +707,7 @@ export default function EditListingPage() {
                   value={form.district}
                   onChange={(e) => setField("district", e.target.value)}
                   placeholder={t.districtPlaceholder}
-                  className="w-full border border-stone-200 rounded-xl px-4 py-3 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+                  className="w-full border border-stone-200 rounded-xl px-4 py-3 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all text-sm"
                 />
               </div>
             </div>
@@ -725,7 +725,7 @@ export default function EditListingPage() {
                   value={form.rent}
                   onChange={(e) => setField("rent", e.target.value)}
                   placeholder={t.rentPlaceholder}
-                  className="w-full border border-stone-200 rounded-xl px-4 py-3 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+                  className="w-full border border-stone-200 rounded-xl px-4 py-3 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all text-sm"
                 />
               </div>
               <div className="w-36">
@@ -733,7 +733,7 @@ export default function EditListingPage() {
                 <select
                   value={form.currency}
                   onChange={(e) => setField("currency", e.target.value)}
-                  className="w-full border border-stone-200 rounded-xl px-3 py-3 text-stone-900 bg-white focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+                  className="w-full border border-stone-200 rounded-xl px-3 py-3 text-stone-900 bg-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all text-sm"
                 >
                   {CURRENCY_OPTIONS.map((c) => (
                     <option key={c.value} value={c.value}>{c.label}</option>
@@ -762,7 +762,7 @@ export default function EditListingPage() {
                       onClick={() => setField("house_type", ht)}
                       className={`px-4 py-2 rounded-xl font-bold text-sm transition-all ${
                         form.house_type === ht
-                          ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/20"
+                          ? "bg-gradient-to-r from-teal-500 to-amber-500 text-white shadow-md shadow-teal-500/20"
                           : "bg-stone-100 text-stone-600 hover:bg-stone-200"
                       }`}
                     >
@@ -831,7 +831,7 @@ export default function EditListingPage() {
               value={form.description}
               onChange={(e) => setField("description", e.target.value)}
               placeholder={t.descPlaceholder}
-              className="w-full border border-stone-200 rounded-xl px-4 py-3 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm resize-none"
+              className="w-full border border-stone-200 rounded-xl px-4 py-3 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all text-sm resize-none"
             />
           </section>
 
@@ -865,7 +865,7 @@ export default function EditListingPage() {
             whileTap={{ scale: 0.97 }}
             onClick={handleSave}
             disabled={saving || uploadingCount > 0}
-            className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black text-sm px-6 py-4 rounded-2xl shadow-lg shadow-orange-500/30 hover:opacity-90 active:scale-95 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-teal-500 to-amber-500 text-white font-black text-sm px-6 py-4 rounded-2xl shadow-lg shadow-teal-500/30 hover:opacity-90 active:scale-95 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {saving ? (
               <>
