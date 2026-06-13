@@ -1143,6 +1143,11 @@ export default function Home() {
   const videoParallax = useTransform(scrollY, [0, 600], [0, 60]);
   const badgeTopParallax = useTransform(scrollY, [0, 600], [0, -40]);
   const badgeBottomParallax = useTransform(scrollY, [0, 600], [0, 35]);
+  const heroOpacity = useTransform(scrollY, [0, 300], [1, 0]);
+  const heroScale = useTransform(scrollY, [0, 300], [1, 0.92]);
+  const heroBlur = useTransform(scrollY, [0, 250], [0, 8]);
+  const badgeOpacity = useTransform(scrollY, [0, 200], [1, 0]);
+  const heroFilter = useTransform(heroBlur, (v) => `blur(${v}px)`);
 
   // ── Scroll detection ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -2331,6 +2336,7 @@ export default function Home() {
       )}
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
+      <motion.div style={{ opacity: heroOpacity, scale: heroScale, filter: heroFilter }}>
       <section className="relative overflow-hidden bg-white pt-16 mb-0 pb-0">
 
         {/* Decorative blur circles */}
@@ -2792,7 +2798,7 @@ export default function Home() {
               <motion.div
                 variants={{ hidden: { opacity: 0, y: 24, scale: 0.96 }, show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 110, damping: 18 } } }}
                 whileTap={{ scale: 0.94 }}
-                style={{ y: badgeTopParallax }}
+                style={{ y: badgeTopParallax, opacity: badgeOpacity }}
                 className="absolute -top-4 -left-4"
               >
                 <motion.div
@@ -2812,7 +2818,7 @@ export default function Home() {
               <motion.div
                 variants={{ hidden: { opacity: 0, y: 24, scale: 0.96 }, show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 110, damping: 18 } } }}
                 whileTap={{ scale: 0.94 }}
-                style={{ y: badgeBottomParallax }}
+                style={{ y: badgeBottomParallax, opacity: badgeOpacity }}
                 className="absolute -bottom-4 -right-4"
               >
                 <motion.div
@@ -2845,6 +2851,7 @@ export default function Home() {
         </div>
 
       </section>
+      </motion.div>
 
       {/* ── WEEKLY STORIES ────────────────────────────────────────────────────── */}
       {weeklyStories.length > 0 && (
