@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -1137,6 +1137,12 @@ export default function Home() {
     }
     requestAnimationFrame(tick);
   }, []);
+
+  // ── Hero scroll parallax ──────────────────────────────────────────────────
+  const { scrollY } = useScroll();
+  const videoParallax = useTransform(scrollY, [0, 600], [0, 70]);
+  const badgeTopParallax = useTransform(scrollY, [0, 600], [0, -50]);
+  const badgeBottomParallax = useTransform(scrollY, [0, 600], [0, 40]);
 
   // ── Scroll detection ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -2722,11 +2728,11 @@ export default function Home() {
             </button>
           </motion.div>
 
-          {/* ── RIGHT: Sefira promo image ──────────────────────────────────── */}
+          {/* ── RIGHT: Sefira promo video ──────────────────────────────────── */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            initial="hidden"
+            animate="show"
+            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.15, delayChildren: 0.1 } } }}
             className="relative flex items-center justify-center py-8 order-first md:order-last"
           >
             <motion.div
@@ -2739,10 +2745,9 @@ export default function Home() {
 
               {/* Video with shimmer border + particles */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.97 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1.2, ease: "easeOut" }}
+                variants={{ hidden: { opacity: 0, y: 24, scale: 0.96 }, show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 110, damping: 18 } } }}
                 whileHover={{ scale: 1.03 }}
+                style={{ y: videoParallax }}
                 className="relative"
               >
                 {/* Shimmer border wrapper */}
@@ -2785,30 +2790,42 @@ export default function Home() {
 
               {/* Floating badge top-left */}
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 }}
-                className="absolute -top-4 -left-4 bg-white rounded-2xl shadow-xl px-3 py-2 flex items-center gap-2 border border-orange-100"
+                variants={{ hidden: { opacity: 0, y: 24, scale: 0.96 }, show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 110, damping: 18 } } }}
+                whileTap={{ scale: 0.94 }}
+                style={{ y: badgeTopParallax }}
+                className="absolute -top-4 -left-4"
               >
-                <div className="w-8 h-8 bg-green-500 rounded-xl flex items-center justify-center text-white text-sm">✓</div>
-                <div>
-                  <p className="text-xs font-black text-gray-900">{countUsers}K+</p>
-                  <p className="text-[10px] text-gray-400">Verified Users</p>
-                </div>
+                <motion.div
+                  animate={{ y: [0, -7, 0] }}
+                  transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+                  className="bg-white rounded-2xl shadow-xl px-3 py-2 flex items-center gap-2 border border-orange-100"
+                >
+                  <div className="w-8 h-8 bg-green-500 rounded-xl flex items-center justify-center text-white text-sm">✓</div>
+                  <div>
+                    <p className="text-xs font-black text-gray-900">{countUsers}K+</p>
+                    <p className="text-[10px] text-gray-400">Verified Users</p>
+                  </div>
+                </motion.div>
               </motion.div>
 
               {/* Floating badge bottom-right */}
               <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.7 }}
-                className="absolute -bottom-4 -right-4 bg-white rounded-2xl shadow-xl px-3 py-2 flex items-center gap-2 border border-orange-100"
+                variants={{ hidden: { opacity: 0, y: 24, scale: 0.96 }, show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 110, damping: 18 } } }}
+                whileTap={{ scale: 0.94 }}
+                style={{ y: badgeBottomParallax }}
+                className="absolute -bottom-4 -right-4"
               >
-                <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-pink-500 rounded-xl flex items-center justify-center text-white text-sm">⭐</div>
-                <div>
-                  <p className="text-xs font-black text-gray-900">{countStars.toFixed(1)} Stars</p>
-                  <p className="text-[10px] text-gray-400">12K+ Reviews</p>
-                </div>
+                <motion.div
+                  animate={{ y: [0, -7, 0] }}
+                  transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut' }}
+                  className="bg-white rounded-2xl shadow-xl px-3 py-2 flex items-center gap-2 border border-orange-100"
+                >
+                  <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-pink-500 rounded-xl flex items-center justify-center text-white text-sm">⭐</div>
+                  <div>
+                    <p className="text-xs font-black text-gray-900">{countStars.toFixed(1)} Stars</p>
+                    <p className="text-[10px] text-gray-400">12K+ Reviews</p>
+                  </div>
+                </motion.div>
               </motion.div>
 
               {/* Decorative dots */}
