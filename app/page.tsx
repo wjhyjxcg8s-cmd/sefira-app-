@@ -8,6 +8,7 @@ import Link from "next/link";
 import WelcomePopup from "@/app/components/WelcomePopup";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
+import { AuroraBackground } from "@/components/ui/aurora-background";
 import LatestListings from "@/app/components/LatestListings";
 import PopularCities from "@/app/components/PopularCities";
 import PropertyFilters from "@/app/components/PropertyFilters";
@@ -2335,7 +2336,7 @@ export default function Home() {
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
       <motion.div>
-      <section className="relative overflow-hidden bg-white pt-16 mb-0 pb-0">
+      <AuroraBackground className="min-h-screen w-full px-4 pb-8 pt-16 overflow-hidden">
 
         {/* Decorative blur circles */}
         <div className="absolute w-96 h-96 rounded-full bg-teal-50 blur-3xl opacity-60 -top-20 -right-20 pointer-events-none" />
@@ -2844,7 +2845,7 @@ export default function Home() {
 
         </div>
 
-      </section>
+      </AuroraBackground>
       </motion.div>
 
       {/* ── WEEKLY STORIES ────────────────────────────────────────────────────── */}

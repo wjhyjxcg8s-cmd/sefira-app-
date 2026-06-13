@@ -16,6 +16,15 @@
   --background: #fefaf5;
   --foreground: #1c1917;
 
+  --white: #ffffff;
+  --black: #000000;
+  --transparent: transparent;
+  --teal-500: #14b8a6;
+  --teal-400: #2dd4bf;
+  --teal-300: #5eead4;
+  --cyan-300: #67e8f9;
+  --cyan-200: #a5f3fc;
+
   --card: 0 0% 100%;
   --card-foreground: 222.2 84% 4.9%;
   --popover: 0 0% 100%;
@@ -70,6 +79,11 @@
   to   { transform: translateY(calc(-100% - var(--gap))); }
 }
 
+@keyframes aurora {
+  from { background-position: 50% 50%, 50% 50%; }
+  to   { background-position: 350% 50%, 350% 50%; }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -80,6 +94,9 @@
   --animate-gradient: gradient 8s linear infinite;
   --animate-marquee: marquee var(--duration) linear infinite;
   --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  --animate-aurora: aurora 60s linear infinite;
+  --color-white: var(--white);
+  --color-black: var(--black);
 }
 
 body {

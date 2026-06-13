@@ -53,7 +53,8 @@
       "Bash(npx shadcn@latest init --help)",
       "PowerShell(New-Item -ItemType Directory -Path \"e:\\\\sefıra-web\\\\sefira-app\\\\lib\" -Force)",
       "PowerShell(New-Item -ItemType Directory -Path \"e:\\\\sefıra-web\\\\sefira-app\\\\components\\\\ui\" -Force)",
-      "PowerShell(New-Item -ItemType Directory -Path \"e:\\\\sefıra-web\\\\sefira-app\\\\hooks\" -Force)"
+      "PowerShell(New-Item -ItemType Directory -Path \"e:\\\\sefıra-web\\\\sefira-app\\\\hooks\" -Force)",
+      "Bash(git -C \"e:/sefıra-web/sefira-app\" status)"
     ],
     "additionalDirectories": [
       "e:\\sefıra-web\\sefira-app\\app\\api\\admin\\channels",
