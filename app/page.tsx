@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import WelcomePopup from "@/app/components/WelcomePopup";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
+import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
 import LatestListings from "@/app/components/LatestListings";
 import PopularCities from "@/app/components/PopularCities";
 import PropertyFilters from "@/app/components/PropertyFilters";
@@ -2355,15 +2356,11 @@ export default function Home() {
             </span>
 
             {/* Headline */}
-            <h1 className="text-4xl md:text-5xl font-black text-gray-900 leading-tight mt-4">
-              <span>{t.heroLine1}</span>
-              <br />
-              <span className="bg-gradient-to-r from-teal-500 to-pink-500 bg-clip-text text-transparent">
-                {t.heroLine2}
+            <AnimatedGradientText className="text-2xl font-bold px-6 py-2 mt-4">
+              <span className="animate-gradient bg-gradient-to-r from-teal-600 via-cyan-500 to-teal-700 bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent [--bg-size:300%]">
+                {t.heroLine1} {t.heroLine2} {t.heroLine3}
               </span>
-              <br />
-              <span>{t.heroLine3}</span>
-            </h1>
+            </AnimatedGradientText>
 
             {/* Subtitle */}
             <p className="text-gray-500 text-base mt-3 leading-relaxed max-w-xl">
