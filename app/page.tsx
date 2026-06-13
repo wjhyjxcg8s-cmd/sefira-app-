@@ -2685,23 +2685,24 @@ export default function Home() {
               {/* Background glow */}
               <div className="absolute inset-0 bg-gradient-to-br from-orange-300 via-pink-300 to-purple-300 rounded-3xl blur-2xl opacity-40 scale-110" />
 
-              {/* Image */}
+              {/* Video */}
               <motion.div
+                initial={{ opacity: 0, scale: 0.97 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1.2, ease: "easeOut" }}
                 whileHover={{ scale: 1.03 }}
-                transition={{ duration: 0.3 }}
-                className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white"
+                className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white h-[400px]"
               >
-                <Image
-                  src="/images/hero-cat.png"
-                  alt="Sefira"
-                  width={320}
-                  height={400}
-                  className="object-cover w-full"
-                  style={{ objectFit: "cover" }}
-                  priority
+                <video
+                  src="https://ceetzophaybywfuhezhv.supabase.co/storage/v1/object/public/media/IMG_1365.MP4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover rounded-3xl"
                 />
-                {/* Shimmer overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent rounded-3xl pointer-events-none" />
               </motion.div>
 
               {/* Floating badge top-left */}
