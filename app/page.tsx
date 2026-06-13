@@ -1095,10 +1095,31 @@ export default function Home() {
   const langMenuRef = useRef<HTMLDivElement>(null);
   const currencyMenuRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifications, setNotifications] = useState<NotifItem[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [msgNotifications, setMsgNotifications] = useState<MsgNotifItem[]>([]);
+
+  // ── Hero video: resume on tab focus ──────────────────────────────────────
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        video.play().catch(() => {});
+      }
+    };
+    const handleFocus = () => {
+      video.play().catch(() => {});
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, []);
 
   // ── Hero badge counting animation ─────────────────────────────────────────
   const [countUsers, setCountUsers] = useState(0);
@@ -2739,6 +2760,7 @@ export default function Home() {
                   {/* Inner video container */}
                   <div style={{ position: 'relative', borderRadius: '21px', overflow: 'hidden', height: '400px' }}>
                     <video
+                      ref={videoRef}
                       src="https://ceetzophaybywfuhezhv.supabase.co/storage/v1/object/public/media/IMG_1365.MP4"
                       autoPlay
                       loop
