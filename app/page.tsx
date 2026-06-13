@@ -1100,6 +1100,23 @@ export default function Home() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [msgNotifications, setMsgNotifications] = useState<MsgNotifItem[]>([]);
 
+  // ── Hero badge counting animation ─────────────────────────────────────────
+  const [countUsers, setCountUsers] = useState(0);
+  const [countStars, setCountStars] = useState(0);
+  useEffect(() => {
+    const duration = 2000;
+    const start = performance.now();
+    function tick(now: number) {
+      const elapsed = now - start;
+      const t = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setCountUsers(Math.floor(eased * 127));
+      setCountStars(parseFloat((eased * 4.9).toFixed(1)));
+      if (t < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }, []);
+
   // ── Scroll detection ──────────────────────────────────────────────────────
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -1646,6 +1663,20 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900 overflow-x-hidden" dir={lang === "fa" || lang === "ar" ? "rtl" : "ltr"}>
+      <style>{`
+        @keyframes sefira-rotate {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes sefira-kenburns {
+          0% { transform: scale(1); }
+          100% { transform: scale(1.06); }
+        }
+        @keyframes sefira-particle {
+          from { transform: translateY(-12px); }
+          to { transform: translateY(12px); }
+        }
+      `}</style>
 
       {/* ── NAVBAR ────────────────────────────────────────────────────────────── */}
       <nav
@@ -2685,24 +2716,49 @@ export default function Home() {
               {/* Background glow */}
               <div className="absolute inset-0 bg-gradient-to-br from-orange-300 via-pink-300 to-purple-300 rounded-3xl blur-2xl opacity-40 scale-110" />
 
-              {/* Video */}
+              {/* Video with shimmer border + particles */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.97 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
                 whileHover={{ scale: 1.03 }}
-                className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white h-[400px]"
+                className="relative"
               >
-                <video
-                  src="https://ceetzophaybywfuhezhv.supabase.co/storage/v1/object/public/media/IMG_1365.MP4"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover rounded-3xl"
-                />
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent rounded-3xl pointer-events-none" />
+                {/* Shimmer border wrapper */}
+                <div style={{ position: 'relative', padding: '3px', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
+                  {/* Rotating gradient for animated border */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '-50%',
+                    left: '-50%',
+                    width: '200%',
+                    height: '200%',
+                    background: 'conic-gradient(from 0deg, #f97316, #ec4899, #8b5cf6, #3b82f6, #f97316)',
+                    animation: 'sefira-rotate 4s linear infinite',
+                  }} />
+                  {/* Inner video container */}
+                  <div style={{ position: 'relative', borderRadius: '21px', overflow: 'hidden', height: '400px' }}>
+                    <video
+                      src="https://ceetzophaybywfuhezhv.supabase.co/storage/v1/object/public/media/IMG_1365.MP4"
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover"
+                      style={{ animation: 'sefira-kenburns 5s ease-in-out alternate infinite' }}
+                    />
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
+                  </div>
+                </div>
+
+                {/* Floating particles */}
+                <div style={{ position: 'absolute', top: '-8px',  left: '-8px',   width: '8px', height: '8px', backgroundColor: '#fb923c', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.2s ease-in-out alternate infinite' }} />
+                <div style={{ position: 'absolute', top: '-8px',  right: '-8px',  width: '8px', height: '8px', backgroundColor: '#f472b6', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.8s ease-in-out alternate infinite 0.4s' }} />
+                <div style={{ position: 'absolute', top: '45%',   left: '-10px',  width: '8px', height: '8px', backgroundColor: '#a78bfa', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.5s ease-in-out alternate infinite 0.8s' }} />
+                <div style={{ position: 'absolute', top: '45%',   right: '-10px', width: '8px', height: '8px', backgroundColor: '#60a5fa', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 3.0s ease-in-out alternate infinite 1.2s' }} />
+                <div style={{ position: 'absolute', bottom: '-8px', left: '-8px', width: '8px', height: '8px', backgroundColor: '#fb923c', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.6s ease-in-out alternate infinite 0.6s' }} />
+                <div style={{ position: 'absolute', bottom: '-8px', right: '-8px',width: '8px', height: '8px', backgroundColor: '#ec4899', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.3s ease-in-out alternate infinite 1.0s' }} />
               </motion.div>
 
               {/* Floating badge top-left */}
@@ -2714,7 +2770,7 @@ export default function Home() {
               >
                 <div className="w-8 h-8 bg-green-500 rounded-xl flex items-center justify-center text-white text-sm">✓</div>
                 <div>
-                  <p className="text-xs font-black text-gray-900">127K+</p>
+                  <p className="text-xs font-black text-gray-900">{countUsers}K+</p>
                   <p className="text-[10px] text-gray-400">Verified Users</p>
                 </div>
               </motion.div>
@@ -2728,7 +2784,7 @@ export default function Home() {
               >
                 <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-pink-500 rounded-xl flex items-center justify-center text-white text-sm">⭐</div>
                 <div>
-                  <p className="text-xs font-black text-gray-900">4.9 Stars</p>
+                  <p className="text-xs font-black text-gray-900">{countStars.toFixed(1)} Stars</p>
                   <p className="text-[10px] text-gray-400">12K+ Reviews</p>
                 </div>
               </motion.div>
