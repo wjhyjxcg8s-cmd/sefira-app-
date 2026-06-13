@@ -483,7 +483,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
   const lbl = cardLabels[lang as Lang] ?? cardLabels.tr;
 
   return (
-    <section className="max-w-7xl mx-auto px-5 mt-6 mb-14">
+    <section className="max-w-7xl mx-auto px-5 mt-6 mb-0">
       <div className="flex flex-col items-center mb-6">
         <h2 className="text-2xl font-black text-gray-900">{titles[lang as Lang]}</h2>
         <p className="text-sm text-gray-400 mt-1">{subtitles[lang as Lang]}</p>

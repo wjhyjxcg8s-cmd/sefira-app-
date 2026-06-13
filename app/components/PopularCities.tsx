@@ -355,7 +355,7 @@ export default function PopularCities({ lang, onCityClick }: PopularCitiesProps)
   const [istanbul, washingtonDc, newYork, paris, barcelona, berlin, dubai, moscow, tehran, manchester, london, frankfurt] = CITIES;
 
   return (
-    <section ref={ref} className="max-w-7xl mx-auto px-5 py-20">
+    <section ref={ref} className="max-w-7xl mx-auto px-5 pt-10 pb-20">
 
       {/* Section header */}
       <div className="text-center mb-14">
