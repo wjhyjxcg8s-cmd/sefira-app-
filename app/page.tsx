@@ -1140,9 +1140,9 @@ export default function Home() {
 
   // ── Hero scroll parallax ──────────────────────────────────────────────────
   const { scrollY } = useScroll();
-  const videoParallax = useTransform(scrollY, [0, 600], [0, 70]);
-  const badgeTopParallax = useTransform(scrollY, [0, 600], [0, -50]);
-  const badgeBottomParallax = useTransform(scrollY, [0, 600], [0, 40]);
+  const videoParallax = useTransform(scrollY, [0, 600], [0, 60]);
+  const badgeTopParallax = useTransform(scrollY, [0, 600], [0, -40]);
+  const badgeBottomParallax = useTransform(scrollY, [0, 600], [0, 35]);
 
   // ── Scroll detection ──────────────────────────────────────────────────────
   useEffect(() => {
