@@ -8,8 +8,8 @@ import Link from "next/link";
 import WelcomePopup from "@/app/components/WelcomePopup";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
+import { Marquee } from "@/components/ui/marquee";
 import LatestListings from "@/app/components/LatestListings";
-import PopularCities from "@/app/components/PopularCities";
 import PropertyFilters from "@/app/components/PropertyFilters";
 import AuthModal from "@/app/components/AuthModal";
 import OnboardingFlow from "@/app/components/OnboardingFlow";
@@ -955,6 +955,19 @@ const trendingCities = [
   { name: "Barcelona", country: "Spain",       listings: "1,234", growth: "+15%", glow: "bg-yellow-500/10", border: "border-yellow-500/20", emoji: "🏖️" },
   { name: "Amsterdam", country: "Netherlands", listings: "987",   growth: "+12%", glow: "bg-red-500/10",    border: "border-red-500/20",    emoji: "🚲" },
   { name: "London",    country: "UK",          listings: "3,201", growth: "+8%",  glow: "bg-indigo-500/10", border: "border-indigo-500/20", emoji: "🎡" },
+];
+
+const marqueeCities = [
+  { name: "İstanbul", flag: "🇹🇷" },
+  { name: "Tehran",   flag: "🇮🇷" },
+  { name: "Berlin",   flag: "🇩🇪" },
+  { name: "Paris",    flag: "🇫🇷" },
+  { name: "Moscow",   flag: "🇷🇺" },
+  { name: "Dubai",    flag: "🇦🇪" },
+  { name: "London",   flag: "🇬🇧" },
+  { name: "Ankara",   flag: "🇹🇷" },
+  { name: "Amsterdam",flag: "🇳🇱" },
+  { name: "Vienna",   flag: "🇦🇹" },
 ];
 
 
@@ -3169,7 +3182,24 @@ export default function Home() {
       </div>
 
       {/* ── POPULAR CITIES ────────────────────────────────────────────────────── */}
-      <PopularCities lang={lang} onCityClick={handleCityClick} />
+      <section className="py-10 px-4">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-black text-gray-900">{t.trendingH2}</h2>
+          <p className="text-gray-500 text-sm mt-1">{t.trendingP}</p>
+        </div>
+        <Marquee pauseOnHover className="[--duration:30s]">
+          {marqueeCities.map((city) => (
+            <div
+              key={city.name}
+              onClick={() => handleCityClick(city.name)}
+              className="cursor-pointer flex items-center gap-2 rounded-full border border-teal-100 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:border-teal-400 hover:text-teal-600 hover:shadow-md transition-all mx-2"
+            >
+              <span className="text-lg">{city.flag}</span>
+              <span>{city.name}</span>
+            </div>
+          ))}
+        </Marquee>
+      </section>
 
       {/* ── SOCIAL MEDIA ──────────────────────────────────────────────────────── */}
       <section className="py-10 px-4">
