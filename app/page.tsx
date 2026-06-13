@@ -1140,14 +1140,12 @@ export default function Home() {
 
   // ── Hero scroll parallax ──────────────────────────────────────────────────
   const { scrollY } = useScroll();
-  const videoParallax = useTransform(scrollY, [0, 600], [0, 60]);
-  const badgeTopParallax = useTransform(scrollY, [0, 600], [0, -40]);
-  const badgeBottomParallax = useTransform(scrollY, [0, 600], [0, 35]);
-  const heroOpacity = useTransform(scrollY, [0, 300], [1, 0]);
-  const heroScale = useTransform(scrollY, [0, 300], [1, 0.92]);
-  const heroBlur = useTransform(scrollY, [0, 250], [0, 8]);
-  const badgeOpacity = useTransform(scrollY, [0, 200], [1, 0]);
-  const heroFilter = useTransform(heroBlur, (v) => `blur(${v}px)`);
+  const videoParallax = useTransform(scrollY, [0, 600], [0, 30]);
+  const badgeTopParallax = useTransform(scrollY, [0, 600], [0, -20]);
+  const badgeBottomParallax = useTransform(scrollY, [0, 600], [0, 18]);
+  const heroOpacity = useTransform(scrollY, [0, 500], [1, 0.7]);
+  const heroScale = useTransform(scrollY, [0, 500], [1, 0.97]);
+  const badgeOpacity = useTransform(scrollY, [0, 400], [1, 0.5]);
 
   // ── Scroll detection ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -2336,7 +2334,7 @@ export default function Home() {
       )}
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
-      <motion.div style={{ opacity: heroOpacity, scale: heroScale, filter: heroFilter }}>
+      <motion.div style={{ opacity: heroOpacity, scale: heroScale }}>
       <section className="relative overflow-hidden bg-white pt-16 mb-0 pb-0">
 
         {/* Decorative blur circles */}
