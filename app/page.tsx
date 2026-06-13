@@ -2127,7 +2127,7 @@ export default function Home() {
               <motion.button
                 whileHover={{ x: 4 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => { setProfileMenuOpen(false); router.push("/saved-listings"); }}
+                onClick={() => { setProfileMenuOpen(false); router.push("/saved"); }}
                 className="drawer-item w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-150 group hover:bg-gray-50 active:scale-[0.97] active:bg-gray-100"
                 style={{ animationDelay: '40ms' }}
               >
@@ -2975,10 +2975,14 @@ export default function Home() {
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={thumbnail} alt="" className="absolute inset-0 w-full h-full object-cover" />
                     ) : (
-                      <div className={`absolute inset-0 flex items-center justify-center ${isHasPlace ? "bg-gradient-to-br from-orange-400 to-amber-500" : "bg-gradient-to-br from-blue-400 to-indigo-500"}`}>
-                        <div className="w-12 h-12 rounded-full bg-white/25 flex items-center justify-center text-2xl">
-                          {isHasPlace ? "🏠" : "🔍"}
-                        </div>
+                      <div className={`absolute inset-0 flex items-center justify-center ${isHasPlace ? "bg-gradient-to-br from-orange-400 to-amber-500" : "bg-gradient-to-br from-violet-500 to-blue-500"}`}>
+                        {isHasPlace ? (
+                          <div className="w-12 h-12 rounded-full bg-white/25 flex items-center justify-center text-2xl">🏠</div>
+                        ) : (
+                          <svg viewBox="0 0 24 24" fill="white" className="w-12 h-12 opacity-80">
+                            <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                          </svg>
+                        )}
                       </div>
                     )}
                     <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
