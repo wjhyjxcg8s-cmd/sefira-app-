@@ -3027,11 +3027,11 @@ export default function Home() {
                     </div>
 
                     {/* Bottom row: action buttons */}
-                    <div className="flex items-center gap-1.5 mt-3">
+                    <div className="flex flex-wrap items-center gap-2 mt-3">
                       <Link
                         href={`/listings/${rec.id}`}
                         onClick={() => { try { sessionStorage.setItem("sefira-scroll", String(window.scrollY)); } catch { /* ignore */ } }}
-                        className="flex-1 flex items-center justify-center gap-1 bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium px-3 py-1.5 rounded-xl transition-colors"
+                        className="flex-1 flex items-center justify-center gap-1 bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium px-3 py-2 rounded-xl transition-colors"
                       >
                         💬 {({ tr: "Mesaj Gönder", en: "Message", fa: "ارسال پیام", ar: "إرسال رسالة", de: "Nachricht", ru: "Написать" } as Record<string, string>)[lang] ?? "Message"}
                       </Link>
@@ -3041,9 +3041,11 @@ export default function Home() {
                           setSavedRecIds(next);
                           try { localStorage.setItem("sefira-saved", JSON.stringify(next)); } catch { /* ignore */ }
                         }}
-                        className={`flex items-center justify-center px-3 py-1.5 rounded-xl border text-xs transition-colors ${isSaved ? "bg-orange-500 border-orange-500 text-white" : "border-stone-300 text-stone-500 hover:border-orange-400 hover:text-orange-500"}`}
+                        className={`flex items-center justify-center gap-1 px-3 py-2 rounded-xl border-2 text-xs font-medium transition-colors ${isSaved ? "bg-orange-500 border-orange-500 text-white" : "border-orange-400 text-orange-500 bg-white"}`}
                       >
-                        🔖
+                        🔖 {isSaved
+                          ? ({ tr: "Kaydedildi", en: "Saved", fa: "ذخیره شد", ar: "محفوظ", de: "Gespeichert", ru: "Сохранено" } as Record<string, string>)[lang] ?? "Saved"
+                          : ({ tr: "Kaydet", en: "Save", fa: "ذخیره", ar: "حفظ", de: "Speichern", ru: "Сохранить" } as Record<string, string>)[lang] ?? "Save"}
                       </button>
                       <button
                         onClick={() => {
@@ -3052,9 +3054,9 @@ export default function Home() {
                           try { sessionStorage.setItem("sefira-dismissed", JSON.stringify(next)); } catch { /* ignore */ }
                           setSmartRecs((prev) => prev.filter((r) => r.id !== rec.id));
                         }}
-                        className="flex items-center justify-center px-2 py-1.5 rounded-xl border border-stone-200 text-stone-400 hover:text-stone-600 text-xs transition-colors"
+                        className="flex items-center justify-center gap-1 px-3 py-2 rounded-xl border border-stone-200 bg-stone-100 text-stone-500 text-xs font-medium transition-colors hover:bg-stone-200"
                       >
-                        ✕
+                        ✕ {({ tr: "Geç", en: "Skip", fa: "رد کن", ar: "تخطى", de: "Überspringen", ru: "Пропустить" } as Record<string, string>)[lang] ?? "Skip"}
                       </button>
                     </div>
                   </div>
