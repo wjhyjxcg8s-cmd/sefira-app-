@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import WelcomePopup from "@/app/components/WelcomePopup";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 import LatestListings from "@/app/components/LatestListings";
 import PopularCities from "@/app/components/PopularCities";
 import PropertyFilters from "@/app/components/PropertyFilters";
@@ -3565,16 +3566,16 @@ export default function Home() {
 
       {/* ── Mobile: fixed bottom İlan Ver bar ─────────────────────────────── */}
       <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 px-4 py-3 bg-white/95 backdrop-blur-xl border-t border-stone-200 shadow-2xl shadow-stone-900/10">
-        <button
+        <ShimmerButton
           onClick={handleCreateListing}
-          className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-teal-500 to-amber-500 text-white font-black text-sm px-6 py-4 rounded-2xl shadow-lg shadow-teal-500/30 active:scale-95 transition-all duration-200"
+          className="w-full text-lg font-semibold gap-2"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4">
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
           {t.ilanVer}
-        </button>
+        </ShimmerButton>
       </div>
 
       {/* ── ONBOARDING FLOW ──────────────────────────────────────────────────── */}

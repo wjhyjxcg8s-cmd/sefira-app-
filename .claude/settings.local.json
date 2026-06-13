@@ -43,7 +43,17 @@
       "Bash(Start-Sleep -Seconds 5)",
       "Bash(Get-Content \"C:\\\\Users\\\\pascal\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\e--sef-ra-web-sefira-app\\\\957ce10d-f292-4914-a5dd-ad9557923157\\\\tasks\\\\bmmh90225.output\" -Tail 40)",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(npx magicui-cli@latest init --help)",
+      "Bash(npx magicui-cli@latest init)",
+      "Bash(POSTHOG_API_KEY=disabled printf '\\\\n\\\\nteal\\\\ny\\\\n')",
+      "Bash(npm view *)",
+      "Bash(npx magicui-cli@0.1.5 init)",
+      "Bash(npx shadcn@latest init --style default --base-color teal --css-variables)",
+      "Bash(npx shadcn@latest init --help)",
+      "PowerShell(New-Item -ItemType Directory -Path \"e:\\\\sefıra-web\\\\sefira-app\\\\lib\" -Force)",
+      "PowerShell(New-Item -ItemType Directory -Path \"e:\\\\sefıra-web\\\\sefira-app\\\\components\\\\ui\" -Force)",
+      "PowerShell(New-Item -ItemType Directory -Path \"e:\\\\sefıra-web\\\\sefira-app\\\\hooks\" -Force)"
     ],
     "additionalDirectories": [
       "e:\\sefıra-web\\sefira-app\\app\\api\\admin\\channels",
