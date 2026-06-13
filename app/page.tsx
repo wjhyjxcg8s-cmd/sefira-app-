@@ -1380,22 +1380,6 @@ export default function Home() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
-  // ── Fetch avatars for needs_place smart recs ─────────────────────────────
-  useEffect(() => {
-    const ids = smartRecs.filter((r) => r.type === "needs_place").map((r) => r.user_id).filter(Boolean);
-    if (ids.length === 0) return;
-    supabase
-      .from("profiles")
-      .select("user_id, avatar_url")
-      .in("user_id", ids)
-      .then(({ data }) => {
-        if (!data) return;
-        const map: Record<string, string | null> = {};
-        for (const p of data) map[p.user_id] = p.avatar_url ?? null;
-        setRecAvatarMap(map);
-      });
-  }, [smartRecs]);
-
   // ── City filter for LatestListings ───────────────────────────────────────
   const [filterCity, setFilterCity] = useState<string | null>(null);
   const listingsRef = useRef<HTMLDivElement>(null);
@@ -1421,6 +1405,22 @@ export default function Home() {
   const [savedRecIds, setSavedRecIds] = useState<string[]>([]);
   const [dismissedRecIds, setDismissedRecIds] = useState<string[]>([]);
   const [recAvatarMap, setRecAvatarMap] = useState<Record<string, string | null>>({});
+
+  // ── Fetch avatars for needs_place smart recs ─────────────────────────────
+  useEffect(() => {
+    const ids = smartRecs.filter((r) => r.type === "needs_place").map((r) => r.user_id).filter(Boolean);
+    if (ids.length === 0) return;
+    supabase
+      .from("profiles")
+      .select("user_id, avatar_url")
+      .in("user_id", ids)
+      .then(({ data }) => {
+        if (!data) return;
+        const map: Record<string, string | null> = {};
+        for (const p of data) map[p.user_id] = p.avatar_url ?? null;
+        setRecAvatarMap(map);
+      });
+  }, [smartRecs]);
 
   // ── Unread messages badge ─────────────────────────────────────────────────
   const [unreadSupportCount, setUnreadSupportCount] = useState(0);
