@@ -2926,9 +2926,10 @@ export default function Home() {
 
       {/* ── SMART RECOMMENDATIONS ─────────────────────────────────────────────── */}
       {smartRecs.length > 0 && (
-        <section className="py-10 px-4 bg-white border-b border-stone-100">
-          <div className="max-w-2xl mx-auto">
-            <div className="mb-6">
+        <section className="py-10 bg-white border-b border-stone-100">
+          {/* Header */}
+          <div className="max-w-2xl mx-auto px-4 mb-5 flex items-end justify-between">
+            <div>
               <h2 className="text-2xl font-black text-stone-900">
                 {({ tr: "✨ Senin İçin Seçilenler", en: "✨ Picked For You", fa: "✨ پیشنهاد ویژه برای شما", ar: "✨ مختارة لك", de: "✨ Für dich ausgewählt", ru: "✨ Подобрано для вас" } as Record<string, string>)[lang] ?? "✨ Picked For You"}
               </h2>
@@ -2936,84 +2937,109 @@ export default function Home() {
                 {({ tr: "Profiline göre en uygun ilanlar", en: "Best matches based on your profile", fa: "بهترین آگهی‌ها بر اساس پروفایل شما", ar: "أفضل الإعلانات بناءً على ملفك", de: "Beste Treffer basierend auf deinem Profil", ru: "Лучшие объявления по вашему профилю" } as Record<string, string>)[lang] ?? "Best matches based on your profile"}
               </p>
             </div>
-            <div className="flex flex-col gap-3">
-              {smartRecs.map((rec) => {
-                const isSaved = savedRecIds.includes(rec.id);
-                const flagEmoji = rec.country_code && rec.country_code.length === 2
-                  ? String.fromCodePoint(...(rec.country_code.toUpperCase().split("").map((c: string) => 0x1F1E6 + c.charCodeAt(0) - 65)))
-                  : "🌍";
-                const thumbnail = rec.photos?.[0] ?? null;
-                const isHasPlace = rec.type === "has_place";
-                const summary = isHasPlace
-                  ? [rec.house_type, rec.rooms ? `${rec.rooms} oda` : null].filter(Boolean).join(" · ")
-                  : [rec.seeker_age, rec.occupation].filter(Boolean).join(" · ");
-                const priceDisplay = isHasPlace
-                  ? rec.rent ? `${rec.rent} ${rec.currency ?? ""}` : null
-                  : rec.max_budget ? `max ${rec.max_budget} ${rec.currency ?? ""}` : null;
-                return (
-                  <div key={rec.id} className="bg-stone-50 border border-stone-200 rounded-2xl p-3 flex items-center gap-3">
-                    <div className="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-stone-200">
-                      {thumbnail ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={thumbnail} alt="" className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-3xl">
+            {smartRecs.length > 3 && (
+              <div className="flex items-center gap-1.5 pb-1 flex-shrink-0">
+                {smartRecs.map((_, i) => (
+                  <div key={i} className={`rounded-full transition-all duration-200 ${i === 0 ? "w-4 h-1.5 bg-orange-500" : "w-1.5 h-1.5 bg-stone-300"}`} />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Horizontal scroll track */}
+          <div
+            className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 px-4"
+            style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+          >
+            {smartRecs.map((rec) => {
+              const isSaved = savedRecIds.includes(rec.id);
+              const flagEmoji = rec.country_code && rec.country_code.length === 2
+                ? String.fromCodePoint(...(rec.country_code.toUpperCase().split("").map((c: string) => 0x1F1E6 + c.charCodeAt(0) - 65)))
+                : "🌍";
+              const thumbnail = rec.photos?.[0] ?? null;
+              const isHasPlace = rec.type === "has_place";
+              const summary = isHasPlace
+                ? [rec.house_type, rec.rooms ? `${rec.rooms} oda` : null].filter(Boolean).join(" · ")
+                : [rec.seeker_age, rec.occupation].filter(Boolean).join(" · ");
+              const priceDisplay = isHasPlace
+                ? rec.rent ? `${rec.rent} ${rec.currency ?? ""}` : null
+                : rec.max_budget ? `max ${rec.max_budget} ${rec.currency ?? ""}` : null;
+              return (
+                <div
+                  key={rec.id}
+                  className="snap-start w-72 flex-shrink-0 bg-white rounded-2xl shadow-md border border-stone-100 overflow-hidden flex active:scale-[0.99] transition-transform duration-150"
+                >
+                  {/* Left: photo or gradient */}
+                  <div className="w-28 flex-shrink-0 relative min-h-[140px]">
+                    {isHasPlace && thumbnail ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={thumbnail} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                    ) : (
+                      <div className={`absolute inset-0 flex items-center justify-center ${isHasPlace ? "bg-gradient-to-br from-orange-400 to-amber-500" : "bg-gradient-to-br from-blue-400 to-indigo-500"}`}>
+                        <div className="w-12 h-12 rounded-full bg-white/25 flex items-center justify-center text-2xl">
                           {isHasPlace ? "🏠" : "🔍"}
                         </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap mb-1">
+                      </div>
+                    )}
+                    <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+                  </div>
+
+                  {/* Right: info */}
+                  <div className="flex-1 p-3 flex flex-col justify-between min-w-0">
+                    <div>
+                      {/* Top row: city + badge */}
+                      <div className="flex items-center gap-1.5 flex-wrap mb-1">
                         <span className="text-sm font-bold text-stone-800 truncate">
                           {flagEmoji} {rec.city}
                         </span>
-                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${isHasPlace ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"}`}>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full text-white flex-shrink-0 ${isHasPlace ? "bg-emerald-500" : "bg-blue-500"}`}>
                           {listingTypeTrans[rec.type]?.[lang] ?? rec.type}
                         </span>
-                        {priceDisplay && (
-                          <span className="text-xs font-bold text-orange-600">{priceDisplay}</span>
-                        )}
                       </div>
-                      {summary && (
-                        <p className="text-xs text-stone-500 truncate">{summary}</p>
+                      {/* Middle row: price + summary */}
+                      {priceDisplay && (
+                        <p className="text-xs font-bold text-orange-500">{priceDisplay}</p>
                       )}
-                      <div className="flex items-center gap-2 mt-2 flex-wrap">
-                        <Link
-                          href={`/listings/${rec.id}`}
-                          onClick={() => { try { sessionStorage.setItem("sefira-scroll", String(window.scrollY)); } catch { /* ignore */ } }}
-                          className="flex items-center gap-1 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-colors"
-                        >
-                          💬 {({ tr: "Mesaj Gönder", en: "Message", fa: "ارسال پیام", ar: "إرسال رسالة", de: "Nachricht", ru: "Написать" } as Record<string, string>)[lang] ?? "Message"}
-                        </Link>
-                        <button
-                          onClick={() => {
-                            const next = isSaved ? savedRecIds.filter((x: string) => x !== rec.id) : [...savedRecIds, rec.id];
-                            setSavedRecIds(next);
-                            try { localStorage.setItem("sefira-saved", JSON.stringify(next)); } catch { /* ignore */ }
-                          }}
-                          className={`flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-lg border transition-colors ${isSaved ? "bg-orange-50 border-orange-400 text-orange-600" : "border-stone-300 text-stone-600 hover:border-orange-300 hover:text-orange-600"}`}
-                        >
-                          🔖 {isSaved
-                            ? ({ tr: "Kaydedildi", en: "Saved", fa: "ذخیره شد", ar: "محفوظ", de: "Gespeichert", ru: "Сохранено" } as Record<string, string>)[lang] ?? "Saved"
-                            : ({ tr: "Kaydet", en: "Save", fa: "ذخیره", ar: "حفظ", de: "Speichern", ru: "Сохранить" } as Record<string, string>)[lang] ?? "Save"}
-                        </button>
-                        <button
-                          onClick={() => {
-                            const next = [...dismissedRecIds, rec.id];
-                            setDismissedRecIds(next);
-                            try { sessionStorage.setItem("sefira-dismissed", JSON.stringify(next)); } catch { /* ignore */ }
-                            setSmartRecs((prev) => prev.filter((r) => r.id !== rec.id));
-                          }}
-                          className="flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-lg border border-stone-200 text-stone-400 hover:text-stone-600 transition-colors"
-                        >
-                          ✕ {({ tr: "Geç", en: "Skip", fa: "رد کن", ar: "تخطَّ", de: "Überspringen", ru: "Пропустить" } as Record<string, string>)[lang] ?? "Skip"}
-                        </button>
-                      </div>
+                      {summary && (
+                        <p className="text-xs text-stone-400 truncate mt-0.5">{summary}</p>
+                      )}
+                    </div>
+
+                    {/* Bottom row: action buttons */}
+                    <div className="flex items-center gap-1.5 mt-3">
+                      <Link
+                        href={`/listings/${rec.id}`}
+                        onClick={() => { try { sessionStorage.setItem("sefira-scroll", String(window.scrollY)); } catch { /* ignore */ } }}
+                        className="flex-1 flex items-center justify-center gap-1 bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium px-3 py-1.5 rounded-xl transition-colors"
+                      >
+                        💬 {({ tr: "Mesaj Gönder", en: "Message", fa: "ارسال پیام", ar: "إرسال رسالة", de: "Nachricht", ru: "Написать" } as Record<string, string>)[lang] ?? "Message"}
+                      </Link>
+                      <button
+                        onClick={() => {
+                          const next = isSaved ? savedRecIds.filter((x: string) => x !== rec.id) : [...savedRecIds, rec.id];
+                          setSavedRecIds(next);
+                          try { localStorage.setItem("sefira-saved", JSON.stringify(next)); } catch { /* ignore */ }
+                        }}
+                        className={`flex items-center justify-center px-3 py-1.5 rounded-xl border text-xs transition-colors ${isSaved ? "bg-orange-500 border-orange-500 text-white" : "border-stone-300 text-stone-500 hover:border-orange-400 hover:text-orange-500"}`}
+                      >
+                        🔖
+                      </button>
+                      <button
+                        onClick={() => {
+                          const next = [...dismissedRecIds, rec.id];
+                          setDismissedRecIds(next);
+                          try { sessionStorage.setItem("sefira-dismissed", JSON.stringify(next)); } catch { /* ignore */ }
+                          setSmartRecs((prev) => prev.filter((r) => r.id !== rec.id));
+                        }}
+                        className="flex items-center justify-center px-2 py-1.5 rounded-xl border border-stone-200 text-stone-400 hover:text-stone-600 text-xs transition-colors"
+                      >
+                        ✕
+                      </button>
                     </div>
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              );
+            })}
           </div>
         </section>
       )}
