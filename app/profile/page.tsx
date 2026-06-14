@@ -530,6 +530,13 @@ export default function ProfilePage() {
       height
     );
     setCrop(c);
+    setCompletedCrop({
+      unit: "px",
+      x: (c.x / 100) * width,
+      y: (c.y / 100) * height,
+      width: (c.width / 100) * width,
+      height: (c.height / 100) * height,
+    });
   };
 
   const handleCropSave = async () => {
@@ -553,10 +560,10 @@ export default function ProfilePage() {
       completedCrop.width,
       completedCrop.height
     );
+    setSaving(true);
+    setError(null);
     canvas.toBlob(async (blob) => {
-      if (!blob) return;
-      setSaving(true);
-      setError(null);
+      if (!blob) { setSaving(false); return; }
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       if (!currentUser) { setSaving(false); return; }
       const fd = new FormData();
