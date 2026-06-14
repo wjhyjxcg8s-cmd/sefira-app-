@@ -1640,13 +1640,13 @@ export default function AdminPage() {
         }`}
         style={{
           width: 256,
-          backgroundColor: "#1e1e2e",
-          boxShadow: "2px 0 24px rgba(0,0,0,0.35)",
+          backgroundColor: "white",
+          boxShadow: "2px 0 16px rgba(0,0,0,0.08)",
           transition: "transform 0.28s cubic-bezier(0.4,0,0.2,1)",
         }}
       >
         {/* Logo area */}
-        <div className="p-5 flex items-center gap-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+        <div className="p-5 border-b border-gray-100 flex items-center gap-3">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-base font-black shrink-0"
             style={{ backgroundColor: "#F97316" }}
@@ -1654,8 +1654,8 @@ export default function AdminPage() {
             S
           </div>
           <div className="min-w-0">
-            <p className="font-bold text-white text-sm leading-tight">Sefira Admin</p>
-            <p className="text-xs leading-tight mt-0.5" style={{ color: "#64748b" }}>Management Panel</p>
+            <p className="font-bold text-gray-800 text-sm leading-tight">Sefira Admin</p>
+            <p className="text-xs text-gray-400 leading-tight mt-0.5">Management Panel</p>
           </div>
         </div>
 
@@ -1673,19 +1673,19 @@ export default function AdminPage() {
                 className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-left"
                 style={{
                   backgroundColor: active ? "#F97316" : "transparent",
-                  color: active ? "white" : "#94a3b8",
+                  color: active ? "white" : "#374151",
                   boxShadow: active ? "0 2px 8px rgba(249,115,22,0.3)" : "none",
                 }}
                 onMouseEnter={(e) => {
                   if (!active) {
-                    e.currentTarget.style.backgroundColor = "rgba(249,115,22,0.12)";
+                    e.currentTarget.style.backgroundColor = "#ffedd5";
                     e.currentTarget.style.color = "#F97316";
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!active) {
                     e.currentTarget.style.backgroundColor = "transparent";
-                    e.currentTarget.style.color = "#94a3b8";
+                    e.currentTarget.style.color = "#374151";
                   }
                 }}
               >
@@ -1697,17 +1697,17 @@ export default function AdminPage() {
         </nav>
 
         {/* Bottom user info */}
-        <div className="p-4" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+        <div className="p-4 border-t border-gray-100">
           <div className="flex items-center gap-3">
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-              style={{ backgroundColor: "#F97316", color: "white" }}
+              style={{ backgroundColor: "#ffedd5", color: "#F97316" }}
             >
               A
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-semibold truncate" style={{ color: "#e2e8f0" }}>Admin</p>
-              <p className="text-xs truncate" style={{ color: "#64748b" }}>{user.email}</p>
+              <p className="text-xs font-semibold text-gray-700 truncate">Admin</p>
+              <p className="text-xs text-gray-400 truncate">{user.email}</p>
             </div>
           </div>
         </div>
