@@ -904,7 +904,7 @@ function MessagesPageContent() {
           className={`${
             mobileView === "list" ? "hidden" : "flex"
           } md:flex flex-col flex-1 overflow-hidden`}
-          style={{ background: "linear-gradient(135deg, #fafafa 0%, #ccfbf1 100%)" }}
+          style={{ background: "linear-gradient(135deg, #fafafa 0%, #ffedd5 100%)" }}
         >
           {isUserConv ? (
             /* ── Peer chat ── */

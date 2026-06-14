@@ -248,7 +248,7 @@ export default function CountrySelect({ value, onChange, lang = 'tr', placeholde
                   fontSize: '15px',
                   textAlign: isRtl ? 'right' : 'left',
                 }}
-                onMouseEnter={e => (e.currentTarget.style.background = '#ccfbf1')}
+                onMouseEnter={e => (e.currentTarget.style.background = '#ffedd5')}
                 onMouseLeave={e => (e.currentTarget.style.background = 'white')}
               >
                 {isPriority ? '⭐ ' : ''}{country}

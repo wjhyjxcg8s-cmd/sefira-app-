@@ -33,7 +33,7 @@ const CITIES = [
     countryRu: "США",
     listings: "1,456",
     image: "https://images.unsplash.com/photo-1501466044931-62695aada8e9?auto=format&fit=crop&w=800&q=80",
-    accent: "from-blue-500 to-cyan-600",
+    accent: "from-blue-500 to-amber-600",
   },
   {
     key: "new-york",

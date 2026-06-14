@@ -206,7 +206,7 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
                 padding: '4px 8px',
                 borderRadius: '50px',
                 border: currentLang === l.code ? '2px solid #F97316' : '2px solid #eee',
-                background: currentLang === l.code ? '#ccfbf1' : 'white',
+                background: currentLang === l.code ? '#ffedd5' : 'white',
                 cursor: 'pointer',
                 fontSize: '12px',
                 fontWeight: currentLang === l.code ? '700' : '500',
@@ -240,7 +240,7 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
         {/* Badge */}
         <div style={{
           display: 'inline-block',
-          background: 'linear-gradient(135deg, #F97316, #14B8A6)',
+          background: 'linear-gradient(135deg, #F97316, #fb923c)',
           color: 'white',
           padding: '3px 12px',
           borderRadius: '50px',
@@ -285,7 +285,7 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
           onClick={handleRegister}
           style={{
             width: '100%',
-            background: 'linear-gradient(135deg, #F97316, #0F766E)',
+            background: 'linear-gradient(135deg, #F97316, #ea580c)',
             color: 'white',
             border: 'none',
             borderRadius: '10px',

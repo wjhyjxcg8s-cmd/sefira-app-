@@ -184,7 +184,7 @@ export default function StoriesPage() {
               }}
               onMouseEnter={(e) => {
                 if (!item.active) {
-                  e.currentTarget.style.backgroundColor = "#ccfbf1";
+                  e.currentTarget.style.backgroundColor = "#ffedd5";
                   e.currentTarget.style.color = "#F97316";
                 }
               }}
@@ -206,7 +206,7 @@ export default function StoriesPage() {
           <div className="flex items-center gap-3">
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-              style={{ backgroundColor: "#ccfbf1", color: "#F97316" }}
+              style={{ backgroundColor: "#ffedd5", color: "#F97316" }}
             >
               A
             </div>

@@ -818,7 +818,7 @@ const stories = [
   { id: 5, name: "Maria L.", isAdd: false, gradient: "from-amber-500 to-orange-700",   initials: "ML", city: "BCN",    online: true  },
   { id: 6, name: "James W.", isAdd: false, gradient: "from-orange-500 to-orange-600",   initials: "JW", city: "London", online: false },
   { id: 7, name: "Priya S.", isAdd: false, gradient: "from-rose-500 to-pink-600",      initials: "PS", city: "Mumbai", online: true  },
-  { id: 8, name: "Carlos R.",isAdd: false, gradient: "from-cyan-500 to-blue-600",      initials: "CR", city: "Madrid", online: true  },
+  { id: 8, name: "Carlos R.",isAdd: false, gradient: "from-amber-500 to-blue-600",      initials: "CR", city: "Madrid", online: true  },
   { id: 9, name: "Lena M.",  isAdd: false, gradient: "from-purple-500 to-violet-600",  initials: "LM", city: "Paris",  online: false },
 ];
 
@@ -870,7 +870,7 @@ const listings = [
   {
     id: 3, title: "Charming Room near Bosphorus", city: "Istanbul", country: "Turkey",
     price: 450, sym: "USD" as const, rating: 4.7, reviews: 204, type: "Private Room",
-    available: "May 25", gradient: "from-orange-500 via-orange-600 to-cyan-700",
+    available: "May 25", gradient: "from-orange-500 via-orange-600 to-amber-700",
     verified: false, amenities: ["WiFi", "Kitchen", "Sea View"], tag: "Best Value",
     tagColor: "from-orange-500 to-orange-600", gender: "Any",
     image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=800&q=80",
@@ -918,9 +918,9 @@ const listings = [
   {
     id: 9, title: "Minimalist Room in Alfama", city: "Lisbon", country: "Portugal",
     price: 580, sym: "EUR" as const, rating: 4.6, reviews: 95, type: "Private Room",
-    available: "Jun 20", gradient: "from-orange-500 via-cyan-600 to-sky-700",
+    available: "Jun 20", gradient: "from-orange-500 via-amber-600 to-sky-700",
     verified: true, amenities: ["WiFi", "Balcony", "Tram"], tag: "New",
-    tagColor: "from-orange-500 to-cyan-600", gender: "Male",
+    tagColor: "from-orange-500 to-amber-600", gender: "Male",
     image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=80",
   },
   {
@@ -934,9 +934,9 @@ const listings = [
   {
     id: 11, title: "Studio in Beyoğlu Art District", city: "Istanbul", country: "Turkey",
     price: 380, sym: "USD" as const, rating: 4.7, reviews: 138, type: "Studio",
-    available: "Jun 8", gradient: "from-cyan-500 via-orange-600 to-orange-700",
+    available: "Jun 8", gradient: "from-amber-500 via-orange-600 to-orange-700",
     verified: false, amenities: ["WiFi", "Kitchen", "Art"], tag: "Best Value",
-    tagColor: "from-cyan-500 to-orange-600", gender: "Any",
+    tagColor: "from-amber-500 to-orange-600", gender: "Any",
     image: "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=800&q=80",
   },
   {
@@ -1803,7 +1803,7 @@ export default function Home() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
-                  background: 'linear-gradient(135deg, #F97316, #0F766E)',
+                  background: 'linear-gradient(135deg, #F97316, #ea580c)',
                   border: 'none',
                   borderRadius: '50px',
                   padding: '8px 14px',
@@ -2144,7 +2144,7 @@ export default function Home() {
                 onClick={() => { setProfileMenuOpen(false); router.push("/profile"); }}
                 style={{
                   width: "80px", height: "80px", borderRadius: "50%",
-                  background: "linear-gradient(135deg, #0F766E, #d97706)",
+                  background: "linear-gradient(135deg, #ea580c, #d97706)",
                   border: "4px solid rgba(255,255,255,0.4)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   fontWeight: 900, fontSize: "28px", color: "white",
@@ -2269,7 +2269,7 @@ export default function Home() {
                 className="drawer-item w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-150 group hover:bg-gray-50 active:scale-[0.97] active:bg-gray-100"
                 style={{ animationDelay: '160ms' }}
               >
-                <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-orange-400 to-cyan-500" style={{ position: "relative" }}>
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-orange-400 to-amber-500" style={{ position: "relative" }}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                   </svg>
@@ -2359,7 +2359,7 @@ export default function Home() {
 
             {/* Headline */}
             <AnimatedGradientText className="text-2xl font-bold px-6 py-2 mt-4">
-              <span className="animate-gradient bg-gradient-to-r from-orange-600 via-cyan-500 to-orange-700 bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent [--bg-size:300%]">
+              <span className="animate-gradient bg-gradient-to-r from-orange-600 via-amber-500 to-orange-700 bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent [--bg-size:300%]">
                 {t.heroLine1} {t.heroLine2} {t.heroLine3}
               </span>
             </AnimatedGradientText>
@@ -2392,7 +2392,7 @@ export default function Home() {
                       whileHover={{ y: -4 }}
                       onClick={() => router.push('/create-listing?type=has_place')}
                       className="w-full relative overflow-hidden rounded-3xl p-6 text-left shadow-[0_12px_40px_-12px_rgba(249,115,22,0.6)] active:scale-[0.98] transition-transform"
-                      style={{ background: 'linear-gradient(135deg,#F97316 0%,#0F766E 55%,#115E59 100%)' }}
+                      style={{ background: 'linear-gradient(135deg,#F97316 0%,#ea580c 55%,#c2410c 100%)' }}
                     >
                       <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/15 rounded-full blur-xl" />
                       <div className="absolute right-8 bottom-2 w-20 h-20 bg-white/10 rounded-full blur-md" />
@@ -2781,11 +2781,11 @@ export default function Home() {
                 </div>
 
                 {/* Floating particles */}
-                <div style={{ position: 'absolute', top: '-8px',  left: '-8px',   width: '8px', height: '8px', backgroundColor: '#14B8A6', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.2s ease-in-out alternate infinite' }} />
+                <div style={{ position: 'absolute', top: '-8px',  left: '-8px',   width: '8px', height: '8px', backgroundColor: '#fb923c', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.2s ease-in-out alternate infinite' }} />
                 <div style={{ position: 'absolute', top: '-8px',  right: '-8px',  width: '8px', height: '8px', backgroundColor: '#f472b6', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.8s ease-in-out alternate infinite 0.4s' }} />
                 <div style={{ position: 'absolute', top: '45%',   left: '-10px',  width: '8px', height: '8px', backgroundColor: '#a78bfa', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.5s ease-in-out alternate infinite 0.8s' }} />
                 <div style={{ position: 'absolute', top: '45%',   right: '-10px', width: '8px', height: '8px', backgroundColor: '#60a5fa', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 3.0s ease-in-out alternate infinite 1.2s' }} />
-                <div style={{ position: 'absolute', bottom: '-8px', left: '-8px', width: '8px', height: '8px', backgroundColor: '#14B8A6', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.6s ease-in-out alternate infinite 0.6s' }} />
+                <div style={{ position: 'absolute', bottom: '-8px', left: '-8px', width: '8px', height: '8px', backgroundColor: '#fb923c', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.6s ease-in-out alternate infinite 0.6s' }} />
                 <div style={{ position: 'absolute', bottom: '-8px', right: '-8px',width: '8px', height: '8px', backgroundColor: '#ec4899', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.3s ease-in-out alternate infinite 1.0s' }} />
               </motion.div>
 
@@ -3413,7 +3413,7 @@ export default function Home() {
           <div
             className="relative w-full max-w-sm overflow-hidden rounded-3xl transition-all duration-300"
             style={{
-              background: "linear-gradient(145deg, #F97316 0%, #0F766E 35%, #ec4899 75%, #f43f5e 100%)",
+              background: "linear-gradient(145deg, #F97316 0%, #ea580c 35%, #ec4899 75%, #f43f5e 100%)",
               boxShadow: "0 32px 80px -12px rgba(249,115,22,0.6), 0 16px 40px -8px rgba(236,72,153,0.45)",
               transform: stayMessageVisible ? "scale(1) translateY(0)" : "scale(0.85) translateY(24px)",
             }}

@@ -207,7 +207,7 @@ export default function ChannelsPage() {
                 }}
                 onMouseEnter={(e) => {
                   if (!active) {
-                    e.currentTarget.style.backgroundColor = "#ccfbf1";
+                    e.currentTarget.style.backgroundColor = "#ffedd5";
                     e.currentTarget.style.color = "#F97316";
                   }
                 }}
@@ -229,7 +229,7 @@ export default function ChannelsPage() {
           <div className="flex items-center gap-3">
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-              style={{ backgroundColor: "#ccfbf1", color: "#F97316" }}
+              style={{ backgroundColor: "#ffedd5", color: "#F97316" }}
             >
               A
             </div>
@@ -265,7 +265,7 @@ export default function ChannelsPage() {
             <div className="ml-auto">
               <span
                 className="text-xs font-medium px-2.5 py-1 rounded-full"
-                style={{ backgroundColor: "#ccfbf1", color: "#F97316" }}
+                style={{ backgroundColor: "#ffedd5", color: "#F97316" }}
               >
                 Admin
               </span>

@@ -103,7 +103,7 @@ export default function InstagramCTA({ lang }: { lang: "tr" | "en" | "fa" | "ar"
         transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
         className="relative overflow-hidden rounded-3xl"
         style={{
-          background: "linear-gradient(135deg, #7c3aed 0%, #db2777 45%, #0F766E 100%)",
+          background: "linear-gradient(135deg, #7c3aed 0%, #db2777 45%, #ea580c 100%)",
           padding: "1px",
         }}
       >

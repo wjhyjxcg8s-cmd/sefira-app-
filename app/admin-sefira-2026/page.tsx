@@ -747,7 +747,7 @@ export default function AdminPage() {
                 label: "New This Week",
                 value: stats.newUsersThisWeek,
                 icon: "🆕",
-                bg: "#ccfbf1",
+                bg: "#ffedd5",
                 color: "#F97316",
               },
             ].map((card) => (
@@ -1043,7 +1043,7 @@ export default function AdminPage() {
                       className="border-t border-gray-50 transition-colors cursor-pointer"
                       style={{ backgroundColor: i % 2 === 1 ? "#fafafa" : "white" }}
                       onClick={() => router.push(`/admin-sefira-2026/user/${u.user_id}`)}
-                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ccfbf1")}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ffedd5")}
                       onMouseLeave={(e) =>
                         (e.currentTarget.style.backgroundColor = i % 2 === 1 ? "#fafafa" : "white")
                       }
@@ -1054,7 +1054,7 @@ export default function AdminPage() {
                         ) : (
                           <div
                             className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
-                            style={{ backgroundColor: "#ccfbf1", color: "#F97316" }}
+                            style={{ backgroundColor: "#ffedd5", color: "#F97316" }}
                           >
                             {u.display_name?.[0]?.toUpperCase() ?? u.email?.[0]?.toUpperCase() ?? "?"}
                           </div>
@@ -1107,9 +1107,9 @@ export default function AdminPage() {
                               onClick={(e) => { e.stopPropagation(); setBanConfirm(u); }}
                               disabled={banningUserId === u.user_id}
                               className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
-                              style={{ backgroundColor: "#ccfbf1", color: "#F97316" }}
+                              style={{ backgroundColor: "#ffedd5", color: "#F97316" }}
                               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ffedd5")}
-                              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ccfbf1")}
+                              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ffedd5")}
                             >
                               {banningUserId === u.user_id ? "…" : "🚫 Engelle"}
                             </button>
@@ -1171,7 +1171,7 @@ export default function AdminPage() {
                   key={l.id}
                   className="border-t border-gray-50 transition-colors"
                   style={{ backgroundColor: i % 2 === 1 ? "#fafafa" : "white" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ccfbf1")}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ffedd5")}
                   onMouseLeave={(e) =>
                     (e.currentTarget.style.backgroundColor = i % 2 === 1 ? "#fafafa" : "white")
                   }
@@ -1180,7 +1180,7 @@ export default function AdminPage() {
                   <td className="px-4 py-3">
                     <span
                       className="px-2.5 py-1 rounded-lg text-xs font-medium capitalize"
-                      style={{ backgroundColor: "#ccfbf1", color: "#F97316" }}
+                      style={{ backgroundColor: "#ffedd5", color: "#F97316" }}
                     >
                       {l.listing_type?.replace(/_/g, " ") ?? "—"}
                     </span>
@@ -1435,7 +1435,7 @@ export default function AdminPage() {
                     className="border-t border-gray-50 transition-colors"
                     style={{ backgroundColor: i % 2 === 1 ? "#fafafa" : "white", cursor: "pointer" }}
                     onClick={() => setSelectedFeedback(f)}
-                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ccfbf1")}
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ffedd5")}
                     onMouseLeave={(e) =>
                       (e.currentTarget.style.backgroundColor = i % 2 === 1 ? "#fafafa" : "white")
                     }
@@ -1519,7 +1519,7 @@ export default function AdminPage() {
                   key={r.id}
                   className="border-t border-gray-50 transition-colors"
                   style={{ backgroundColor: i % 2 === 1 ? "#fafafa" : "white" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ccfbf1")}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ffedd5")}
                   onMouseLeave={(e) =>
                     (e.currentTarget.style.backgroundColor = i % 2 === 1 ? "#fafafa" : "white")
                   }
@@ -1678,7 +1678,7 @@ export default function AdminPage() {
                 }}
                 onMouseEnter={(e) => {
                   if (!active) {
-                    e.currentTarget.style.backgroundColor = "#ccfbf1";
+                    e.currentTarget.style.backgroundColor = "#ffedd5";
                     e.currentTarget.style.color = "#F97316";
                   }
                 }}
@@ -1701,7 +1701,7 @@ export default function AdminPage() {
           <div className="flex items-center gap-3">
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-              style={{ backgroundColor: "#ccfbf1", color: "#F97316" }}
+              style={{ backgroundColor: "#ffedd5", color: "#F97316" }}
             >
               A
             </div>
@@ -1759,7 +1759,7 @@ export default function AdminPage() {
             <div className="ml-auto">
               <span
                 className="text-xs font-medium px-2.5 py-1 rounded-full"
-                style={{ backgroundColor: "#ccfbf1", color: "#F97316" }}
+                style={{ backgroundColor: "#ffedd5", color: "#F97316" }}
               >
                 Admin
               </span>
@@ -1793,7 +1793,7 @@ export default function AdminPage() {
           >
             <div
               className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4"
-              style={{ backgroundColor: "#ccfbf1" }}
+              style={{ backgroundColor: "#ffedd5" }}
             >
               🚫
             </div>

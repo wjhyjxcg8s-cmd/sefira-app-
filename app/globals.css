@@ -11,7 +11,7 @@
   to { transform: translate(calc(100cqw - 100%), 0); }
 }
 
-/* ─── Magic UI / shadcn design tokens (style: default, color: teal) ─────── */
+/* ─── Magic UI / shadcn design tokens (style: default, color: orange) ────── */
 :root {
   --background: #fefaf5;
   --foreground: #1c1917;
@@ -22,8 +22,9 @@
   --orange-500: #F97316;
   --orange-400: #FB923C;
   --orange-300: #FED7AA;
-  --cyan-300: #67e8f9;
-  --cyan-200: #a5f3fc;
+  --orange-primary: #f97316;
+  --orange-dark: #ea580c;
+  --orange-light: #fb923c;
 
   --card: 0 0% 100%;
   --card-foreground: 222.2 84% 4.9%;

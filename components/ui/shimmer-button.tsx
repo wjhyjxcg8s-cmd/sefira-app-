@@ -22,7 +22,7 @@ export const ShimmerButton = React.forwardRef<
       shimmerSize = "0.05em",
       shimmerDuration = "3s",
       borderRadius = "100px",
-      background = "radial-gradient(ellipse 80% 50% at 50% 120%, #F97316, #0F766E)",
+      background = "radial-gradient(ellipse 80% 50% at 50% 120%, #f97316, #ea580c)",
       className,
       children,
       ...props
