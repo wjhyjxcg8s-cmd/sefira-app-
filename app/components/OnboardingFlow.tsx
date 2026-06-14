@@ -250,11 +250,12 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
   const savePhoto = async () => {
     if (!photoFile || saving) return;
     setSaving(true);
-    const ext = photoFile.name.split(".").pop() ?? "jpg";
-    const filePath = `${userId}/avatar.${ext}`;
-    const { error: uploadErr } = await supabase.storage.from("avatars").upload(filePath, photoFile, { upsert: true });
-    if (!uploadErr) {
-      const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(filePath);
+    const fd = new FormData();
+    fd.append('file', photoFile);
+    fd.append('userId', userId);
+    const res = await fetch('/api/upload-avatar', { method: 'POST', body: fd });
+    if (res.ok) {
+      const { url: publicUrl } = await res.json();
       await supabase.from("profiles").upsert({ user_id: userId, avatar_url: publicUrl }, { onConflict: "user_id" });
     }
     setSaving(false);

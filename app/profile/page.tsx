@@ -595,16 +595,16 @@ export default function ProfilePage() {
 
     if (field === "avatar") {
       if (!avatarFile) { setEditingField(null); setSaving(false); return; }
-      const filePath = `${currentUser.id}/${avatarFile.name}`;
-      const { error: uploadError } = await supabase.storage
-        .from("avatars")
-        .upload(filePath, avatarFile, { upsert: true });
-      if (uploadError) {
+      const fd = new FormData();
+      fd.append('file', avatarFile);
+      fd.append('userId', currentUser.id);
+      const res = await fetch('/api/upload-avatar', { method: 'POST', body: fd });
+      if (!res.ok) {
         setError(t.photoError);
         setSaving(false);
         return;
       }
-      const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(filePath);
+      const { url: publicUrl } = await res.json();
       const { error: dbError } = await supabase
         .from("profiles")
         .upsert({ user_id: currentUser.id, avatar_url: publicUrl }, { onConflict: "user_id" });
