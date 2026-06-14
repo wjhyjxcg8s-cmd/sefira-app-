@@ -2751,6 +2751,8 @@ export default function Home() {
                       loop
                       muted
                       playsInline
+                      preload="none"
+                      poster="/hero-bg.png"
                       className="w-full h-full object-cover"
                       style={{ animation: 'sefira-kenburns 5s ease-in-out alternate infinite' }}
                     />
