@@ -2187,7 +2187,7 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
                   <p className="font-bold text-gray-900 text-sm leading-tight truncate">
                     {displayName(selectedConv, selectedId)}
                   </p>
-                  <p className="text-xs text-emerald-500 font-semibold">
+                  <p className="text-xs text-orange-500 font-semibold">
                     {selectedConv?.source === "listing" ? "İlan Mesajı" : "Kullanıcı"}
                   </p>
                 </div>

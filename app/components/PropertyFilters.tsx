@@ -387,7 +387,7 @@ export default function PropertyFilters({
 
                 {/* Financials */}
                 <div className="space-y-4">
-                  <SectionHeader gradient="from-emerald-500 to-orange-600" emoji="💰" title={t.sec1} />
+                  <SectionHeader gradient="from-orange-500 to-orange-600" emoji="💰" title={t.sec1} />
                   <RangeInput
                     label={t.price}
                     minVal={f.priceMin} maxVal={f.priceMax}

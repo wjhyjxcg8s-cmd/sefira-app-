@@ -85,7 +85,7 @@ const translations = {
     aiMatchP: "Yapay zekamız, uyku düzeninden sosyal alışkanlıklara kadar 40'tan fazla uyumluluk faktörünü analiz eder; gerçekten birlikte yaşamak isteyeceğiniz kişileri öne çıkarır.",
     compatBars: [
       { label: "Yaşam Tarzı Uyumu", value: 97,  color: "from-blue-500 to-violet-600" },
-      { label: "Uyku Düzeni",       value: 94,  color: "from-emerald-500 to-orange-600" },
+      { label: "Uyku Düzeni",       value: 94,  color: "from-orange-500 to-orange-600" },
       { label: "Temizlik",          value: 100, color: "from-amber-500 to-orange-700" },
       { label: "Bütçe Aralığı",     value: 88,  color: "from-rose-500 to-pink-600" },
     ],
@@ -110,7 +110,7 @@ const translations = {
       { step: "01", title: "Profil Oluştur",         desc: "Yaşam tarzınızı, bütçenizi ve kişiliğinizi bize anlatın. Yapay zekamız sizi benzersiz kılan şeyleri öğrenir.",               icon: "✦", gradient: "from-blue-500 to-indigo-600" },
       { step: "02", title: "Yapay Zeka Eşleşmeleri", desc: "40'tan fazla uyumluluk faktörü anında analiz edildi. Mükemmel ev arkadaşınız düşündüğünüzden daha yakın.",                   icon: "◈", gradient: "from-violet-500 to-purple-600" },
       { step: "03", title: "Kaydır ve Bağlan",       desc: "Beğen, eşleş ve mesajlaş. Herhangi bir taahhüt vermeden önce video ile doğrula.",                                            icon: "◎", gradient: "from-pink-500 to-rose-600" },
-      { step: "04", title: "Taşın",                  desc: "Dijital olarak imzala, topluluk desteği al ve mükemmel evinize yerleş.",                                                      icon: "⌂", gradient: "from-emerald-500 to-orange-600" },
+      { step: "04", title: "Taşın",                  desc: "Dijital olarak imzala, topluluk desteği al ve mükemmel evinize yerleş.",                                                      icon: "⌂", gradient: "from-orange-500 to-orange-600" },
     ],
     roommatesH2: "Yakınındaki En İyi Eşleşmeler",
     roommatesP: "Şu anda Berlin'de ev arkadaşı arayan kişiler",
@@ -215,7 +215,7 @@ const translations = {
     aiMatchP: "Our AI analyzes 40+ compatibility factors from sleep schedules to social habits, surfacing people you will genuinely want to live with.",
     compatBars: [
       { label: "Lifestyle Match", value: 97,  color: "from-blue-500 to-violet-600" },
-      { label: "Sleep Schedule",  value: 94,  color: "from-emerald-500 to-orange-600" },
+      { label: "Sleep Schedule",  value: 94,  color: "from-orange-500 to-orange-600" },
       { label: "Cleanliness",     value: 100, color: "from-amber-500 to-orange-700" },
       { label: "Budget Range",    value: 88,  color: "from-rose-500 to-pink-600" },
     ],
@@ -240,7 +240,7 @@ const translations = {
       { step: "01", title: "Build Your Profile", desc: "Tell us your lifestyle, budget, and personality. Our AI learns what makes you unique.",         icon: "✦", gradient: "from-blue-500 to-indigo-600" },
       { step: "02", title: "Get AI Matches",     desc: "40+ compatibility factors analyzed instantly. Your perfect roommate is closer than you think.", icon: "◈", gradient: "from-violet-500 to-purple-600" },
       { step: "03", title: "Swipe and Connect",  desc: "Like, match, and message. Video verify before any commitment is made.",                         icon: "◎", gradient: "from-pink-500 to-rose-600" },
-      { step: "04", title: "Move In",            desc: "Sign digitally, get community support, and settle into your perfect home.",                    icon: "⌂", gradient: "from-emerald-500 to-orange-600" },
+      { step: "04", title: "Move In",            desc: "Sign digitally, get community support, and settle into your perfect home.",                    icon: "⌂", gradient: "from-orange-500 to-orange-600" },
     ],
     roommatesH2: "Top Matches Near You",
     roommatesP: "People looking for roommates in Berlin right now",
@@ -345,7 +345,7 @@ const translations = {
     aiMatchP: "هوش مصنوعی ما بیش از ۴۰ عامل سازگاری را از برنامه خواب تا عادات اجتماعی تحلیل می‌کند و افرادی را معرفی می‌کند که واقعاً دوست دارید با آن‌ها زندگی کنید.",
     compatBars: [
       { label: "تطابق سبک زندگی", value: 97,  color: "from-blue-500 to-violet-600" },
-      { label: "برنامه خواب",      value: 94,  color: "from-emerald-500 to-orange-600" },
+      { label: "برنامه خواب",      value: 94,  color: "from-orange-500 to-orange-600" },
       { label: "نظافت",            value: 100, color: "from-amber-500 to-orange-700" },
       { label: "محدوده بودجه",     value: 88,  color: "from-rose-500 to-pink-600" },
     ],
@@ -370,7 +370,7 @@ const translations = {
       { step: "۰۱", title: "پروفایل بسازید",          desc: "سبک زندگی، بودجه و شخصیت خود را به ما بگویید. هوش مصنوعی ما یاد می‌گیرد چه چیزی شما را منحصربه‌فرد می‌کند.",                icon: "✦", gradient: "from-blue-500 to-indigo-600" },
       { step: "۰۲", title: "تطابق هوش مصنوعی",        desc: "بیش از ۴۰ عامل سازگاری به صورت فوری تحلیل شد. هم‌خانه کامل شما نزدیک‌تر از آن چیزی است که فکر می‌کنید.",                icon: "◈", gradient: "from-violet-500 to-purple-600" },
       { step: "۰۳", title: "بکشید و ارتباط بگیرید",    desc: "لایک کنید، تطابق بگیرید و پیام بدهید. قبل از هر تعهدی تأیید ویدیویی کنید.",                                                icon: "◎", gradient: "from-pink-500 to-rose-600" },
-      { step: "۰۴", title: "اسباب‌کشی کنید",           desc: "دیجیتالی امضا کنید، پشتیبانی جامعه بگیرید و در خانه کامل خود مستقر شوید.",                                               icon: "⌂", gradient: "from-emerald-500 to-orange-600" },
+      { step: "۰۴", title: "اسباب‌کشی کنید",           desc: "دیجیتالی امضا کنید، پشتیبانی جامعه بگیرید و در خانه کامل خود مستقر شوید.",                                               icon: "⌂", gradient: "from-orange-500 to-orange-600" },
     ],
     roommatesH2: "بهترین تطابق‌های نزدیک شما",
     roommatesP: "افرادی که اکنون در برلین دنبال هم‌خانه می‌گردند",
@@ -474,7 +474,7 @@ const translations = {
     aiMatchP: "Unsere KI analysiert über 40 Kompatibilitätsfaktoren – vom Schlafrhythmus bis hin zu sozialen Gewohnheiten – und findet Menschen, mit denen Sie wirklich zusammenleben möchten.",
     compatBars: [
       { label: "Lebensstil-Kompatibilität", value: 97,  color: "from-blue-500 to-violet-600" },
-      { label: "Schlafrhythmus",             value: 94,  color: "from-emerald-500 to-orange-600" },
+      { label: "Schlafrhythmus",             value: 94,  color: "from-orange-500 to-orange-600" },
       { label: "Sauberkeit",                 value: 100, color: "from-amber-500 to-orange-700" },
       { label: "Budgetrahmen",               value: 88,  color: "from-rose-500 to-pink-600" },
     ],
@@ -499,7 +499,7 @@ const translations = {
       { step: "01", title: "Profil erstellen",      desc: "Erzählen Sie uns von Ihrem Lebensstil, Budget und Ihrer Persönlichkeit. Unsere KI lernt, was Sie einzigartig macht.",                       icon: "✦", gradient: "from-blue-500 to-indigo-600" },
       { step: "02", title: "KI-Matches erhalten",   desc: "Über 40 Kompatibilitätsfaktoren sofort analysiert. Ihr perfekter Mitbewohner ist näher als Sie denken.",                                  icon: "◈", gradient: "from-violet-500 to-purple-600" },
       { step: "03", title: "Wischen und verbinden", desc: "Gefällt mir, matchen und schreiben. Per Video verifizieren, bevor Sie sich festlegen.",                                                     icon: "◎", gradient: "from-pink-500 to-rose-600" },
-      { step: "04", title: "Einziehen",             desc: "Digital unterzeichnen, Community-Support erhalten und in Ihr Traumzuhause einziehen.",                                                     icon: "⌂", gradient: "from-emerald-500 to-orange-600" },
+      { step: "04", title: "Einziehen",             desc: "Digital unterzeichnen, Community-Support erhalten und in Ihr Traumzuhause einziehen.",                                                     icon: "⌂", gradient: "from-orange-500 to-orange-600" },
     ],
     roommatesH2: "Top-Matches in Ihrer Nähe",
     roommatesP: "Menschen, die jetzt in Berlin einen Mitbewohner suchen",
@@ -605,7 +605,7 @@ const translations = {
     aiMatchP: "يحلّل ذكاؤنا الاصطناعي أكثر من ٤٠ عاملاً للتوافق، من جداول النوم إلى العادات الاجتماعية، ليُبرز الأشخاص الذين ستودّ حقاً العيش معهم.",
     compatBars: [
       { label: "توافق أسلوب الحياة", value: 97,  color: "from-blue-500 to-violet-600" },
-      { label: "جدول النوم",          value: 94,  color: "from-emerald-500 to-orange-600" },
+      { label: "جدول النوم",          value: 94,  color: "from-orange-500 to-orange-600" },
       { label: "النظافة",             value: 100, color: "from-amber-500 to-orange-700" },
       { label: "نطاق الميزانية",      value: 88,  color: "from-rose-500 to-pink-600" },
     ],
@@ -630,7 +630,7 @@ const translations = {
       { step: "٠١", title: "أنشئ ملفك الشخصي",      desc: "أخبرنا عن أسلوب حياتك وميزانيتك وشخصيتك. يتعلّم ذكاؤنا الاصطناعي ما يجعلك فريداً.",                                    icon: "✦", gradient: "from-blue-500 to-indigo-600" },
       { step: "٠٢", title: "مطابقات بالذكاء الاصطناعي", desc: "تحليل فوري لأكثر من ٤٠ عامل توافق. شريك السكن المثالي أقرب مما تتصوّر.",                                           icon: "◈", gradient: "from-violet-500 to-purple-600" },
       { step: "٠٣", title: "تصفَّح وتواصَل",           desc: "أعجب وطابق وراسِل. تحقَّق بالفيديو قبل أي التزام.",                                                                    icon: "◎", gradient: "from-pink-500 to-rose-600" },
-      { step: "٠٤", title: "انتقل للسكن",              desc: "وقِّع رقمياً، واحصل على دعم المجتمع، واستقرّ في منزلك المثالي.",                                                       icon: "⌂", gradient: "from-emerald-500 to-orange-600" },
+      { step: "٠٤", title: "انتقل للسكن",              desc: "وقِّع رقمياً، واحصل على دعم المجتمع، واستقرّ في منزلك المثالي.",                                                       icon: "⌂", gradient: "from-orange-500 to-orange-600" },
     ],
     roommatesH2: "أفضل المطابقات بالقرب منك",
     roommatesP: "أشخاص يبحثون عن شريك سكن في برلين الآن",
@@ -734,7 +734,7 @@ const translations = {
     aiMatchP: "Наш ИИ анализирует ваши предпочтения и находит идеальных соседей.",
     compatBars: [
       { label: "Образ жизни", value: 97,  color: "from-blue-500 to-violet-600" },
-      { label: "Расписание",  value: 94,  color: "from-emerald-500 to-orange-600" },
+      { label: "Расписание",  value: 94,  color: "from-orange-500 to-orange-600" },
       { label: "Чистота",     value: 100, color: "from-amber-500 to-orange-700" },
       { label: "Бюджет",      value: 88,  color: "from-rose-500 to-pink-600" },
     ],
@@ -759,7 +759,7 @@ const translations = {
       { step: "01", title: "Создайте профиль",    desc: "Расскажите о себе и своих предпочтениях",         icon: "✦", gradient: "from-blue-500 to-indigo-600" },
       { step: "02", title: "Найдите совпадения",  desc: "Наш ИИ подберёт подходящих соседей",              icon: "◈", gradient: "from-violet-500 to-purple-600" },
       { step: "03", title: "Свяжитесь",           desc: "Общайтесь и договаривайтесь о встрече",           icon: "◎", gradient: "from-pink-500 to-rose-600" },
-      { step: "04", title: "Въезжайте",           desc: "Подпишите договор и обустраивайтесь в новом доме", icon: "⌂", gradient: "from-emerald-500 to-orange-600" },
+      { step: "04", title: "Въезжайте",           desc: "Подпишите договор и обустраивайтесь в новом доме", icon: "⌂", gradient: "from-orange-500 to-orange-600" },
     ],
     roommatesH2: "Активные пользователи",
     roommatesP: "Люди, которые ищут соседей прямо сейчас",
@@ -816,7 +816,7 @@ const stories = [
   { id: 3, name: "Ahmed M.", isAdd: false, gradient: "from-blue-500 to-indigo-600",    initials: "AM", city: "Dubai",  online: true  },
   { id: 4, name: "Yuki T.",  isAdd: false, gradient: "from-violet-500 to-purple-600",  initials: "YT", city: "Tokyo",  online: false },
   { id: 5, name: "Maria L.", isAdd: false, gradient: "from-amber-500 to-orange-700",   initials: "ML", city: "BCN",    online: true  },
-  { id: 6, name: "James W.", isAdd: false, gradient: "from-emerald-500 to-orange-600",   initials: "JW", city: "London", online: false },
+  { id: 6, name: "James W.", isAdd: false, gradient: "from-orange-500 to-orange-600",   initials: "JW", city: "London", online: false },
   { id: 7, name: "Priya S.", isAdd: false, gradient: "from-rose-500 to-pink-600",      initials: "PS", city: "Mumbai", online: true  },
   { id: 8, name: "Carlos R.",isAdd: false, gradient: "from-cyan-500 to-blue-600",      initials: "CR", city: "Madrid", online: true  },
   { id: 9, name: "Lena M.",  isAdd: false, gradient: "from-purple-500 to-violet-600",  initials: "LM", city: "Paris",  online: false },
@@ -870,9 +870,9 @@ const listings = [
   {
     id: 3, title: "Charming Room near Bosphorus", city: "Istanbul", country: "Turkey",
     price: 450, sym: "USD" as const, rating: 4.7, reviews: 204, type: "Private Room",
-    available: "May 25", gradient: "from-emerald-500 via-orange-600 to-cyan-700",
+    available: "May 25", gradient: "from-orange-500 via-orange-600 to-cyan-700",
     verified: false, amenities: ["WiFi", "Kitchen", "Sea View"], tag: "Best Value",
-    tagColor: "from-emerald-500 to-orange-600", gender: "Any",
+    tagColor: "from-orange-500 to-orange-600", gender: "Any",
     image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=800&q=80",
   },
   {
@@ -934,7 +934,7 @@ const listings = [
   {
     id: 11, title: "Studio in Beyoğlu Art District", city: "Istanbul", country: "Turkey",
     price: 380, sym: "USD" as const, rating: 4.7, reviews: 138, type: "Studio",
-    available: "Jun 8", gradient: "from-cyan-500 via-orange-600 to-emerald-700",
+    available: "Jun 8", gradient: "from-cyan-500 via-orange-600 to-orange-700",
     verified: false, amenities: ["WiFi", "Kitchen", "Art"], tag: "Best Value",
     tagColor: "from-cyan-500 to-orange-600", gender: "Any",
     image: "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=800&q=80",
@@ -2229,7 +2229,7 @@ export default function Home() {
                 className="drawer-item w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-150 group hover:bg-gray-50 active:scale-[0.97] active:bg-gray-100"
                 style={{ animationDelay: '80ms' }}
               >
-                <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-green-400 to-emerald-500">
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-orange-400 to-orange-500">
                   <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" className="w-5 h-5">
                     <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
                   </svg>

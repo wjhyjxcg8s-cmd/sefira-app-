@@ -138,7 +138,7 @@ const CITIES = [
     countryRu: "Иран",
     listings: "987",
     image: "/images/tehran.jpg",
-    accent: "from-emerald-600 to-orange-700",
+    accent: "from-orange-600 to-orange-700",
   },
   {
     key: "manchester",

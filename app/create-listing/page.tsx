@@ -1575,7 +1575,7 @@ function CreateListingPage() {
   if (submitted) {
     return (
       <div dir={dir} className="min-h-screen flex flex-col items-center justify-center bg-stone-50 gap-6 p-6">
-        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-orange-500 flex items-center justify-center shadow-xl shadow-emerald-500/30">
+        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center shadow-xl shadow-orange-500/30">
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10 text-white">
             <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
           </svg>

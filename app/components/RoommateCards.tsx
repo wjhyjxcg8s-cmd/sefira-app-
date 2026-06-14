@@ -85,7 +85,7 @@ const PROFILES: Profile[] = [
     id: 5, name: "Mehmet Yılmaz", age: 31, occupation: "Chef",              nationality: "Turkish",
     languages: ["Turkish", "English", "German"],
     match: 86, city: "Istanbul",  country: "Turkey",
-    gradient: "from-emerald-600 via-orange-700 to-cyan-800",    initials: "MY",
+    gradient: "from-orange-600 via-orange-700 to-cyan-800",    initials: "MY",
     lifestyle: ["Early bird", "Foodie", "Calm"],
     bio: "Professional chef who cooks for two and keeps the kitchen spotless. Early riser.",
     bioTr: "İkisi için pişiren ve mutfağı pırıl pırıl tutan profesyonel aşçı. Erken kalkar.",
