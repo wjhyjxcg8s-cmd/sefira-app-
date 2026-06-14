@@ -7,7 +7,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
 import { useLang } from "@/app/lib/LangContext";
-import { City, Country, State } from 'country-state-city'
+import Country from 'country-state-city/lib/country';
+import State from 'country-state-city/lib/state';
 
 // ── Countries ─────────────────────────────────────────────────────────────────
 const TOP_COUNTRY_CODES = ["TR", "IR", "DE", "AE", "GB", "RU", "US", "FR", "ES"];
@@ -1293,6 +1294,14 @@ function CreateListingPage() {
   const [sehirSug, setSehirSug] = useState<string[]>([])
   const [sehirOpen, setSehirOpen] = useState(false)
   const [selectedStateIso, setSelectedStateIso] = useState('')
+  const [citiesOfState, setCitiesOfState] = useState<string[]>([])
+  useEffect(() => {
+    if (!countryIso || !selectedStateIso) { setCitiesOfState([]); return; }
+    fetch(`/api/cities-of-state?country=${encodeURIComponent(countryIso)}&state=${encodeURIComponent(selectedStateIso)}`)
+      .then(r => r.json())
+      .then((data: string[]) => setCitiesOfState(Array.isArray(data) ? data : []))
+      .catch(() => {})
+  }, [countryIso, selectedStateIso])
 
   const [ilceQ, setIlceQ] = useState('')
   const [ilceSug, setIlceSug] = useState<string[]>([])
@@ -1328,13 +1337,16 @@ function CreateListingPage() {
     }
   }, [countryIso, lang])
 
-  const [worldCities, setWorldCities] = useState<Record<string, string[]>>({})
+  const [worldCitiesForCountry, setWorldCitiesForCountry] = useState<string[]>([])
   useEffect(() => {
-    fetch('/world-cities.json')
+    if (!countryIso) { setWorldCitiesForCountry([]); return; }
+    const countryName = Country.getCountryByCode(countryIso)?.name || ''
+    if (!countryName) return;
+    fetch(`/api/cities?country=${encodeURIComponent(countryName)}`)
       .then(r => r.json())
-      .then(setWorldCities)
+      .then((data: string[]) => setWorldCitiesForCountry(Array.isArray(data) ? data : []))
       .catch(() => {})
-  }, [])
+  }, [countryIso])
 
   useEffect(() => {
     if (countryIso === 'TR') {
@@ -1937,9 +1949,8 @@ function CreateListingPage() {
                           : countryIso === 'RU' && lang === 'ru'
                           ? russiaCitiesRU
                           : (() => {
-                              const countryName = Country.getCountryByCode(countryIso)?.name || ''
-                              return worldCities[countryName]?.length
-                                ? worldCities[countryName]
+                              return worldCitiesForCountry.length
+                                ? worldCitiesForCountry
                                 : (State.getStatesOfCountry(countryIso) || []).map(s => s.name)
                             })()
                         if (v.length === 0) {
@@ -1966,9 +1977,8 @@ function CreateListingPage() {
                           : countryIso === 'RU' && lang === 'ru'
                           ? russiaCitiesRU
                           : (() => {
-                              const countryName = Country.getCountryByCode(countryIso)?.name || ''
-                              return worldCities[countryName]?.length
-                                ? worldCities[countryName]
+                              return worldCitiesForCountry.length
+                                ? worldCitiesForCountry
                                 : (State.getStatesOfCountry(countryIso) || []).map(s => s.name)
                             })()
                         setSehirSug(cityList.slice(0, 8))
@@ -2039,16 +2049,15 @@ function CreateListingPage() {
                           setIlceOpen(starts.length + includes.length > 0)
                         }
                       } else {
-                        const cities = City.getCitiesOfState(countryIso, selectedStateIso) || []
                         if (v.length === 0) {
-                          setIlceSug(cities.slice(0, 6).map(c => c.name))
+                          setIlceSug(citiesOfState.slice(0, 6))
                           setIlceOpen(true)
                         } else {
-                          const starts = cities.filter(c => normalize(c.name).startsWith(q))
-                          const includes = cities.filter(c =>
-                            !normalize(c.name).startsWith(q) && normalize(c.name).includes(q)
+                          const starts = citiesOfState.filter(c => normalize(c).startsWith(q))
+                          const includes = citiesOfState.filter(c =>
+                            !normalize(c).startsWith(q) && normalize(c).includes(q)
                           )
-                          setIlceSug([...starts, ...includes].slice(0, 6).map(c => c.name))
+                          setIlceSug([...starts, ...includes].slice(0, 6))
                           setIlceOpen(starts.length + includes.length > 0)
                         }
                       }
@@ -2059,9 +2068,8 @@ function CreateListingPage() {
                         setIlceSug(ilceler.slice(0, 6))
                         setIlceOpen(ilceler.length > 0)
                       } else {
-                        const cities = City.getCitiesOfState(countryIso, selectedStateIso) || []
-                        setIlceSug(cities.slice(0, 6).map(c => c.name))
-                        setIlceOpen(cities.length > 0)
+                        setIlceSug(citiesOfState.slice(0, 6))
+                        setIlceOpen(citiesOfState.length > 0)
                       }
                     }}
                     onBlur={() => setTimeout(() => setIlceOpen(false), 150)}
@@ -2399,9 +2407,8 @@ function CreateListingPage() {
                           : countryIso === 'RU' && lang === 'ru'
                           ? russiaCitiesRU
                           : (() => {
-                              const countryName = Country.getCountryByCode(countryIso)?.name || ''
-                              return worldCities[countryName]?.length
-                                ? worldCities[countryName]
+                              return worldCitiesForCountry.length
+                                ? worldCitiesForCountry
                                 : (State.getStatesOfCountry(countryIso) || []).map(s => s.name)
                             })()
                         if (v.length === 0) {
@@ -2428,9 +2435,8 @@ function CreateListingPage() {
                           : countryIso === 'RU' && lang === 'ru'
                           ? russiaCitiesRU
                           : (() => {
-                              const countryName = Country.getCountryByCode(countryIso)?.name || ''
-                              return worldCities[countryName]?.length
-                                ? worldCities[countryName]
+                              return worldCitiesForCountry.length
+                                ? worldCitiesForCountry
                                 : (State.getStatesOfCountry(countryIso) || []).map(s => s.name)
                             })()
                         setSehirSug(cityList.slice(0, 8))
@@ -2501,16 +2507,15 @@ function CreateListingPage() {
                           setIlceOpen(starts.length + includes.length > 0)
                         }
                       } else {
-                        const cities = City.getCitiesOfState(countryIso, selectedStateIso) || []
                         if (v.length === 0) {
-                          setIlceSug(cities.slice(0, 6).map(c => c.name))
+                          setIlceSug(citiesOfState.slice(0, 6))
                           setIlceOpen(true)
                         } else {
-                          const starts = cities.filter(c => normalize(c.name).startsWith(q))
-                          const includes = cities.filter(c =>
-                            !normalize(c.name).startsWith(q) && normalize(c.name).includes(q)
+                          const starts = citiesOfState.filter(c => normalize(c).startsWith(q))
+                          const includes = citiesOfState.filter(c =>
+                            !normalize(c).startsWith(q) && normalize(c).includes(q)
                           )
-                          setIlceSug([...starts, ...includes].slice(0, 6).map(c => c.name))
+                          setIlceSug([...starts, ...includes].slice(0, 6))
                           setIlceOpen(starts.length + includes.length > 0)
                         }
                       }
@@ -2521,9 +2526,8 @@ function CreateListingPage() {
                         setIlceSug(ilceler.slice(0, 6))
                         setIlceOpen(ilceler.length > 0)
                       } else {
-                        const cities = City.getCitiesOfState(countryIso, selectedStateIso) || []
-                        setIlceSug(cities.slice(0, 6).map(c => c.name))
-                        setIlceOpen(cities.length > 0)
+                        setIlceSug(citiesOfState.slice(0, 6))
+                        setIlceOpen(citiesOfState.length > 0)
                       }
                     }}
                     onBlur={() => setTimeout(() => setIlceOpen(false), 150)}

@@ -54,7 +54,11 @@
       "PowerShell(New-Item -ItemType Directory -Path \"e:\\\\sefıra-web\\\\sefira-app\\\\lib\" -Force)",
       "PowerShell(New-Item -ItemType Directory -Path \"e:\\\\sefıra-web\\\\sefira-app\\\\components\\\\ui\" -Force)",
       "PowerShell(New-Item -ItemType Directory -Path \"e:\\\\sefıra-web\\\\sefira-app\\\\hooks\" -Force)",
-      "Bash(git -C \"e:/sefıra-web/sefira-app\" status)"
+      "Bash(git -C \"e:/sefıra-web/sefira-app\" status)",
+      "Bash(sort -k5 -rn)",
+      "Bash(powershell -Command 'Get-ChildItem .next/static/chunks/ | Sort-Object Length -Descending | Select-Object -First 30 | Format-Table Name,@{L='\\\\''KB'\\\\'';E={[math]::Round\\($_.Length/1KB,1\\)}} -AutoSize')",
+      "Bash(xargs ls -la)",
+      "Bash(grep -v \"//\\\\|city\\\\|City /\\\\|\\\\\"City\\\\\"\\\\|'City'\\\\|cityLabel\\\\|countryCity\\\\|Mahalle\\\\|city:\")"
     ],
     "additionalDirectories": [
       "e:\\sefıra-web\\sefira-app\\app\\api\\admin\\channels",
