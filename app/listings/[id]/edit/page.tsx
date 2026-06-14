@@ -490,16 +490,16 @@ export default function EditListingPage() {
     setPhotoError(null);
     setUploadingCount((c) => c + newFiles.length);
     for (const file of newFiles) {
-      const path = `${user.id}/${Date.now()}-${encodeURIComponent(file.name)}`;
-      const { error: upErr } = await supabase.storage
-        .from("listing-photos")
-        .upload(path, file, { upsert: true });
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('userId', user.id);
+      const res = await fetch('/api/upload-photo', { method: 'POST', body: fd });
       setUploadingCount((c) => c - 1);
-      if (upErr) {
+      if (!res.ok) {
         setPhotoError(t.errorPhoto);
       } else {
-        const { data } = supabase.storage.from("listing-photos").getPublicUrl(path);
-        setForm((f) => ({ ...f, photos: [...f.photos, data.publicUrl] }));
+        const { url } = await res.json();
+        setForm((f) => ({ ...f, photos: [...f.photos, url] }));
       }
     }
   };
