@@ -8,6 +8,8 @@ import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
 import { useLang } from "@/app/lib/LangContext";
 import CountrySelect from "@/app/components/CountrySelect";
+import ReactCrop, { centerCrop, makeAspectCrop, type Crop, type PixelCrop } from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
 
 const translations = {
   tr: {
@@ -444,6 +446,11 @@ export default function ProfilePage() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [imgSrc, setImgSrc] = useState("");
+  const [crop, setCrop] = useState<Crop>();
+  const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
+  const [showCropModal, setShowCropModal] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -506,8 +513,72 @@ export default function ProfilePage() {
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setAvatarFile(file);
-    setAvatarPreview(URL.createObjectURL(file));
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      setImgSrc(reader.result?.toString() ?? "");
+      setShowCropModal(true);
+    });
+    reader.readAsDataURL(file);
+  };
+
+  const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const { width, height } = e.currentTarget;
+    const c = centerCrop(
+      makeAspectCrop({ unit: "%", width: 90 }, 1, width, height),
+      width,
+      height
+    );
+    setCrop(c);
+  };
+
+  const handleCropSave = async () => {
+    if (!completedCrop || !imgRef.current) return;
+    const image = imgRef.current;
+    const canvas = document.createElement("canvas");
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+    canvas.width = completedCrop.width;
+    canvas.height = completedCrop.height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.drawImage(
+      image,
+      completedCrop.x * scaleX,
+      completedCrop.y * scaleY,
+      completedCrop.width * scaleX,
+      completedCrop.height * scaleY,
+      0,
+      0,
+      completedCrop.width,
+      completedCrop.height
+    );
+    canvas.toBlob(async (blob) => {
+      if (!blob) return;
+      setSaving(true);
+      setError(null);
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      if (!currentUser) { setSaving(false); return; }
+      const fd = new FormData();
+      fd.append("file", blob, "avatar.webp");
+      fd.append("userId", currentUser.id);
+      const res = await fetch("/api/upload-avatar", { method: "POST", body: fd });
+      if (!res.ok) { setError(t.photoError); setSaving(false); return; }
+      const { url: publicUrl } = await res.json();
+      const { error: dbError } = await supabase
+        .from("profiles")
+        .upsert({ user_id: currentUser.id, avatar_url: publicUrl }, { onConflict: "user_id" });
+      if (dbError) { setError(dbError.message); setSaving(false); return; }
+      setAvatarUrl(publicUrl);
+      setAvatarFile(null);
+      setAvatarPreview(null);
+      setShowCropModal(false);
+      setImgSrc("");
+      setEditingField(null);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+      setSaving(false);
+    }, "image/webp", 0.9);
   };
 
   const handleConfirmEdit = () => {
@@ -856,6 +927,53 @@ export default function ProfilePage() {
                 className="flex-1 py-3 rounded-xl border-2 border-stone-200 text-stone-600 text-sm font-bold hover:bg-stone-50 transition-all active:scale-95"
               >
                 {t.cancelEditBtn}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Crop modal */}
+      {showCropModal && (
+        <div className="fixed inset-0 z-[250] flex flex-col items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col">
+            <div className="p-4 border-b border-stone-100">
+              <p className="text-stone-800 font-bold text-sm text-center">{t.profilePhoto}</p>
+            </div>
+            <div className="p-4 flex items-center justify-center bg-stone-50">
+              {imgSrc && (
+                <ReactCrop
+                  crop={crop}
+                  onChange={(_, pct) => setCrop(pct)}
+                  onComplete={(c) => setCompletedCrop(c)}
+                  aspect={1}
+                  circularCrop
+                  className="max-h-[60vh]"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    ref={imgRef}
+                    src={imgSrc}
+                    alt="Crop"
+                    onLoad={onImageLoad}
+                    style={{ maxHeight: "60vh", maxWidth: "100%" }}
+                  />
+                </ReactCrop>
+              )}
+            </div>
+            <div className="p-4 flex gap-3">
+              <button
+                onClick={() => { setShowCropModal(false); setImgSrc(""); }}
+                className="flex-1 py-3 rounded-xl border-2 border-stone-200 text-stone-600 text-sm font-bold hover:bg-stone-50 transition-all active:scale-95"
+              >
+                Vazgeç
+              </button>
+              <button
+                onClick={handleCropSave}
+                disabled={saving || !completedCrop}
+                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-bold shadow-md shadow-orange-500/25 hover:opacity-90 transition-all active:scale-95 disabled:opacity-60"
+              >
+                {saving ? t.saving : "Kaydet"}
               </button>
             </div>
           </div>
