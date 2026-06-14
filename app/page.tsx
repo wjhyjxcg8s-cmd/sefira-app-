@@ -2348,7 +2348,7 @@ export default function Home() {
             </span>
 
             {/* Headline */}
-            <AnimatedGradientText className="text-2xl font-bold px-6 py-2 mt-4" style={{ contain: 'none' }}>
+            <AnimatedGradientText className="text-2xl font-bold px-6 py-2 mt-4">
               <span className="animate-gradient bg-gradient-to-r from-orange-600 via-amber-500 to-orange-700 bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent [--bg-size:300%]">
                 {t.heroLine1} {t.heroLine2} {t.heroLine3}
               </span>
@@ -2744,15 +2744,6 @@ export default function Home() {
                 <div style={{ position: 'relative', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', border: '2px solid #f97316' }}>
                   {/* Inner video container */}
                   <div style={{ position: 'relative', borderRadius: '21px', overflow: 'hidden', height: '400px' }}>
-                    <Image
-                      src="/hero-bg.webp"
-                      alt="Sefira"
-                      width={800}
-                      height={600}
-                      priority
-                      className="absolute inset-0 w-full h-full object-cover opacity-0"
-                      aria-hidden="true"
-                    />
                     <video
                       ref={videoRef}
                       src="https://ceetzophaybywfuhezhv.supabase.co/storage/v1/object/public/media/IMG_1365.MP4"
