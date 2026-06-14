@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 import { useLang } from "@/app/lib/LangContext";
@@ -216,8 +217,7 @@ export default function SavedPage() {
                   <div className="aspect-square relative">
                     {listing.type === "has_place" ? (
                       listing.photos?.[0] ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={listing.photos[0]} alt={listing.city} className="w-full h-full object-cover" />
+                        <Image src={listing.photos[0]} alt={listing.city} fill className="object-cover" />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center">
                           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-10 h-10 text-stone-400">

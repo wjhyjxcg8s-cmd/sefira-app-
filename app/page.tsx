@@ -3056,8 +3056,7 @@ export default function Home() {
                   {/* Left: photo or gradient */}
                   <div className="w-28 flex-shrink-0 relative min-h-[140px]">
                     {isHasPlace && thumbnail ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={thumbnail} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                      <Image src={thumbnail} alt="" fill className="object-cover" />
                     ) : !isHasPlace && recAvatarMap[rec.user_id] ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={recAvatarMap[rec.user_id]!} alt="" className="absolute inset-0 w-full h-full object-cover" />

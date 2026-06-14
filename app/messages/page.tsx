@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, Suspense } from "react";
+import Image from "next/image";
 import { useLang } from "@/app/lib/LangContext";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -787,8 +788,7 @@ function MessagesPageContent() {
             >
               <div className="relative flex-shrink-0">
                 {listingContext?.photos?.[0] ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={listingContext.photos[0]} alt="" className="w-14 h-14 rounded-xl object-cover" />
+                  <Image src={listingContext.photos[0]} alt="" width={56} height={56} className="rounded-xl object-cover" />
                 ) : (
                   <div className="w-14 h-14 rounded-xl bg-orange-50 flex items-center justify-center text-2xl">🏠</div>
                 )}
@@ -845,8 +845,7 @@ function MessagesPageContent() {
                 {/* Listing thumbnail as primary, user avatar as overlay */}
                 <div className="relative flex-shrink-0">
                   {listing?.photos?.[0] ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={listing.photos[0]} alt="" className="w-14 h-14 rounded-xl object-cover" />
+                    <Image src={listing.photos[0]} alt="" width={56} height={56} className="rounded-xl object-cover" />
                   ) : (
                     <div className="w-14 h-14 rounded-xl bg-orange-50 flex items-center justify-center text-2xl">🏠</div>
                   )}
