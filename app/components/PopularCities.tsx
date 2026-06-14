@@ -18,7 +18,7 @@ const CITIES = [
     countryRu: "Турция",
     listings: "2,847",
     image: "/images/istnbul.jpg",
-    accent: "from-teal-600 to-red-600",
+    accent: "from-orange-600 to-red-600",
   },
   {
     key: "washington-dc",
@@ -78,7 +78,7 @@ const CITIES = [
     countryRu: "Испания",
     listings: "1,541",
     image: "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&w=800&q=80",
-    accent: "from-yellow-500 to-teal-700",
+    accent: "from-yellow-500 to-orange-700",
   },
   {
     key: "berlin",
@@ -138,7 +138,7 @@ const CITIES = [
     countryRu: "Иран",
     listings: "987",
     image: "/images/tehran.jpg",
-    accent: "from-emerald-600 to-teal-700",
+    accent: "from-emerald-600 to-orange-700",
   },
   {
     key: "manchester",
@@ -363,9 +363,9 @@ export default function PopularCities({ lang, onCityClick }: PopularCitiesProps)
           initial={{ opacity: 0, y: 16 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="inline-flex items-center gap-2 text-xs font-bold text-teal-700 bg-teal-600/10 border border-teal-400/30 rounded-full px-4 py-2 mb-6 shadow-lg shadow-teal-600/10"
+          className="inline-flex items-center gap-2 text-xs font-bold text-orange-700 bg-orange-600/10 border border-orange-400/30 rounded-full px-4 py-2 mb-6 shadow-lg shadow-orange-600/10"
         >
-          <span className="w-2 h-2 rounded-full bg-teal-600 animate-pulse flex-shrink-0" />
+          <span className="w-2 h-2 rounded-full bg-orange-600 animate-pulse flex-shrink-0" />
           {t.badge}
         </motion.div>
 

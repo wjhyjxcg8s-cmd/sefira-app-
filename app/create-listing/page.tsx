@@ -991,7 +991,7 @@ function Toggle({
           onClick={() => onChange(true)}
           className={`flex-1 transition-all duration-200 text-sm ${
             value === true
-              ? "border-2 border-teal-500 text-white bg-teal-500 rounded-xl py-3 px-4 font-bold"
+              ? "border-2 border-orange-500 text-white bg-orange-500 rounded-xl py-3 px-4 font-bold"
               : "border-2 border-gray-200 text-gray-400 bg-white rounded-xl py-3 px-4"
           }`}
         >
@@ -1002,7 +1002,7 @@ function Toggle({
           onClick={() => onChange(false)}
           className={`flex-1 transition-all duration-200 text-sm ${
             value === false
-              ? "border-2 border-teal-500 text-white bg-teal-500 rounded-xl py-3 px-4 font-bold"
+              ? "border-2 border-orange-500 text-white bg-orange-500 rounded-xl py-3 px-4 font-bold"
               : "border-2 border-gray-200 text-gray-400 bg-white rounded-xl py-3 px-4"
           }`}
         >
@@ -1029,7 +1029,7 @@ function NumberStepper({
       <button
         type="button"
         onClick={() => onChange(Math.max(min, value - 1))}
-        className="w-9 h-9 rounded-xl border border-stone-200 flex items-center justify-center text-stone-600 hover:border-teal-400 hover:text-teal-500 transition-all active:scale-90 font-bold text-lg"
+        className="w-9 h-9 rounded-xl border border-stone-200 flex items-center justify-center text-stone-600 hover:border-orange-400 hover:text-orange-500 transition-all active:scale-90 font-bold text-lg"
       >
         −
       </button>
@@ -1037,7 +1037,7 @@ function NumberStepper({
       <button
         type="button"
         onClick={() => onChange(Math.min(max, value + 1))}
-        className="w-9 h-9 rounded-xl border border-stone-200 flex items-center justify-center text-stone-600 hover:border-teal-400 hover:text-teal-500 transition-all active:scale-90 font-bold text-lg"
+        className="w-9 h-9 rounded-xl border border-stone-200 flex items-center justify-center text-stone-600 hover:border-orange-400 hover:text-orange-500 transition-all active:scale-90 font-bold text-lg"
       >
         +
       </button>
@@ -1065,7 +1065,7 @@ function OptionGroup({
           onClick={() => onChange(opt.value)}
           className={`flex-1 py-2.5 transition-all duration-200 ${
             value === opt.value
-              ? "bg-gradient-to-r from-teal-500 to-amber-500 text-white shadow-inner"
+              ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-inner"
               : "bg-white text-stone-500 hover:bg-stone-50"
           }`}
         >
@@ -1096,7 +1096,7 @@ function PillGroup({
           onClick={() => onChange(opt.value)}
           className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
             value === opt.value
-              ? "bg-teal-500 text-white shadow-md shadow-teal-500/30"
+              ? "bg-orange-500 text-white shadow-md shadow-orange-500/30"
               : "bg-gray-100 text-stone-600 hover:bg-gray-200"
           }`}
         >
@@ -1167,7 +1167,7 @@ function CountrySelect({
         placeholder={placeholder}
         onFocus={() => setIsOpen(true)}
         onChange={(e) => { setInputVal(e.target.value); setIsOpen(true); }}
-        className={`w-full border rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all text-sm ${hasError ? "border-red-400 border-2" : "border-gray-200"}`}
+        className={`w-full border rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm ${hasError ? "border-red-400 border-2" : "border-gray-200"}`}
       />
       {isOpen && filtered.length > 0 && (
         <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto">
@@ -1179,8 +1179,8 @@ function CountrySelect({
                 type="button"
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => { onSelect(code, name); setInputVal(name); setIsOpen(false); }}
-                className={`w-full text-left px-4 py-2.5 text-sm hover:bg-teal-50 transition-colors ${
-                  countryCode === code ? "text-teal-500 font-semibold" : "text-stone-700"
+                className={`w-full text-left px-4 py-2.5 text-sm hover:bg-orange-50 transition-colors ${
+                  countryCode === code ? "text-orange-500 font-semibold" : "text-stone-700"
                 }`}
               >
                 {name}
@@ -1548,7 +1548,7 @@ function CreateListingPage() {
   if (!loading && !user) {
     return (
       <div dir={dir} className="min-h-screen flex flex-col items-center justify-center bg-stone-50 gap-5 p-6">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500 to-amber-500 flex items-center justify-center shadow-lg shadow-teal-500/30">
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/30">
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-white">
             <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
           </svg>
@@ -1556,7 +1556,7 @@ function CreateListingPage() {
         <p className="text-stone-600 text-center font-medium">{t.notLoggedIn}</p>
         <Link
           href="/"
-          className="bg-gradient-to-r from-teal-500 to-amber-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-teal-500/25 hover:opacity-90 transition-all active:scale-95"
+          className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-orange-500/25 hover:opacity-90 transition-all active:scale-95"
         >
           {t.goHome}
         </Link>
@@ -1567,7 +1567,7 @@ function CreateListingPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-stone-50">
-        <div className="w-10 h-10 border-4 border-teal-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -1575,7 +1575,7 @@ function CreateListingPage() {
   if (submitted) {
     return (
       <div dir={dir} className="min-h-screen flex flex-col items-center justify-center bg-stone-50 gap-6 p-6">
-        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-xl shadow-emerald-500/30">
+        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-orange-500 flex items-center justify-center shadow-xl shadow-emerald-500/30">
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10 text-white">
             <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
           </svg>
@@ -1593,7 +1593,7 @@ function CreateListingPage() {
           </Link>
           <button
             onClick={() => { setForm(initialForm); setStep(1); setSubmitted(false); }}
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-teal-500 to-amber-500 text-white font-bold shadow-lg shadow-teal-500/25 hover:opacity-90 transition-all text-sm"
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold shadow-lg shadow-orange-500/25 hover:opacity-90 transition-all text-sm"
           >
             {t.createAnother}
           </button>
@@ -1607,10 +1607,10 @@ function CreateListingPage() {
     <nav dir="ltr" style={{ transform: "translateZ(0)", WebkitTransform: "translateZ(0)", willChange: "transform" }} className="fixed top-0 left-0 right-0 w-full z-[9999] bg-white border-b border-stone-200 shadow-sm">
       <div className="max-w-2xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-teal-500 to-amber-500 flex items-center justify-center font-black text-sm text-white shadow-lg shadow-teal-500/30 group-hover:scale-110 transition-all duration-300">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-sm text-white shadow-lg shadow-orange-500/30 group-hover:scale-110 transition-all duration-300">
             S
           </div>
-          <span className="text-xl font-black tracking-tight bg-gradient-to-r from-teal-500 to-amber-600 bg-clip-text text-transparent">
+          <span className="text-xl font-black tracking-tight bg-gradient-to-r from-orange-500 to-amber-600 bg-clip-text text-transparent">
             Sefira
           </span>
         </Link>
@@ -1635,7 +1635,7 @@ function CreateListingPage() {
                 <button
                   key={l}
                   onClick={() => { setLang(l); setLangMenuOpen(false); }}
-                  className={`flex items-center gap-2 w-full px-3 py-2.5 text-[12px] font-bold transition-colors hover:bg-stone-50 ${lang === l ? "text-teal-500" : "text-stone-700"}`}
+                  className={`flex items-center gap-2 w-full px-3 py-2.5 text-[12px] font-bold transition-colors hover:bg-stone-50 ${lang === l ? "text-orange-500" : "text-stone-700"}`}
                 >
                   <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : l === "fa" ? "🇮🇷" : l === "ar" ? "🇸🇦" : l === "ru" ? "🇷🇺" : "🇩🇪"}</span>
                   {l === "tr" ? "TR" : l === "en" ? "EN" : l === "fa" ? "FA" : l === "ar" ? "AR" : l === "ru" ? "RU" : "DE"}
@@ -1656,11 +1656,11 @@ function CreateListingPage() {
       <div className="mb-8">
         <div className="flex items-center justify-between mb-2">
           <p className="text-xs font-semibold text-stone-500">{t.stepOf(displayStep, displayTotal)}</p>
-          <p className="text-xs font-bold text-teal-500">{Math.round((displayStep / displayTotal) * 100)}%</p>
+          <p className="text-xs font-bold text-orange-500">{Math.round((displayStep / displayTotal) * 100)}%</p>
         </div>
         <div className="h-1.5 bg-stone-100 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-teal-500 to-amber-500 rounded-full transition-all duration-500"
+            className="h-full bg-gradient-to-r from-orange-500 to-amber-500 rounded-full transition-all duration-500"
             style={{ width: `${(displayStep / displayTotal) * 100}%` }}
           />
         </div>
@@ -1675,7 +1675,7 @@ function CreateListingPage() {
         <Navbar />
         <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block mb-5">
-            <Link href="/" className="flex items-center gap-2 bg-teal-500 hover:bg-teal-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
+            <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
               <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
@@ -1719,7 +1719,7 @@ function CreateListingPage() {
                   onClick={() => set("type", type)}
                   className={`w-full flex items-center gap-5 p-6 rounded-2xl border-2 text-left transition-all duration-200 ${
                     isSelected
-                      ? "border-teal-400 bg-teal-50 shadow-lg shadow-teal-500/10"
+                      ? "border-orange-400 bg-orange-50 shadow-lg shadow-orange-500/10"
                       : invalidFields.includes("type")
                       ? "border-red-400 bg-white"
                       : "border-stone-200 bg-white hover:border-stone-300 hover:shadow-sm"
@@ -1728,20 +1728,20 @@ function CreateListingPage() {
                   <div
                     className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 transition-all ${
                       isSelected
-                        ? "bg-gradient-to-br from-teal-500 to-amber-500 text-white shadow-md shadow-teal-500/30"
+                        ? "bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/30"
                         : "bg-stone-100 text-stone-400"
                     }`}
                   >
                     {icon}
                   </div>
                   <div className="min-w-0">
-                    <p className={`font-bold text-base leading-snug ${isSelected ? "text-teal-700" : "text-stone-900"}`}>
+                    <p className={`font-bold text-base leading-snug ${isSelected ? "text-orange-700" : "text-stone-900"}`}>
                       {label}
                     </p>
                     <p className="text-sm text-stone-500 mt-0.5">{sub}</p>
                   </div>
                   <div className={`ml-auto w-5 h-5 rounded-full border-2 flex-shrink-0 transition-all ${
-                    isSelected ? "border-teal-500 bg-teal-500" : "border-stone-300"
+                    isSelected ? "border-orange-500 bg-orange-500" : "border-stone-300"
                   }`}>
                     {isSelected && (
                       <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full text-white p-0.5">
@@ -1756,7 +1756,7 @@ function CreateListingPage() {
 
           <button
             onClick={goNext}
-            className="mt-8 w-full py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-teal-500 to-amber-500 shadow-lg shadow-teal-500/25 hover:opacity-90 active:scale-95 transition-all duration-200 text-sm"
+            className="mt-8 w-full py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg shadow-orange-500/25 hover:opacity-90 active:scale-95 transition-all duration-200 text-sm"
           >
             {t.next}
           </button>
@@ -1791,7 +1791,7 @@ function CreateListingPage() {
               {t.back}
             </motion.button>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
-              <Link href="/" className="flex items-center gap-2 bg-teal-500 hover:bg-teal-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
+              <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
@@ -1814,7 +1814,7 @@ function CreateListingPage() {
           )}
 
           {/* Header banner */}
-          <div className="bg-gradient-to-r from-teal-50 to-teal-100 border border-teal-200 rounded-2xl p-4 mb-6">
+          <div className="bg-gradient-to-r from-orange-50 to-orange-100 border border-orange-200 rounded-2xl p-4 mb-6">
             <div className="flex items-start gap-3">
               <div className="text-2xl">🏡</div>
               <div>
@@ -1860,7 +1860,7 @@ function CreateListingPage() {
                     type="button"
                     onClick={() => set("floor", Math.max(0, form.floor - 1))}
                     disabled={isFloor20Plus}
-                    className={`w-9 h-9 rounded-xl border border-stone-200 flex items-center justify-center text-stone-600 hover:border-teal-400 hover:text-teal-500 transition-all active:scale-90 font-bold text-lg ${isFloor20Plus ? 'opacity-40 cursor-not-allowed' : ''}`}
+                    className={`w-9 h-9 rounded-xl border border-stone-200 flex items-center justify-center text-stone-600 hover:border-orange-400 hover:text-orange-500 transition-all active:scale-90 font-bold text-lg ${isFloor20Plus ? 'opacity-40 cursor-not-allowed' : ''}`}
                   >
                     −
                   </button>
@@ -1871,7 +1871,7 @@ function CreateListingPage() {
                     type="button"
                     onClick={() => set("floor", Math.min(20, form.floor + 1))}
                     disabled={isFloor20Plus}
-                    className={`w-9 h-9 rounded-xl border border-stone-200 flex items-center justify-center text-stone-600 hover:border-teal-400 hover:text-teal-500 transition-all active:scale-90 font-bold text-lg ${isFloor20Plus ? 'opacity-40 cursor-not-allowed' : ''}`}
+                    className={`w-9 h-9 rounded-xl border border-stone-200 flex items-center justify-center text-stone-600 hover:border-orange-400 hover:text-orange-500 transition-all active:scale-90 font-bold text-lg ${isFloor20Plus ? 'opacity-40 cursor-not-allowed' : ''}`}
                   >
                     +
                   </button>
@@ -1885,7 +1885,7 @@ function CreateListingPage() {
                         return next
                       })
                     }}
-                    className={`px-4 py-2 rounded-xl text-sm font-semibold border-2 transition-colors ${isFloor20Plus ? 'border-teal-400 bg-teal-50 text-teal-700' : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'}`}
+                    className={`px-4 py-2 rounded-xl text-sm font-semibold border-2 transition-colors ${isFloor20Plus ? 'border-orange-400 bg-orange-50 text-orange-700' : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'}`}
                   >
                     20+
                   </button>
@@ -1977,7 +1977,7 @@ function CreateListingPage() {
                     }}
                     onBlur={() => setTimeout(() => setSehirOpen(false), 150)}
                     placeholder={lang === 'ar' && ARAB_COUNTRIES.has(countryIso) ? 'اكتب اسم مدينتك...' : (countryCityExamples[countryIso] || 'City...')}
-                    className={`w-full px-4 py-3 border-2 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-teal-400 transition-colors ${invalidFields.includes("city") && !form.city ? "border-red-400" : "border-gray-200"}`}
+                    className={`w-full px-4 py-3 border-2 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-colors ${invalidFields.includes("city") && !form.city ? "border-red-400" : "border-gray-200"}`}
                   />
                   {sehirOpen && sehirSug.length > 0 && (
                     <div className="absolute left-0 right-0 top-full mt-1 z-30 bg-white border border-gray-200 rounded-xl shadow-lg overflow-y-auto max-h-48">
@@ -2000,7 +2000,7 @@ function CreateListingPage() {
                               if (stateObj) setSelectedStateIso(stateObj.isoCode)
                             }
                           }}
-                          className="w-full text-left px-4 py-3 text-[15px] text-gray-700 hover:bg-teal-50 hover:text-teal-700 border-b border-gray-100 last:border-0 transition-colors"
+                          className="w-full text-left px-4 py-3 text-[15px] text-gray-700 hover:bg-orange-50 hover:text-orange-700 border-b border-gray-100 last:border-0 transition-colors"
                         >
                           {s}
                         </button>
@@ -2066,7 +2066,7 @@ function CreateListingPage() {
                     }}
                     onBlur={() => setTimeout(() => setIlceOpen(false), 150)}
                     placeholder="Esenyurt, Kadıköy, Beşiktaş..."
-                    className={`w-full px-4 py-3 border-2 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-teal-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 ${invalidFields.includes("district") && !form.district ? "border-red-400" : "border-gray-200"}`}
+                    className={`w-full px-4 py-3 border-2 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 ${invalidFields.includes("district") && !form.district ? "border-red-400" : "border-gray-200"}`}
                   />
                   {ilceOpen && ilceSug.length > 0 && (
                     <div className="absolute left-0 right-0 top-full mt-1 z-30 bg-white border border-gray-200 rounded-xl shadow-lg overflow-y-auto max-h-48">
@@ -2085,7 +2085,7 @@ function CreateListingPage() {
                               setForm(f => ({...f, neighborhood: ''}))
                             }
                           }}
-                          className="w-full text-left px-4 py-3 text-[15px] text-gray-700 hover:bg-teal-50 hover:text-teal-700 border-b border-gray-100 last:border-0 transition-colors"
+                          className="w-full text-left px-4 py-3 text-[15px] text-gray-700 hover:bg-orange-50 hover:text-orange-700 border-b border-gray-100 last:border-0 transition-colors"
                         >
                           {c}
                         </button>
@@ -2130,7 +2130,7 @@ function CreateListingPage() {
                       }}
                       onBlur={() => setTimeout(() => setMahalleOpen(false), 150)}
                       placeholder="Zafer Mh., Cumhuriyet Mh..."
-                      className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent text-gray-900 bg-white text-sm"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-gray-900 bg-white text-sm"
                     />
                     {mahalleOpen && mahalleSug.length > 0 && (
                       <div className="absolute left-0 right-0 top-full mt-1 z-30 bg-white border border-gray-200 rounded-xl shadow-lg overflow-y-auto max-h-48">
@@ -2144,7 +2144,7 @@ function CreateListingPage() {
                               setForm(f => ({...f, neighborhood: m}))
                               setMahalleOpen(false)
                             }}
-                            className="w-full text-left px-4 py-3 text-[15px] text-gray-700 hover:bg-teal-50 hover:text-teal-700 border-b border-gray-100 last:border-0 transition-colors"
+                            className="w-full text-left px-4 py-3 text-[15px] text-gray-700 hover:bg-orange-50 hover:text-orange-700 border-b border-gray-100 last:border-0 transition-colors"
                           >
                             {m}
                           </button>
@@ -2158,7 +2158,7 @@ function CreateListingPage() {
                     value={form.neighborhood || ''}
                     onChange={(e) => setForm(f => ({ ...f, neighborhood: e.target.value }))}
                     placeholder={countryIso === 'TR' ? "Zafer Mh., Cumhuriyet Mh..." : ""}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent text-gray-900 bg-white text-sm"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-gray-900 bg-white text-sm"
                   />
                 )}
               </div>
@@ -2178,7 +2178,7 @@ function CreateListingPage() {
                     onClick={() => set("currency", c.value as Currency)}
                     className={`flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-bold transition-all duration-200 ${
                       form.currency === c.value
-                        ? "bg-teal-500 text-white shadow-md shadow-teal-500/30"
+                        ? "bg-orange-500 text-white shadow-md shadow-orange-500/30"
                         : "bg-gray-100 text-stone-600 hover:bg-gray-200"
                     }`}
                   >
@@ -2192,7 +2192,7 @@ function CreateListingPage() {
                 value={form.price}
                 onChange={(e) => set("price", e.target.value)}
                 placeholder="0"
-                className={`w-full border rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all text-sm ${invalidFields.includes("price") && (!form.price || parseFloat(form.price) <= 0) ? "border-red-400 border-2" : "border-gray-200"}`}
+                className={`w-full border rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm ${invalidFields.includes("price") && (!form.price || parseFloat(form.price) <= 0) ? "border-red-400 border-2" : "border-gray-200"}`}
               />
             </div>
           </div>
@@ -2206,7 +2206,7 @@ function CreateListingPage() {
             </button>
             <button
               onClick={goNext}
-              className="flex-[2] py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-teal-500 to-amber-500 shadow-lg shadow-teal-500/25 hover:opacity-90 active:scale-95 transition-all duration-200 text-sm"
+              className="flex-[2] py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg shadow-orange-500/25 hover:opacity-90 active:scale-95 transition-all duration-200 text-sm"
             >
               {t.next}
             </button>
@@ -2234,7 +2234,7 @@ function CreateListingPage() {
               {t.back}
             </motion.button>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
-              <Link href="/" className="flex items-center gap-2 bg-teal-500 hover:bg-teal-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
+              <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
@@ -2256,7 +2256,7 @@ function CreateListingPage() {
             </div>
           )}
 
-          <div className="bg-gradient-to-r from-teal-50 to-teal-100 border border-teal-200 rounded-2xl p-4 mb-6">
+          <div className="bg-gradient-to-r from-orange-50 to-orange-100 border border-orange-200 rounded-2xl p-4 mb-6">
             <div className="flex items-start gap-3">
               <div className="text-2xl">🏠</div>
               <div>
@@ -2307,7 +2307,7 @@ function CreateListingPage() {
                 value={form.seeker_age}
                 onChange={(e) => set("seeker_age", e.target.value)}
                 placeholder="25"
-                className={`w-full border rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all text-sm ${invalidFields.includes("seeker_age") ? "border-red-400 border-2" : "border-gray-200"}`}
+                className={`w-full border rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm ${invalidFields.includes("seeker_age") ? "border-red-400 border-2" : "border-gray-200"}`}
               />
             </div>
 
@@ -2337,7 +2337,7 @@ function CreateListingPage() {
                     onClick={() => set("currency", c.value as Currency)}
                     className={`flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-bold transition-all duration-200 ${
                       form.currency === c.value
-                        ? "bg-teal-500 text-white shadow-md shadow-teal-500/30"
+                        ? "bg-orange-500 text-white shadow-md shadow-orange-500/30"
                         : "bg-gray-100 text-stone-600 hover:bg-gray-200"
                     }`}
                   >
@@ -2351,7 +2351,7 @@ function CreateListingPage() {
                 value={form.max_budget}
                 onChange={(e) => set("max_budget", e.target.value)}
                 placeholder="0"
-                className={`w-full border rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all text-sm ${invalidFields.includes("max_budget") && (!form.max_budget || parseFloat(form.max_budget) <= 0) ? "border-red-400 border-2" : "border-gray-200"}`}
+                className={`w-full border rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm ${invalidFields.includes("max_budget") && (!form.max_budget || parseFloat(form.max_budget) <= 0) ? "border-red-400 border-2" : "border-gray-200"}`}
               />
             </div>
 
@@ -2439,7 +2439,7 @@ function CreateListingPage() {
                     }}
                     onBlur={() => setTimeout(() => setSehirOpen(false), 150)}
                     placeholder={lang === 'ar' && ARAB_COUNTRIES.has(countryIso) ? 'اكتب اسم مدينتك...' : (countryCityExamples[countryIso] || 'City...')}
-                    className={`w-full px-4 py-3 border-2 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-teal-400 transition-colors ${invalidFields.includes("city") && !form.city ? "border-red-400" : "border-gray-200"}`}
+                    className={`w-full px-4 py-3 border-2 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-colors ${invalidFields.includes("city") && !form.city ? "border-red-400" : "border-gray-200"}`}
                   />
                   {sehirOpen && sehirSug.length > 0 && (
                     <div className="absolute left-0 right-0 top-full mt-1 z-30 bg-white border border-gray-200 rounded-xl shadow-lg overflow-y-auto max-h-48">
@@ -2462,7 +2462,7 @@ function CreateListingPage() {
                               if (stateObj) setSelectedStateIso(stateObj.isoCode)
                             }
                           }}
-                          className="w-full text-left px-4 py-3 text-[15px] text-gray-700 hover:bg-teal-50 hover:text-teal-700 border-b border-gray-100 last:border-0 transition-colors"
+                          className="w-full text-left px-4 py-3 text-[15px] text-gray-700 hover:bg-orange-50 hover:text-orange-700 border-b border-gray-100 last:border-0 transition-colors"
                         >
                           {s}
                         </button>
@@ -2528,7 +2528,7 @@ function CreateListingPage() {
                     }}
                     onBlur={() => setTimeout(() => setIlceOpen(false), 150)}
                     placeholder="Esenyurt, Kadıköy, Beşiktaş..."
-                    className={`w-full px-4 py-3 border-2 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-teal-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 ${invalidFields.includes("district") && !form.district ? "border-red-400" : "border-gray-200"}`}
+                    className={`w-full px-4 py-3 border-2 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 ${invalidFields.includes("district") && !form.district ? "border-red-400" : "border-gray-200"}`}
                   />
                   {ilceOpen && ilceSug.length > 0 && (
                     <div className="absolute left-0 right-0 top-full mt-1 z-30 bg-white border border-gray-200 rounded-xl shadow-lg overflow-y-auto max-h-48">
@@ -2547,7 +2547,7 @@ function CreateListingPage() {
                               setForm(f => ({...f, neighborhood: ''}))
                             }
                           }}
-                          className="w-full text-left px-4 py-3 text-[15px] text-gray-700 hover:bg-teal-50 hover:text-teal-700 border-b border-gray-100 last:border-0 transition-colors"
+                          className="w-full text-left px-4 py-3 text-[15px] text-gray-700 hover:bg-orange-50 hover:text-orange-700 border-b border-gray-100 last:border-0 transition-colors"
                         >
                           {c}
                         </button>
@@ -2592,7 +2592,7 @@ function CreateListingPage() {
                       }}
                       onBlur={() => setTimeout(() => setMahalleOpen(false), 150)}
                       placeholder="Zafer Mh., Cumhuriyet Mh..."
-                      className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent text-gray-900 bg-white text-sm"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-gray-900 bg-white text-sm"
                     />
                     {mahalleOpen && mahalleSug.length > 0 && (
                       <div className="absolute left-0 right-0 top-full mt-1 z-30 bg-white border border-gray-200 rounded-xl shadow-lg overflow-y-auto max-h-48">
@@ -2606,7 +2606,7 @@ function CreateListingPage() {
                               setForm(f => ({...f, neighborhood: m}))
                               setMahalleOpen(false)
                             }}
-                            className="w-full text-left px-4 py-3 text-[15px] text-gray-700 hover:bg-teal-50 hover:text-teal-700 border-b border-gray-100 last:border-0 transition-colors"
+                            className="w-full text-left px-4 py-3 text-[15px] text-gray-700 hover:bg-orange-50 hover:text-orange-700 border-b border-gray-100 last:border-0 transition-colors"
                           >
                             {m}
                           </button>
@@ -2620,7 +2620,7 @@ function CreateListingPage() {
                     value={form.neighborhood || ''}
                     onChange={(e) => setForm(f => ({ ...f, neighborhood: e.target.value }))}
                     placeholder={countryIso === 'TR' ? "Zafer Mh., Cumhuriyet Mh..." : ""}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent text-gray-900 bg-white text-sm"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-gray-900 bg-white text-sm"
                   />
                 )}
               </div>
@@ -2695,7 +2695,7 @@ function CreateListingPage() {
                 value={form.about_text}
                 onChange={(e) => set("about_text", e.target.value)}
                 placeholder={t.aboutTextPlaceholder}
-                className="w-full border border-gray-200 rounded-2xl p-3 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all text-sm resize-none"
+                className="w-full border border-gray-200 rounded-2xl p-3 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm resize-none"
               />
               <p className="text-xs text-stone-400 text-right mt-1">{form.about_text.length}/500</p>
             </div>
@@ -2710,7 +2710,7 @@ function CreateListingPage() {
             </button>
             <button
               onClick={goNext}
-              className="flex-[2] py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-teal-500 to-amber-500 shadow-lg shadow-teal-500/25 hover:opacity-90 active:scale-95 transition-all duration-200 text-sm"
+              className="flex-[2] py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg shadow-orange-500/25 hover:opacity-90 active:scale-95 transition-all duration-200 text-sm"
             >
               {t.next}
             </button>
@@ -2738,7 +2738,7 @@ function CreateListingPage() {
               {t.back}
             </motion.button>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
-              <Link href="/" className="flex items-center gap-2 bg-teal-500 hover:bg-teal-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
+              <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
@@ -2760,7 +2760,7 @@ function CreateListingPage() {
             </div>
           )}
 
-          <div className="bg-gradient-to-r from-teal-50 to-teal-100 border border-teal-200 rounded-2xl p-4 mb-6">
+          <div className="bg-gradient-to-r from-orange-50 to-orange-100 border border-orange-200 rounded-2xl p-4 mb-6">
             <div className="flex items-start gap-3">
               <div className="text-2xl">🏠</div>
               <div>
@@ -2868,7 +2868,7 @@ function CreateListingPage() {
                 value={form.description}
                 onChange={(e) => set("description", e.target.value)}
                 placeholder={t.descPlaceholder}
-                className={`w-full border rounded-2xl p-3 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all text-sm resize-none ${invalidFields.includes("description") && (!form.description || form.description.trim().length < 20) ? "border-red-400 border-2" : "border-gray-200"}`}
+                className={`w-full border rounded-2xl p-3 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm resize-none ${invalidFields.includes("description") && (!form.description || form.description.trim().length < 20) ? "border-red-400 border-2" : "border-gray-200"}`}
               />
             </div>
           </div>
@@ -2900,7 +2900,7 @@ function CreateListingPage() {
                 ))}
                 {Array.from({ length: uploadingCount }).map((_, i) => (
                   <div key={`uploading-${i}`} className="aspect-square rounded-xl bg-stone-100 flex items-center justify-center">
-                    <span className="w-6 h-6 border-2 border-teal-300 border-t-teal-500 rounded-full animate-spin" />
+                    <span className="w-6 h-6 border-2 border-orange-300 border-t-orange-500 rounded-full animate-spin" />
                   </div>
                 ))}
               </div>
@@ -2910,10 +2910,10 @@ function CreateListingPage() {
             {form.photos.length + uploadingCount < 3 && (
               <div
                 onClick={() => photoInputRef.current?.click()}
-                className={`border-2 border-dashed rounded-2xl p-6 flex flex-col items-center gap-2 cursor-pointer active:bg-teal-100 transition-colors ${invalidFields.includes("photos") && form.photos.length === 0 ? "border-red-400 bg-red-50" : "border-teal-300 bg-teal-50"}`}
+                className={`border-2 border-dashed rounded-2xl p-6 flex flex-col items-center gap-2 cursor-pointer active:bg-orange-100 transition-colors ${invalidFields.includes("photos") && form.photos.length === 0 ? "border-red-400 bg-red-50" : "border-orange-300 bg-orange-50"}`}
               >
                 <span className="text-3xl">📷</span>
-                <p className="text-sm font-medium text-teal-700">{t.uploadPhotos}</p>
+                <p className="text-sm font-medium text-orange-700">{t.uploadPhotos}</p>
                 <p className="text-xs text-gray-400">PNG, JPG • Maks. 3 fotoğraf</p>
               </div>
             )}
@@ -2942,7 +2942,7 @@ function CreateListingPage() {
             <button
               onClick={goNext}
               disabled={uploadingCount > 0}
-              className="flex-[2] py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-teal-500 to-amber-500 shadow-lg shadow-teal-500/25 hover:opacity-90 active:scale-95 transition-all duration-200 text-sm disabled:opacity-60 disabled:cursor-not-allowed"
+              className="flex-[2] py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg shadow-orange-500/25 hover:opacity-90 active:scale-95 transition-all duration-200 text-sm disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {t.next}
             </button>
@@ -3019,7 +3019,7 @@ function CreateListingPage() {
               {t.back}
             </motion.button>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
-              <Link href="/" className="flex items-center gap-2 bg-teal-500 hover:bg-teal-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
+              <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
@@ -3074,7 +3074,7 @@ function CreateListingPage() {
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="flex-[2] py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-teal-500 to-amber-500 shadow-lg shadow-teal-500/25 hover:opacity-90 active:scale-95 transition-all duration-200 text-sm disabled:opacity-60 disabled:cursor-not-allowed"
+              className="flex-[2] py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg shadow-orange-500/25 hover:opacity-90 active:scale-95 transition-all duration-200 text-sm disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {submitting ? (
                 <span className="flex items-center justify-center gap-2">
@@ -3096,7 +3096,7 @@ function CreateListingPage() {
 
 export default function CreateListingPageRoot() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-stone-50 flex items-center justify-center"><div className="w-10 h-10 border-4 border-teal-500 border-t-transparent rounded-full animate-spin" /></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-stone-50 flex items-center justify-center"><div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" /></div>}>
       <CreateListingPage />
     </Suspense>
   );

@@ -243,7 +243,7 @@ export default function CountrySelect({ value, onChange, lang = 'tr', placeholde
                 style={{
                   padding: '10px 12px',
                   cursor: 'pointer',
-                  borderBottom: showDivider ? '2px solid #0D9488' : 'none',
+                  borderBottom: showDivider ? '2px solid #F97316' : 'none',
                   background: 'white',
                   fontSize: '15px',
                   textAlign: isRtl ? 'right' : 'left',

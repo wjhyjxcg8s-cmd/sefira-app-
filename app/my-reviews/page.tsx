@@ -145,14 +145,14 @@ function StarRow({
             onMouseEnter={() => onHover?.(star)}
             onMouseLeave={() => onHover?.(0)}
             onClick={() => onClick?.(star)}
-            className={`text-2xl leading-none transition-colors ${filled ? "text-teal-500" : "text-stone-300"}`}
+            className={`text-2xl leading-none transition-colors ${filled ? "text-orange-500" : "text-stone-300"}`}
           >
             ★
           </button>
         ) : (
           <span
             key={star}
-            className={`text-xl leading-none ${filled ? "text-teal-500" : "text-stone-300"}`}
+            className={`text-xl leading-none ${filled ? "text-orange-500" : "text-stone-300"}`}
           >
             ★
           </span>
@@ -217,7 +217,7 @@ export default function MyReviewsPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-stone-50">
-        <div className="w-10 h-10 border-4 border-teal-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -225,7 +225,7 @@ export default function MyReviewsPage() {
   if (!user) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-stone-50 gap-5 p-6">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500 to-amber-500 flex items-center justify-center shadow-lg shadow-teal-500/30">
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/30">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-white">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
           </svg>
@@ -233,7 +233,7 @@ export default function MyReviewsPage() {
         <p className="text-stone-600 text-center font-medium">{t.notLoggedIn}</p>
         <Link
           href="/"
-          className="bg-gradient-to-r from-teal-500 to-amber-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-teal-500/25 hover:opacity-90 transition-all active:scale-95"
+          className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-orange-500/25 hover:opacity-90 transition-all active:scale-95"
         >
           {t.goHome}
         </Link>
@@ -247,10 +247,10 @@ export default function MyReviewsPage() {
       <nav dir="ltr" style={{ transform: "translateZ(0)", WebkitTransform: "translateZ(0)", willChange: "transform" }} className="fixed top-0 left-0 right-0 w-full z-[9999] bg-white border-b border-stone-200 shadow-sm">
         <div className="max-w-2xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-teal-500 to-amber-500 flex items-center justify-center font-black text-sm text-white shadow-lg shadow-teal-500/30 group-hover:scale-110 transition-all duration-300">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-sm text-white shadow-lg shadow-orange-500/30 group-hover:scale-110 transition-all duration-300">
               S
             </div>
-            <span className="text-xl font-black tracking-tight bg-gradient-to-r from-teal-500 to-amber-600 bg-clip-text text-transparent">
+            <span className="text-xl font-black tracking-tight bg-gradient-to-r from-orange-500 to-amber-600 bg-clip-text text-transparent">
               Sefira
             </span>
           </Link>
@@ -271,18 +271,18 @@ export default function MyReviewsPage() {
 
         {/* Page title */}
         <h1 className="text-2xl font-black text-stone-900 flex items-center gap-3 mb-5">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-teal-500 flex-shrink-0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-orange-500 flex-shrink-0">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
           </svg>
           {t.title}
         </h1>
 
         {/* Info banner */}
-        <div className="flex items-start gap-3 bg-teal-50 border border-teal-200 rounded-2xl px-4 py-3.5 mb-7">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5">
+        <div className="flex items-start gap-3 bg-orange-50 border border-orange-200 rounded-2xl px-4 py-3.5 mb-7">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5">
             <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
           </svg>
-          <p className="text-sm text-teal-900 leading-relaxed">{t.banner}</p>
+          <p className="text-sm text-orange-900 leading-relaxed">{t.banner}</p>
         </div>
 
         {/* Review list */}
@@ -305,7 +305,7 @@ export default function MyReviewsPage() {
             <div className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
               {/* Card header: avatar + name + stars */}
               <div className="flex items-start gap-3 p-5 pb-4">
-                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-teal-500 to-amber-500 flex items-center justify-center text-white font-black text-base flex-shrink-0 shadow-sm">
+                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white font-black text-base flex-shrink-0 shadow-sm">
                   K
                 </div>
                 <div className="flex-1 min-w-0">
@@ -344,13 +344,13 @@ export default function MyReviewsPage() {
                     placeholder={t.editPlaceholder}
                     rows={4}
                     dir={isFa ? "rtl" : "ltr"}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm text-stone-800 placeholder-stone-400 outline-none focus:ring-2 focus:ring-teal-400 transition-all resize-none"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm text-stone-800 placeholder-stone-400 outline-none focus:ring-2 focus:ring-orange-400 transition-all resize-none"
                   />
                   {/* Save / Cancel */}
                   <div className="flex gap-2">
                     <button
                       onClick={saveEdit}
-                      className="flex-1 bg-gradient-to-r from-teal-500 to-amber-500 text-white text-sm font-bold py-2.5 rounded-xl hover:opacity-90 active:scale-95 transition-all shadow-sm"
+                      className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-bold py-2.5 rounded-xl hover:opacity-90 active:scale-95 transition-all shadow-sm"
                     >
                       {t.save}
                     </button>
@@ -390,7 +390,7 @@ export default function MyReviewsPage() {
                     <div className="flex gap-2">
                       <button
                         onClick={startEdit}
-                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-teal-50 text-teal-700 text-sm font-semibold hover:bg-teal-100 active:scale-95 transition-all border border-teal-200"
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-orange-50 text-orange-700 text-sm font-semibold hover:bg-orange-100 active:scale-95 transition-all border border-orange-200"
                       >
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
                           <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />

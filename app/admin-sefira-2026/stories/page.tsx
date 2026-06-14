@@ -133,7 +133,7 @@ export default function StoriesPage() {
   if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-white">
-        <div className="w-9 h-9 rounded-full border-4 border-gray-200 border-t-teal-600 animate-spin" style={{ animationDuration: "0.7s" }} />
+        <div className="w-9 h-9 rounded-full border-4 border-gray-200 border-t-orange-600 animate-spin" style={{ animationDuration: "0.7s" }} />
       </div>
     );
   }
@@ -160,7 +160,7 @@ export default function StoriesPage() {
         <div className="p-5 border-b border-gray-100 flex items-center gap-3">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-base font-black shrink-0"
-            style={{ backgroundColor: "#0D9488" }}
+            style={{ backgroundColor: "#F97316" }}
           >
             S
           </div>
@@ -178,14 +178,14 @@ export default function StoriesPage() {
               onClick={() => { router.push(item.href); setSidebarOpen(false); }}
               className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-left"
               style={{
-                backgroundColor: item.active ? "#0D9488" : "transparent",
+                backgroundColor: item.active ? "#F97316" : "transparent",
                 color: item.active ? "white" : "#374151",
-                boxShadow: item.active ? "0 2px 8px rgba(13,148,136,0.3)" : "none",
+                boxShadow: item.active ? "0 2px 8px rgba(249,115,22,0.3)" : "none",
               }}
               onMouseEnter={(e) => {
                 if (!item.active) {
                   e.currentTarget.style.backgroundColor = "#ccfbf1";
-                  e.currentTarget.style.color = "#0D9488";
+                  e.currentTarget.style.color = "#F97316";
                 }
               }}
               onMouseLeave={(e) => {
@@ -206,7 +206,7 @@ export default function StoriesPage() {
           <div className="flex items-center gap-3">
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-              style={{ backgroundColor: "#ccfbf1", color: "#0D9488" }}
+              style={{ backgroundColor: "#ccfbf1", color: "#F97316" }}
             >
               A
             </div>
@@ -256,7 +256,7 @@ export default function StoriesPage() {
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Görsel</label>
               <div
-                className="border-2 border-dashed border-gray-200 rounded-xl p-5 sm:p-6 text-center cursor-pointer hover:border-teal-300 transition-colors"
+                className="border-2 border-dashed border-gray-200 rounded-xl p-5 sm:p-6 text-center cursor-pointer hover:border-orange-300 transition-colors"
                 onClick={() => fileInputRef.current?.click()}
               >
                 {previewUrl ? (
@@ -288,7 +288,7 @@ export default function StoriesPage() {
                 value={caption}
                 onChange={(e) => setCaption(e.target.value)}
                 placeholder="İstanbul'da harika bir arkadaşlık 🏠"
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20"
+                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20"
               />
             </div>
 
@@ -300,7 +300,7 @@ export default function StoriesPage() {
                 value={weekLabel}
                 onChange={(e) => setWeekLabel(e.target.value)}
                 placeholder="Bu Hafta"
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20"
+                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20"
               />
             </div>
 
@@ -316,8 +316,8 @@ export default function StoriesPage() {
               disabled={uploading || !selectedFile}
               className="w-full py-3 rounded-xl text-white text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
-                backgroundColor: "#0D9488",
-                boxShadow: uploading || !selectedFile ? "none" : "0 4px 12px rgba(13,148,136,0.3)",
+                backgroundColor: "#F97316",
+                boxShadow: uploading || !selectedFile ? "none" : "0 4px 12px rgba(249,115,22,0.3)",
               }}
             >
               {uploading ? "Yükleniyor…" : "Yükle"}
@@ -332,7 +332,7 @@ export default function StoriesPage() {
           {loading ? (
             <div className="flex justify-center py-12">
               <div
-                className="w-8 h-8 rounded-full border-4 border-gray-200 border-t-teal-600 animate-spin"
+                className="w-8 h-8 rounded-full border-4 border-gray-200 border-t-orange-600 animate-spin"
                 style={{ animationDuration: "0.7s" }}
               />
             </div>
@@ -358,7 +358,7 @@ export default function StoriesPage() {
                   </div>
                   <div className="p-3">
                     {story.week_label && (
-                      <span className="text-xs font-semibold text-teal-600">{story.week_label}</span>
+                      <span className="text-xs font-semibold text-orange-600">{story.week_label}</span>
                     )}
                     {story.caption && (
                       <p className="text-xs text-gray-600 mt-0.5 line-clamp-2">{story.caption}</p>
@@ -370,7 +370,7 @@ export default function StoriesPage() {
                         year: "numeric",
                       })}
                     </p>
-                    <div style={{ display: "flex", alignItems: "center", gap: "4px", color: "#0D9488", fontWeight: "bold", fontSize: "14px", marginTop: "8px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "4px", color: "#F97316", fontWeight: "bold", fontSize: "14px", marginTop: "8px" }}>
                       👁 {story.views || 0} görüntülenme
                     </div>
                     <button

@@ -172,7 +172,7 @@ export default function SavedPage() {
         </button>
         <h1 className="font-bold text-gray-900 text-lg flex-1">{pageTitle[l] ?? pageTitle.en}</h1>
         {listings.length > 0 && (
-          <span className="bg-teal-100 text-teal-700 text-xs rounded-full px-2 py-1 font-medium">
+          <span className="bg-orange-100 text-orange-700 text-xs rounded-full px-2 py-1 font-medium">
             {listings.length} {countLabel[l] ?? countLabel.en}
           </span>
         )}
@@ -194,7 +194,7 @@ export default function SavedPage() {
             </div>
             <button
               onClick={() => router.push("/")}
-              className="mt-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-2.5 rounded-full transition-colors"
+              className="mt-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold px-6 py-2.5 rounded-full transition-colors"
             >
               {browseCta[l] ?? browseCta.en}
             </button>
@@ -260,7 +260,7 @@ export default function SavedPage() {
                     {listing.type === "has_place" ? (
                       <>
                         {listing.rent && listing.currency && (
-                          <p className="text-teal-600 font-bold text-sm">
+                          <p className="text-orange-600 font-bold text-sm">
                             {listing.rent} {listing.currency}/ay
                           </p>
                         )}
@@ -273,7 +273,7 @@ export default function SavedPage() {
                     ) : (
                       <>
                         {listing.max_budget && listing.currency && (
-                          <p className="text-teal-600 font-bold text-sm">
+                          <p className="text-orange-600 font-bold text-sm">
                             Max: {listing.max_budget} {listing.currency}/ay
                           </p>
                         )}
@@ -290,7 +290,7 @@ export default function SavedPage() {
                         try { sessionStorage.setItem("sefira-scroll", String(window.scrollY)); } catch { /* ignore */ }
                         router.push(`/listings/${listing.id}`);
                       }}
-                      className="text-teal-600 text-xs font-medium mt-1.5 block"
+                      className="text-orange-600 text-xs font-medium mt-1.5 block"
                     >
                       {viewDetail[l] ?? viewDetail.en}
                     </button>

@@ -492,8 +492,8 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
       {/* City filter badge */}
       {filterCity && (
         <>
-          <div className="flex items-center gap-2 mb-3 bg-teal-50 border border-teal-200 rounded-2xl px-4 py-2">
-            <span className="text-teal-700 text-sm font-medium">
+          <div className="flex items-center gap-2 mb-3 bg-orange-50 border border-orange-200 rounded-2xl px-4 py-2">
+            <span className="text-orange-700 text-sm font-medium">
               📍 {filterCity} {cityFilterUI[lang as Lang]?.label ?? cityFilterUI.tr.label}
             </span>
             <button
@@ -505,7 +505,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
           </div>
           <button
             onClick={onClearFilter}
-            className="w-full mb-4 border border-teal-400 text-teal-500 rounded-xl py-2 text-sm font-medium hover:bg-teal-50 transition-colors"
+            className="w-full mb-4 border border-orange-400 text-orange-500 rounded-xl py-2 text-sm font-medium hover:bg-orange-50 transition-colors"
           >
             {cityFilterUI[lang as Lang]?.backToAll ?? cityFilterUI.tr.backToAll}
           </button>
@@ -522,8 +522,8 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
               selectedCountry === c.code
                 ? c.code === "all"
                   ? "bg-slate-800 text-white shadow-md scale-105"
-                  : "bg-teal-500 text-white shadow-md scale-105"
-                : "bg-white text-gray-600 border border-gray-200 hover:border-teal-300"
+                  : "bg-orange-500 text-white shadow-md scale-105"
+                : "bg-white text-gray-600 border border-gray-200 hover:border-orange-300"
             }`}
           >
             <span className="text-lg">{c.flag}</span>
@@ -533,7 +533,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
 
         <button
           onClick={() => setShowCountryModal(true)}
-          className="flex items-center gap-1 px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-all border-2 border-dashed border-gray-300 text-gray-500 hover:border-teal-400 hover:text-teal-500 bg-white"
+          className="flex items-center gap-1 px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-all border-2 border-dashed border-gray-300 text-gray-500 hover:border-orange-400 hover:text-orange-500 bg-white"
         >
           🌐 +
         </button>
@@ -550,7 +550,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
           <div className="col-span-3 text-center py-12">
             <p className="text-4xl mb-3">🏙️</p>
             <p className="text-gray-500 font-medium">{filterCity} için henüz ilan yok</p>
-            <button onClick={onClearFilter} className="mt-3 text-teal-500 text-sm underline">
+            <button onClick={onClearFilter} className="mt-3 text-orange-500 text-sm underline">
               Tüm ilanları gör
             </button>
           </div>
@@ -584,7 +584,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                     className="w-full h-full object-cover"
                   />
                 ) : listing.type === "needs_place" ? (
-                  <div className="w-full h-full bg-gradient-to-br from-blue-100 to-teal-50 relative">
+                  <div className="w-full h-full bg-gradient-to-br from-blue-100 to-orange-50 relative">
                     {listing.profile?.avatar_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -654,7 +654,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                 {listing.type === "has_place" ? (
                   <>
                     {listing.rent && listing.currency && (
-                      <p className="text-teal-500 font-bold text-sm mt-1">
+                      <p className="text-orange-500 font-bold text-sm mt-1">
                         {listing.rent} {listing.currency}/ay
                       </p>
                     )}
@@ -678,7 +678,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                 ) : (
                   <>
                     {listing.max_budget && listing.currency && (
-                      <p className="text-teal-500 font-bold text-sm mt-1">
+                      <p className="text-orange-500 font-bold text-sm mt-1">
                         {lbl.maxBudget}: {listing.max_budget} {listing.currency}/ay
                       </p>
                     )}
@@ -718,7 +718,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={listing.profile.avatar_url}
-                      className="w-8 h-8 rounded-full object-cover border-2 border-teal-200"
+                      className="w-8 h-8 rounded-full object-cover border-2 border-orange-200"
                       alt=""
                     />
                     <span className="text-xs text-gray-500 font-medium truncate">
@@ -757,7 +757,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                 value={countrySearch}
                 onChange={(e) => setCountrySearch(e.target.value)}
                 placeholder="Ülke ara..."
-                className="w-full px-4 py-2.5 bg-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
+                className="w-full px-4 py-2.5 bg-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
                 autoFocus
               />
             </div>
@@ -766,7 +766,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
             <div className="px-4 pb-2">
               <button
                 onClick={() => { setSelectedCountry("all"); setShowCountryModal(false); }}
-                className="w-full flex items-center gap-2 p-3 rounded-xl border-2 border-teal-200 bg-teal-50 text-teal-700 font-medium text-sm"
+                className="w-full flex items-center gap-2 p-3 rounded-xl border-2 border-orange-200 bg-orange-50 text-orange-700 font-medium text-sm"
               >
                 🌍 Tüm Ülkeleri Göster
               </button>
@@ -783,8 +783,8 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                       onClick={() => { selectFromModal(c); setCountrySearch(""); }}
                       className={`flex items-center gap-2 p-3 rounded-xl border text-sm text-left transition-all ${
                         selectedCountry === c.code
-                          ? "border-teal-500 bg-teal-50 text-teal-700 font-medium"
-                          : "border-gray-200 hover:border-teal-300 hover:bg-teal-50"
+                          ? "border-orange-500 bg-orange-50 text-orange-700 font-medium"
+                          : "border-gray-200 hover:border-orange-300 hover:bg-orange-50"
                       }`}
                     >
                       <span className="text-xl">{c.flag}</span>

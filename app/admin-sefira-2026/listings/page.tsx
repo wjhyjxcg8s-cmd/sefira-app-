@@ -96,7 +96,7 @@ export default function AdminListingsPage() {
   if (loading || (!user && !loading)) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-9 h-9 rounded-full border-4 border-gray-200 border-t-teal-600 animate-spin" />
+        <div className="w-9 h-9 rounded-full border-4 border-gray-200 border-t-orange-600 animate-spin" />
       </div>
     );
   }
@@ -131,7 +131,7 @@ export default function AdminListingsPage() {
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <div className="bg-white rounded-2xl px-5 py-3 border border-gray-100 shadow-sm flex items-center gap-3 shrink-0 flex-wrap">
             <span className="text-sm text-gray-500">
-              <span className="text-2xl font-bold text-teal-600">{activeCount}</span> aktif
+              <span className="text-2xl font-bold text-orange-600">{activeCount}</span> aktif
             </span>
             <span className="text-gray-300">|</span>
             <span className="text-sm text-gray-500">
@@ -143,11 +143,11 @@ export default function AdminListingsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Şehre göre ara..."
-            className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100"
+            className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
           />
           <button
             onClick={fetchListings}
-            className="bg-teal-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-teal-700 transition-colors shrink-0"
+            className="bg-orange-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-orange-700 transition-colors shrink-0"
           >
             🔄 Yenile
           </button>
@@ -156,7 +156,7 @@ export default function AdminListingsPage() {
         {/* List */}
         {dataLoading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="w-9 h-9 rounded-full border-4 border-gray-200 border-t-teal-600 animate-spin" />
+            <div className="w-9 h-9 rounded-full border-4 border-gray-200 border-t-orange-600 animate-spin" />
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-16 text-gray-400 text-sm">İlan bulunamadı</div>
@@ -222,7 +222,7 @@ export default function AdminListingsPage() {
                       </div>
                       <div className="flex items-center gap-3 mt-1">
                         {l.rent != null && (
-                          <span className="text-sm font-bold text-teal-600">
+                          <span className="text-sm font-bold text-orange-600">
                             {l.rent.toLocaleString()} {l.currency ?? ""}
                           </span>
                         )}

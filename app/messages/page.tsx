@@ -628,7 +628,7 @@ function MessagesPageContent() {
       <header className="h-14 flex items-center px-4 border-b border-stone-200 bg-white shadow-sm flex-shrink-0 gap-3">
         <Link
           href="/"
-          className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-teal-500 to-amber-500 flex-shrink-0"
+          className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 flex-shrink-0"
         >
           <span className="text-white font-black text-sm leading-none">S</span>
         </Link>
@@ -640,7 +640,7 @@ function MessagesPageContent() {
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
           <Link
             href="/"
-            className="flex items-center gap-2 bg-teal-500 hover:bg-teal-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200"
+            className="flex items-center gap-2 bg-orange-500 hover:bg-orange-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -681,10 +681,10 @@ function MessagesPageContent() {
             onClick={() => {
               window.location.href = "/support-chat";
             }}
-            className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-teal-50 transition-colors border-b border-gray-50 active:bg-teal-100"
+            className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-orange-50 transition-colors border-b border-gray-50 active:bg-orange-100"
           >
             <div className="relative flex-shrink-0">
-              <div className="w-12 h-12 rounded-full bg-teal-500 flex items-center justify-center text-white font-bold text-lg shadow-sm">
+              <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-lg shadow-sm">
                 S
               </div>
               {unreadSupportCount > 0 && (
@@ -719,7 +719,7 @@ function MessagesPageContent() {
                   {chatMessages[chatMessages.length - 1]?.message || t.supportWelcome}
                 </p>
                 {unreadSupportCount > 0 && (
-                  <span className="w-5 h-5 bg-teal-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold flex-shrink-0 ml-1">
+                  <span className="w-5 h-5 bg-orange-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold flex-shrink-0 ml-1">
                     {unreadSupportCount > 9 ? "9+" : unreadSupportCount}
                   </span>
                 )}
@@ -730,16 +730,16 @@ function MessagesPageContent() {
           {/* Sefira Bildirimleri */}
           <button
             onClick={openNotificationsChannel}
-            className={`w-full flex items-center gap-3 px-4 py-3.5 hover:bg-teal-50 transition-colors border-b border-gray-50 active:bg-teal-100 ${
-              selectedConv === "sefira-notifications" ? "bg-teal-50" : ""
+            className={`w-full flex items-center gap-3 px-4 py-3.5 hover:bg-orange-50 transition-colors border-b border-gray-50 active:bg-orange-100 ${
+              selectedConv === "sefira-notifications" ? "bg-orange-50" : ""
             }`}
           >
             <div className="relative flex-shrink-0">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-teal-500 to-amber-500 flex items-center justify-center text-white font-black text-lg shadow-sm">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white font-black text-lg shadow-sm">
                 S
               </div>
               {hasUnreadGlobal && (
-                <div className="absolute bottom-0 right-0 w-3 h-3 bg-teal-500 rounded-full border-2 border-white" />
+                <div className="absolute bottom-0 right-0 w-3 h-3 bg-orange-500 rounded-full border-2 border-white" />
               )}
             </div>
             <div className="flex-1 min-w-0">
@@ -768,7 +768,7 @@ function MessagesPageContent() {
                   {lastGlobalMsg ? lastGlobalMsg.message : t.welcomePreview}
                 </p>
                 {hasUnreadGlobal && (
-                  <div className="w-2 h-2 rounded-full bg-teal-500 flex-shrink-0 ml-1" />
+                  <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0 ml-1" />
                 )}
               </div>
             </div>
@@ -781,8 +781,8 @@ function MessagesPageContent() {
                 setSelectedConv(targetUserId);
                 setMobileView("chat");
               }}
-              className={`w-full flex items-center gap-3 px-4 py-3.5 hover:bg-teal-50 transition-colors border-b border-gray-50 active:bg-teal-100 ${
-                selectedConv === targetUserId ? "bg-teal-50" : ""
+              className={`w-full flex items-center gap-3 px-4 py-3.5 hover:bg-orange-50 transition-colors border-b border-gray-50 active:bg-orange-100 ${
+                selectedConv === targetUserId ? "bg-orange-50" : ""
               }`}
             >
               <div className="relative flex-shrink-0">
@@ -790,14 +790,14 @@ function MessagesPageContent() {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={listingContext.photos[0]} alt="" className="w-14 h-14 rounded-xl object-cover" />
                 ) : (
-                  <div className="w-14 h-14 rounded-xl bg-teal-50 flex items-center justify-center text-2xl">🏠</div>
+                  <div className="w-14 h-14 rounded-xl bg-orange-50 flex items-center justify-center text-2xl">🏠</div>
                 )}
                 <div className="absolute -bottom-1 -right-1">
                   {activePeerAvatar ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={activePeerAvatar} alt="" className="w-6 h-6 rounded-full border-2 border-white object-cover" />
                   ) : (
-                    <div className="w-6 h-6 rounded-full bg-teal-400 border-2 border-white flex items-center justify-center text-white text-[10px] font-bold">
+                    <div className="w-6 h-6 rounded-full bg-orange-400 border-2 border-white flex items-center justify-center text-white text-[10px] font-bold">
                       {activePeerName[0]?.toUpperCase() ?? "?"}
                     </div>
                   )}
@@ -806,10 +806,10 @@ function MessagesPageContent() {
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-center">
                   <p className="font-bold text-gray-900 text-sm truncate">{activePeerName}</p>
-                  <p className="text-[10px] text-teal-400 font-semibold flex-shrink-0 ml-1">{t.newMessage}</p>
+                  <p className="text-[10px] text-orange-400 font-semibold flex-shrink-0 ml-1">{t.newMessage}</p>
                 </div>
                 {listingContext && (
-                  <p className="text-xs text-teal-500 font-medium truncate">
+                  <p className="text-xs text-orange-500 font-medium truncate">
                     🏠 {listingContext.city}{listingContext.district ? ` / ${listingContext.district}` : ""}
                   </p>
                 )}
@@ -838,8 +838,8 @@ function MessagesPageContent() {
               <button
                 key={conv.id}
                 onClick={() => openConversation(conv)}
-                className={`w-full flex items-center gap-3 px-4 py-3.5 hover:bg-teal-50 transition-colors border-b border-gray-50 active:bg-teal-100 ${
-                  isSelected ? "bg-teal-50" : ""
+                className={`w-full flex items-center gap-3 px-4 py-3.5 hover:bg-orange-50 transition-colors border-b border-gray-50 active:bg-orange-100 ${
+                  isSelected ? "bg-orange-50" : ""
                 }`}
               >
                 {/* Listing thumbnail as primary, user avatar as overlay */}
@@ -848,14 +848,14 @@ function MessagesPageContent() {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={listing.photos[0]} alt="" className="w-14 h-14 rounded-xl object-cover" />
                   ) : (
-                    <div className="w-14 h-14 rounded-xl bg-teal-50 flex items-center justify-center text-2xl">🏠</div>
+                    <div className="w-14 h-14 rounded-xl bg-orange-50 flex items-center justify-center text-2xl">🏠</div>
                   )}
                   <div className="absolute -bottom-1 -right-1">
                     {avatar ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={avatar} alt="" className="w-6 h-6 rounded-full border-2 border-white object-cover" />
                     ) : (
-                      <div className="w-6 h-6 rounded-full bg-teal-400 border-2 border-white flex items-center justify-center text-white text-[10px] font-bold">
+                      <div className="w-6 h-6 rounded-full bg-orange-400 border-2 border-white flex items-center justify-center text-white text-[10px] font-bold">
                         {name[0]?.toUpperCase() ?? "?"}
                       </div>
                     )}
@@ -877,7 +877,7 @@ function MessagesPageContent() {
                     )}
                   </div>
                   {listing && (
-                    <p className="text-xs text-teal-500 font-medium truncate">
+                    <p className="text-xs text-orange-500 font-medium truncate">
                       🏠 {listing.city}{listing.district ? ` / ${listing.district}` : ""}
                     </p>
                   )}
@@ -890,7 +890,7 @@ function MessagesPageContent() {
                   </p>
                 </div>
                 {conv.unreadCount > 0 && (
-                  <span className="w-5 h-5 bg-teal-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold flex-shrink-0">
+                  <span className="w-5 h-5 bg-orange-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold flex-shrink-0">
                     {conv.unreadCount > 9 ? "9+" : conv.unreadCount}
                   </span>
                 )}
@@ -922,10 +922,10 @@ function MessagesPageContent() {
                   <img
                     src={activePeerAvatar}
                     alt=""
-                    className="w-10 h-10 rounded-full object-cover border-2 border-teal-200"
+                    className="w-10 h-10 rounded-full object-cover border-2 border-orange-200"
                   />
                 ) : (
-                  <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center font-bold text-teal-500">
+                  <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center font-bold text-orange-500">
                     {activePeerName[0]?.toUpperCase() ?? "?"}
                   </div>
                 )}
@@ -939,14 +939,14 @@ function MessagesPageContent() {
 
               {/* Listing context card — fetched on-demand per conversation */}
               {listingLoading && !activeListing && (
-                <div className="mx-3 mt-3 mb-2 h-20 bg-teal-100 animate-pulse rounded-2xl flex-shrink-0" />
+                <div className="mx-3 mt-3 mb-2 h-20 bg-orange-100 animate-pulse rounded-2xl flex-shrink-0" />
               )}
               {activeListing && (
                 <div
                   onClick={() => router.push(`/listings/${activeListing.id}`)}
                   className="mx-3 mt-3 mb-2 cursor-pointer active:scale-[0.98] transition-transform flex-shrink-0"
                 >
-                  <div className="flex items-center gap-3 bg-gradient-to-r from-teal-500 to-amber-500 rounded-2xl p-3 shadow-lg">
+                  <div className="flex items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-3 shadow-lg">
                     {activeListing.photos?.[0] ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -996,7 +996,7 @@ function MessagesPageContent() {
                   return isMe ? (
                     <div key={msg.id} className="flex justify-end mb-3 px-4">
                       <div className="max-w-[75%]">
-                        <div className="bg-gradient-to-br from-teal-500 to-amber-500 text-white px-4 py-2.5 rounded-2xl rounded-tr-sm shadow-sm">
+                        <div className="bg-gradient-to-br from-orange-500 to-amber-500 text-white px-4 py-2.5 rounded-2xl rounded-tr-sm shadow-sm">
                           <p className="text-sm leading-relaxed" dir="auto">
                             {msg.content}
                           </p>
@@ -1056,7 +1056,7 @@ function MessagesPageContent() {
                 <button
                   onClick={sendMessage}
                   disabled={!messageText.trim() || sendingMessage}
-                  className="w-11 h-11 rounded-full flex items-center justify-center transition-all shadow-md bg-gradient-to-br from-teal-500 to-amber-500 text-white disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
+                  className="w-11 h-11 rounded-full flex items-center justify-center transition-all shadow-md bg-gradient-to-br from-orange-500 to-amber-500 text-white disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
                 >
                   <SendIcon />
                 </button>
@@ -1072,7 +1072,7 @@ function MessagesPageContent() {
                 >
                   ←
                 </button>
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-teal-700 flex items-center justify-center text-white font-black text-xs shadow-sm flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-700 flex items-center justify-center text-white font-black text-xs shadow-sm flex-shrink-0">
                   SD
                 </div>
                 <div>
@@ -1085,7 +1085,7 @@ function MessagesPageContent() {
                 style={{ direction: "ltr" }}
               >
                 <div className="flex items-end gap-2">
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-teal-400 to-teal-700 flex items-center justify-center text-white font-black text-xs flex-shrink-0 shadow-sm">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-400 to-orange-700 flex items-center justify-center text-white font-black text-xs flex-shrink-0 shadow-sm">
                     SD
                   </div>
                   <div className="max-w-[75%]">
@@ -1102,7 +1102,7 @@ function MessagesPageContent() {
                   return isUser ? (
                     <div key={msg.id} className="flex justify-end">
                       <div className="max-w-[75%]">
-                        <div className="bg-gradient-to-br from-teal-500 to-amber-500 text-white px-4 py-2.5 rounded-2xl rounded-tr-sm shadow-sm">
+                        <div className="bg-gradient-to-br from-orange-500 to-amber-500 text-white px-4 py-2.5 rounded-2xl rounded-tr-sm shadow-sm">
                           <p dir="auto" className="text-sm leading-relaxed whitespace-pre-line">
                             {msg.message}
                           </p>
@@ -1114,7 +1114,7 @@ function MessagesPageContent() {
                     </div>
                   ) : (
                     <div key={msg.id} className="flex items-end gap-2">
-                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-teal-400 to-teal-700 flex items-center justify-center text-white font-black text-xs flex-shrink-0 shadow-sm">
+                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-400 to-orange-700 flex items-center justify-center text-white font-black text-xs flex-shrink-0 shadow-sm">
                         SD
                       </div>
                       <div className="max-w-[75%]">
@@ -1151,7 +1151,7 @@ function MessagesPageContent() {
                 <button
                   onClick={handleSendChat}
                   disabled={!chatInput.trim() || sendingChat}
-                  className="w-11 h-11 rounded-full flex items-center justify-center transition-all shadow-md bg-gradient-to-br from-teal-500 to-amber-500 text-white disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
+                  className="w-11 h-11 rounded-full flex items-center justify-center transition-all shadow-md bg-gradient-to-br from-orange-500 to-amber-500 text-white disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
                 >
                   <SendIcon />
                 </button>
@@ -1167,7 +1167,7 @@ function MessagesPageContent() {
                 >
                   ←
                 </button>
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-500 to-amber-500 flex items-center justify-center text-white font-black shadow-sm flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white font-black shadow-sm flex-shrink-0">
                   S
                 </div>
                 <div>
@@ -1180,7 +1180,7 @@ function MessagesPageContent() {
                 style={{ direction: "ltr" }}
               >
                 <div className="flex items-end gap-2">
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-teal-500 to-amber-500 flex items-center justify-center text-white font-black text-sm flex-shrink-0 shadow-sm">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white font-black text-sm flex-shrink-0 shadow-sm">
                     S
                   </div>
                   <div className="max-w-[75%]">
@@ -1194,12 +1194,12 @@ function MessagesPageContent() {
                 </div>
                 {globalSorted.map((msg) => (
                   <div key={msg.id} className="flex items-end gap-2">
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-teal-500 to-amber-500 flex items-center justify-center text-white font-black text-sm flex-shrink-0 shadow-sm">
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white font-black text-sm flex-shrink-0 shadow-sm">
                       S
                     </div>
                     <div className="max-w-[75%]">
                       <div className="bg-white text-gray-800 px-4 py-2.5 rounded-2xl rounded-tl-sm shadow-sm border border-gray-100">
-                        <p className="text-xs font-bold text-teal-500 mb-1">{msg.title}</p>
+                        <p className="text-xs font-bold text-orange-500 mb-1">{msg.title}</p>
                         <p className="text-sm leading-relaxed whitespace-pre-line">
                           {msg.message}
                         </p>
@@ -1219,7 +1219,7 @@ function MessagesPageContent() {
             /* ── Nothing selected ── */
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center px-6">
-                <div className="w-20 h-20 rounded-full bg-teal-100 flex items-center justify-center mx-auto mb-4">
+                <div className="w-20 h-20 rounded-full bg-orange-100 flex items-center justify-center mx-auto mb-4">
                   <svg
                     viewBox="0 0 24 24"
                     fill="none"
@@ -1227,7 +1227,7 @@ function MessagesPageContent() {
                     strokeWidth="1.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="w-10 h-10 text-teal-400"
+                    className="w-10 h-10 text-orange-400"
                   >
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                   </svg>
@@ -1247,7 +1247,7 @@ export default function MessagesPage() {
     <Suspense
       fallback={
         <div className="min-h-screen flex items-center justify-center bg-[#fefaf5]">
-          <div className="w-10 h-10 border-4 border-teal-400 border-t-transparent rounded-full animate-spin" />
+          <div className="w-10 h-10 border-4 border-orange-400 border-t-transparent rounded-full animate-spin" />
         </div>
       }
     >

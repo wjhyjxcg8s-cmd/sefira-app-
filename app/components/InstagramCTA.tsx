@@ -78,7 +78,7 @@ const copy = {
 const postGradients = [
   "from-violet-600 via-purple-700 to-indigo-800",
   "from-rose-500 via-pink-600 to-fuchsia-700",
-  "from-amber-500 via-teal-700 to-rose-700",
+  "from-amber-500 via-orange-700 to-rose-700",
 ];
 
 function InstagramIcon({ className }: { className?: string }) {
@@ -117,7 +117,7 @@ export default function InstagramCTA({ lang }: { lang: "tr" | "en" | "fa" | "ar"
         >
           {/* Ambient blobs */}
           <div className="absolute -top-12 -right-12 w-64 h-64 rounded-full bg-pink-500/20 blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-12 -left-12 w-56 h-56 rounded-full bg-teal-600/15 blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-12 -left-12 w-56 h-56 rounded-full bg-orange-600/15 blur-3xl pointer-events-none" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full bg-violet-500/10 blur-3xl pointer-events-none" />
 
           <div className="relative z-10 flex flex-col lg:flex-row items-center gap-8 p-8 lg:p-10">

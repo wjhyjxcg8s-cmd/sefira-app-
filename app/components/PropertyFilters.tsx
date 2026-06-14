@@ -142,7 +142,7 @@ function RangeInput({
   onMin: (v: string) => void; onMax: (v: string) => void;
   prefix?: string;
 }) {
-  const inputCls = `w-full border border-stone-200 rounded-xl py-2 text-xs text-stone-800 bg-stone-50 outline-none focus:border-teal-400 focus:bg-white transition-all duration-200 placeholder:text-stone-300 ${prefix ? "pl-5 pr-2" : "px-3"}`;
+  const inputCls = `w-full border border-stone-200 rounded-xl py-2 text-xs text-stone-800 bg-stone-50 outline-none focus:border-orange-400 focus:bg-white transition-all duration-200 placeholder:text-stone-300 ${prefix ? "pl-5 pr-2" : "px-3"}`;
   return (
     <div>
       <FieldLabel>{label}</FieldLabel>
@@ -170,7 +170,7 @@ function SingleMaxInput({ label, value, onChange, prefix }: { label: string; val
         <input
           type="number" min={0} placeholder="Max" value={value}
           onChange={(e) => onChange(e.target.value)}
-          className={`w-full border border-stone-200 rounded-xl py-2 text-xs text-stone-800 bg-stone-50 outline-none focus:border-teal-400 focus:bg-white transition-all duration-200 placeholder:text-stone-300 ${prefix ? "pl-6 pr-3" : "px-3"}`}
+          className={`w-full border border-stone-200 rounded-xl py-2 text-xs text-stone-800 bg-stone-50 outline-none focus:border-orange-400 focus:bg-white transition-all duration-200 placeholder:text-stone-300 ${prefix ? "pl-6 pr-3" : "px-3"}`}
         />
       </div>
     </div>
@@ -216,8 +216,8 @@ function CountPicker({ label, value, onChange, max = 5 }: {
           onClick={() => onChange(null)}
           className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 border ${
             value === null
-              ? "bg-teal-500 text-white border-teal-500 shadow-md shadow-teal-500/20"
-              : "bg-stone-50 text-stone-500 border-stone-200 hover:border-teal-300 hover:text-teal-700 hover:bg-teal-50"
+              ? "bg-orange-500 text-white border-orange-500 shadow-md shadow-orange-500/20"
+              : "bg-stone-50 text-stone-500 border-stone-200 hover:border-orange-300 hover:text-orange-700 hover:bg-orange-50"
           }`}
         >
           —
@@ -228,8 +228,8 @@ function CountPicker({ label, value, onChange, max = 5 }: {
             onClick={() => onChange(n)}
             className={`min-w-[2rem] px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 border ${
               value === n
-                ? "bg-teal-500 text-white border-teal-500 shadow-md shadow-teal-500/20"
-                : "bg-stone-50 text-stone-500 border-stone-200 hover:border-teal-300 hover:text-teal-700 hover:bg-teal-50"
+                ? "bg-orange-500 text-white border-orange-500 shadow-md shadow-orange-500/20"
+                : "bg-stone-50 text-stone-500 border-stone-200 hover:border-orange-300 hover:text-orange-700 hover:bg-orange-50"
             }`}
           >
             {n === max ? `${n}+` : n}
@@ -248,8 +248,8 @@ function AmenityBadge({ icon, label, active, onToggle }: {
       onClick={onToggle}
       className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl border text-xs font-bold transition-all duration-200 active:scale-95 select-none ${
         active
-          ? "bg-gradient-to-r from-teal-500 to-amber-500 text-white border-transparent shadow-lg shadow-teal-500/25"
-          : "bg-stone-50 text-stone-600 border-stone-200 hover:border-teal-300 hover:text-teal-700 hover:bg-teal-50"
+          ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white border-transparent shadow-lg shadow-orange-500/25"
+          : "bg-stone-50 text-stone-600 border-stone-200 hover:border-orange-300 hover:text-orange-700 hover:bg-orange-50"
       }`}
     >
       <span className="text-sm leading-none">{icon}</span>
@@ -308,10 +308,10 @@ export default function PropertyFilters({
           onClick={() => setOpen((v) => !v)}
           className={`group flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-bold transition-all duration-300 shadow-sm hover:shadow-md active:scale-95 ${
             open
-              ? "bg-gradient-to-r from-teal-500 to-amber-500 text-white border-transparent shadow-lg shadow-teal-500/30"
+              ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white border-transparent shadow-lg shadow-orange-500/30"
               : activeCount > 0
-              ? "bg-teal-50 text-teal-700 border-teal-300 shadow-teal-500/10"
-              : "bg-white text-stone-600 border-stone-200 hover:border-teal-300 hover:text-teal-700 hover:bg-teal-50"
+              ? "bg-orange-50 text-orange-700 border-orange-300 shadow-orange-500/10"
+              : "bg-white text-stone-600 border-stone-200 hover:border-orange-300 hover:text-orange-700 hover:bg-orange-50"
           }`}
         >
           {/* Filter funnel icon */}
@@ -321,7 +321,7 @@ export default function PropertyFilters({
           {t.btn}
           {activeCount > 0 && (
             <span className={`px-1.5 py-0.5 rounded-full text-xs font-black leading-none flex-shrink-0 ${
-              open ? "bg-white/25 text-white" : "bg-teal-500 text-white shadow-sm"
+              open ? "bg-white/25 text-white" : "bg-orange-500 text-white shadow-sm"
             }`}>
               {activeCount}
             </span>
@@ -365,9 +365,9 @@ export default function PropertyFilters({
           <div className="bg-white/98 backdrop-blur-2xl border border-stone-200 rounded-2xl shadow-2xl shadow-stone-900/8 overflow-hidden">
 
             {/* Panel header */}
-            <div className="flex items-center justify-between px-5 py-3.5 border-b border-stone-100 bg-gradient-to-r from-teal-50/80 to-amber-50/40">
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-stone-100 bg-gradient-to-r from-orange-50/80 to-amber-50/40">
               <div className="flex items-center gap-2.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
+                <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
                 <span className="text-sm font-black text-stone-800 tracking-tight">{t.title}</span>
               </div>
               <button
@@ -387,7 +387,7 @@ export default function PropertyFilters({
 
                 {/* Financials */}
                 <div className="space-y-4">
-                  <SectionHeader gradient="from-emerald-500 to-teal-600" emoji="💰" title={t.sec1} />
+                  <SectionHeader gradient="from-emerald-500 to-orange-600" emoji="💰" title={t.sec1} />
                   <RangeInput
                     label={t.price}
                     minVal={f.priceMin} maxVal={f.priceMax}
@@ -475,7 +475,7 @@ export default function PropertyFilters({
               </button>
               <button
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-2 bg-gradient-to-r from-teal-500 via-fuchsia-500 to-violet-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:opacity-95 transition-all duration-200 shadow-lg shadow-teal-500/20 hover:shadow-xl active:scale-95"
+                className="flex items-center gap-2 bg-gradient-to-r from-orange-500 via-fuchsia-500 to-violet-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:opacity-95 transition-all duration-200 shadow-lg shadow-orange-500/20 hover:shadow-xl active:scale-95"
               >
                 {t.apply}
                 {activeCount > 0 && (

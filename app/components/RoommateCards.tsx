@@ -74,7 +74,7 @@ const PROFILES: Profile[] = [
     id: 4, name: "Lena Müller",   age: 28, occupation: "Architect",         nationality: "German",
     languages: ["German", "English"],
     match: 89, city: "Munich",    country: "Germany",
-    gradient: "from-amber-500 via-teal-700 to-rose-700",    initials: "LM",
+    gradient: "from-amber-500 via-orange-700 to-rose-700",    initials: "LM",
     lifestyle: ["Minimalist", "Cyclist", "Foodie"],
     bio: "Architect with a love for clean design and weekend hikes. Always keeps tidy spaces.",
     bioTr: "Temiz tasarımı ve hafta sonu yürüyüşlerini seven mimar. Her zaman düzenli bir alan sağlar.",
@@ -85,7 +85,7 @@ const PROFILES: Profile[] = [
     id: 5, name: "Mehmet Yılmaz", age: 31, occupation: "Chef",              nationality: "Turkish",
     languages: ["Turkish", "English", "German"],
     match: 86, city: "Istanbul",  country: "Turkey",
-    gradient: "from-emerald-600 via-teal-700 to-cyan-800",    initials: "MY",
+    gradient: "from-emerald-600 via-orange-700 to-cyan-800",    initials: "MY",
     lifestyle: ["Early bird", "Foodie", "Calm"],
     bio: "Professional chef who cooks for two and keeps the kitchen spotless. Early riser.",
     bioTr: "İkisi için pişiren ve mutfağı pırıl pırıl tutan profesyonel aşçı. Erken kalkar.",
@@ -269,8 +269,8 @@ const CARD_STYLE: React.CSSProperties = {
 };
 
 const INSPECT_GRAD: React.CSSProperties = {
-  background:  "linear-gradient(135deg, #0D9488 0%, #a855f7 52%, #6366f1 100%)",
-  boxShadow:   "0 10px 28px -6px rgba(168,85,247,0.48), 0 4px 10px -2px rgba(13,148,136,0.32)",
+  background:  "linear-gradient(135deg, #F97316 0%, #a855f7 52%, #6366f1 100%)",
+  boxShadow:   "0 10px 28px -6px rgba(168,85,247,0.48), 0 4px 10px -2px rgba(249,115,22,0.32)",
 };
 
 const FA_FONT: React.CSSProperties = {
@@ -359,9 +359,9 @@ function SwipeCard({
       {isTop && (
         <motion.div
           style={{ opacity: likeOpacity }}
-          className="absolute top-4 left-4 z-20 pointer-events-none border-[3px] border-teal-500 rounded-xl px-3 py-1.5 -rotate-12"
+          className="absolute top-4 left-4 z-20 pointer-events-none border-[3px] border-orange-500 rounded-xl px-3 py-1.5 -rotate-12"
         >
-          <span className="text-teal-500 font-black text-base tracking-widest">LIKE ♥</span>
+          <span className="text-orange-500 font-black text-base tracking-widest">LIKE ♥</span>
         </motion.div>
       )}
 
@@ -398,7 +398,7 @@ function SwipeCard({
                 className="absolute top-3.5 right-4 rounded-2xl px-3 py-1.5 shadow-lg"
                 style={{ background: "rgba(255,255,255,0.93)", backdropFilter: "blur(12px)" }}
               >
-                <span className="text-xs font-black bg-gradient-to-r from-teal-500 to-amber-500 bg-clip-text text-transparent" style={{ direction: "ltr", unicodeBidi: "embed" }}>
+                <span className="text-xs font-black bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent" style={{ direction: "ltr", unicodeBidi: "embed" }}>
                   {profile.match}% {labels.match}
                 </span>
               </div>
@@ -456,7 +456,7 @@ function SwipeCard({
               {profile.languages.map((lang) => (
                 <span
                   key={lang}
-                  className="px-2.5 py-0.5 bg-teal-50 text-teal-800 border border-teal-100 rounded-full text-[11px] font-semibold"
+                  className="px-2.5 py-0.5 bg-orange-50 text-orange-800 border border-orange-100 rounded-full text-[11px] font-semibold"
                 >
                   {lang}
                 </span>
@@ -594,7 +594,7 @@ function InspectModal({
               className="ml-auto rounded-xl px-3 py-1.5 flex-shrink-0"
               style={{ background: "rgba(255,255,255,0.93)", backdropFilter: "blur(10px)" }}
             >
-              <span className="text-sm font-black bg-gradient-to-r from-teal-500 to-amber-500 bg-clip-text text-transparent" style={{ direction: "ltr", unicodeBidi: "embed" }}>
+              <span className="text-sm font-black bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent" style={{ direction: "ltr", unicodeBidi: "embed" }}>
                 {profile.match}% {labels.match}
               </span>
             </div>
@@ -623,7 +623,7 @@ function InspectModal({
             <p className="text-xs font-bold text-stone-400 uppercase tracking-wider mb-2">{labels.languages}</p>
             <div className="flex flex-wrap gap-2">
               {profile.languages.map((l) => (
-                <span key={l} className="px-3 py-1 bg-teal-50 text-teal-800 border border-teal-100 rounded-full text-xs font-semibold">
+                <span key={l} className="px-3 py-1 bg-orange-50 text-orange-800 border border-orange-100 rounded-full text-xs font-semibold">
                   {l}
                 </span>
               ))}
@@ -739,7 +739,7 @@ export default function RoommateCards({
 
         {/* Progress indicator */}
         <div className="flex items-center gap-2 mb-5 text-sm">
-          <span className="font-black text-teal-500">{likedCount}</span>
+          <span className="font-black text-orange-500">{likedCount}</span>
           <span className="text-stone-400 font-medium">{labels.liked}</span>
           <span className="text-stone-200 mx-1">·</span>
           <span className="text-stone-500 font-medium">
@@ -798,8 +798,8 @@ export default function RoommateCards({
               aria-label={labels.messageLabel}
               className="w-[68px] h-[68px] rounded-full flex items-center justify-center transition-all duration-200 hover:opacity-95 hover:scale-110 hover:-translate-y-1 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
               style={{
-                background:  "linear-gradient(135deg, #0D9488, #a855f7, #6366f1)",
-                boxShadow:   "0 16px 40px -8px rgba(168,85,247,0.48), 0 8px 16px -4px rgba(13,148,136,0.32)",
+                background:  "linear-gradient(135deg, #F97316, #a855f7, #6366f1)",
+                boxShadow:   "0 16px 40px -8px rgba(168,85,247,0.48), 0 8px 16px -4px rgba(249,115,22,0.32)",
               }}
             >
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
