@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import WelcomePopup from "@/app/components/WelcomePopup";
-import { ShimmerButton } from "@/components/ui/shimmer-button";
+
 import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
 
 import LatestListings from "@/app/components/LatestListings";
@@ -3535,16 +3535,16 @@ export default function Home() {
 
       {/* ── Mobile: fixed bottom İlan Ver bar ─────────────────────────────── */}
       <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 px-4 py-3 bg-white/95 backdrop-blur-xl border-t border-stone-200 shadow-2xl shadow-stone-900/10">
-        <ShimmerButton
+        <button
           onClick={handleCreateListing}
-          className="w-full text-lg font-semibold gap-2"
+          className="w-full bg-orange-500 hover:bg-orange-600 text-white text-lg font-semibold py-4 rounded-full transition-colors flex items-center justify-center gap-2"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4">
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
           {t.ilanVer}
-        </ShimmerButton>
+        </button>
       </div>
 
       {/* ── ONBOARDING FLOW ──────────────────────────────────────────────────── */}
