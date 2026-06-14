@@ -2752,7 +2752,7 @@ export default function Home() {
                       muted
                       playsInline
                       preload="none"
-                      poster="/hero-bg.png"
+                      poster="/hero-bg.jpg"
                       className="w-full h-full object-cover"
                       style={{ animation: 'sefira-kenburns 5s ease-in-out alternate infinite' }}
                     />

@@ -29,7 +29,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        <link rel="preload" as="image" href="/hero-bg.png" />
+        <link rel="preload" as="image" href="/hero-bg.jpg" />
       </head>
       <body className="min-h-full flex flex-col">
         <Providers>{children}</Providers>
