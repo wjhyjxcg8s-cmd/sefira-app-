@@ -8,7 +8,7 @@ import Link from "next/link";
 import WelcomePopup from "@/app/components/WelcomePopup";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
-import { AuroraBackground } from "@/components/ui/aurora-background";
+
 import LatestListings from "@/app/components/LatestListings";
 import PopularCities from "@/app/components/PopularCities";
 import PropertyFilters from "@/app/components/PropertyFilters";
@@ -1144,7 +1144,6 @@ export default function Home() {
 
   // ── Hero scroll parallax ──────────────────────────────────────────────────
   const { scrollY } = useScroll();
-  const videoParallax = useTransform(scrollY, [0, 600], [0, 30]);
   const badgeTopParallax = useTransform(scrollY, [0, 600], [0, -20]);
   const badgeBottomParallax = useTransform(scrollY, [0, 600], [0, 18]);
 
@@ -1695,17 +1694,9 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900 overflow-x-hidden" dir={lang === "fa" || lang === "ar" ? "rtl" : "ltr"}>
       <style>{`
-        @keyframes sefira-rotate {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
         @keyframes sefira-kenburns {
           0% { transform: scale(1); }
           100% { transform: scale(1.06); }
-        }
-        @keyframes sefira-particle {
-          from { transform: translateY(-12px); }
-          to { transform: translateY(12px); }
         }
       `}</style>
 
@@ -2335,8 +2326,7 @@ export default function Home() {
       )}
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
-      <motion.div>
-      <AuroraBackground className="min-h-screen w-full px-4 pb-8 pt-16 overflow-hidden">
+      <div className="min-h-screen w-full px-4 pb-8 pt-16 overflow-hidden relative bg-stone-50">
 
         {/* Decorative blur circles */}
         <div className="absolute w-96 h-96 rounded-full bg-orange-50 blur-3xl opacity-60 -top-20 -right-20 pointer-events-none" />
@@ -2748,21 +2738,10 @@ export default function Home() {
               <motion.div
                 variants={{ hidden: { opacity: 0, y: 24, scale: 0.96 }, show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 110, damping: 18 } } }}
                 whileHover={{ scale: 1.03 }}
-                style={{ y: videoParallax }}
                 className="relative"
               >
-                {/* Shimmer border wrapper */}
-                <div style={{ position: 'relative', padding: '3px', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
-                  {/* Rotating gradient for animated border */}
-                  <div style={{
-                    position: 'absolute',
-                    top: '-50%',
-                    left: '-50%',
-                    width: '200%',
-                    height: '200%',
-                    background: 'conic-gradient(from 0deg, #F97316, #ec4899, #8b5cf6, #3b82f6, #F97316)',
-                    animation: 'sefira-rotate 4s linear infinite',
-                  }} />
+                {/* Static border wrapper */}
+                <div style={{ position: 'relative', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', border: '2px solid #f97316' }}>
                   {/* Inner video container */}
                   <div style={{ position: 'relative', borderRadius: '21px', overflow: 'hidden', height: '400px' }}>
                     <video
@@ -2779,14 +2758,6 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
                   </div>
                 </div>
-
-                {/* Floating particles */}
-                <div style={{ position: 'absolute', top: '-8px',  left: '-8px',   width: '8px', height: '8px', backgroundColor: '#fb923c', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.2s ease-in-out alternate infinite' }} />
-                <div style={{ position: 'absolute', top: '-8px',  right: '-8px',  width: '8px', height: '8px', backgroundColor: '#f472b6', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.8s ease-in-out alternate infinite 0.4s' }} />
-                <div style={{ position: 'absolute', top: '45%',   left: '-10px',  width: '8px', height: '8px', backgroundColor: '#a78bfa', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.5s ease-in-out alternate infinite 0.8s' }} />
-                <div style={{ position: 'absolute', top: '45%',   right: '-10px', width: '8px', height: '8px', backgroundColor: '#60a5fa', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 3.0s ease-in-out alternate infinite 1.2s' }} />
-                <div style={{ position: 'absolute', bottom: '-8px', left: '-8px', width: '8px', height: '8px', backgroundColor: '#fb923c', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.6s ease-in-out alternate infinite 0.6s' }} />
-                <div style={{ position: 'absolute', bottom: '-8px', right: '-8px',width: '8px', height: '8px', backgroundColor: '#ec4899', borderRadius: '50%', opacity: 0.6, animation: 'sefira-particle 2.3s ease-in-out alternate infinite 1.0s' }} />
               </motion.div>
 
               {/* Floating badge top-left */}
@@ -2845,8 +2816,7 @@ export default function Home() {
 
         </div>
 
-      </AuroraBackground>
-      </motion.div>
+      </div>
 
       {/* ── WEEKLY STORIES ────────────────────────────────────────────────────── */}
       {weeklyStories.length > 0 && (
