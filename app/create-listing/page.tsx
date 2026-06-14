@@ -2,13 +2,10 @@
 
 import { useState, useRef, useEffect, useMemo, Suspense } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
 import { useLang } from "@/app/lib/LangContext";
-import Country from 'country-state-city/lib/country';
-import State from 'country-state-city/lib/state';
 
 // ── Countries ─────────────────────────────────────────────────────────────────
 const TOP_COUNTRY_CODES = ["TR", "IR", "DE", "AE", "GB", "RU", "US", "FR", "ES"];
@@ -1314,47 +1311,28 @@ function CreateListingPage() {
   const [isFloor20Plus, setIsFloor20Plus] = useState(false)
 
   const [iranCities, setIranCities] = useState<string[]>([])
-  useEffect(() => {
-    if (countryIso === 'IR') {
-      fetch('/iran-cities.json')
-        .then(r => r.json())
-        .then((data: {name: string}[]) => {
-          setIranCities(data.map(c => c.name).sort())
-        })
-        .catch(() => {})
-    }
-  }, [countryIso])
-
   const [russiaCitiesRU, setRussiaCitiesRU] = useState<string[]>([])
+  const [statesOfCountry, setStatesOfCountry] = useState<{name: string, isoCode: string}[]>([])
   useEffect(() => {
-    if (countryIso === 'RU' && lang === 'ru') {
-      fetch('/russia-cities.json')
-        .then(r => r.json())
-        .then((data: {name: string}[]) => {
-          setRussiaCitiesRU(data.map(c => c.name).sort())
-        })
-        .catch(() => {})
+    if (!countryIso || countryIso === 'TR' || countryIso === 'IR' || countryIso === 'RU') {
+      setStatesOfCountry([])
+      return
     }
-  }, [countryIso, lang])
+    fetch(`/api/states?country=${encodeURIComponent(countryIso)}`)
+      .then(r => r.json())
+      .then(data => setStatesOfCountry(Array.isArray(data) ? data : []))
+      .catch(() => {})
+  }, [countryIso])
 
   const [worldCitiesForCountry, setWorldCitiesForCountry] = useState<string[]>([])
   useEffect(() => {
     if (!countryIso) { setWorldCitiesForCountry([]); return; }
-    const countryName = Country.getCountryByCode(countryIso)?.name || ''
+    const countryName = getCountryName(countryIso, 'en')
     if (!countryName) return;
     fetch(`/api/cities?country=${encodeURIComponent(countryName)}`)
       .then(r => r.json())
       .then((data: string[]) => setWorldCitiesForCountry(Array.isArray(data) ? data : []))
       .catch(() => {})
-  }, [countryIso])
-
-  useEffect(() => {
-    if (countryIso === 'TR') {
-      fetch('/turkiye-data.json')
-        .then(r => r.json())
-        .then(setTurkiyeData)
-        .catch(() => {})
-    }
   }, [countryIso])
 
   const photoInputRef = useRef<HTMLInputElement>(null);
@@ -1391,6 +1369,33 @@ function CreateListingPage() {
     set("photos", form.photos.filter((_, i) => i !== idx));
   };
 
+  const handleCountryChange = (code: string, name: string) => {
+    set("countryCode", code)
+    setCountryIso(code)
+    setSehirQ('')
+    setIlceQ('')
+    setSelectedStateIso('')
+    setSelectedIl('')
+    setSelectedIlce('')
+    setMahalleQ('')
+    setForm(f => ({ ...f, country: name, city: '', district: '', neighborhood: '' }))
+    if (code === 'TR' && Object.keys(turkiyeData).length === 0) {
+      fetch('/turkiye-data.json').then(r => r.json()).then(setTurkiyeData).catch(() => {})
+    }
+    if (code === 'IR' && iranCities.length === 0) {
+      fetch('/iran-cities.json')
+        .then(r => r.json())
+        .then((data: {name: string}[]) => setIranCities(data.map(c => c.name).sort()))
+        .catch(() => {})
+    }
+    if (code === 'RU' && russiaCitiesRU.length === 0) {
+      fetch('/russia-cities.json')
+        .then(r => r.json())
+        .then((data: {name: string}[]) => setRussiaCitiesRU(data.map(c => c.name).sort()))
+        .catch(() => {})
+    }
+  }
+
   // Navigation — 4 steps total for has_place, 2 for needs_place
   const goNext = () => {
     setStepErrors([]);
@@ -1402,6 +1407,9 @@ function CreateListingPage() {
         setInvalidFields(["type"]);
         window.scrollTo({ top: 0, behavior: "smooth" });
         return;
+      }
+      if (countryIso === 'TR' && Object.keys(turkiyeData).length === 0) {
+        fetch('/turkiye-data.json').then(r => r.json()).then(setTurkiyeData).catch(() => {})
       }
       setStep(2);
       return;
@@ -1686,14 +1694,14 @@ function CreateListingPage() {
       <div dir={dir} className="min-h-screen bg-stone-50">
         <Navbar />
         <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block mb-5">
+          <div className="inline-block mb-5">
             <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
               <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
               <span>{t.home}</span>
             </Link>
-          </motion.div>
+          </div>
 
           <ProgressBar />
           <h1 className="text-2xl font-black text-stone-900 mb-2">{t.pageTitle}</h1>
@@ -1792,8 +1800,7 @@ function CreateListingPage() {
         <Navbar />
         <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
-            <motion.button
-              whileTap={{ scale: 0.97 }}
+            <button
               onClick={goBack}
               className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-5 py-2.5 rounded-2xl transition-colors"
             >
@@ -1801,15 +1808,15 @@ function CreateListingPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
               {t.back}
-            </motion.button>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
+            </button>
+            <div className="inline-block">
               <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
                 <span>{t.home}</span>
               </Link>
-            </motion.div>
+            </div>
           </div>
 
           <ProgressBar />
@@ -1910,7 +1917,7 @@ function CreateListingPage() {
               <CountrySelect
                 countryCode={form.countryCode}
                 lang={lang}
-                onSelect={(code, name) => { set("countryCode", code); setCountryIso(code); setSehirQ(''); setIlceQ(''); setSelectedStateIso(''); setSelectedIl(''); setSelectedIlce(''); setMahalleQ(''); setForm(f => ({ ...f, country: name, city: '', district: '', neighborhood: '' })); }}
+                onSelect={handleCountryChange}
                 label={t.countryLabel}
                 placeholder={t.countryPlaceholder}
                 hasError={invalidFields.includes("country") && !form.countryCode}
@@ -1951,7 +1958,7 @@ function CreateListingPage() {
                           : (() => {
                               return worldCitiesForCountry.length
                                 ? worldCitiesForCountry
-                                : (State.getStatesOfCountry(countryIso) || []).map(s => s.name)
+                                : statesOfCountry.map(s => s.name)
                             })()
                         if (v.length === 0) {
                           setSehirSug(cityList.slice(0, 8))
@@ -1979,7 +1986,7 @@ function CreateListingPage() {
                           : (() => {
                               return worldCitiesForCountry.length
                                 ? worldCitiesForCountry
-                                : (State.getStatesOfCountry(countryIso) || []).map(s => s.name)
+                                : statesOfCountry.map(s => s.name)
                             })()
                         setSehirSug(cityList.slice(0, 8))
                         setSehirOpen(cityList.length > 0)
@@ -2006,7 +2013,7 @@ function CreateListingPage() {
                             setMahalleQ('')
                             setForm(f => ({...f, district: '', neighborhood: ''}))
                             if (countryIso !== 'TR') {
-                              const stateObj = (State.getStatesOfCountry(countryIso) || []).find(st => st.name === s)
+                              const stateObj = statesOfCountry.find(st => st.name === s)
                               if (stateObj) setSelectedStateIso(stateObj.isoCode)
                             }
                           }}
@@ -2231,8 +2238,7 @@ function CreateListingPage() {
         <Navbar />
         <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
-            <motion.button
-              whileTap={{ scale: 0.97 }}
+            <button
               onClick={goBack}
               className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-5 py-2.5 rounded-2xl transition-colors"
             >
@@ -2240,15 +2246,15 @@ function CreateListingPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
               {t.back}
-            </motion.button>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
+            </button>
+            <div className="inline-block">
               <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
                 <span>{t.home}</span>
               </Link>
-            </motion.div>
+            </div>
           </div>
 
           <ProgressBar />
@@ -2368,7 +2374,7 @@ function CreateListingPage() {
               <CountrySelect
                 countryCode={form.countryCode}
                 lang={lang}
-                onSelect={(code, name) => { set("countryCode", code); setCountryIso(code); setSehirQ(''); setIlceQ(''); setSelectedStateIso(''); setSelectedIl(''); setSelectedIlce(''); setMahalleQ(''); setForm(f => ({ ...f, country: name, city: '', district: '', neighborhood: '' })); }}
+                onSelect={handleCountryChange}
                 label={t.countryLabel}
                 placeholder={t.countryPlaceholder}
                 hasError={invalidFields.includes("country") && !form.countryCode}
@@ -2409,7 +2415,7 @@ function CreateListingPage() {
                           : (() => {
                               return worldCitiesForCountry.length
                                 ? worldCitiesForCountry
-                                : (State.getStatesOfCountry(countryIso) || []).map(s => s.name)
+                                : statesOfCountry.map(s => s.name)
                             })()
                         if (v.length === 0) {
                           setSehirSug(cityList.slice(0, 8))
@@ -2437,7 +2443,7 @@ function CreateListingPage() {
                           : (() => {
                               return worldCitiesForCountry.length
                                 ? worldCitiesForCountry
-                                : (State.getStatesOfCountry(countryIso) || []).map(s => s.name)
+                                : statesOfCountry.map(s => s.name)
                             })()
                         setSehirSug(cityList.slice(0, 8))
                         setSehirOpen(cityList.length > 0)
@@ -2464,7 +2470,7 @@ function CreateListingPage() {
                             setMahalleQ('')
                             setForm(f => ({...f, district: '', neighborhood: ''}))
                             if (countryIso !== 'TR') {
-                              const stateObj = (State.getStatesOfCountry(countryIso) || []).find(st => st.name === s)
+                              const stateObj = statesOfCountry.find(st => st.name === s)
                               if (stateObj) setSelectedStateIso(stateObj.isoCode)
                             }
                           }}
@@ -2731,8 +2737,7 @@ function CreateListingPage() {
         <Navbar />
         <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
-            <motion.button
-              whileTap={{ scale: 0.97 }}
+            <button
               onClick={goBack}
               className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-5 py-2.5 rounded-2xl transition-colors"
             >
@@ -2740,15 +2745,15 @@ function CreateListingPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
               {t.back}
-            </motion.button>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
+            </button>
+            <div className="inline-block">
               <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
                 <span>{t.home}</span>
               </Link>
-            </motion.div>
+            </div>
           </div>
 
           <ProgressBar />
@@ -3012,8 +3017,7 @@ function CreateListingPage() {
         <Navbar />
         <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
-            <motion.button
-              whileTap={{ scale: 0.97 }}
+            <button
               onClick={goBack}
               className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-5 py-2.5 rounded-2xl transition-colors"
             >
@@ -3021,15 +3025,15 @@ function CreateListingPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
               {t.back}
-            </motion.button>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
+            </button>
+            <div className="inline-block">
               <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
                 <span>{t.home}</span>
               </Link>
-            </motion.div>
+            </div>
           </div>
 
           <ProgressBar />
