@@ -35,5 +35,5 @@ export async function POST(req: NextRequest) {
   }
 
   const { data } = supabase.storage.from('avatars').getPublicUrl(path);
-  return NextResponse.json({ url: data.publicUrl });
+  return NextResponse.json({ url: data.publicUrl + '?v=' + Date.now() });
 }
