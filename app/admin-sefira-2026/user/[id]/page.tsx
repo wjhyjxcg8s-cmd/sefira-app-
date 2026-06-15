@@ -40,6 +40,26 @@ interface Review {
   created_at: string;
 }
 
+interface UserMessage {
+  id: string;
+  sender_id?: string | null;
+  receiver_id?: string | null;
+  recipient_id?: string | null;
+  message?: string | null;
+  content?: string | null;
+  created_at: string;
+}
+
+interface AdminMessage {
+  id: string;
+  user_id?: string | null;
+  message?: string | null;
+  sender?: string | null;
+  title?: string | null;
+  is_global?: boolean;
+  created_at: string;
+}
+
 function Field({ label, value }: { label: string; value: string | null | undefined }) {
   return (
     <div>
@@ -71,6 +91,9 @@ export default function UserDetailPage() {
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
+  const [userMessages, setUserMessages] = useState<UserMessage[]>([]);
+  const [adminMessages, setAdminMessages] = useState<AdminMessage[]>([]);
+
   const [deletingListing, setDeletingListing] = useState<string | null>(null);
   const [deletingReview, setDeletingReview] = useState<string | null>(null);
 
@@ -92,15 +115,19 @@ export default function UserDetailPage() {
 
       console.log("userId:", userId);
 
-      const [profileRes, listingsRes, reviewsRes, authRes] = await Promise.all([
+      const [profileRes, listingsRes, reviewsRes, authRes, msgsRes, adminMsgsRes] = await Promise.all([
         supabaseAdmin.from("profiles").select("*").eq("user_id", userId).single(),
         supabaseAdmin.from("listings").select("*").eq("user_id", userId).order("created_at", { ascending: false }),
         supabaseAdmin.from("reviews").select("*").eq("reviewer_id", userId).order("created_at", { ascending: false }),
         supabaseAdmin.auth.admin.getUserById(userId),
+        supabaseAdmin.from("messages").select("*").eq("sender_id", userId).order("created_at", { ascending: false }).limit(20),
+        supabaseAdmin.from("admin_messages").select("*").eq("user_id", userId).order("created_at", { ascending: false }),
       ]);
 
       console.log("profile:", profileRes.data, "error:", profileRes.error);
       console.log("auth user:", authRes.data?.user?.email, "error:", authRes.error);
+      console.log("messages:", msgsRes.data?.length, "error:", msgsRes.error);
+      console.log("admin_messages:", adminMsgsRes.data?.length, "error:", adminMsgsRes.error);
 
       if (profileRes.data) {
         const p = profileRes.data as Profile;
@@ -113,6 +140,8 @@ export default function UserDetailPage() {
       if (listingsRes.data) setListings(listingsRes.data as Listing[]);
       if (reviewsRes.data) setReviews(reviewsRes.data as Review[]);
       if (authRes.data?.user?.email) setEmail(authRes.data.user.email);
+      if (msgsRes.data) setUserMessages(msgsRes.data as UserMessage[]);
+      if (adminMsgsRes.data) setAdminMessages(adminMsgsRes.data as AdminMessage[]);
 
       setPageLoading(false);
     };
@@ -394,8 +423,11 @@ export default function UserDetailPage() {
                   {listings.map((l, i) => (
                     <tr
                       key={l.id}
-                      className="border-t border-gray-50"
+                      className="border-t border-gray-50 cursor-pointer transition-colors"
                       style={{ backgroundColor: i % 2 === 1 ? "#fafafa" : "white" }}
+                      onClick={() => router.push(`/listings/${l.id}`)}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ffedd5")}
+                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = i % 2 === 1 ? "#fafafa" : "white")}
                     >
                       <td className="px-4 py-3">
                         <span
@@ -415,16 +447,28 @@ export default function UserDetailPage() {
                       </td>
                       <td className="px-4 py-3 text-gray-500">{formatDate(l.created_at)}</td>
                       <td className="px-4 py-3">
-                        <button
-                          onClick={() => handleDeleteListing(l.id)}
-                          disabled={deletingListing === l.id}
-                          className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
-                          style={{ backgroundColor: "#fef2f2", color: "#ef4444" }}
-                          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#fee2e2")}
-                          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#fef2f2")}
-                        >
-                          {deletingListing === l.id ? "…" : "🗑️ Sil"}
-                        </button>
+                        <div className="flex gap-1.5" onClick={(e) => e.stopPropagation()}>
+                          <button
+                            onClick={() => window.open(`/listings/${l.id}`, "_blank")}
+                            className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors"
+                            style={{ backgroundColor: "#eff6ff", color: "#2563eb" }}
+                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#dbeafe")}
+                            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#eff6ff")}
+                            title="Open in new tab"
+                          >
+                            👁 View
+                          </button>
+                          <button
+                            onClick={() => handleDeleteListing(l.id)}
+                            disabled={deletingListing === l.id}
+                            className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+                            style={{ backgroundColor: "#fef2f2", color: "#ef4444" }}
+                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#fee2e2")}
+                            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#fef2f2")}
+                          >
+                            {deletingListing === l.id ? "…" : "🗑️ Sil"}
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -471,6 +515,75 @@ export default function UserDetailPage() {
                   </button>
                 </div>
               ))}
+            </div>
+          )}
+        </div>
+
+        {/* ── Messages ─────────────────────────────────────────────────────── */}
+        <div
+          className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
+          style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
+        >
+          <div className="px-5 sm:px-6 py-4 border-b border-gray-100">
+            <h2 className="text-base font-bold text-gray-800">
+              Messages Sent ({userMessages.length + adminMessages.filter(m => m.sender === "user").length})
+            </h2>
+          </div>
+
+          {userMessages.length === 0 && adminMessages.filter(m => m.sender === "user").length === 0 ? (
+            <p className="px-5 sm:px-6 py-8 text-sm text-gray-400 text-center">No messages found.</p>
+          ) : (
+            <div className="divide-y divide-gray-50">
+              {/* User→User messages */}
+              {userMessages.map((m) => {
+                const body = m.message ?? m.content ?? "";
+                const recipient = m.receiver_id ?? m.recipient_id ?? null;
+                return (
+                  <div key={m.id} className="px-5 sm:px-6 py-3 flex items-start gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <span className="text-xs font-semibold text-gray-500">To:</span>
+                        <span className="text-xs text-gray-700 font-mono truncate">{recipient ?? "—"}</span>
+                        <span className="text-xs text-gray-400 ml-auto shrink-0">{formatDate(m.created_at)}</span>
+                      </div>
+                      <p className="text-sm text-gray-700 line-clamp-2">
+                        {body ? body.slice(0, 100) + (body.length > 100 ? "…" : "") : <span className="text-gray-400 italic">—</span>}
+                      </p>
+                    </div>
+                    <span
+                      className="shrink-0 px-2 py-0.5 rounded-full text-xs font-medium"
+                      style={{ backgroundColor: "#eff6ff", color: "#2563eb" }}
+                    >
+                      user msg
+                    </span>
+                  </div>
+                );
+              })}
+              {/* User→Admin messages */}
+              {adminMessages.filter(m => m.sender === "user").map((m) => {
+                const body = m.message ?? "";
+                return (
+                  <div key={m.id} className="px-5 sm:px-6 py-3 flex items-start gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <span className="text-xs font-semibold text-gray-500">To:</span>
+                        <span className="text-xs text-gray-700">Admin</span>
+                        {m.title && <span className="text-xs text-gray-400">· {m.title}</span>}
+                        <span className="text-xs text-gray-400 ml-auto shrink-0">{formatDate(m.created_at)}</span>
+                      </div>
+                      <p className="text-sm text-gray-700 line-clamp-2">
+                        {body ? body.slice(0, 100) + (body.length > 100 ? "…" : "") : <span className="text-gray-400 italic">—</span>}
+                      </p>
+                    </div>
+                    <span
+                      className="shrink-0 px-2 py-0.5 rounded-full text-xs font-medium"
+                      style={{ backgroundColor: "#ffedd5", color: "#F97316" }}
+                    >
+                      to admin
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
