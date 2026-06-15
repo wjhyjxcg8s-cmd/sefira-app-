@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock-upgrade';
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -1096,6 +1097,7 @@ export default function Home() {
   const [currencyMenuOpen, setCurrencyMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
+  const drawerScrollRef = useRef<HTMLDivElement>(null);
   const langMenuRef = useRef<HTMLDivElement>(null);
   const currencyMenuRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
@@ -1165,6 +1167,18 @@ export default function Home() {
       window.scrollTo({ top, behavior: "instant" as ScrollBehavior });
     });
   }, []);
+
+  // ── Lock body scroll when profile drawer is open ──────────────────────────
+  useEffect(() => {
+    const el = drawerScrollRef.current;
+    if (!el) return;
+    if (profileMenuOpen) {
+      disableBodyScroll(el);
+    } else {
+      enableBodyScroll(el);
+    }
+    return () => clearAllBodyScrollLocks();
+  }, [profileMenuOpen]);
 
   // ── Lang tooltip (one-time first-visit hint) ─────────────────────────────
   useEffect(() => {
@@ -2149,7 +2163,7 @@ export default function Home() {
             </div>
 
             {/* Menu items */}
-            <div style={{ flex: 1, overflowY: "scroll", WebkitOverflowScrolling: "touch" }} className="px-3 py-4 flex flex-col gap-1.5">
+            <div ref={drawerScrollRef} style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" }} className="px-3 py-4 flex flex-col gap-1.5">
               <style>{`
                 @keyframes drawerItemIn {
                   from { opacity: 0; transform: translateY(8px); }

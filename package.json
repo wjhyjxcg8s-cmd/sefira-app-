@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.106.1",
+    "body-scroll-lock-upgrade": "^1.1.0",
     "cities.json": "^1.1.59",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
