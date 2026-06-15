@@ -2086,6 +2086,7 @@ export default function Home() {
           {/* Overlay */}
           <div
             onClick={() => setProfileMenuOpen(false)}
+            onTouchMove={(e) => e.preventDefault()}
             style={{
               position: "fixed", top: 0, left: 0,
               width: "100%", height: "100%",
@@ -2109,7 +2110,6 @@ export default function Home() {
               zIndex: 1000,
               transform: profileMenuOpen ? "translateX(0)" : "translateX(100%)",
               transition: "transform 0.3s ease-out",
-              overflowY: "auto",
               boxShadow: "-4px 0 40px rgba(0,0,0,0.18)",
               display: "flex", flexDirection: "column",
             }}
@@ -2161,7 +2161,7 @@ export default function Home() {
             </div>
 
             {/* Menu items */}
-            <div style={{ flex: 1, overflowY: "auto" }} className="px-3 py-4 flex flex-col gap-1.5">
+            <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain" }} className="px-3 py-4 flex flex-col gap-1.5">
               <style>{`
                 @keyframes drawerItemIn {
                   from { opacity: 0; transform: translateY(8px); }
