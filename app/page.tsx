@@ -1091,6 +1091,7 @@ export default function Home() {
   const [showListingModal, setShowListingModal] = useState(false);
   const [profileAvatarUrl, setProfileAvatarUrl] = useState<string | null>(null);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const savedScrollY = useRef(0);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [showLangTooltip, setShowLangTooltip] = useState(false);
   const [currencyMenuOpen, setCurrencyMenuOpen] = useState(false);
@@ -1169,26 +1170,24 @@ export default function Home() {
   // ── Lock body scroll when profile drawer is open ──────────────────────────
   useEffect(() => {
     if (profileMenuOpen) {
-      const scrollY = window.scrollY;
+      savedScrollY.current = window.scrollY;
       document.body.style.overflow = 'hidden';
       document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
+      document.body.style.top = `-${savedScrollY.current}px`;
       document.body.style.width = '100%';
     } else {
-      const scrollY = Math.abs(parseInt(document.body.style.top || '0'));
       document.body.style.overflow = '';
       document.body.style.position = '';
       document.body.style.top = '';
       document.body.style.width = '';
-      window.scrollTo(0, scrollY);
+      window.scrollTo({ top: savedScrollY.current, behavior: 'instant' });
     }
     return () => {
-      const scrollY = Math.abs(parseInt(document.body.style.top || '0'));
       document.body.style.overflow = '';
       document.body.style.position = '';
       document.body.style.top = '';
       document.body.style.width = '';
-      window.scrollTo(0, scrollY);
+      window.scrollTo({ top: savedScrollY.current, behavior: 'instant' });
     };
   }, [profileMenuOpen]);
 
