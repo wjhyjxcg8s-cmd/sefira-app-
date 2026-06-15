@@ -386,7 +386,7 @@ interface LatestListingsProps {
 }
 
 const listingTypeTrans: Record<string, Record<string, string>> = {
-  has_place: { tr: "Ev Sahibi", en: "Host", fa: "صاحب‌خانه", ar: "المضيف", de: "Vermieter", ru: "Владелец" },
+  has_place: { tr: "Ev Sahibi", en: "Host", fa: "صاحب‌خانه", ar: "صاحب المنزل", de: "Vermieter", ru: "Арендодатель" },
   needs_place: { tr: "Kiracı", en: "Tenant", fa: "مستأجر", ar: "مستأجر", de: "Mieter", ru: "Арендатор" }
 }
 

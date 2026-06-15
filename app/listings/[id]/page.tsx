@@ -23,7 +23,7 @@ const labels: Record<Lang, Record<string, string>> = {
     age: "yaşında",
     verified: "Onaylı",
     ownerBadge: "Ev Sahibi",
-    tenantBadge: "Kiracı Arıyor",
+    tenantBadge: "Kiracı",
     perMonth: "/ ay",
   },
   en: {
@@ -35,8 +35,8 @@ const labels: Record<Lang, Record<string, string>> = {
     memberSince: "Member since",
     age: "years old",
     verified: "Verified",
-    ownerBadge: "Has Place",
-    tenantBadge: "Looking for Tenant",
+    ownerBadge: "Host",
+    tenantBadge: "Tenant",
     perMonth: "/ mo",
   },
   fa: {
@@ -48,8 +48,8 @@ const labels: Record<Lang, Record<string, string>> = {
     memberSince: "عضو از",
     age: "ساله",
     verified: "تأیید شده",
-    ownerBadge: "صاحب خانه",
-    tenantBadge: "دنبال مستأجر",
+    ownerBadge: "صاحب‌خانه",
+    tenantBadge: "مستأجر",
     perMonth: "/ ماه",
   },
   ar: {
@@ -61,8 +61,8 @@ const labels: Record<Lang, Record<string, string>> = {
     memberSince: "عضو منذ",
     age: "سنة",
     verified: "موثق",
-    ownerBadge: "لديه مكان",
-    tenantBadge: "يبحث عن مستأجر",
+    ownerBadge: "صاحب المنزل",
+    tenantBadge: "مستأجر",
     perMonth: "/ شهر",
   },
   de: {
@@ -74,8 +74,8 @@ const labels: Record<Lang, Record<string, string>> = {
     memberSince: "Mitglied seit",
     age: "Jahre alt",
     verified: "Verifiziert",
-    ownerBadge: "Hat Platz",
-    tenantBadge: "Sucht Mieter",
+    ownerBadge: "Vermieter",
+    tenantBadge: "Mieter",
     perMonth: "/ Mo.",
   },
   ru: {
@@ -87,8 +87,8 @@ const labels: Record<Lang, Record<string, string>> = {
     memberSince: "Участник с",
     age: "лет",
     verified: "Подтверждён",
-    ownerBadge: "Есть жильё",
-    tenantBadge: "Ищет жильца",
+    ownerBadge: "Арендодатель",
+    tenantBadge: "Арендатор",
     perMonth: "/ мес.",
   },
 };
