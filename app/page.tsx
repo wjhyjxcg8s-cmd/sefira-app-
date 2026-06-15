@@ -1738,52 +1738,6 @@ export default function Home() {
           {/* Right controls */}
           <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
 
-            {/* Currency switcher */}
-            <div className="relative" ref={currencyMenuRef}>
-              <button
-                onClick={() => { setCurrencyMenuOpen((o) => !o); setProfileMenuOpen(false); setLangMenuOpen(false); }}
-                className="flex items-center gap-1 bg-stone-100 border border-stone-200 rounded-lg px-2 py-1.5 text-[11px] font-black transition-all duration-200 hover:bg-stone-200 whitespace-nowrap"
-              >
-                <span className="text-stone-700">{CURRENCY_SYMBOLS[currency]}</span>
-                <span className="hidden sm:inline text-stone-700">&thinsp;{currency}</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className={`w-3 h-3 text-stone-400 transition-transform duration-200 ${currencyMenuOpen ? "rotate-180" : ""}`}>
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
-              </button>
-              {currencyMenuOpen && (
-                <div className="absolute top-full mt-1 right-0 z-[100] bg-white border border-stone-200 rounded-xl shadow-xl overflow-hidden min-w-[190px] animate-dropdown-slide">
-                  <div className="px-3 py-2 border-b border-stone-100">
-                    <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">
-                      {lang === "tr" ? "Para Birimini Seçin" : lang === "fa" ? "انتخاب واحد پولی" : lang === "ar" ? "اختر العملة" : lang === "de" ? "Währung wählen" : lang === "ru" ? "Выбрать валюту" : "Select Currency"}
-                    </p>
-                  </div>
-                  {(["USD", "EUR", "TRY"] as const).map((cur) => {
-                    const meta = {
-                      USD: { icon: "💵", name: lang === "tr" ? "ABD Doları" : lang === "fa" ? "دلار آمریکا" : lang === "ar" ? "دولار أمريكي" : lang === "de" ? "US-Dollar" : lang === "ru" ? "Доллар США" : "US Dollar" },
-                      EUR: { icon: "💶", name: lang === "tr" ? "Euro" : lang === "fa" ? "یورو" : lang === "ar" ? "يورو" : lang === "de" ? "Euro" : lang === "ru" ? "Евро" : "Euro" },
-                      TRY: { icon: "💴", name: lang === "tr" ? "Türk Lirası" : lang === "fa" ? "لیر ترکیه" : lang === "ar" ? "ليرة تركية" : lang === "de" ? "Türkische Lira" : lang === "ru" ? "Турецкая лира" : "Turkish Lira" },
-                    }[cur];
-                    return (
-                      <button
-                        key={cur}
-                        onClick={() => { setCurrency(cur); setCurrencyMenuOpen(false); }}
-                        className={`flex items-center gap-2.5 w-full px-3 py-2.5 transition-colors ${currency === cur ? "bg-orange-50 text-orange-800 font-black" : "text-stone-700 hover:bg-stone-50 font-semibold"}`}
-                      >
-                        <span className="text-base leading-none flex-shrink-0">{meta.icon}</span>
-                        <span className="text-[12px]">{CURRENCY_SYMBOLS[cur]}&thinsp;{cur}</span>
-                        <span className="text-[11px] text-stone-400 ml-auto">{meta.name}</span>
-                        {currency === cur && (
-                          <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 text-orange-500 flex-shrink-0">
-                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                          </svg>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
             {/* Lang switcher — prominent orange pill + dropdown */}
             <div className="relative" ref={langMenuRef}>
               <button
