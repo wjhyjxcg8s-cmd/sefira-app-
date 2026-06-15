@@ -2104,7 +2104,7 @@ export default function Home() {
             dir="ltr"
             style={{
               position: "fixed", top: 0, right: 0,
-              width: "320px", height: "100%",
+              width: "320px", height: "100vh",
               background: "#f9fafb",
               zIndex: 1000,
               transform: profileMenuOpen ? "translateX(0)" : "translateX(100%)",
