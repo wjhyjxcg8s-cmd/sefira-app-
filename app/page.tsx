@@ -1170,10 +1170,18 @@ export default function Home() {
   useEffect(() => {
     if (profileMenuOpen) {
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
     } else {
       document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
     }
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    };
   }, [profileMenuOpen]);
 
   // ── Lang tooltip (one-time first-visit hint) ─────────────────────────────
@@ -2109,7 +2117,7 @@ export default function Home() {
               zIndex: 1000,
               transform: profileMenuOpen ? "translateX(0)" : "translateX(100%)",
               transition: "transform 0.3s ease-out",
-              overflow: "hidden",
+              overflowY: "auto",
               boxShadow: "-4px 0 40px rgba(0,0,0,0.18)",
               display: "flex", flexDirection: "column",
             }}
