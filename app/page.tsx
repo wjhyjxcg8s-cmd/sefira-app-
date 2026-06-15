@@ -1166,16 +1166,6 @@ export default function Home() {
     });
   }, []);
 
-  // ── Lock body scroll when profile drawer is open ──────────────────────────
-  useEffect(() => {
-    if (profileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => { document.body.style.overflow = ''; };
-  }, [profileMenuOpen]);
-
   // ── Lang tooltip (one-time first-visit hint) ─────────────────────────────
   useEffect(() => {
     if (localStorage.getItem('lang_tooltip_shown')) return;
@@ -2086,14 +2076,11 @@ export default function Home() {
           {/* Overlay */}
           <div
             onClick={() => setProfileMenuOpen(false)}
-            onTouchMove={(e) => e.preventDefault()}
             style={{
-              position: "fixed", top: 0, left: 0,
-              width: "100%", height: "100%",
-              background: "rgba(0,0,0,0.5)",
-              backdropFilter: "blur(2px)",
-              WebkitBackdropFilter: "blur(2px)",
-              zIndex: 999,
+              position: "fixed",
+              inset: 0,
+              backgroundColor: "rgba(0,0,0,0.5)",
+              zIndex: 40,
               opacity: profileMenuOpen ? 1 : 0,
               transition: "opacity 0.3s ease-out",
               pointerEvents: profileMenuOpen ? "auto" : "none",
@@ -2105,13 +2092,14 @@ export default function Home() {
             dir="ltr"
             style={{
               position: "fixed", top: 0, right: 0,
-              width: "320px", height: "100vh",
+              width: "80%", maxWidth: "360px", height: "100%",
               background: "#f9fafb",
-              zIndex: 1000,
+              zIndex: 50,
               transform: profileMenuOpen ? "translateX(0)" : "translateX(100%)",
               transition: "transform 0.3s ease-out",
               boxShadow: "-4px 0 40px rgba(0,0,0,0.18)",
               display: "flex", flexDirection: "column",
+              overflowY: "hidden",
             }}
           >
             {/* Gradient header */}
@@ -2161,7 +2149,7 @@ export default function Home() {
             </div>
 
             {/* Menu items */}
-            <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain" }} className="px-3 py-4 flex flex-col gap-1.5">
+            <div style={{ flex: 1, overflowY: "scroll", WebkitOverflowScrolling: "touch" }} className="px-3 py-4 flex flex-col gap-1.5">
               <style>{`
                 @keyframes drawerItemIn {
                   from { opacity: 0; transform: translateY(8px); }
