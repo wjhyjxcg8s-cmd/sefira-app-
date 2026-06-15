@@ -165,6 +165,7 @@ export default function ListingDetailPage() {
           console.log("Profile data:", profileData);
           console.log("Profile error:", profileErr);
           setProfile(profileData ?? null);
+          console.log('avatar_url:', profileData?.avatar_url);
         }
       }
 
@@ -354,8 +355,9 @@ export default function ListingDetailPage() {
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={profile.avatar_url}
-                alt=""
-                className="w-14 h-14 rounded-full object-cover border-2 border-orange-200"
+                alt={profile.display_name ?? ""}
+                onError={(e) => { console.log('avatar_url load error:', profile.avatar_url); e.currentTarget.style.display = 'none'; }}
+                style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover' }}
               />
             ) : (
               <div className="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center text-2xl font-bold text-orange-600">
