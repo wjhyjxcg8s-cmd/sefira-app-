@@ -157,15 +157,15 @@ export default function ListingDetailPage() {
 
         // Step 2: fetch profile separately — failure is non-fatal
         if (listingData.user_id) {
-          const { data: profileData, error: profileErr } = await supabase
+          const { data: profileRows, error: profileErr } = await supabase
             .from("profiles")
-            .select("display_name, avatar_url, gender, birth_date, country, created_at")
-            .eq("user_id", listingData.user_id)
-            .maybeSingle();
-          console.log("Profile data:", profileData);
+            .select("user_id, display_name, avatar_url, gender, birth_date, country, created_at")
+            .in("user_id", [listingData.user_id]);
+          const profileData = profileRows?.find((p: any) => p.user_id === listingData.user_id) ?? null;
+          console.log("Profile rows:", profileRows);
           console.log("Profile error:", profileErr);
-          setProfile(profileData ?? null);
           console.log('avatar_url:', profileData?.avatar_url);
+          setProfile(profileData);
         }
       }
 
