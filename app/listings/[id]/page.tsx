@@ -157,14 +157,12 @@ export default function ListingDetailPage() {
 
         // Step 2: fetch profile separately — failure is non-fatal
         if (listingData.user_id) {
-          const { data: profileRows, error: profileErr } = await supabase
-            .from("profiles")
-            .select("user_id, display_name, avatar_url, gender, birth_date, country, created_at")
-            .in("user_id", [listingData.user_id]);
-          const profileData = profileRows?.find((p: any) => p.user_id === listingData.user_id) ?? null;
-          console.log("Profile rows:", profileRows);
-          console.log("Profile error:", profileErr);
-          console.log('avatar_url:', profileData?.avatar_url);
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('user_id, display_name, avatar_url, gender, birth_date, country, created_at')
+            .eq('user_id', listingData.user_id)
+            .single();
+
           setProfile(profileData);
         }
       }
@@ -350,23 +348,25 @@ export default function ListingDetailPage() {
       {/* Owner profile card */}
       {profile && (
         <div className="mx-4 mt-4 bg-white rounded-2xl shadow-md p-5">
-          <div className="flex items-center gap-4">
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '12px' }}>
             {profile.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={profile.avatar_url}
-                alt={profile.display_name ?? ""}
-                onError={(e) => { console.log('avatar_url load error:', profile.avatar_url); e.currentTarget.style.display = 'none'; }}
-                style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover' }}
+                alt={profile?.display_name ?? ""}
+                style={{
+                  width: '64px',
+                  height: '64px',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                  flexShrink: 0
+                }}
               />
             ) : (
               <div className="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center text-2xl font-bold text-orange-600">
                 {(profile.display_name ?? "?")[0].toUpperCase()}
               </div>
             )}
-            <p style={{ fontSize: '10px', color: 'red', wordBreak: 'break-all' }}>
-              DEBUG: {profile.avatar_url || 'NO AVATAR URL'}
-            </p>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-bold text-gray-900 truncate">{profile.display_name ?? "—"}</span>
