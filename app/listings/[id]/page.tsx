@@ -364,6 +364,9 @@ export default function ListingDetailPage() {
                 {(profile.display_name ?? "?")[0].toUpperCase()}
               </div>
             )}
+            <p style={{ fontSize: '10px', color: 'red', wordBreak: 'break-all' }}>
+              DEBUG: {profile.avatar_url || 'NO AVATAR URL'}
+            </p>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-bold text-gray-900 truncate">{profile.display_name ?? "—"}</span>
