@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { createClient } from "@supabase/supabase-js";
 
@@ -51,10 +51,11 @@ function Field({ label, value }: { label: string; value: string | null | undefin
   );
 }
 
-export default function UserDetailPage({ params }: { params: { id: string } }) {
+export default function UserDetailPage() {
   const { user, session, loading } = useAuth();
   const router = useRouter();
-  const userId = params.id;
+  const params = useParams();
+  const userId = params.id as string;
 
   const [profile, setProfile] = useState<Profile | null>(null);
   const [email, setEmail] = useState<string | null>(null);
@@ -73,6 +74,10 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
   const [deletingListing, setDeletingListing] = useState<string | null>(null);
   const [deletingReview, setDeletingReview] = useState<string | null>(null);
 
+  const [deleteAccountConfirm, setDeleteAccountConfirm] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
+  const [deleteAccountMsg, setDeleteAccountMsg] = useState<string | null>(null);
+
   useEffect(() => {
     if (!loading && (!user || user.email !== ADMIN_EMAIL)) {
       router.replace("/");
@@ -80,16 +85,22 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
   }, [user, loading, router]);
 
   useEffect(() => {
-    if (!user || user.email !== ADMIN_EMAIL || !session) return;
+    if (!user || user.email !== ADMIN_EMAIL || !userId) return;
 
     const fetchAll = async () => {
       setPageLoading(true);
 
-      const [profileRes, listingsRes, reviewsRes] = await Promise.all([
+      console.log("userId:", userId);
+
+      const [profileRes, listingsRes, reviewsRes, authRes] = await Promise.all([
         supabaseAdmin.from("profiles").select("*").eq("user_id", userId).single(),
         supabaseAdmin.from("listings").select("*").eq("user_id", userId).order("created_at", { ascending: false }),
         supabaseAdmin.from("reviews").select("*").eq("reviewer_id", userId).order("created_at", { ascending: false }),
+        supabaseAdmin.auth.admin.getUserById(userId),
       ]);
+
+      console.log("profile:", profileRes.data, "error:", profileRes.error);
+      console.log("auth user:", authRes.data?.user?.email, "error:", authRes.error);
 
       if (profileRes.data) {
         const p = profileRes.data as Profile;
@@ -101,19 +112,14 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
       }
       if (listingsRes.data) setListings(listingsRes.data as Listing[]);
       if (reviewsRes.data) setReviews(reviewsRes.data as Review[]);
-
-      const emailRes = await fetch(`/api/admin/get-user?userId=${userId}`, {
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
-      const emailJson = await emailRes.json();
-      if (emailJson.email) setEmail(emailJson.email);
+      if (authRes.data?.user?.email) setEmail(authRes.data.user.email);
 
       setPageLoading(false);
     };
 
     fetchAll();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, user, session]);
+  }, [userId, user]);
 
   const handleSave = async () => {
     setSaving(true);
@@ -163,6 +169,21 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
     const json = await res.json();
     if (!json.error) setReviews((prev) => prev.filter((r) => r.id !== id));
     setDeletingReview(null);
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeletingAccount(true);
+    setDeleteAccountMsg(null);
+    const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
+    if (error) {
+      setDeleteAccountMsg("Error: " + error.message);
+      setDeletingAccount(false);
+    } else {
+      setDeleteAccountMsg("Account deleted.");
+      setDeleteAccountConfirm(false);
+      setDeletingAccount(false);
+      setTimeout(() => router.push("/admin-sefira-2026"), 1500);
+    }
   };
 
   const formatDate = (d: string | null) => {
@@ -450,6 +471,49 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
                   </button>
                 </div>
               ))}
+            </div>
+          )}
+        </div>
+
+        {/* ── Delete Account ───────────────────────────────────────────────── */}
+        <div
+          className="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6"
+          style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
+        >
+          <h2 className="text-base font-bold text-gray-800 mb-1">Danger Zone</h2>
+          <p className="text-sm text-gray-400 mb-4">Permanently delete this account and all associated data. This cannot be undone.</p>
+
+          {deleteAccountMsg && (
+            <p className={`text-sm font-medium mb-3 ${deleteAccountMsg.startsWith("Error") ? "text-red-500" : "text-green-600"}`}>
+              {deleteAccountMsg}
+            </p>
+          )}
+
+          {!deleteAccountConfirm ? (
+            <button
+              onClick={() => setDeleteAccountConfirm(true)}
+              className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-opacity hover:opacity-90"
+              style={{ backgroundColor: "#ef4444" }}
+            >
+              🗑️ Delete Account
+            </button>
+          ) : (
+            <div className="flex items-center gap-3 flex-wrap">
+              <span className="text-sm font-semibold text-red-600">Emin misiniz? Bu işlem geri alınamaz.</span>
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deletingAccount}
+                className="px-5 py-2.5 rounded-xl text-sm font-bold text-white disabled:opacity-60 transition-opacity hover:opacity-90"
+                style={{ backgroundColor: "#ef4444" }}
+              >
+                {deletingAccount ? "Deleting…" : "Evet, Sil"}
+              </button>
+              <button
+                onClick={() => setDeleteAccountConfirm(false)}
+                className="px-5 py-2.5 rounded-xl text-sm font-bold text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors"
+              >
+                İptal
+              </button>
             </div>
           )}
         </div>
