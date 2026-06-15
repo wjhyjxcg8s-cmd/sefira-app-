@@ -1091,7 +1091,6 @@ export default function Home() {
   const [showListingModal, setShowListingModal] = useState(false);
   const [profileAvatarUrl, setProfileAvatarUrl] = useState<string | null>(null);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
-  const savedScrollY = useRef(0);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [showLangTooltip, setShowLangTooltip] = useState(false);
   const [currencyMenuOpen, setCurrencyMenuOpen] = useState(false);
@@ -1170,25 +1169,11 @@ export default function Home() {
   // ── Lock body scroll when profile drawer is open ──────────────────────────
   useEffect(() => {
     if (profileMenuOpen) {
-      savedScrollY.current = window.scrollY;
       document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${savedScrollY.current}px`;
-      document.body.style.width = '100%';
     } else {
       document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      window.scrollTo({ top: savedScrollY.current, behavior: 'instant' });
     }
-    return () => {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      window.scrollTo({ top: savedScrollY.current, behavior: 'instant' });
-    };
+    return () => { document.body.style.overflow = ''; };
   }, [profileMenuOpen]);
 
   // ── Lang tooltip (one-time first-visit hint) ─────────────────────────────
