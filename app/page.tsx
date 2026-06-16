@@ -26,6 +26,12 @@ import {
   fetchLiveRates,
 } from "@/app/lib/currency";
 
+// ─── PWA type ─────────────────────────────────────────────────────────────────
+interface BeforeInstallPromptEvent extends Event {
+  prompt(): Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+}
+
 // ─── i18n ─────────────────────────────────────────────────────────────────────
 const translations = {
   tr: {
@@ -1106,6 +1112,42 @@ export default function Home() {
   const [notifications, setNotifications] = useState<NotifItem[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [msgNotifications, setMsgNotifications] = useState<MsgNotifItem[]>([]);
+
+  // ── PWA install banner ────────────────────────────────────────────────────
+  const [pwaPrompt, setPwaPrompt] = useState<Event | null>(null);
+  const [showPwaBanner, setShowPwaBanner] = useState(false);
+  const [pwaIsIos, setPwaIsIos] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem("sefira-pwa-dismissed")) return;
+    const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as unknown as Record<string, unknown>).MSStream;
+    const isStandalone = window.matchMedia("(display-mode: standalone)").matches || (navigator as Navigator & { standalone?: boolean }).standalone === true;
+    if (isStandalone) return;
+    if (isIos) {
+      setPwaIsIos(true);
+      setShowPwaBanner(true);
+      return;
+    }
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setPwaPrompt(e);
+      setShowPwaBanner(true);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+
+  function dismissPwaBanner() {
+    localStorage.setItem("sefira-pwa-dismissed", "1");
+    setShowPwaBanner(false);
+  }
+
+  async function triggerPwaInstall() {
+    if (!pwaPrompt) return;
+    (pwaPrompt as BeforeInstallPromptEvent).prompt();
+    const { outcome } = await (pwaPrompt as BeforeInstallPromptEvent).userChoice;
+    if (outcome === "accepted") dismissPwaBanner();
+  }
 
   // ── Hero video: resume on tab focus ──────────────────────────────────────
   useEffect(() => {
@@ -3496,6 +3538,35 @@ export default function Home() {
                 {lang === "tr" ? "Kapat" : lang === "fa" ? "بستن" : lang === "ar" ? "إغلاق" : "Close"}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── PWA install banner ───────────────────────────────────────────── */}
+      {showPwaBanner && (
+        <div className="fixed bottom-[72px] sm:bottom-4 left-0 right-0 sm:left-4 sm:right-4 z-50 mx-0 sm:mx-auto sm:max-w-sm">
+          <div className="bg-orange-500 text-white px-4 py-3 rounded-none sm:rounded-2xl shadow-2xl flex items-center gap-3">
+            <span className="text-2xl flex-shrink-0">📱</span>
+            <p className="flex-1 text-sm font-medium leading-snug">
+              {pwaIsIos
+                ? "Safari'de 'Paylaş' → 'Ana Ekrana Ekle'"
+                : "Sefira'yı ana ekrana ekle!"}
+            </p>
+            {!pwaIsIos && (
+              <button
+                onClick={triggerPwaInstall}
+                className="flex-shrink-0 bg-white text-orange-500 text-sm font-bold px-3 py-1.5 rounded-full"
+              >
+                Ekle
+              </button>
+            )}
+            <button
+              onClick={dismissPwaBanner}
+              aria-label="Kapat"
+              className="flex-shrink-0 text-white/80 hover:text-white text-lg leading-none"
+            >
+              ✕
+            </button>
           </div>
         </div>
       )}

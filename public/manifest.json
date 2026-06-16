@@ -1,0 +1,22 @@
+{
+  "name": "Sefira",
+  "short_name": "Sefira",
+  "description": "Ev ve Ev Arkadaşı Bul",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#F97316",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/images/sefira-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/sefira-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

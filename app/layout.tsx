@@ -30,6 +30,13 @@ export default function RootLayout({
     >
       <head>
         <link rel="preload" as="image" href="/hero-bg.webp" />
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Sefira" />
+        <meta name="theme-color" content="#F97316" />
+        <link rel="apple-touch-icon" href="/images/sefira-logo.png" />
       </head>
       <body className="min-h-full flex flex-col">
         <Providers>{children}</Providers>
