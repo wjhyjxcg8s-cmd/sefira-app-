@@ -2072,19 +2072,28 @@ export default function Home() {
           >
             {/* Gradient header */}
             <div
-              className="bg-gradient-to-br from-orange-400 via-orange-500 to-pink-500"
               style={{
-                paddingTop: "64px", paddingBottom: "28px",
-                paddingLeft: "24px", paddingRight: "24px",
-                display: "flex", flexDirection: "column", alignItems: "center", gap: "6px",
-                position: "relative", overflow: "hidden", flexShrink: 0,
+                background: 'linear-gradient(135deg, #F97316 0%, #EA580C 40%, #9333EA 100%)',
+                padding: '60px 24px 32px 24px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                position: 'relative',
+                overflow: 'hidden',
+                gap: '6px',
+                flexShrink: 0,
               }}
             >
-              <motion.div
-                animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.6, 0.3] }}
-                transition={{ duration: 3, repeat: Infinity }}
-                className="absolute w-24 h-24 rounded-full bg-white/20 blur-xl"
-              />
+              <div style={{
+                position: 'absolute',
+                top: '-20px',
+                right: '-20px',
+                width: '150px',
+                height: '150px',
+                borderRadius: '50%',
+                background: 'rgba(255,255,255,0.1)',
+                filter: 'blur(20px)',
+              }} />
 
               {/* Avatar */}
               <button
@@ -2092,11 +2101,12 @@ export default function Home() {
                 style={{
                   width: "80px", height: "80px", borderRadius: "50%",
                   background: "linear-gradient(135deg, #ea580c, #d97706)",
-                  border: "4px solid rgba(255,255,255,0.4)",
+                  border: "3px solid white",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   fontWeight: 900, fontSize: "28px", color: "white",
                   overflow: "hidden", cursor: "pointer", flexShrink: 0,
-                  boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+                  marginBottom: "12px",
                   position: "relative", zIndex: 1,
                 }}
               >
@@ -2108,10 +2118,10 @@ export default function Home() {
                 )}
               </button>
 
-              <p style={{ fontWeight: 900, fontSize: "20px", color: "white", margin: "12px 0 0", textAlign: "center" }}>
+              <p style={{ fontWeight: 700, fontSize: "18px", color: "white", margin: "0", textAlign: "center" }}>
                 {user.user_metadata?.full_name ?? user.email?.split("@")[0] ?? "User"}
               </p>
-              <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.7)", margin: 0, textAlign: "center" }}>
+              <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.8)", margin: 0, textAlign: "center" }}>
                 {user.email}
               </p>
             </div>
