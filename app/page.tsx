@@ -2074,7 +2074,7 @@ export default function Home() {
             <div
               style={{
                 background: 'linear-gradient(135deg, #F97316 0%, #EA580C 40%, #9333EA 100%)',
-                padding: '60px 24px 32px 24px',
+                padding: '90px 24px 32px 24px',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
