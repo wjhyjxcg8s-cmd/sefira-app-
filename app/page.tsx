@@ -1137,6 +1137,12 @@ export default function Home() {
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    }
+  }, []);
+
   function dismissPwaBanner() {
     localStorage.setItem("sefira-pwa-dismissed", "1");
     setShowPwaBanner(false);
