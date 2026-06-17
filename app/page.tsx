@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock-upgrade';
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -1103,7 +1102,6 @@ export default function Home() {
   const [currencyMenuOpen, setCurrencyMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
-  const drawerScrollRef = useRef<HTMLDivElement>(null);
   const langMenuRef = useRef<HTMLDivElement>(null);
   const currencyMenuRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
@@ -1218,14 +1216,8 @@ export default function Home() {
 
   // ── Lock body scroll when profile drawer is open ──────────────────────────
   useEffect(() => {
-    const el = drawerScrollRef.current;
-    if (!el) return;
-    if (profileMenuOpen) {
-      disableBodyScroll(el);
-    } else {
-      enableBodyScroll(el);
-    }
-    return () => clearAllBodyScrollLocks();
+    document.body.style.overflow = profileMenuOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
   }, [profileMenuOpen]);
 
   // ── Lang tooltip (one-time first-visit hint) ─────────────────────────────
@@ -2092,6 +2084,7 @@ export default function Home() {
           {/* Overlay */}
           <div
             onClick={() => setProfileMenuOpen(false)}
+            onTouchMove={(e) => e.preventDefault()}
             style={{
               position: "fixed",
               inset: 0,
@@ -2108,7 +2101,8 @@ export default function Home() {
             dir="ltr"
             style={{
               position: "fixed", top: 0, right: 0,
-              width: "80%", maxWidth: "360px", height: "100%",
+              width: "85%", maxWidth: "360px",
+              height: "100dvh",
               background: "#f9fafb",
               zIndex: 50,
               transform: profileMenuOpen ? "translateX(0)" : "translateX(100%)",
@@ -2175,7 +2169,7 @@ export default function Home() {
             </div>
 
             {/* Menu items */}
-            <div ref={drawerScrollRef} style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch" }} className="px-3 py-4 flex flex-col gap-1.5">
+            <div style={{ flex: 1, overflowY: "scroll", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain", paddingBottom: "env(safe-area-inset-bottom)" }} className="px-3 py-4 flex flex-col gap-1.5">
               <style>{`
                 @keyframes drawerItemIn {
                   from { opacity: 0; transform: translateY(8px); }
