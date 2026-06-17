@@ -2100,19 +2100,21 @@ export default function Home() {
           <div
             dir="ltr"
             style={{
-              position: "fixed", top: 0, right: 0,
-              width: "85%", maxWidth: "360px",
+              position: "fixed",
+              top: 0,
+              right: profileMenuOpen ? 0 : "-100%",
+              width: "85%",
+              maxWidth: "360px",
               height: "100dvh",
-              background: "#f9fafb",
               zIndex: 50,
-              transform: profileMenuOpen ? "translateX(0)" : "translateX(100%)",
-              transition: "transform 0.3s ease-out",
+              backgroundColor: "white",
+              display: "flex",
+              flexDirection: "column",
+              transition: "right 0.3s ease",
               boxShadow: "-4px 0 40px rgba(0,0,0,0.18)",
-              display: "flex", flexDirection: "column",
-              overflowY: "hidden",
             }}
           >
-            {/* Gradient header */}
+            {/* Gradient header — fixed, NOT scrollable */}
             <div
               style={{
                 background: 'linear-gradient(135deg, #F97316 0%, #EA580C 40%, #9333EA 100%)',
@@ -2168,8 +2170,8 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Menu items */}
-            <div style={{ flex: 1, overflowY: "scroll", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain", paddingBottom: "env(safe-area-inset-bottom)" }} className="px-3 py-4 flex flex-col gap-1.5">
+            {/* Menu items — flex: 1 1 0 + height: 0 is required for iOS Safari/PWA scroll */}
+            <div style={{ flex: "1 1 0", height: 0, overflowY: "auto", WebkitOverflowScrolling: "touch" }} className="px-3 py-4 flex flex-col gap-1.5">
               <style>{`
                 @keyframes drawerItemIn {
                   from { opacity: 0; transform: translateY(8px); }
