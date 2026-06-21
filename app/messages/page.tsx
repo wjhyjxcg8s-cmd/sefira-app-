@@ -339,6 +339,11 @@ function MessagesPageContent() {
 
   // Long-press timer ref
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const longPressPos = useRef<{ x: number; y: number } | null>(null);
+  const contextMenuDismissTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Press visual feedback state
+  const [pressedMsgId, setPressedMsgId] = useState<string | null>(null);
 
   // Conversations list (enriched — includes listing + otherUser preloaded)
   const [enrichedConvs, setEnrichedConvs] = useState<any[]>([]);
@@ -522,6 +527,15 @@ function MessagesPageContent() {
     }
   }, [chatMessages, selectedConv]);
 
+  // Auto-dismiss context menu after 3 seconds
+  useEffect(() => {
+    if (contextMenu) {
+      if (contextMenuDismissTimer.current) clearTimeout(contextMenuDismissTimer.current);
+      contextMenuDismissTimer.current = setTimeout(() => setContextMenu(null), 3000);
+    }
+    return () => { if (contextMenuDismissTimer.current) clearTimeout(contextMenuDismissTimer.current); };
+  }, [contextMenu]);
+
   const t = translations[lang];
   const isFa = lang === "fa" || lang === "ar";
 
@@ -623,6 +637,8 @@ function MessagesPageContent() {
 
   const onMsgTouchStart = (msg: any, e: React.TouchEvent) => {
     const touch = e.touches[0];
+    longPressPos.current = { x: touch.clientX, y: touch.clientY };
+    setPressedMsgId(msg.id);
     setSwipeMsg({
       id: msg.id,
       deltaX: 0,
@@ -635,9 +651,11 @@ function MessagesPageContent() {
     if (longPressTimer.current) clearTimeout(longPressTimer.current);
     longPressTimer.current = setTimeout(() => {
       if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(40);
-      setReportMenu({ msgId: msg.id, content: msg.content });
+      setPressedMsgId(null);
+      const pos = longPressPos.current;
+      setContextMenu({ messageId: msg.id, content: msg.content, x: pos?.x ?? touch.clientX, y: pos?.y ?? touch.clientY });
       setSwipeMsg(null);
-    }, 500);
+    }, 300);
   };
 
   const onMsgTouchMove = (msg: any, e: React.TouchEvent) => {
@@ -648,6 +666,7 @@ function MessagesPageContent() {
 
     if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
       if (longPressTimer.current) { clearTimeout(longPressTimer.current); longPressTimer.current = null; }
+      setPressedMsgId(null);
     }
 
     let isHoriz = swipeMsg.isHorizontal;
@@ -670,6 +689,7 @@ function MessagesPageContent() {
 
   const onMsgTouchEnd = (msg: any) => {
     if (longPressTimer.current) { clearTimeout(longPressTimer.current); longPressTimer.current = null; }
+    setPressedMsgId(null);
     const snap = swipeMsg;
     if (snap && snap.id === msg.id) {
       const { deltaX, startTime } = snap;
@@ -897,6 +917,12 @@ function MessagesPageContent() {
 
   return (
     <div className="flex flex-col h-screen bg-[#fefaf5]" dir={isFa ? "rtl" : "ltr"}>
+      <style>{`
+        @keyframes slideUpSheet {
+          from { transform: translateY(100%); }
+          to { transform: translateY(0); }
+        }
+      `}</style>
       {/* Top header bar */}
       <header className="h-14 flex items-center px-4 border-b border-stone-200 bg-white shadow-sm flex-shrink-0 gap-3">
         <Link
@@ -1303,6 +1329,7 @@ function MessagesPageContent() {
                   const isSwiping = swipeMsg?.id === msg.id;
                   const swipeDelta = isSwiping ? Math.min(swipeMsg!.deltaX * 0.4, 40) : 0;
                   const swipeOpacity = isSwiping ? Math.min(swipeMsg!.deltaX / 60, 1) : 0;
+                  const isPressed = pressedMsgId === msg.id && !isSwiping;
                   return isMe ? (
                     <div
                       key={msg.id}
@@ -1331,8 +1358,8 @@ function MessagesPageContent() {
                       <div
                         className="max-w-[75%]"
                         style={{
-                          transform: `translateX(${swipeDelta}px)`,
-                          transition: isSwiping ? "none" : "transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+                          transform: `translateX(${swipeDelta}px) scale(${isPressed ? 0.97 : 1})`,
+                          transition: isSwiping ? "none" : isPressed ? "transform 0.1s ease" : "transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
                           willChange: "transform",
                         }}
                         onTouchStart={(e) => onMsgTouchStart(msg, e)}
@@ -1399,8 +1426,8 @@ function MessagesPageContent() {
                       <div
                         className="max-w-[75%]"
                         style={{
-                          transform: `translateX(${swipeDelta}px)`,
-                          transition: isSwiping ? "none" : "transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+                          transform: `translateX(${swipeDelta}px) scale(${isPressed ? 0.97 : 1})`,
+                          transition: isSwiping ? "none" : isPressed ? "transform 0.1s ease" : "transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
                           willChange: "transform",
                         }}
                         onTouchStart={(e) => onMsgTouchStart(msg, e)}
@@ -1670,27 +1697,28 @@ function MessagesPageContent() {
         />
       )}
 
-      {/* Context menu */}
+      {/* Context menu floating pill */}
       {contextMenu && (
         <div
           className="fixed z-[999] animate-in fade-in duration-150"
           style={{
-            top: Math.max(8, contextMenu.y - 56),
-            left: Math.min(Math.max(8, contextMenu.x - 60), (typeof window !== "undefined" ? window.innerWidth : 400) - 180),
+            top: Math.max(8, contextMenu.y - 60),
+            left: Math.min(Math.max(8, contextMenu.x - 100), (typeof window !== "undefined" ? window.innerWidth : 400) - 210),
           }}
         >
-          <div className="bg-gray-900 rounded-2xl shadow-2xl overflow-hidden">
+          <div className="flex items-center bg-[#1f2937] rounded-[20px] shadow-2xl overflow-hidden">
             <button
               type="button"
               onClick={() => handleReply(contextMenu.messageId, contextMenu.content)}
-              className="flex items-center gap-2 px-5 py-3.5 text-sm font-semibold text-white w-full hover:bg-gray-700 active:bg-gray-700 transition-colors"
+              className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold text-white active:bg-white/10 transition-colors whitespace-nowrap"
             >
-              ↩️ {t.reply}
+              ↩ {t.reply}
             </button>
+            <div className="w-px h-5 bg-white/20 flex-shrink-0" />
             <button
               type="button"
               onClick={() => { setReportMenu({ msgId: contextMenu.messageId, content: contextMenu.content }); setContextMenu(null); }}
-              className="flex items-center gap-2 px-5 py-3.5 text-sm font-semibold text-red-400 w-full hover:bg-gray-700 active:bg-gray-700 transition-colors border-t border-gray-700"
+              className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold text-orange-400 active:bg-white/10 transition-colors whitespace-nowrap"
             >
               {t.report}
             </button>
@@ -1737,40 +1765,59 @@ function MessagesPageContent() {
       {reportMenu && (
         <div
           className="fixed inset-0 z-[200] flex items-end justify-center"
-          style={{ backgroundColor: "rgba(0,0,0,0.45)" }}
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
           onClick={() => setReportMenu(null)}
         >
           <div
-            className="bg-white w-full max-w-lg rounded-t-3xl p-5 pb-8 shadow-2xl"
+            className="bg-white w-full max-w-lg shadow-2xl"
+            style={{ borderRadius: "24px 24px 0 0", animation: "slideUpSheet 0.3s ease-out" }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-5" />
-            <p className="text-base font-bold text-gray-800 text-center mb-4">{t.reportTitle}</p>
-            <div className="space-y-2">
-              {[
-                { key: "inappropriate", label: t.reportInappropriate },
-                { key: "spam", label: t.reportSpam },
-                { key: "insult", label: t.reportInsult },
-                { key: "other", label: t.reportOther },
-              ].map(({ key, label }) => (
-                <button
-                  key={key}
-                  type="button"
-                  disabled={submittingReport}
-                  onClick={() => handleReportMessage(key)}
-                  className="w-full py-3.5 px-4 rounded-xl bg-gray-50 hover:bg-orange-50 active:bg-orange-100 text-gray-700 font-semibold text-sm text-left transition-colors border border-gray-100 disabled:opacity-50"
-                >
-                  {label}
-                </button>
-              ))}
+            {/* Handle bar */}
+            <div style={{ width: 40, height: 4, background: "#d1d5db", borderRadius: 2, margin: "12px auto 0" }} />
+            {/* Title */}
+            <p style={{ fontWeight: 700, fontSize: 18, textAlign: "center", margin: "16px 0 0", color: "#111827" }}>
+              {t.report}
+            </p>
+            {/* Divider */}
+            <div style={{ height: 1, background: "#e5e7eb", margin: "16px 0 0" }} />
+            {/* Reason options */}
+            {[
+              { key: "inappropriate", label: t.reportInappropriate, icon: "🔞" },
+              { key: "spam", label: t.reportSpam, icon: "📢" },
+              { key: "insult", label: t.reportInsult, icon: "💢" },
+              { key: "other", label: t.reportOther, icon: "📝" },
+            ].map(({ key, label, icon }, idx, arr) => (
+              <button
+                key={key}
+                type="button"
+                disabled={submittingReport}
+                onClick={() => handleReportMessage(key)}
+                className="w-full flex items-center text-gray-800 active:bg-orange-50 transition-colors disabled:opacity-50"
+                style={{
+                  height: 56,
+                  padding: "0 20px",
+                  fontSize: 16,
+                  fontWeight: 500,
+                  gap: 12,
+                  borderBottom: idx < arr.length - 1 ? "1px solid #f3f4f6" : "none",
+                }}
+              >
+                <span style={{ fontSize: 20, flexShrink: 0 }}>{icon}</span>
+                <span>{label}</span>
+              </button>
+            ))}
+            {/* Cancel button */}
+            <div style={{ padding: "8px 16px 32px" }}>
+              <button
+                type="button"
+                onClick={() => setReportMenu(null)}
+                className="w-full font-bold text-gray-700 active:bg-gray-200 transition-colors"
+                style={{ background: "#f3f4f6", borderRadius: 16, height: 52, fontSize: 16 }}
+              >
+                {t.cancel}
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={() => setReportMenu(null)}
-              className="w-full mt-4 py-3.5 rounded-xl bg-gray-100 text-gray-500 font-semibold text-sm hover:bg-gray-200 active:scale-95 transition-all"
-            >
-              {t.cancel}
-            </button>
           </div>
         </div>
       )}
