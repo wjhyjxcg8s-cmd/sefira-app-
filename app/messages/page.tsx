@@ -226,7 +226,7 @@ function MessagesPageContent() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messageInputRef = useRef<HTMLInputElement>(null);
   const messageRefs = useRef<Map<string, HTMLDivElement>>(new Map());
-  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Reply state
   const [replyingTo, setReplyingTo] = useState<{ id: string; content: string } | null>(null);
@@ -236,6 +236,16 @@ function MessagesPageContent() {
     x: number;
     y: number;
   } | null>(null);
+  const [swipeMsg, setSwipeMsg] = useState<{
+    id: string;
+    deltaX: number;
+    startX: number;
+    startY: number;
+    startTime: number;
+    triggered: boolean;
+    isHorizontal: boolean | null;
+  } | null>(null);
+  const [tapReplyId, setTapReplyId] = useState<string | null>(null);
 
   // Conversations list (enriched — includes listing + otherUser preloaded)
   const [enrichedConvs, setEnrichedConvs] = useState<any[]>([]);
@@ -518,19 +528,53 @@ function MessagesPageContent() {
     }
   };
 
-  const handleLongPressStart = (msg: any, e: React.TouchEvent) => {
-    if (longPressTimer.current) clearTimeout(longPressTimer.current);
-    const touch = e.touches[0];
-    longPressTimer.current = setTimeout(() => {
-      setContextMenu({ messageId: msg.id, content: msg.content, x: touch.clientX, y: touch.clientY });
-    }, 500);
+  const onMsgTouchStart = (msg: any, e: React.TouchEvent) => {
+    const t = e.touches[0];
+    setSwipeMsg({
+      id: msg.id,
+      deltaX: 0,
+      startX: t.clientX,
+      startY: t.clientY,
+      startTime: Date.now(),
+      triggered: false,
+      isHorizontal: null,
+    });
   };
 
-  const handleLongPressEnd = () => {
-    if (longPressTimer.current) {
-      clearTimeout(longPressTimer.current);
-      longPressTimer.current = null;
+  const onMsgTouchMove = (msg: any, e: React.TouchEvent) => {
+    if (!swipeMsg || swipeMsg.id !== msg.id) return;
+    const t = e.touches[0];
+    const dx = t.clientX - swipeMsg.startX;
+    const dy = t.clientY - swipeMsg.startY;
+
+    let isHoriz = swipeMsg.isHorizontal;
+    if (isHoriz === null && (Math.abs(dx) > 4 || Math.abs(dy) > 4)) {
+      isHoriz = Math.abs(dx) > Math.abs(dy);
+      if (!isHoriz) { setSwipeMsg(null); return; }
     }
+    if (isHoriz === false) { setSwipeMsg(null); return; }
+
+    const clampedDx = Math.max(0, dx);
+    let triggered = swipeMsg.triggered;
+    if (!triggered && clampedDx >= 60) {
+      triggered = true;
+      if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(30);
+      handleReply(msg.id, msg.content);
+    }
+    setSwipeMsg({ ...swipeMsg, deltaX: clampedDx, triggered, isHorizontal: isHoriz ?? true });
+  };
+
+  const onMsgTouchEnd = (msg: any) => {
+    const current = swipeMsg;
+    if (current?.id === msg.id) {
+      const wasTap = current.deltaX < 5 && Date.now() - current.startTime < 300;
+      if (wasTap) {
+        if (tapTimer.current) clearTimeout(tapTimer.current);
+        setTapReplyId(msg.id);
+        tapTimer.current = setTimeout(() => setTapReplyId(null), 2000);
+      }
+    }
+    setSwipeMsg(null);
   };
 
   const handleRightClick = (msg: any, e: React.MouseEvent) => {
@@ -1048,7 +1092,7 @@ function MessagesPageContent() {
               {/* Messages area */}
               <div
                 className="flex-1 overflow-y-auto py-4"
-                style={{ direction: "ltr" }}
+                style={{ direction: "ltr", overflowX: "hidden" }}
               >
                 {messages.length === 0 && (
                   <div className="text-center py-10 text-gray-400 text-sm">
@@ -1061,26 +1105,54 @@ function MessagesPageContent() {
                     if (el) messageRefs.current.set(msg.id, el);
                     else messageRefs.current.delete(msg.id);
                   };
+                  const isSwiping = swipeMsg?.id === msg.id;
+                  const swipeDelta = isSwiping ? Math.min(swipeMsg!.deltaX * 0.4, 40) : 0;
+                  const swipeOpacity = isSwiping ? Math.min(swipeMsg!.deltaX / 60, 1) : 0;
                   return isMe ? (
                     <div
                       key={msg.id}
                       ref={setRef}
-                      className="flex justify-end mb-3 px-4"
-                      onTouchStart={(e) => handleLongPressStart(msg, e)}
-                      onTouchEnd={handleLongPressEnd}
-                      onTouchMove={handleLongPressEnd}
+                      className="flex justify-end mb-3 px-4 relative"
                       onContextMenu={(e) => handleRightClick(msg, e)}
                     >
-                      <div className="max-w-[75%]">
+                      {/* Reply icon fades in on left as bubble slides right */}
+                      <div
+                        aria-hidden="true"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 text-base pointer-events-none select-none"
+                        style={{ opacity: swipeOpacity, transition: isSwiping ? "none" : "opacity 0.2s ease" }}
+                      >
+                        ↩
+                      </div>
+                      {/* Tap-to-reply floating button */}
+                      {tapReplyId === msg.id && (
+                        <button
+                          type="button"
+                          onClick={() => { handleReply(msg.id, msg.content); setTapReplyId(null); }}
+                          className="absolute left-10 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white shadow-lg border border-orange-200 flex items-center justify-center text-orange-500 text-base z-10"
+                        >
+                          ↩
+                        </button>
+                      )}
+                      <div
+                        className="max-w-[75%]"
+                        style={{
+                          transform: `translateX(${swipeDelta}px)`,
+                          transition: isSwiping ? "none" : "transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+                          willChange: "transform",
+                        }}
+                        onTouchStart={(e) => onMsgTouchStart(msg, e)}
+                        onTouchMove={(e) => onMsgTouchMove(msg, e)}
+                        onTouchEnd={() => onMsgTouchEnd(msg)}
+                      >
                         <div className="bg-gradient-to-br from-orange-500 to-amber-500 text-white px-4 py-2.5 rounded-2xl rounded-tr-sm shadow-sm">
                           {msg.reply_to && (
                             <button
                               type="button"
                               onClick={() => scrollToMessage(msg.reply_to.id)}
-                              className="w-full text-left mb-2 rounded-lg px-2.5 py-1.5 text-xs text-white/80 truncate"
-                              style={{ background: "rgba(0,0,0,0.18)", borderLeft: "3px solid rgba(255,255,255,0.7)" }}
+                              className="w-full text-left mb-2 px-2.5 py-1.5 text-xs text-white/80 truncate block"
+                              style={{ background: "rgba(255,255,255,0.2)", borderLeft: "3px solid rgba(255,255,255,0.6)", borderRadius: "8px" }}
                             >
-                              {msg.reply_to.content.slice(0, 60)}
+                              {msg.reply_to.content.slice(0, 50)}
                             </button>
                           )}
                           <p className="text-sm leading-relaxed" dir="auto">
@@ -1096,10 +1168,7 @@ function MessagesPageContent() {
                     <div
                       key={msg.id}
                       ref={setRef}
-                      className="flex items-end gap-2 mb-3 px-4"
-                      onTouchStart={(e) => handleLongPressStart(msg, e)}
-                      onTouchEnd={handleLongPressEnd}
-                      onTouchMove={handleLongPressEnd}
+                      className="flex items-end gap-2 mb-3 px-4 relative"
                       onContextMenu={(e) => handleRightClick(msg, e)}
                     >
                       {activePeerAvatar ? (
@@ -1114,16 +1183,44 @@ function MessagesPageContent() {
                           {activePeerName[0]?.toUpperCase() ?? "?"}
                         </div>
                       )}
-                      <div className="max-w-[75%]">
+                      {/* Reply icon appears between avatar and bubble */}
+                      <div
+                        aria-hidden="true"
+                        className="absolute left-12 bottom-3 w-7 h-7 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 text-sm pointer-events-none select-none"
+                        style={{ opacity: swipeOpacity, transition: isSwiping ? "none" : "opacity 0.2s ease" }}
+                      >
+                        ↩
+                      </div>
+                      {/* Tap-to-reply floating button */}
+                      {tapReplyId === msg.id && (
+                        <button
+                          type="button"
+                          onClick={() => { handleReply(msg.id, msg.content); setTapReplyId(null); }}
+                          className="absolute right-4 bottom-3 w-8 h-8 rounded-full bg-white shadow-lg border border-orange-200 flex items-center justify-center text-orange-500 text-base z-10"
+                        >
+                          ↩
+                        </button>
+                      )}
+                      <div
+                        className="max-w-[75%]"
+                        style={{
+                          transform: `translateX(${swipeDelta}px)`,
+                          transition: isSwiping ? "none" : "transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+                          willChange: "transform",
+                        }}
+                        onTouchStart={(e) => onMsgTouchStart(msg, e)}
+                        onTouchMove={(e) => onMsgTouchMove(msg, e)}
+                        onTouchEnd={() => onMsgTouchEnd(msg)}
+                      >
                         <div className="bg-white text-gray-800 px-4 py-2.5 rounded-2xl rounded-tl-sm shadow-sm border border-gray-100">
                           {msg.reply_to && (
                             <button
                               type="button"
                               onClick={() => scrollToMessage(msg.reply_to.id)}
-                              className="w-full text-left mb-2 rounded-lg px-2.5 py-1.5 text-xs text-gray-500 truncate"
-                              style={{ background: "rgba(249,115,22,0.08)", borderLeft: "3px solid #f97316" }}
+                              className="w-full text-left mb-2 px-2.5 py-1.5 text-xs text-gray-500 truncate block"
+                              style={{ background: "rgba(249,115,22,0.08)", borderLeft: "3px solid #f97316", borderRadius: "8px" }}
                             >
-                              {msg.reply_to.content.slice(0, 60)}
+                              {msg.reply_to.content.slice(0, 50)}
                             </button>
                           )}
                           <p className="text-sm leading-relaxed" dir="auto">
@@ -1140,23 +1237,31 @@ function MessagesPageContent() {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Reply preview bar */}
-              {replyingTo && (
-                <div className="bg-white border-t border-orange-100 px-4 py-2 flex items-center gap-2 flex-shrink-0"
-                  style={{ borderLeft: "3px solid #f97316" }}>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[11px] font-semibold text-orange-500">{t.replyingTo}</p>
-                    <p className="text-xs text-gray-500 truncate">{replyingTo.content.slice(0, 60)}</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setReplyingTo(null)}
-                    className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 text-xs font-bold flex-shrink-0 hover:bg-gray-200 active:scale-95 transition-all"
+              {/* Reply preview bar — slides up when replying */}
+              <div
+                className="flex-shrink-0 overflow-hidden"
+                style={{ maxHeight: replyingTo ? "72px" : "0", transition: "max-height 0.2s ease" }}
+              >
+                {replyingTo && (
+                  <div
+                    className="mx-3 mb-2 bg-white rounded-xl shadow-sm flex items-center gap-2 px-3 py-2"
+                    style={{ borderLeft: "4px solid #f97316" }}
                   >
-                    ✕
-                  </button>
-                </div>
-              )}
+                    <span className="text-orange-500 text-base flex-shrink-0">↩</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[11px] font-semibold text-orange-500">{t.replyingTo}:</p>
+                      <p className="text-xs text-gray-500 truncate">{replyingTo.content.slice(0, 50)}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setReplyingTo(null)}
+                      className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 text-xs font-bold flex-shrink-0 hover:bg-gray-200 active:scale-95 transition-all"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
+              </div>
 
               {/* Message input */}
               <div className="bg-white border-t border-gray-100 px-4 py-3 flex items-center gap-3 shadow-lg flex-shrink-0">
