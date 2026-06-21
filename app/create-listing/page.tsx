@@ -1474,10 +1474,7 @@ function CreateListingPage() {
       if (form.elevator === null) { errors.push(vm.elevator); invalid.push("elevator"); }
       if (form.parking === null) { errors.push(vm.parking); invalid.push("parking"); }
       if (form.smoking === null) { errors.push(vm.smoking); invalid.push("smoking"); }
-      if (!form.description || form.description.trim().length < 20) {
-        errors.push(vm.bio);
-        invalid.push("description");
-      }
+
       if (!form.photos || form.photos.length === 0) {
         errors.push(vm.photo);
         invalid.push("photos");
@@ -2875,7 +2872,7 @@ function CreateListingPage() {
 
             {/* 8. Description */}
             <div className="p-5">
-              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.descLabel}<span className="text-red-500 ml-1">*</span></label>
+              <label className="block text-sm font-semibold text-stone-700 mb-3">{t.descLabel}</label>
               <textarea
                 rows={4}
                 value={form.description}
