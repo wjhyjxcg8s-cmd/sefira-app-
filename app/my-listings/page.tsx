@@ -225,7 +225,7 @@ export default function MyListingsPage() {
               Sefira
             </span>
           </Link>
-          <Link href="/profile" className="text-sm font-semibold text-stone-500 hover:text-stone-800 transition-colors">
+          <Link href="/" className="text-sm font-semibold text-stone-500 hover:text-stone-800 transition-colors">
             ←
           </Link>
         </div>
