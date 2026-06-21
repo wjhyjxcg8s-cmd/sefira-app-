@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useLang } from "@/app/lib/LangContext";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
+import AuthModal from "@/app/components/AuthModal";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -128,6 +129,7 @@ export default function ListingDetailPage() {
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [activePhoto, setActivePhoto] = useState(0);
+  const [showAuth, setShowAuth] = useState(false);
   const { lang } = useLang();
 
   useEffect(() => {
@@ -437,13 +439,17 @@ export default function ListingDetailPage() {
           </button>
         ) : (
           <button
-            onClick={() => router.push("/login")}
+            onClick={() => setShowAuth(true)}
             className="w-full py-4 rounded-2xl bg-gradient-to-r from-orange-600 to-amber-500 text-white font-bold text-lg shadow-lg"
           >
             {t.loginPrompt}
           </button>
         )}
       </div>
+
+      {showAuth && (
+        <AuthModal lang={lang} initialTab="login" onClose={() => setShowAuth(false)} />
+      )}
     </div>
   );
 }

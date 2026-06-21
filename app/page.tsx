@@ -3136,9 +3136,16 @@ export default function Home() {
                       </button>
 
                       {/* Mesaj Gönder */}
-                      <Link
-                        href={`/listings/${rec.id}`}
-                        onClick={(e) => { e.stopPropagation(); try { sessionStorage.setItem("sefira-scroll", String(window.scrollY)); } catch { /* ignore */ } }}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (!user) {
+                            setShowAuth(true);
+                          } else {
+                            try { sessionStorage.setItem("sefira-scroll", String(window.scrollY)); } catch { /* ignore */ }
+                            router.push(`/listings/${rec.id}`);
+                          }
+                        }}
                         className="flex-1 flex items-center justify-center gap-1.5 h-11 rounded-full bg-orange-500 active:bg-orange-600 transition-colors"
                         style={{ boxShadow: "0 4px 16px rgba(249,115,22,0.5)" }}
                       >
@@ -3148,7 +3155,7 @@ export default function Home() {
                         <span className="text-white text-xs font-bold truncate">
                           {({ tr: "Mesaj", en: "Message", fa: "پیام", ar: "رسالة", de: "Nachricht", ru: "Написать" } as Record<string, string>)[lang] ?? "Message"}
                         </span>
-                      </Link>
+                      </button>
 
                       {/* Geç */}
                       <button
