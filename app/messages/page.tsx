@@ -26,6 +26,8 @@ const translations = {
     newMessage: "Yeni Mesaj",
     typeMessage: "Mesaj yazın...",
     noMessagesYet: "Henüz mesaj yok. İlk mesajı gönderin!",
+    reply: "Yanıtla",
+    replyingTo: "Yanıtlıyorsunuz",
   },
   en: {
     title: "My Messages",
@@ -44,6 +46,8 @@ const translations = {
     newMessage: "New Message",
     typeMessage: "Type a message...",
     noMessagesYet: "No messages yet. Send the first one!",
+    reply: "Reply",
+    replyingTo: "Replying to",
   },
   fa: {
     title: "پیام‌های من",
@@ -62,6 +66,8 @@ const translations = {
     newMessage: "پیام جدید",
     typeMessage: "پیام بنویسید...",
     noMessagesYet: "هنوز پیامی نیست. اولین پیام را ارسال کنید!",
+    reply: "پاسخ",
+    replyingTo: "در پاسخ به",
   },
   de: {
     title: "Meine Nachrichten",
@@ -80,6 +86,8 @@ const translations = {
     newMessage: "Neue Nachricht",
     typeMessage: "Nachricht schreiben...",
     noMessagesYet: "Noch keine Nachrichten. Senden Sie die erste!",
+    reply: "Antworten",
+    replyingTo: "Antwort auf",
   },
   ar: {
     title: "رسائلي",
@@ -98,6 +106,8 @@ const translations = {
     newMessage: "رسالة جديدة",
     typeMessage: "اكتب رسالة...",
     noMessagesYet: "لا رسائل بعد. أرسل الأول!",
+    reply: "رد",
+    replyingTo: "ردًا على",
   },
   ru: {
     title: "Мои сообщения",
@@ -116,6 +126,8 @@ const translations = {
     newMessage: "Новое сообщение",
     typeMessage: "Написать сообщение...",
     noMessagesYet: "Пока нет сообщений. Отправьте первое!",
+    reply: "Ответить",
+    replyingTo: "В ответ на",
   },
 };
 
@@ -212,6 +224,18 @@ function MessagesPageContent() {
   const [messageText, setMessageText] = useState("");
   const [sendingMessage, setSendingMessage] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messageInputRef = useRef<HTMLInputElement>(null);
+  const messageRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Reply state
+  const [replyingTo, setReplyingTo] = useState<{ id: string; content: string } | null>(null);
+  const [contextMenu, setContextMenu] = useState<{
+    messageId: string;
+    content: string;
+    x: number;
+    y: number;
+  } | null>(null);
 
   // Conversations list (enriched — includes listing + otherUser preloaded)
   const [enrichedConvs, setEnrichedConvs] = useState<any[]>([]);
@@ -484,17 +508,57 @@ function MessagesPageContent() {
     setSendingChat(false);
   };
 
+  const scrollToMessage = (messageId: string) => {
+    const el = messageRefs.current.get(messageId);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.style.transition = "background-color 0.3s ease";
+      el.style.backgroundColor = "rgba(249, 115, 22, 0.18)";
+      setTimeout(() => { el.style.backgroundColor = ""; }, 1200);
+    }
+  };
+
+  const handleLongPressStart = (msg: any, e: React.TouchEvent) => {
+    if (longPressTimer.current) clearTimeout(longPressTimer.current);
+    const touch = e.touches[0];
+    longPressTimer.current = setTimeout(() => {
+      setContextMenu({ messageId: msg.id, content: msg.content, x: touch.clientX, y: touch.clientY });
+    }, 500);
+  };
+
+  const handleLongPressEnd = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  };
+
+  const handleRightClick = (msg: any, e: React.MouseEvent) => {
+    e.preventDefault();
+    setContextMenu({ messageId: msg.id, content: msg.content, x: e.clientX, y: e.clientY });
+  };
+
+  const handleReply = (messageId: string, content: string) => {
+    setReplyingTo({ id: messageId, content });
+    setContextMenu(null);
+    setTimeout(() => messageInputRef.current?.focus(), 50);
+  };
+
   const sendMessage = async () => {
     if (!messageText.trim() || !currentUserId || !targetUserId) return;
 
     const content = messageText.trim();
+    const replyToId = replyingTo?.id ?? null;
     setMessageText("");
+    setReplyingTo(null);
 
     const tempMsg = {
       id: "temp-" + Date.now(),
       sender_id: currentUserId,
       content,
       created_at: new Date().toISOString(),
+      reply_to_id: replyToId,
+      reply_to: replyToId && replyingTo ? { id: replyingTo.id, content: replyingTo.content } : null,
     };
     setMessages((prev) => [...prev, tempMsg]);
 
@@ -514,6 +578,7 @@ function MessagesPageContent() {
         content,
         targetUserId: pendingUserId || targetUserId,
         listingId: pendingListingId || targetListingId,
+        replyToId,
       }),
     });
 
@@ -992,10 +1057,32 @@ function MessagesPageContent() {
                 )}
                 {messages.map((msg) => {
                   const isMe = msg.sender_id === currentUserId;
+                  const setRef = (el: HTMLDivElement | null) => {
+                    if (el) messageRefs.current.set(msg.id, el);
+                    else messageRefs.current.delete(msg.id);
+                  };
                   return isMe ? (
-                    <div key={msg.id} className="flex justify-end mb-3 px-4">
+                    <div
+                      key={msg.id}
+                      ref={setRef}
+                      className="flex justify-end mb-3 px-4"
+                      onTouchStart={(e) => handleLongPressStart(msg, e)}
+                      onTouchEnd={handleLongPressEnd}
+                      onTouchMove={handleLongPressEnd}
+                      onContextMenu={(e) => handleRightClick(msg, e)}
+                    >
                       <div className="max-w-[75%]">
                         <div className="bg-gradient-to-br from-orange-500 to-amber-500 text-white px-4 py-2.5 rounded-2xl rounded-tr-sm shadow-sm">
+                          {msg.reply_to && (
+                            <button
+                              type="button"
+                              onClick={() => scrollToMessage(msg.reply_to.id)}
+                              className="w-full text-left mb-2 rounded-lg px-2.5 py-1.5 text-xs text-white/80 truncate"
+                              style={{ background: "rgba(0,0,0,0.18)", borderLeft: "3px solid rgba(255,255,255,0.7)" }}
+                            >
+                              {msg.reply_to.content.slice(0, 60)}
+                            </button>
+                          )}
                           <p className="text-sm leading-relaxed" dir="auto">
                             {msg.content}
                           </p>
@@ -1006,7 +1093,15 @@ function MessagesPageContent() {
                       </div>
                     </div>
                   ) : (
-                    <div key={msg.id} className="flex items-end gap-2 mb-3 px-4">
+                    <div
+                      key={msg.id}
+                      ref={setRef}
+                      className="flex items-end gap-2 mb-3 px-4"
+                      onTouchStart={(e) => handleLongPressStart(msg, e)}
+                      onTouchEnd={handleLongPressEnd}
+                      onTouchMove={handleLongPressEnd}
+                      onContextMenu={(e) => handleRightClick(msg, e)}
+                    >
                       {activePeerAvatar ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -1021,6 +1116,16 @@ function MessagesPageContent() {
                       )}
                       <div className="max-w-[75%]">
                         <div className="bg-white text-gray-800 px-4 py-2.5 rounded-2xl rounded-tl-sm shadow-sm border border-gray-100">
+                          {msg.reply_to && (
+                            <button
+                              type="button"
+                              onClick={() => scrollToMessage(msg.reply_to.id)}
+                              className="w-full text-left mb-2 rounded-lg px-2.5 py-1.5 text-xs text-gray-500 truncate"
+                              style={{ background: "rgba(249,115,22,0.08)", borderLeft: "3px solid #f97316" }}
+                            >
+                              {msg.reply_to.content.slice(0, 60)}
+                            </button>
+                          )}
                           <p className="text-sm leading-relaxed" dir="auto">
                             {msg.content}
                           </p>
@@ -1035,10 +1140,29 @@ function MessagesPageContent() {
                 <div ref={messagesEndRef} />
               </div>
 
+              {/* Reply preview bar */}
+              {replyingTo && (
+                <div className="bg-white border-t border-orange-100 px-4 py-2 flex items-center gap-2 flex-shrink-0"
+                  style={{ borderLeft: "3px solid #f97316" }}>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[11px] font-semibold text-orange-500">{t.replyingTo}</p>
+                    <p className="text-xs text-gray-500 truncate">{replyingTo.content.slice(0, 60)}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setReplyingTo(null)}
+                    className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 text-xs font-bold flex-shrink-0 hover:bg-gray-200 active:scale-95 transition-all"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+
               {/* Message input */}
               <div className="bg-white border-t border-gray-100 px-4 py-3 flex items-center gap-3 shadow-lg flex-shrink-0">
                 <div className="flex-1 flex items-center bg-gray-100 rounded-2xl px-4 py-2.5 gap-2">
                   <input
+                    ref={messageInputRef}
                     value={messageText}
                     onChange={(e) => setMessageText(e.target.value)}
                     onKeyDown={(e) => {
@@ -1237,6 +1361,35 @@ function MessagesPageContent() {
           )}
         </div>
       </div>
+
+      {/* Context menu backdrop */}
+      {contextMenu && (
+        <div
+          className="fixed inset-0 z-[998]"
+          onClick={() => setContextMenu(null)}
+        />
+      )}
+
+      {/* Context menu */}
+      {contextMenu && (
+        <div
+          className="fixed z-[999] animate-in fade-in duration-150"
+          style={{
+            top: Math.max(8, contextMenu.y - 56),
+            left: Math.min(Math.max(8, contextMenu.x - 60), (typeof window !== "undefined" ? window.innerWidth : 400) - 140),
+          }}
+        >
+          <div className="bg-gray-900 rounded-2xl shadow-2xl overflow-hidden">
+            <button
+              type="button"
+              onClick={() => handleReply(contextMenu.messageId, contextMenu.content)}
+              className="flex items-center gap-2 px-5 py-3.5 text-sm font-semibold text-white w-full hover:bg-gray-700 active:bg-gray-700 transition-colors"
+            >
+              💬 {t.reply}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

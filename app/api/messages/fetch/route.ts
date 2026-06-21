@@ -59,20 +59,41 @@ export async function POST(request: Request) {
       return NextResponse.json({ messages: [], conversationId: null });
     }
 
-    const { data, error } = await supabaseAdmin
+    const { data: rawMessages, error } = await supabaseAdmin
       .from("user_messages")
       .select("*")
       .eq("conversation_id", convId)
       .order("created_at", { ascending: true });
 
-    console.log("[messages/fetch] messages count:", data?.length, error?.message);
+    console.log("[messages/fetch] messages count:", rawMessages?.length, error?.message);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    // Resolve reply_to content for messages that have reply_to_id
+    const replyIds = (rawMessages ?? [])
+      .filter((m: any) => m.reply_to_id)
+      .map((m: any) => m.reply_to_id as string);
+
+    let replyMap: Record<string, { id: string; content: string; sender_id: string }> = {};
+    if (replyIds.length > 0) {
+      const { data: replies } = await supabaseAdmin
+        .from("user_messages")
+        .select("id, content, sender_id")
+        .in("id", replyIds);
+      for (const r of (replies ?? [])) {
+        replyMap[r.id] = r;
+      }
+    }
+
+    const data = (rawMessages ?? []).map((m: any) => ({
+      ...m,
+      reply_to: m.reply_to_id ? (replyMap[m.reply_to_id] ?? null) : null,
+    }));
+
     return NextResponse.json({
-      messages: data || [],
+      messages: data,
       conversationId: convId,
       ...(resolvedTargetUserId ? { targetUserId: resolvedTargetUserId } : {}),
       ...(resolvedListingId ? { listingId: resolvedListingId } : {}),

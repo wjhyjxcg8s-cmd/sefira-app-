@@ -12,7 +12,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     console.log("FULL REQUEST BODY:", JSON.stringify(body));
 
-    const { conversationId, senderId, content, targetUserId, listingId } = body;
+    const { conversationId, senderId, content, targetUserId, listingId, replyToId } = body;
 
     console.log("listingId received:", listingId);
     console.log("targetUserId received:", targetUserId);
@@ -78,6 +78,7 @@ export async function POST(request: Request) {
         conversation_id: convId,
         sender_id: senderId,
         content,
+        reply_to_id: replyToId ?? null,
       })
       .select()
       .single();
@@ -88,13 +89,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: msgErr.message }, { status: 500 });
     }
 
+    // Resolve reply_to content if applicable
+    let replyTo = null;
+    if (msg?.reply_to_id) {
+      const { data: replyMsg } = await supabaseAdmin
+        .from("user_messages")
+        .select("id, content, sender_id")
+        .eq("id", msg.reply_to_id)
+        .maybeSingle();
+      replyTo = replyMsg ?? null;
+    }
+
     // Update conversation timestamp
     await supabaseAdmin
       .from("conversations")
       .update({ updated_at: new Date().toISOString() })
       .eq("id", convId);
 
-    return NextResponse.json({ message: msg, conversationId: convId });
+    return NextResponse.json({ message: { ...msg, reply_to: replyTo }, conversationId: convId });
   } catch (e: any) {
     console.error("[messages/send] error:", e);
     return NextResponse.json({ error: e.message }, { status: 500 });
