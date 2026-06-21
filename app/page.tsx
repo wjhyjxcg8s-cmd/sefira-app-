@@ -3061,7 +3061,8 @@ export default function Home() {
               return (
                 <div
                   key={rec.id}
-                  className="snap-start w-72 flex-shrink-0 bg-white rounded-2xl shadow-md border border-stone-100 overflow-hidden flex active:scale-[0.99] transition-transform duration-150"
+                  onClick={() => router.push(`/listings/${rec.id}`)}
+                  className="snap-start w-72 flex-shrink-0 bg-white rounded-2xl shadow-md border border-stone-100 overflow-hidden flex active:scale-[0.99] transition-transform duration-150 cursor-pointer"
                 >
                   {/* Left: photo or gradient */}
                   <div className="w-28 flex-shrink-0 relative min-h-[140px]">
@@ -3109,13 +3110,14 @@ export default function Home() {
                     <div className="flex flex-wrap items-center gap-2 mt-3">
                       <Link
                         href={`/listings/${rec.id}`}
-                        onClick={() => { try { sessionStorage.setItem("sefira-scroll", String(window.scrollY)); } catch { /* ignore */ } }}
+                        onClick={(e) => { e.stopPropagation(); try { sessionStorage.setItem("sefira-scroll", String(window.scrollY)); } catch { /* ignore */ } }}
                         className="flex-1 flex items-center justify-center gap-1 bg-orange-500 hover:bg-orange-700 text-white text-xs font-medium px-3 py-2 rounded-xl transition-colors"
                       >
                         💬 {({ tr: "Mesaj Gönder", en: "Message", fa: "ارسال پیام", ar: "إرسال رسالة", de: "Nachricht", ru: "Написать" } as Record<string, string>)[lang] ?? "Message"}
                       </Link>
                       <button
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           const next = isSaved ? savedRecIds.filter((x: string) => x !== rec.id) : [...savedRecIds, rec.id];
                           setSavedRecIds(next);
                           try { localStorage.setItem("sefira-saved", JSON.stringify(next)); } catch { /* ignore */ }
@@ -3127,7 +3129,8 @@ export default function Home() {
                           : ({ tr: "Kaydet", en: "Save", fa: "ذخیره", ar: "حفظ", de: "Speichern", ru: "Сохранить" } as Record<string, string>)[lang] ?? "Save"}
                       </button>
                       <button
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           const next = [...dismissedRecIds, rec.id];
                           setDismissedRecIds(next);
                           try { sessionStorage.setItem("sefira-dismissed", JSON.stringify(next)); } catch { /* ignore */ }
