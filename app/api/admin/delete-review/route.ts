@@ -30,9 +30,6 @@ export async function POST(req: NextRequest) {
   if (!adminUser) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
-  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
-  }
 
   try {
     const { reviewId, updates } = await req.json();

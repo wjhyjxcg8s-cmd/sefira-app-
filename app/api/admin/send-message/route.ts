@@ -25,15 +25,9 @@ const supabaseAdmin = createClient(
 );
 
 export async function POST(req: NextRequest) {
-  console.log("URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
-  console.log("KEY exists:", !!process.env.SUPABASE_SERVICE_ROLE_KEY);
-
   const adminUser = await verifyAdmin(req);
   if (!adminUser) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
   }
 
   try {
