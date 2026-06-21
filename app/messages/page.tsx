@@ -44,6 +44,8 @@ const translations = {
     blockedByYouBanner: "Bu kullanıcıyı engellediniz",
     blockedByThemBanner: "Bu kullanıcı tarafından engellendiniz",
     unblock: "Engeli Kaldır",
+    unblockConfirm: "Bu kullanıcının engelini kaldırmak istediğinizden emin misiniz?",
+    unblockSuccess: "Engel kaldırıldı",
     cannotSendBlocked: "Bu kullanıcıyı engellediğiniz için mesaj gönderemezsiniz",
   },
   en: {
@@ -81,6 +83,8 @@ const translations = {
     blockedByYouBanner: "You have blocked this user",
     blockedByThemBanner: "You have been blocked by this user",
     unblock: "Unblock",
+    unblockConfirm: "Are you sure you want to unblock this user?",
+    unblockSuccess: "User unblocked",
     cannotSendBlocked: "You cannot send messages because you blocked this user",
   },
   fa: {
@@ -118,6 +122,8 @@ const translations = {
     blockedByYouBanner: "شما این کاربر را مسدود کرده‌اید",
     blockedByThemBanner: "این کاربر شما را مسدود کرده است",
     unblock: "رفع مسدودیت",
+    unblockConfirm: "آیا مطمئن هستید که می‌خواهید این کاربر را از مسدودیت خارج کنید؟",
+    unblockSuccess: "مسدودیت برداشته شد",
     cannotSendBlocked: "شما این کاربر را مسدود کرده‌اید و نمی‌توانید پیام بفرستید",
   },
   de: {
@@ -155,6 +161,8 @@ const translations = {
     blockedByYouBanner: "Sie haben diesen Benutzer blockiert",
     blockedByThemBanner: "Sie wurden von diesem Benutzer blockiert",
     unblock: "Entsperren",
+    unblockConfirm: "Möchten Sie die Blockierung dieses Benutzers wirklich aufheben?",
+    unblockSuccess: "Benutzer entsperrt",
     cannotSendBlocked: "Sie können keine Nachrichten senden, da Sie diesen Benutzer blockiert haben",
   },
   ar: {
@@ -192,6 +200,8 @@ const translations = {
     blockedByYouBanner: "لقد حظرت هذا المستخدم",
     blockedByThemBanner: "تم حظرك من قبل هذا المستخدم",
     unblock: "إلغاء الحظر",
+    unblockConfirm: "هل أنت متأكد من إلغاء حظر هذا المستخدم؟",
+    unblockSuccess: "تم إلغاء الحظر",
     cannotSendBlocked: "لا يمكنك إرسال رسائل لأنك حظرت هذا المستخدم",
   },
   ru: {
@@ -229,6 +239,8 @@ const translations = {
     blockedByYouBanner: "Вы заблокировали этого пользователя",
     blockedByThemBanner: "Этот пользователь заблокировал вас",
     unblock: "Разблокировать",
+    unblockConfirm: "Вы уверены, что хотите разблокировать этого пользователя?",
+    unblockSuccess: "Пользователь разблокирован",
     cannotSendBlocked: "Вы не можете отправлять сообщения, так как заблокировали этого пользователя",
   },
 };
@@ -349,10 +361,12 @@ function MessagesPageContent() {
   } | null>(null);
   const [tapReplyId, setTapReplyId] = useState<string | null>(null);
 
-  // Block user state
+  // Block/unblock state
   const [showBlockMenu, setShowBlockMenu] = useState(false);
   const [showBlockConfirm, setShowBlockConfirm] = useState(false);
   const [blockingUser, setBlockingUser] = useState(false);
+  const [showUnblockConfirm, setShowUnblockConfirm] = useState(false);
+  const [unblockingUser, setUnblockingUser] = useState(false);
 
   // Report message state
   const [reportMenu, setReportMenu] = useState<{ msgId: string; content: string } | null>(null);
@@ -787,19 +801,31 @@ function MessagesPageContent() {
     setBlockingUser(false);
   };
 
-  const handleUnblock = async () => {
-    if (!currentUserId || !targetUserId) return;
-    const res = await fetch("/api/users/unblock", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ blocker_id: currentUserId, blocked_id: targetUserId }),
-    });
-    const result = await res.json();
-    if (!result.error) {
-      setBlockStatus(null);
-    } else {
-      showToast("Hata: " + result.error);
+  const handleUnblock = () => {
+    setShowUnblockConfirm(true);
+  };
+
+  const handleUnblockConfirm = async () => {
+    if (!currentUserId || !targetUserId || unblockingUser) return;
+    setUnblockingUser(true);
+    try {
+      const res = await fetch("/api/users/unblock", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ blocker_id: currentUserId, blocked_id: targetUserId }),
+      });
+      const result = await res.json();
+      if (!result.error) {
+        setBlockStatus(null);
+        setShowUnblockConfirm(false);
+        showToast(t.unblockSuccess);
+      } else {
+        showToast("Hata: " + result.error);
+      }
+    } catch {
+      showToast("Bir hata oluştu");
     }
+    setUnblockingUser(false);
   };
 
   const handleReportMessage = async (reason: string) => {
@@ -1310,13 +1336,23 @@ function MessagesPageContent() {
                     <>
                       <div className="fixed inset-0 z-[48]" onClick={() => setShowBlockMenu(false)} />
                       <div className="absolute right-0 top-11 z-[49] bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden min-w-[220px]">
-                        <button
-                          type="button"
-                          onClick={() => { setShowBlockMenu(false); setShowBlockConfirm(true); }}
-                          className="w-full flex items-center gap-3 px-5 py-4 text-sm font-semibold text-red-500 hover:bg-red-50 active:bg-red-100 transition-colors text-left"
-                        >
-                          {t.blockUser}
-                        </button>
+                        {blockStatus === "blocker" ? (
+                          <button
+                            type="button"
+                            onClick={() => { setShowBlockMenu(false); setShowUnblockConfirm(true); }}
+                            className="w-full flex items-center gap-3 px-5 py-4 text-sm font-semibold text-orange-500 hover:bg-orange-50 active:bg-orange-100 transition-colors text-left"
+                          >
+                            {t.unblock}
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => { setShowBlockMenu(false); setShowBlockConfirm(true); }}
+                            className="w-full flex items-center gap-3 px-5 py-4 text-sm font-semibold text-red-500 hover:bg-red-50 active:bg-red-100 transition-colors text-left"
+                          >
+                            {t.blockUser}
+                          </button>
+                        )}
                         <button
                           type="button"
                           onClick={() => setShowBlockMenu(false)}
@@ -1843,6 +1879,41 @@ function MessagesPageContent() {
                 className="flex-1 py-3 rounded-xl bg-red-500 text-white font-bold text-sm hover:bg-red-600 active:scale-95 transition-all disabled:opacity-50"
               >
                 {blockingUser ? "..." : t.confirm}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Unblock confirmation dialog */}
+      {showUnblockConfirm && (
+        <div
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+          style={{ backgroundColor: "rgba(0,0,0,0.55)" }}
+          onClick={() => setShowUnblockConfirm(false)}
+        >
+          <div
+            className="bg-white rounded-2xl w-full max-w-sm p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="text-base font-bold text-gray-800 text-center mb-6">
+              {t.unblockConfirm}
+            </p>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowUnblockConfirm(false)}
+                className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-600 font-semibold text-sm hover:bg-gray-50 active:scale-95 transition-all"
+              >
+                {t.cancel}
+              </button>
+              <button
+                type="button"
+                onClick={handleUnblockConfirm}
+                disabled={unblockingUser}
+                className="flex-1 py-3 rounded-xl bg-orange-500 text-white font-bold text-sm hover:bg-orange-600 active:scale-95 transition-all disabled:opacity-50"
+              >
+                {unblockingUser ? "..." : t.unblock}
               </button>
             </div>
           </div>
