@@ -1497,6 +1497,7 @@ export default function Home() {
   const [dismissedRecIds, setDismissedRecIds] = useState<string[]>([]);
   const [recAvatarMap, setRecAvatarMap] = useState<Record<string, string | null>>({});
   const [activeRecIndex, setActiveRecIndex] = useState(0);
+  const recScrollRef = useRef<HTMLDivElement>(null);
 
   // ── Fetch avatars for needs_place smart recs ─────────────────────────────
   useEffect(() => {
@@ -3043,10 +3044,15 @@ export default function Home() {
 
           {/* Horizontal scroll track */}
           <div
+            ref={recScrollRef}
             className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 px-4"
-            style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
-            onScroll={(e) => {
-              const idx = Math.round((e.currentTarget as HTMLDivElement).scrollLeft / 272);
+            style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollBehavior: "smooth" } as React.CSSProperties}
+            onScroll={() => {
+              const el = recScrollRef.current;
+              if (!el) return;
+              const firstCard = el.firstElementChild as HTMLElement | null;
+              const cardWidth = firstCard ? firstCard.offsetWidth + 16 : 272; // card + gap-4
+              const idx = Math.round(el.scrollLeft / cardWidth);
               setActiveRecIndex(Math.min(Math.max(idx, 0), smartRecs.length - 1));
             }}
           >
