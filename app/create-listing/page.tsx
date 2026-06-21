@@ -6,6 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
 import { useLang } from "@/app/lib/LangContext";
+import ReactCrop, { centerCrop, type Crop, type PixelCrop } from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
 
 // ── Countries ─────────────────────────────────────────────────────────────────
 const TOP_COUNTRY_CODES = ["TR", "IR", "DE", "AE", "GB", "RU", "US", "FR", "ES"];
@@ -147,6 +149,8 @@ const translations = {
     // Errors
     errorSubmit: "İlan yayınlanırken hata oluştu. Lütfen tekrar deneyin.",
     errorPhoto: "Fotoğraf yüklenirken hata oluştu.",
+    cropSave: "Kırp ve Kaydet",
+    cropCancel: "İptal",
     successTitle: "İlanınız Yayınlandı!",
     successSub: "İlanınız başarıyla oluşturuldu.",
     viewListings: "İlanlara Bak",
@@ -286,6 +290,8 @@ const translations = {
     // Errors
     errorSubmit: "Error publishing listing. Please try again.",
     errorPhoto: "Error uploading photo.",
+    cropSave: "Crop & Save",
+    cropCancel: "Cancel",
     successTitle: "Listing Published!",
     successSub: "Your listing has been created successfully.",
     viewListings: "Browse Listings",
@@ -425,6 +431,8 @@ const translations = {
     // Errors
     errorSubmit: "خطا در ثبت آگهی. لطفاً دوباره امتحان کنید.",
     errorPhoto: "خطا در آپلود عکس.",
+    cropSave: "برش و ذخیره",
+    cropCancel: "لغو",
     successTitle: "آگهی ثبت شد!",
     successSub: "آگهی شما با موفقیت ایجاد شد.",
     viewListings: "مرور آگهی‌ها",
@@ -561,6 +569,8 @@ const translations = {
     goHome: "Zur Startseite",
     errorSubmit: "Fehler beim Veröffentlichen des Inserats. Bitte versuchen Sie es erneut.",
     errorPhoto: "Fehler beim Hochladen des Fotos.",
+    cropSave: "Zuschneiden & Speichern",
+    cropCancel: "Abbrechen",
     successTitle: "Inserat veröffentlicht!",
     successSub: "Ihr Inserat wurde erfolgreich erstellt.",
     viewListings: "Inserate durchsuchen",
@@ -700,6 +710,8 @@ const translations = {
     // Errors
     errorSubmit: "خطأ في نشر الإعلان. يرجى المحاولة مرة أخرى.",
     errorPhoto: "خطأ في رفع الصورة.",
+    cropSave: "قص وحفظ",
+    cropCancel: "إلغاء",
     successTitle: "تم نشر الإعلان!",
     successSub: "تم إنشاء إعلانك بنجاح.",
     viewListings: "تصفّح الإعلانات",
@@ -839,6 +851,8 @@ const translations = {
     // Errors
     errorSubmit: "Ошибка при публикации объявления. Попробуйте снова.",
     errorPhoto: "Ошибка загрузки фото.",
+    cropSave: "Обрезать и сохранить",
+    cropCancel: "Отмена",
     successTitle: "Объявление опубликовано!",
     successSub: "Ваше объявление успешно создано.",
     viewListings: "Просмотреть объявления",
@@ -1341,11 +1355,31 @@ function CreateListingPage() {
 
   const photoInputRef = useRef<HTMLInputElement>(null);
 
+  // Crop modal state for listing photos
+  const [showPhotoCropModal, setShowPhotoCropModal] = useState(false);
+  const [cropImgSrc, setCropImgSrc] = useState("");
+  const [photoCrop, setPhotoCrop] = useState<Crop>();
+  const [photoCompletedCrop, setPhotoCompletedCrop] = useState<PixelCrop>();
+  const [cropSaving, setCropSaving] = useState(false);
+  const cropImgRef = useRef<HTMLImageElement>(null);
+  const pendingCropFilesRef = useRef<File[]>([]);
+  const photosUploadedDuringCropRef = useRef(0);
+
   const set = <K extends keyof ListingForm>(key: K, val: ListingForm[K]) =>
     setForm((f) => ({ ...f, [key]: val }));
 
-  // Photo handling — uploads immediately on selection
-  const handlePhotos = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const openCropForFile = (file: File) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      setCropImgSrc(reader.result?.toString() ?? "");
+      setPhotoCrop(undefined);
+      setPhotoCompletedCrop(undefined);
+      setShowPhotoCropModal(true);
+    });
+    reader.readAsDataURL(file);
+  };
+
+  const handlePhotos = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
     e.target.value = "";
     if (!user || files.length === 0) return;
@@ -1353,20 +1387,81 @@ function CreateListingPage() {
     const newFiles = files.slice(0, Math.max(0, available));
     if (newFiles.length === 0) return;
     setPhotoError(null);
-    setUploadingCount((c) => c + newFiles.length);
-    for (const file of newFiles) {
+    pendingCropFilesRef.current = newFiles;
+    photosUploadedDuringCropRef.current = form.photos.length;
+    openCropForFile(newFiles[0]);
+  };
+
+  const onPhotoCropImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const { width, height } = e.currentTarget;
+    const crop = centerCrop(
+      { unit: "%", x: 5, y: 5, width: 90, height: 90 },
+      width,
+      height
+    );
+    setPhotoCrop(crop);
+    setPhotoCompletedCrop({
+      unit: "px",
+      x: (crop.x / 100) * width,
+      y: (crop.y / 100) * height,
+      width: (crop.width / 100) * width,
+      height: (crop.height / 100) * height,
+    });
+  };
+
+  const handlePhotoCropSave = () => {
+    if (!photoCompletedCrop || !cropImgRef.current || !user) return;
+    const image = cropImgRef.current;
+    const canvas = document.createElement("canvas");
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+    canvas.width = Math.round(photoCompletedCrop.width * scaleX);
+    canvas.height = Math.round(photoCompletedCrop.height * scaleY);
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.drawImage(
+      image,
+      photoCompletedCrop.x * scaleX,
+      photoCompletedCrop.y * scaleY,
+      photoCompletedCrop.width * scaleX,
+      photoCompletedCrop.height * scaleY,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+    setCropSaving(true);
+    canvas.toBlob(async (blob) => {
+      if (!blob) { setCropSaving(false); return; }
       const fd = new FormData();
-      fd.append('file', file);
-      fd.append('userId', user.id);
-      const res = await fetch('/api/upload-photo', { method: 'POST', body: fd });
+      fd.append("file", blob, "photo.jpg");
+      fd.append("userId", user.id);
+      setUploadingCount((c) => c + 1);
+      const res = await fetch("/api/upload-photo", { method: "POST", body: fd });
       setUploadingCount((c) => c - 1);
       if (!res.ok) {
         setPhotoError(t.errorPhoto);
       } else {
         const { url } = await res.json();
         setForm((f) => ({ ...f, photos: [...f.photos, url] }));
+        photosUploadedDuringCropRef.current += 1;
       }
-    }
+      const remaining = pendingCropFilesRef.current.slice(1);
+      pendingCropFilesRef.current = remaining;
+      if (remaining.length > 0 && photosUploadedDuringCropRef.current < 3) {
+        openCropForFile(remaining[0]);
+      } else {
+        setShowPhotoCropModal(false);
+        setCropImgSrc("");
+      }
+      setCropSaving(false);
+    }, "image/jpeg", 0.92);
+  };
+
+  const handlePhotoCropCancel = () => {
+    setShowPhotoCropModal(false);
+    setCropImgSrc("");
+    pendingCropFilesRef.current = [];
   };
 
   const removePhoto = (idx: number) => {
@@ -2958,6 +3053,61 @@ function CreateListingPage() {
             </button>
           </div>
         </div>
+
+      {/* Photo crop modal */}
+      {showPhotoCropModal && (
+        <div className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col">
+            <div className="p-4 border-b border-stone-100">
+              <p className="text-stone-800 font-bold text-sm text-center">
+                {t.photos}
+              </p>
+            </div>
+            <div className="p-4 flex items-center justify-center bg-stone-50 overflow-auto max-h-[65vh]">
+              {cropImgSrc && (
+                <ReactCrop
+                  crop={photoCrop}
+                  onChange={(_, pct) => setPhotoCrop(pct)}
+                  onComplete={(c) => setPhotoCompletedCrop(c)}
+                  minWidth={30}
+                  minHeight={30}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    ref={cropImgRef}
+                    src={cropImgSrc}
+                    alt="Crop"
+                    onLoad={onPhotoCropImageLoad}
+                    style={{ maxHeight: "60vh", maxWidth: "100%", display: "block" }}
+                  />
+                </ReactCrop>
+              )}
+            </div>
+            <div className="p-4 flex gap-3">
+              <button
+                type="button"
+                onClick={handlePhotoCropCancel}
+                disabled={cropSaving}
+                className="flex-1 py-3 rounded-xl border-2 border-stone-200 text-stone-600 text-sm font-bold hover:bg-stone-50 transition-all active:scale-95 disabled:opacity-60"
+              >
+                {t.cropCancel}
+              </button>
+              <button
+                type="button"
+                onClick={handlePhotoCropSave}
+                disabled={cropSaving || !photoCompletedCrop}
+                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-bold shadow-md shadow-orange-500/25 hover:opacity-90 transition-all active:scale-95 disabled:opacity-60"
+              >
+                {cropSaving ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                  </span>
+                ) : t.cropSave}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       </div>
     );
   }
