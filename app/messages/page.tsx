@@ -28,6 +28,19 @@ const translations = {
     noMessagesYet: "Henüz mesaj yok. İlk mesajı gönderin!",
     reply: "Yanıtla",
     replyingTo: "Yanıtlıyorsunuz",
+    blockUser: "🚫 Kullanıcıyı Engelle",
+    blockConfirm: "Bu kullanıcıyı engellemek istediğinizden emin misiniz?",
+    blockSuccess: "Kullanıcı engellendi",
+    close: "❌ Kapat",
+    confirm: "Onayla",
+    cancel: "İptal",
+    report: "🚩 Şikayet Et",
+    reportTitle: "Şikayet nedeninizi seçin",
+    reportInappropriate: "Uygunsuz içerik",
+    reportSpam: "Spam",
+    reportInsult: "Hakaret/Küfür",
+    reportOther: "Diğer",
+    reportSuccess: "Şikayetiniz alındı, incelenecektir",
   },
   en: {
     title: "My Messages",
@@ -48,6 +61,19 @@ const translations = {
     noMessagesYet: "No messages yet. Send the first one!",
     reply: "Reply",
     replyingTo: "Replying to",
+    blockUser: "🚫 Block User",
+    blockConfirm: "Are you sure you want to block this user?",
+    blockSuccess: "User blocked",
+    close: "❌ Close",
+    confirm: "Confirm",
+    cancel: "Cancel",
+    report: "🚩 Report",
+    reportTitle: "Select a reason",
+    reportInappropriate: "Inappropriate content",
+    reportSpam: "Spam",
+    reportInsult: "Insult/Abuse",
+    reportOther: "Other",
+    reportSuccess: "Your report has been received",
   },
   fa: {
     title: "پیام‌های من",
@@ -68,6 +94,19 @@ const translations = {
     noMessagesYet: "هنوز پیامی نیست. اولین پیام را ارسال کنید!",
     reply: "پاسخ",
     replyingTo: "در پاسخ به",
+    blockUser: "🚫 مسدود کردن کاربر",
+    blockConfirm: "آیا مطمئن هستید که می‌خواهید این کاربر را مسدود کنید؟",
+    blockSuccess: "کاربر مسدود شد",
+    close: "❌ بستن",
+    confirm: "تأیید",
+    cancel: "لغو",
+    report: "🚩 گزارش",
+    reportTitle: "دلیل گزارش را انتخاب کنید",
+    reportInappropriate: "محتوای نامناسب",
+    reportSpam: "اسپم",
+    reportInsult: "توهین/ناسزا",
+    reportOther: "سایر",
+    reportSuccess: "گزارش شما دریافت شد",
   },
   de: {
     title: "Meine Nachrichten",
@@ -88,6 +127,19 @@ const translations = {
     noMessagesYet: "Noch keine Nachrichten. Senden Sie die erste!",
     reply: "Antworten",
     replyingTo: "Antwort auf",
+    blockUser: "🚫 Benutzer blockieren",
+    blockConfirm: "Möchten Sie diesen Benutzer wirklich blockieren?",
+    blockSuccess: "Benutzer blockiert",
+    close: "❌ Schließen",
+    confirm: "Bestätigen",
+    cancel: "Abbrechen",
+    report: "🚩 Melden",
+    reportTitle: "Grund auswählen",
+    reportInappropriate: "Unangemessener Inhalt",
+    reportSpam: "Spam",
+    reportInsult: "Beleidigung/Missbrauch",
+    reportOther: "Sonstiges",
+    reportSuccess: "Ihre Meldung wurde erhalten",
   },
   ar: {
     title: "رسائلي",
@@ -108,6 +160,19 @@ const translations = {
     noMessagesYet: "لا رسائل بعد. أرسل الأول!",
     reply: "رد",
     replyingTo: "ردًا على",
+    blockUser: "🚫 حظر المستخدم",
+    blockConfirm: "هل أنت متأكد من حظر هذا المستخدم؟",
+    blockSuccess: "تم حظر المستخدم",
+    close: "❌ إغلاق",
+    confirm: "تأكيد",
+    cancel: "إلغاء",
+    report: "🚩 إبلاغ",
+    reportTitle: "اختر السبب",
+    reportInappropriate: "محتوى غير لائق",
+    reportSpam: "بريد مزعج",
+    reportInsult: "إهانة/إساءة",
+    reportOther: "أخرى",
+    reportSuccess: "تم استلام تقريرك",
   },
   ru: {
     title: "Мои сообщения",
@@ -128,6 +193,19 @@ const translations = {
     noMessagesYet: "Пока нет сообщений. Отправьте первое!",
     reply: "Ответить",
     replyingTo: "В ответ на",
+    blockUser: "🚫 Заблокировать пользователя",
+    blockConfirm: "Вы уверены, что хотите заблокировать этого пользователя?",
+    blockSuccess: "Пользователь заблокирован",
+    close: "❌ Закрыть",
+    confirm: "Подтвердить",
+    cancel: "Отмена",
+    report: "🚩 Пожаловаться",
+    reportTitle: "Выберите причину",
+    reportInappropriate: "Неуместный контент",
+    reportSpam: "Спам",
+    reportInsult: "Оскорбление/Нарушение",
+    reportOther: "Другое",
+    reportSuccess: "Ваша жалоба получена",
   },
 };
 
@@ -246,6 +324,21 @@ function MessagesPageContent() {
     isHorizontal: boolean | null;
   } | null>(null);
   const [tapReplyId, setTapReplyId] = useState<string | null>(null);
+
+  // Block user state
+  const [showBlockMenu, setShowBlockMenu] = useState(false);
+  const [showBlockConfirm, setShowBlockConfirm] = useState(false);
+  const [blockingUser, setBlockingUser] = useState(false);
+
+  // Report message state
+  const [reportMenu, setReportMenu] = useState<{ msgId: string; content: string } | null>(null);
+  const [submittingReport, setSubmittingReport] = useState(false);
+
+  // Toast state
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+
+  // Long-press timer ref
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Conversations list (enriched — includes listing + otherUser preloaded)
   const [enrichedConvs, setEnrichedConvs] = useState<any[]>([]);
@@ -529,23 +622,33 @@ function MessagesPageContent() {
   };
 
   const onMsgTouchStart = (msg: any, e: React.TouchEvent) => {
-    const t = e.touches[0];
+    const touch = e.touches[0];
     setSwipeMsg({
       id: msg.id,
       deltaX: 0,
-      startX: t.clientX,
-      startY: t.clientY,
+      startX: touch.clientX,
+      startY: touch.clientY,
       startTime: Date.now(),
       triggered: false,
       isHorizontal: null,
     });
+    if (longPressTimer.current) clearTimeout(longPressTimer.current);
+    longPressTimer.current = setTimeout(() => {
+      if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(40);
+      setReportMenu({ msgId: msg.id, content: msg.content });
+      setSwipeMsg(null);
+    }, 500);
   };
 
   const onMsgTouchMove = (msg: any, e: React.TouchEvent) => {
     if (!swipeMsg || swipeMsg.id !== msg.id) return;
-    const t = e.touches[0];
-    const dx = t.clientX - swipeMsg.startX;
-    const dy = t.clientY - swipeMsg.startY;
+    const touch = e.touches[0];
+    const dx = touch.clientX - swipeMsg.startX;
+    const dy = touch.clientY - swipeMsg.startY;
+
+    if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+      if (longPressTimer.current) { clearTimeout(longPressTimer.current); longPressTimer.current = null; }
+    }
 
     let isHoriz = swipeMsg.isHorizontal;
     if (isHoriz === null && (Math.abs(dx) > 4 || Math.abs(dy) > 4)) {
@@ -558,6 +661,7 @@ function MessagesPageContent() {
     let triggered = swipeMsg.triggered;
     if (!triggered && clampedDx >= 60) {
       triggered = true;
+      if (longPressTimer.current) { clearTimeout(longPressTimer.current); longPressTimer.current = null; }
       if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(30);
       handleReply(msg.id, msg.content);
     }
@@ -565,6 +669,7 @@ function MessagesPageContent() {
   };
 
   const onMsgTouchEnd = (msg: any) => {
+    if (longPressTimer.current) { clearTimeout(longPressTimer.current); longPressTimer.current = null; }
     const snap = swipeMsg;
     if (snap && snap.id === msg.id) {
       const { deltaX, startTime } = snap;
@@ -587,6 +692,63 @@ function MessagesPageContent() {
     setReplyingTo({ id: messageId, content });
     setContextMenu(null);
     setTimeout(() => messageInputRef.current?.focus(), 50);
+  };
+
+  const showToast = (msg: string) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(null), 3000);
+  };
+
+  const handleBlockUser = async () => {
+    if (!currentUserId || !targetUserId || blockingUser) return;
+    setBlockingUser(true);
+    try {
+      const res = await fetch("/api/users/block", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ blocker_id: currentUserId, blocked_id: targetUserId }),
+      });
+      const result = await res.json();
+      if (result.error) {
+        showToast("Hata: " + result.error);
+      } else {
+        showToast(t.blockSuccess);
+        setShowBlockConfirm(false);
+        setShowBlockMenu(false);
+        setTimeout(() => setMobileView("list"), 1500);
+      }
+    } catch {
+      showToast("Bir hata oluştu");
+    }
+    setBlockingUser(false);
+  };
+
+  const handleReportMessage = async (reason: string) => {
+    if (!currentUserId || !reportMenu || submittingReport) return;
+    setSubmittingReport(true);
+    try {
+      const res = await fetch("/api/messages/report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          reporter_id: currentUserId,
+          reported_user_id: targetUserId,
+          message_id: reportMenu.msgId,
+          message_content: reportMenu.content,
+          reason,
+        }),
+      });
+      const result = await res.json();
+      if (result.error) {
+        showToast("Hata: " + result.error);
+      } else {
+        showToast(t.reportSuccess);
+        setReportMenu(null);
+      }
+    } catch {
+      showToast("Bir hata oluştu");
+    }
+    setSubmittingReport(false);
   };
 
   const sendMessage = async () => {
@@ -1038,11 +1200,43 @@ function MessagesPageContent() {
                     {activePeerName[0]?.toUpperCase() ?? "?"}
                   </div>
                 )}
-                <div>
+                <div className="flex-1">
                   <p className="font-bold text-gray-900 text-sm">
                     {activePeerName || "Kullanıcı"}
                   </p>
                   <p className="text-xs text-green-500">● Çevrimiçi</p>
+                </div>
+                {/* Three-dot menu button */}
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setShowBlockMenu((v) => !v)}
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 active:bg-gray-200 transition-colors text-xl font-bold"
+                    aria-label="More options"
+                  >
+                    ⋮
+                  </button>
+                  {showBlockMenu && (
+                    <>
+                      <div className="fixed inset-0 z-[48]" onClick={() => setShowBlockMenu(false)} />
+                      <div className="absolute right-0 top-11 z-[49] bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden min-w-[220px]">
+                        <button
+                          type="button"
+                          onClick={() => { setShowBlockMenu(false); setShowBlockConfirm(true); }}
+                          className="w-full flex items-center gap-3 px-5 py-4 text-sm font-semibold text-red-500 hover:bg-red-50 active:bg-red-100 transition-colors text-left"
+                        >
+                          {t.blockUser}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setShowBlockMenu(false)}
+                          className="w-full flex items-center gap-3 px-5 py-4 text-sm font-semibold text-gray-500 hover:bg-gray-50 active:bg-gray-100 transition-colors border-t border-gray-100 text-left"
+                        >
+                          {t.close}
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -1482,7 +1676,7 @@ function MessagesPageContent() {
           className="fixed z-[999] animate-in fade-in duration-150"
           style={{
             top: Math.max(8, contextMenu.y - 56),
-            left: Math.min(Math.max(8, contextMenu.x - 60), (typeof window !== "undefined" ? window.innerWidth : 400) - 140),
+            left: Math.min(Math.max(8, contextMenu.x - 60), (typeof window !== "undefined" ? window.innerWidth : 400) - 180),
           }}
         >
           <div className="bg-gray-900 rounded-2xl shadow-2xl overflow-hidden">
@@ -1491,8 +1685,101 @@ function MessagesPageContent() {
               onClick={() => handleReply(contextMenu.messageId, contextMenu.content)}
               className="flex items-center gap-2 px-5 py-3.5 text-sm font-semibold text-white w-full hover:bg-gray-700 active:bg-gray-700 transition-colors"
             >
-              💬 {t.reply}
+              ↩️ {t.reply}
             </button>
+            <button
+              type="button"
+              onClick={() => { setReportMenu({ msgId: contextMenu.messageId, content: contextMenu.content }); setContextMenu(null); }}
+              className="flex items-center gap-2 px-5 py-3.5 text-sm font-semibold text-red-400 w-full hover:bg-gray-700 active:bg-gray-700 transition-colors border-t border-gray-700"
+            >
+              {t.report}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Block user confirmation dialog */}
+      {showBlockConfirm && (
+        <div
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+          style={{ backgroundColor: "rgba(0,0,0,0.55)" }}
+          onClick={() => setShowBlockConfirm(false)}
+        >
+          <div
+            className="bg-white rounded-2xl w-full max-w-sm p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="text-base font-bold text-gray-800 text-center mb-6">
+              {t.blockConfirm}
+            </p>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowBlockConfirm(false)}
+                className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-600 font-semibold text-sm hover:bg-gray-50 active:scale-95 transition-all"
+              >
+                {t.cancel}
+              </button>
+              <button
+                type="button"
+                onClick={handleBlockUser}
+                disabled={blockingUser}
+                className="flex-1 py-3 rounded-xl bg-red-500 text-white font-bold text-sm hover:bg-red-600 active:scale-95 transition-all disabled:opacity-50"
+              >
+                {blockingUser ? "..." : t.confirm}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Report message bottom sheet */}
+      {reportMenu && (
+        <div
+          className="fixed inset-0 z-[200] flex items-end justify-center"
+          style={{ backgroundColor: "rgba(0,0,0,0.45)" }}
+          onClick={() => setReportMenu(null)}
+        >
+          <div
+            className="bg-white w-full max-w-lg rounded-t-3xl p-5 pb-8 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-5" />
+            <p className="text-base font-bold text-gray-800 text-center mb-4">{t.reportTitle}</p>
+            <div className="space-y-2">
+              {[
+                { key: "inappropriate", label: t.reportInappropriate },
+                { key: "spam", label: t.reportSpam },
+                { key: "insult", label: t.reportInsult },
+                { key: "other", label: t.reportOther },
+              ].map(({ key, label }) => (
+                <button
+                  key={key}
+                  type="button"
+                  disabled={submittingReport}
+                  onClick={() => handleReportMessage(key)}
+                  className="w-full py-3.5 px-4 rounded-xl bg-gray-50 hover:bg-orange-50 active:bg-orange-100 text-gray-700 font-semibold text-sm text-left transition-colors border border-gray-100 disabled:opacity-50"
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => setReportMenu(null)}
+              className="w-full mt-4 py-3.5 rounded-xl bg-gray-100 text-gray-500 font-semibold text-sm hover:bg-gray-200 active:scale-95 transition-all"
+            >
+              {t.cancel}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Toast notification */}
+      {toastMsg && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[300] pointer-events-none">
+          <div className="bg-gray-900 text-white text-sm font-semibold px-5 py-3 rounded-2xl shadow-2xl whitespace-nowrap">
+            {toastMsg}
           </div>
         </div>
       )}

@@ -15,7 +15,7 @@ const supabaseAdmin = createClient(
 const ADMIN_EMAIL = "supportsefira@gmail.com";
 const PAGE_SIZE = 20;
 
-type Section = "dashboard" | "users" | "listings" | "feedback" | "reviews" | "messages";
+type Section = "dashboard" | "users" | "listings" | "feedback" | "reviews" | "messages" | "reported_messages";
 
 interface Stats {
   totalUsers: number;
@@ -697,6 +697,7 @@ export default function AdminPage() {
     { id: "feedback", label: "Del. Feedback", icon: "💬" },
     { id: "reviews", label: "Reviews", icon: "⭐" },
     { id: "messages", label: "Messages", icon: "✉️" },
+    { id: "reported_messages", label: "Şikayetler", icon: "🚩" },
     { id: "channels", label: "Kanallarım", icon: "📢", href: "/admin-sefira-2026/channels" },
     { id: "banned", label: "Engelliler", icon: "🚫", href: "/admin-sefira-2026/banned" },
     { id: "stories", label: "Hikayeler", icon: "📸", href: "/admin-sefira-2026/stories" },
@@ -1600,10 +1601,10 @@ export default function AdminPage() {
   };
 
   const renderMessages = () => <MessagesSection session={session} />;
+  const renderReportedMessages = () => <ReportedMessagesSection />;
 
   const renderContent = () => {
-    if (dataLoading && activeSection !== "messages") return <LoadingSpinner />;
-    // messages section manages its own loading state
+    if (dataLoading && activeSection !== "messages" && activeSection !== "reported_messages") return <LoadingSpinner />;
     switch (activeSection) {
       case "dashboard":
         return renderDashboard();
@@ -1617,6 +1618,8 @@ export default function AdminPage() {
         return renderReviews();
       case "messages":
         return renderMessages();
+      case "reported_messages":
+        return renderReportedMessages();
     }
   };
 
@@ -2290,6 +2293,158 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+interface ReportedMsg {
+  id: string;
+  reporter_id: string;
+  reported_user_id: string;
+  message_id: string;
+  message_content: string;
+  reason: string;
+  status: string;
+  created_at: string;
+  reporter_profile?: { display_name: string | null } | null;
+  reported_profile?: { display_name: string | null } | null;
+}
+
+function ReportedMessagesSection() {
+  const [reports, setReports] = useState<ReportedMsg[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [markingId, setMarkingId] = useState<string | null>(null);
+
+  const supabaseAdm = createClient(
+    'https://ceetzophaybywfuhezhv.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlZXR6b3BoYXlieXdmdWhlemh2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTM1Nzg1NSwiZXhwIjoyMDk0OTMzODU1fQ.Jw1bDN7wqxdqj-OinqK4ll7mV5ka7fT6T-9jORs4x_4',
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  );
+
+  const fetchReports = async () => {
+    setLoading(true);
+    const { data, error } = await supabaseAdm
+      .from("reported_messages")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error || !data) { setLoading(false); return; }
+
+    const userIds = Array.from(new Set([
+      ...data.map((r: ReportedMsg) => r.reporter_id),
+      ...data.map((r: ReportedMsg) => r.reported_user_id),
+    ].filter(Boolean)));
+
+    const profileMap: Record<string, { display_name: string | null }> = {};
+    if (userIds.length > 0) {
+      const { data: profiles } = await supabaseAdm
+        .from("profiles")
+        .select("user_id, display_name")
+        .in("user_id", userIds);
+      if (profiles) {
+        profiles.forEach((p: { user_id: string; display_name: string | null }) => {
+          profileMap[p.user_id] = { display_name: p.display_name };
+        });
+      }
+    }
+
+    setReports(data.map((r: ReportedMsg) => ({
+      ...r,
+      reporter_profile: profileMap[r.reporter_id] ?? null,
+      reported_profile: profileMap[r.reported_user_id] ?? null,
+    })));
+    setLoading(false);
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { fetchReports(); }, []);
+
+  const markReviewed = async (id: string) => {
+    setMarkingId(id);
+    await supabaseAdm.from("reported_messages").update({ status: "reviewed" }).eq("id", id);
+    setReports((prev) => prev.map((r) => r.id === id ? { ...r, status: "reviewed" } : r));
+    setMarkingId(null);
+  };
+
+  const reasonLabels: Record<string, string> = {
+    inappropriate: "Uygunsuz içerik",
+    spam: "Spam",
+    insult: "Hakaret/Küfür",
+    other: "Diğer",
+  };
+
+  if (loading) return <LoadingSpinner />;
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
+        <h2 className="text-2xl font-bold text-gray-800">🚩 Şikayet Edilen Mesajlar</h2>
+        <button
+          onClick={fetchReports}
+          className="bg-orange-500 text-white px-4 py-2 rounded-xl text-sm font-bold"
+        >
+          🔄 Yenile
+        </button>
+      </div>
+
+      {reports.length === 0 ? (
+        <div className="bg-white rounded-2xl p-12 text-center text-gray-400 border border-gray-100">
+          Henüz şikayet edilmiş mesaj yok.
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {reports.map((r) => (
+            <div
+              key={r.id}
+              className="bg-white rounded-2xl border border-gray-100 p-5"
+              style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
+            >
+              <div className="flex items-start justify-between gap-4 flex-wrap">
+                <div className="flex-1 min-w-0 space-y-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span
+                      className="px-2.5 py-1 rounded-lg text-xs font-bold"
+                      style={{
+                        backgroundColor: r.status === "reviewed" ? "#dcfce7" : "#fff7ed",
+                        color: r.status === "reviewed" ? "#16a34a" : "#ea580c",
+                      }}
+                    >
+                      {r.status === "reviewed" ? "✓ İncelendi" : "⏳ Beklemede"}
+                    </span>
+                    <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-red-50 text-red-600">
+                      {reasonLabels[r.reason] ?? r.reason}
+                    </span>
+                    <span className="text-xs text-gray-400">{formatDate(r.created_at)}</span>
+                  </div>
+                  <div className="bg-gray-50 rounded-xl px-4 py-3 text-sm text-gray-700 border border-gray-100">
+                    <p className="text-xs text-gray-400 font-semibold uppercase mb-1">Mesaj</p>
+                    <p className="break-words">{r.message_content || "—"}</p>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600">
+                    <div>
+                      <span className="font-semibold text-gray-400 uppercase">Şikayetçi: </span>
+                      {r.reporter_profile?.display_name ?? r.reporter_id.slice(0, 8)}
+                    </div>
+                    <div>
+                      <span className="font-semibold text-gray-400 uppercase">Şikayet edilen: </span>
+                      {r.reported_profile?.display_name ?? r.reported_user_id.slice(0, 8)}
+                    </div>
+                  </div>
+                </div>
+                {r.status !== "reviewed" && (
+                  <button
+                    onClick={() => markReviewed(r.id)}
+                    disabled={markingId === r.id}
+                    className="shrink-0 px-4 py-2 rounded-xl bg-green-500 text-white text-sm font-bold hover:bg-green-600 active:scale-95 transition-all disabled:opacity-50"
+                  >
+                    {markingId === r.id ? "…" : "✓ İncelendi"}
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
