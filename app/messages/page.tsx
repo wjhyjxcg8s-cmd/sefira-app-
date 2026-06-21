@@ -41,6 +41,10 @@ const translations = {
     reportInsult: "Hakaret/Küfür",
     reportOther: "Diğer",
     reportSuccess: "Şikayetiniz alındı, incelenecektir",
+    blockedByYouBanner: "Bu kullanıcıyı engellediniz",
+    blockedByThemBanner: "Bu kullanıcı tarafından engellendiniz",
+    unblock: "Engeli Kaldır",
+    cannotSendBlocked: "Bu kullanıcıyı engellediğiniz için mesaj gönderemezsiniz",
   },
   en: {
     title: "My Messages",
@@ -74,6 +78,10 @@ const translations = {
     reportInsult: "Insult/Abuse",
     reportOther: "Other",
     reportSuccess: "Your report has been received",
+    blockedByYouBanner: "You have blocked this user",
+    blockedByThemBanner: "You have been blocked by this user",
+    unblock: "Unblock",
+    cannotSendBlocked: "You cannot send messages because you blocked this user",
   },
   fa: {
     title: "پیام‌های من",
@@ -107,6 +115,10 @@ const translations = {
     reportInsult: "توهین/ناسزا",
     reportOther: "سایر",
     reportSuccess: "گزارش شما دریافت شد",
+    blockedByYouBanner: "شما این کاربر را مسدود کرده‌اید",
+    blockedByThemBanner: "این کاربر شما را مسدود کرده است",
+    unblock: "رفع مسدودیت",
+    cannotSendBlocked: "شما این کاربر را مسدود کرده‌اید و نمی‌توانید پیام بفرستید",
   },
   de: {
     title: "Meine Nachrichten",
@@ -140,6 +152,10 @@ const translations = {
     reportInsult: "Beleidigung/Missbrauch",
     reportOther: "Sonstiges",
     reportSuccess: "Ihre Meldung wurde erhalten",
+    blockedByYouBanner: "Sie haben diesen Benutzer blockiert",
+    blockedByThemBanner: "Sie wurden von diesem Benutzer blockiert",
+    unblock: "Entsperren",
+    cannotSendBlocked: "Sie können keine Nachrichten senden, da Sie diesen Benutzer blockiert haben",
   },
   ar: {
     title: "رسائلي",
@@ -173,6 +189,10 @@ const translations = {
     reportInsult: "إهانة/إساءة",
     reportOther: "أخرى",
     reportSuccess: "تم استلام تقريرك",
+    blockedByYouBanner: "لقد حظرت هذا المستخدم",
+    blockedByThemBanner: "تم حظرك من قبل هذا المستخدم",
+    unblock: "إلغاء الحظر",
+    cannotSendBlocked: "لا يمكنك إرسال رسائل لأنك حظرت هذا المستخدم",
   },
   ru: {
     title: "Мои сообщения",
@@ -206,6 +226,10 @@ const translations = {
     reportInsult: "Оскорбление/Нарушение",
     reportOther: "Другое",
     reportSuccess: "Ваша жалоба получена",
+    blockedByYouBanner: "Вы заблокировали этого пользователя",
+    blockedByThemBanner: "Этот пользователь заблокировал вас",
+    unblock: "Разблокировать",
+    cannotSendBlocked: "Вы не можете отправлять сообщения, так как заблокировали этого пользователя",
   },
 };
 
@@ -333,6 +357,9 @@ function MessagesPageContent() {
   // Report message state
   const [reportMenu, setReportMenu] = useState<{ msgId: string; content: string } | null>(null);
   const [submittingReport, setSubmittingReport] = useState(false);
+
+  // Block status: "blocker" = I blocked them, "blocked" = they blocked me, null = no block
+  const [blockStatus, setBlockStatus] = useState<"blocker" | "blocked" | null>(null);
 
   // Toast state
   const [toastMsg, setToastMsg] = useState<string | null>(null);
@@ -535,6 +562,23 @@ function MessagesPageContent() {
     }
     return () => { if (contextMenuDismissTimer.current) clearTimeout(contextMenuDismissTimer.current); };
   }, [contextMenu]);
+
+  // Check block status whenever the active conversation changes
+  useEffect(() => {
+    if (!currentUserId || !targetUserId) { setBlockStatus(null); return; }
+    fetch("/api/users/block-check", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: currentUserId, targetUserId }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.blockedByUser) setBlockStatus("blocker");
+        else if (data.blockedByTarget) setBlockStatus("blocked");
+        else setBlockStatus(null);
+      })
+      .catch(() => setBlockStatus(null));
+  }, [currentUserId, targetUserId]);
 
   const t = translations[lang];
   const isFa = lang === "fa" || lang === "ar";
@@ -743,6 +787,21 @@ function MessagesPageContent() {
     setBlockingUser(false);
   };
 
+  const handleUnblock = async () => {
+    if (!currentUserId || !targetUserId) return;
+    const res = await fetch("/api/users/unblock", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ blocker_id: currentUserId, blocked_id: targetUserId }),
+    });
+    const result = await res.json();
+    if (!result.error) {
+      setBlockStatus(null);
+    } else {
+      showToast("Hata: " + result.error);
+    }
+  };
+
   const handleReportMessage = async (reason: string) => {
     if (!currentUserId || !reportMenu || submittingReport) return;
     setSubmittingReport(true);
@@ -814,7 +873,12 @@ function MessagesPageContent() {
     if (result.error) {
       setMessages((prev) => prev.filter((m) => m.id !== tempMsg.id));
       setMessageText(content);
-      alert("Mesaj gönderilemedi: " + result.error);
+      if (result.error === "blocked") {
+        showToast(t.cannotSendBlocked);
+        setBlockStatus("blocker");
+      } else {
+        showToast("Mesaj gönderilemedi: " + result.error);
+      }
       return;
     }
 
@@ -1310,6 +1374,25 @@ function MessagesPageContent() {
                 </div>
               )}
 
+              {/* Block status banners */}
+              {blockStatus === "blocker" && (
+                <div className="mx-3 mt-2 mb-1 flex items-center justify-between bg-orange-50 border border-orange-200 rounded-xl px-4 py-2.5 flex-shrink-0">
+                  <p className="text-sm text-orange-700 font-medium">{t.blockedByYouBanner}</p>
+                  <button
+                    type="button"
+                    onClick={handleUnblock}
+                    className="text-xs font-bold text-orange-600 bg-orange-100 hover:bg-orange-200 active:bg-orange-300 px-3 py-1.5 rounded-lg transition-colors ml-3 flex-shrink-0"
+                  >
+                    {t.unblock}
+                  </button>
+                </div>
+              )}
+              {blockStatus === "blocked" && (
+                <div className="mx-3 mt-2 mb-1 flex items-center bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 flex-shrink-0">
+                  <p className="text-sm text-gray-500 font-medium">{t.blockedByThemBanner}</p>
+                </div>
+              )}
+
               {/* Messages area */}
               <div
                 className="flex-1 overflow-y-auto py-4"
@@ -1459,58 +1542,63 @@ function MessagesPageContent() {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Reply preview bar — slides up when replying */}
-              <div
-                className="flex-shrink-0 overflow-hidden"
-                style={{ maxHeight: replyingTo ? "72px" : "0", transition: "max-height 0.2s ease" }}
-              >
-                {replyingTo && (
+              {/* Reply preview bar and message input — hidden when blocked */}
+              {!blockStatus && (
+                <>
+                  {/* Reply preview bar — slides up when replying */}
                   <div
-                    className="mx-3 mb-2 bg-white rounded-xl shadow-sm flex items-center gap-2 px-3 py-2"
-                    style={{ borderLeft: "4px solid #f97316" }}
+                    className="flex-shrink-0 overflow-hidden"
+                    style={{ maxHeight: replyingTo ? "72px" : "0", transition: "max-height 0.2s ease" }}
                   >
-                    <span className="text-orange-500 text-base flex-shrink-0">↩</span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[11px] font-semibold text-orange-500">{t.replyingTo}:</p>
-                      <p className="text-xs text-gray-500 truncate">{replyingTo.content.slice(0, 50)}</p>
+                    {replyingTo && (
+                      <div
+                        className="mx-3 mb-2 bg-white rounded-xl shadow-sm flex items-center gap-2 px-3 py-2"
+                        style={{ borderLeft: "4px solid #f97316" }}
+                      >
+                        <span className="text-orange-500 text-base flex-shrink-0">↩</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[11px] font-semibold text-orange-500">{t.replyingTo}:</p>
+                          <p className="text-xs text-gray-500 truncate">{replyingTo.content.slice(0, 50)}</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setReplyingTo(null)}
+                          className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 text-xs font-bold flex-shrink-0 hover:bg-gray-200 active:scale-95 transition-all"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Message input */}
+                  <div className="bg-white border-t border-gray-100 px-4 py-3 flex items-center gap-3 shadow-lg flex-shrink-0">
+                    <div className="flex-1 flex items-center bg-gray-100 rounded-2xl px-4 py-2.5 gap-2">
+                      <input
+                        ref={messageInputRef}
+                        value={messageText}
+                        onChange={(e) => setMessageText(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            sendMessage();
+                          }
+                        }}
+                        placeholder={t.typeMessage}
+                        dir="auto"
+                        className="flex-1 bg-transparent text-sm text-gray-800 focus:outline-none placeholder-gray-400"
+                      />
                     </div>
                     <button
-                      type="button"
-                      onClick={() => setReplyingTo(null)}
-                      className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 text-xs font-bold flex-shrink-0 hover:bg-gray-200 active:scale-95 transition-all"
+                      onClick={sendMessage}
+                      disabled={!messageText.trim() || sendingMessage}
+                      className="w-11 h-11 rounded-full flex items-center justify-center transition-all shadow-md bg-gradient-to-br from-orange-500 to-amber-500 text-white disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
                     >
-                      ✕
+                      <SendIcon />
                     </button>
                   </div>
-                )}
-              </div>
-
-              {/* Message input */}
-              <div className="bg-white border-t border-gray-100 px-4 py-3 flex items-center gap-3 shadow-lg flex-shrink-0">
-                <div className="flex-1 flex items-center bg-gray-100 rounded-2xl px-4 py-2.5 gap-2">
-                  <input
-                    ref={messageInputRef}
-                    value={messageText}
-                    onChange={(e) => setMessageText(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault();
-                        sendMessage();
-                      }
-                    }}
-                    placeholder={t.typeMessage}
-                    dir="auto"
-                    className="flex-1 bg-transparent text-sm text-gray-800 focus:outline-none placeholder-gray-400"
-                  />
-                </div>
-                <button
-                  onClick={sendMessage}
-                  disabled={!messageText.trim() || sendingMessage}
-                  className="w-11 h-11 rounded-full flex items-center justify-center transition-all shadow-md bg-gradient-to-br from-orange-500 to-amber-500 text-white disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
-                >
-                  <SendIcon />
-                </button>
-              </div>
+                </>
+              )}
             </>
           ) : selectedConv === "sefira-destek" ? (
             /* ── Support chat ── */

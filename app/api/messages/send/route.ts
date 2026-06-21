@@ -24,6 +24,19 @@ export async function POST(request: Request) {
       );
     }
 
+    // Block check — reject if either user has blocked the other
+    const { data: blockCheck } = await supabaseAdmin
+      .from("blocked_users")
+      .select("id")
+      .or(
+        `and(blocker_id.eq.${senderId},blocked_id.eq.${targetUserId}),and(blocker_id.eq.${targetUserId},blocked_id.eq.${senderId})`
+      )
+      .limit(1);
+
+    if (blockCheck && blockCheck.length > 0) {
+      return NextResponse.json({ error: "blocked" }, { status: 403 });
+    }
+
     let convId = conversationId;
 
     // Find or create a real conversation if we don't have one yet
