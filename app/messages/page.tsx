@@ -565,9 +565,10 @@ function MessagesPageContent() {
   };
 
   const onMsgTouchEnd = (msg: any) => {
-    const current = swipeMsg;
-    if (current?.id === msg.id) {
-      const wasTap = current.deltaX < 5 && Date.now() - current.startTime < 300;
+    const snap = swipeMsg;
+    if (snap && snap.id === msg.id) {
+      const { deltaX, startTime } = snap;
+      const wasTap = deltaX < 5 && Date.now() - startTime < 300;
       if (wasTap) {
         if (tapTimer.current) clearTimeout(tapTimer.current);
         setTapReplyId(msg.id);
