@@ -1335,6 +1335,10 @@ function CreateListingPage() {
       .catch(() => {})
   }, [countryIso])
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [step])
+
   const photoInputRef = useRef<HTMLInputElement>(null);
 
   const set = <K extends keyof ListingForm>(key: K, val: ListingForm[K]) =>
