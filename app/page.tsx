@@ -3045,7 +3045,7 @@ export default function Home() {
             className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 px-4"
             style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
           >
-            {smartRecs.map((rec) => {
+            {smartRecs.map((rec, i) => {
               const isSaved = savedRecIds.includes(rec.id);
               const flagEmoji = rec.country_code && rec.country_code.length === 2
                 ? String.fromCodePoint(...(rec.country_code.toUpperCase().split("").map((c: string) => 0x1F1E6 + c.charCodeAt(0) - 65)))
@@ -3059,13 +3059,18 @@ export default function Home() {
                 ? rec.rent ? `${rec.rent} ${rec.currency ?? ""}` : null
                 : rec.max_budget ? `max ${rec.max_budget} ${rec.currency ?? ""}` : null;
               return (
-                <div
+                <motion.div
                   key={rec.id}
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35, delay: i * 0.06 }}
                   onClick={() => router.push(`/listings/${rec.id}`)}
-                  className="snap-start w-72 flex-shrink-0 bg-white rounded-2xl shadow-md border border-stone-100 overflow-hidden flex active:scale-[0.99] transition-transform duration-150 cursor-pointer"
+                  className="snap-start w-60 flex-shrink-0 bg-white rounded-[20px] shadow-lg border border-stone-100 overflow-hidden flex flex-col cursor-pointer"
+                  style={{ WebkitTapHighlightColor: "transparent" }}
+                  whileTap={{ scale: 0.97 }}
                 >
-                  {/* Left: photo or gradient */}
-                  <div className="w-28 flex-shrink-0 relative min-h-[140px]">
+                  {/* Photo / avatar area */}
+                  <div className="relative h-40 w-full flex-shrink-0">
                     {isHasPlace && thumbnail ? (
                       <Image src={thumbnail} alt="" fill className="object-cover" />
                     ) : !isHasPlace && recAvatarMap[rec.user_id] ? (
@@ -3074,75 +3079,85 @@ export default function Home() {
                     ) : (
                       <div className={`absolute inset-0 flex items-center justify-center ${isHasPlace ? "bg-gradient-to-br from-orange-400 to-amber-500" : "bg-gradient-to-br from-violet-500 to-blue-500"}`}>
                         {isHasPlace ? (
-                          <div className="w-12 h-12 rounded-full bg-white/25 flex items-center justify-center text-2xl">🏠</div>
+                          <div className="w-14 h-14 rounded-full bg-white/25 flex items-center justify-center text-3xl">🏠</div>
                         ) : (
-                          <svg viewBox="0 0 24 24" fill="white" className="w-12 h-12 opacity-80">
+                          <svg viewBox="0 0 24 24" fill="white" className="w-14 h-14 opacity-80">
                             <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
                           </svg>
                         )}
                       </div>
                     )}
-                    <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
-                  </div>
-
-                  {/* Right: info */}
-                  <div className="flex-1 p-3 flex flex-col justify-between min-w-0">
-                    <div>
-                      {/* Top row: city + badge */}
-                      <div className="flex items-center gap-1.5 flex-wrap mb-1">
-                        <span className="text-sm font-bold text-stone-800 truncate">
+                    {/* Dark gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none" />
+                    {/* Info overlay at bottom of photo */}
+                    <div className="absolute bottom-0 left-0 right-0 px-3 pb-2.5 pointer-events-none">
+                      <div className="flex items-center gap-1.5 flex-wrap mb-0.5">
+                        <span className="text-sm font-bold text-white truncate" style={{ textShadow: "0 1px 4px rgba(0,0,0,0.4)" }}>
                           {flagEmoji} {rec.city}
                         </span>
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full text-white flex-shrink-0 ${isHasPlace ? "bg-emerald-500" : "bg-blue-500"}`}>
                           {listingTypeTrans[rec.type]?.[lang] ?? rec.type}
                         </span>
                       </div>
-                      {/* Middle row: price + summary */}
                       {priceDisplay && (
-                        <p className="text-xs font-bold text-orange-500">{priceDisplay}</p>
+                        <p className="text-sm font-black text-orange-300" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.5)" }}>{priceDisplay}</p>
                       )}
                       {summary && (
-                        <p className="text-xs text-stone-400 truncate mt-0.5">{summary}</p>
+                        <p className="text-[11px] text-white/80 truncate">{summary}</p>
                       )}
                     </div>
-
-                    {/* Bottom row: action buttons */}
-                    <div className="flex flex-wrap items-center gap-2 mt-3">
-                      <Link
-                        href={`/listings/${rec.id}`}
-                        onClick={(e) => { e.stopPropagation(); try { sessionStorage.setItem("sefira-scroll", String(window.scrollY)); } catch { /* ignore */ } }}
-                        className="flex-1 flex items-center justify-center gap-1 bg-orange-500 hover:bg-orange-700 text-white text-xs font-medium px-3 py-2 rounded-xl transition-colors"
-                      >
-                        💬 {({ tr: "Mesaj Gönder", en: "Message", fa: "ارسال پیام", ar: "إرسال رسالة", de: "Nachricht", ru: "Написать" } as Record<string, string>)[lang] ?? "Message"}
-                      </Link>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const next = isSaved ? savedRecIds.filter((x: string) => x !== rec.id) : [...savedRecIds, rec.id];
-                          setSavedRecIds(next);
-                          try { localStorage.setItem("sefira-saved", JSON.stringify(next)); } catch { /* ignore */ }
-                        }}
-                        className={`flex items-center justify-center gap-1 px-3 py-2 rounded-xl border-2 text-xs font-medium transition-colors ${isSaved ? "bg-orange-500 border-orange-500 text-white" : "border-orange-400 text-orange-500 bg-white"}`}
-                      >
-                        🔖 {isSaved
-                          ? ({ tr: "Kaydedildi", en: "Saved", fa: "ذخیره شد", ar: "محفوظ", de: "Gespeichert", ru: "Сохранено" } as Record<string, string>)[lang] ?? "Saved"
-                          : ({ tr: "Kaydet", en: "Save", fa: "ذخیره", ar: "حفظ", de: "Speichern", ru: "Сохранить" } as Record<string, string>)[lang] ?? "Save"}
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const next = [...dismissedRecIds, rec.id];
-                          setDismissedRecIds(next);
-                          try { sessionStorage.setItem("sefira-dismissed", JSON.stringify(next)); } catch { /* ignore */ }
-                          setSmartRecs((prev) => prev.filter((r) => r.id !== rec.id));
-                        }}
-                        className="flex items-center justify-center gap-1 px-3 py-2 rounded-xl border border-stone-200 bg-stone-100 text-stone-500 text-xs font-medium transition-colors hover:bg-stone-200"
-                      >
-                        ✕ {({ tr: "Geç", en: "Skip", fa: "رد کن", ar: "تخطى", de: "Überspringen", ru: "Пропустить" } as Record<string, string>)[lang] ?? "Skip"}
-                      </button>
-                    </div>
                   </div>
-                </div>
+
+                  {/* Action popup area */}
+                  <div className="bg-white flex flex-col px-3 pt-2.5 pb-3">
+                    {/* Orange accent line */}
+                    <div className="h-[3px] w-full rounded-full mb-3" style={{ background: "linear-gradient(90deg, #f97316, #fbbf24)" }} />
+
+                    {/* Mesaj Gönder */}
+                    <Link
+                      href={`/listings/${rec.id}`}
+                      onClick={(e) => { e.stopPropagation(); try { sessionStorage.setItem("sefira-scroll", String(window.scrollY)); } catch { /* ignore */ } }}
+                      className="flex items-center justify-center gap-2 bg-orange-500 active:bg-orange-600 text-white text-sm font-bold px-4 py-2.5 rounded-full transition-colors w-full mb-2"
+                    >
+                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 flex-shrink-0">
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+                      </svg>
+                      {({ tr: "Mesaj Gönder", en: "Message", fa: "ارسال پیام", ar: "إرسال رسالة", de: "Nachricht", ru: "Написать" } as Record<string, string>)[lang] ?? "Message"}
+                    </Link>
+
+                    {/* Kaydet */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const next = isSaved ? savedRecIds.filter((x: string) => x !== rec.id) : [...savedRecIds, rec.id];
+                        setSavedRecIds(next);
+                        try { localStorage.setItem("sefira-saved", JSON.stringify(next)); } catch { /* ignore */ }
+                      }}
+                      className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-full border-2 text-sm font-bold transition-colors w-full mb-1 ${isSaved ? "bg-orange-500 border-orange-500 text-white" : "border-orange-400 text-orange-500 bg-white active:bg-orange-50"}`}
+                    >
+                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 flex-shrink-0">
+                        <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
+                      </svg>
+                      {isSaved
+                        ? ({ tr: "Kaydedildi", en: "Saved", fa: "ذخیره شد", ar: "محفوظ", de: "Gespeichert", ru: "Сохранено" } as Record<string, string>)[lang] ?? "Saved"
+                        : ({ tr: "Kaydet", en: "Save", fa: "ذخیره", ar: "حفظ", de: "Speichern", ru: "Сохранить" } as Record<string, string>)[lang] ?? "Save"}
+                    </button>
+
+                    {/* Geç — ghost */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const next = [...dismissedRecIds, rec.id];
+                        setDismissedRecIds(next);
+                        try { sessionStorage.setItem("sefira-dismissed", JSON.stringify(next)); } catch { /* ignore */ }
+                        setSmartRecs((prev) => prev.filter((r) => r.id !== rec.id));
+                      }}
+                      className="text-stone-400 active:text-stone-600 text-xs font-medium text-center w-full py-1 transition-colors"
+                    >
+                      {({ tr: "Geç", en: "Skip", fa: "رد کن", ar: "تخطى", de: "Überspringen", ru: "Пропустить" } as Record<string, string>)[lang] ?? "Skip"}
+                    </button>
+                  </div>
+                </motion.div>
               );
             })}
           </div>
