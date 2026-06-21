@@ -1496,6 +1496,7 @@ export default function Home() {
   const [savedRecIds, setSavedRecIds] = useState<string[]>([]);
   const [dismissedRecIds, setDismissedRecIds] = useState<string[]>([]);
   const [recAvatarMap, setRecAvatarMap] = useState<Record<string, string | null>>({});
+  const [activeRecIndex, setActiveRecIndex] = useState(0);
 
   // ── Fetch avatars for needs_place smart recs ─────────────────────────────
   useEffect(() => {
@@ -3034,7 +3035,7 @@ export default function Home() {
             {smartRecs.length > 3 && (
               <div className="flex items-center gap-1.5 pb-1 flex-shrink-0">
                 {smartRecs.map((_, i) => (
-                  <div key={i} className={`rounded-full transition-all duration-200 ${i === 0 ? "w-4 h-1.5 bg-orange-500" : "w-1.5 h-1.5 bg-stone-300"}`} />
+                  <div key={i} className={`rounded-full transition-all duration-200 ${i === activeRecIndex ? "w-4 h-1.5 bg-orange-500" : "w-1.5 h-1.5 bg-stone-300"}`} />
                 ))}
               </div>
             )}
@@ -3042,11 +3043,14 @@ export default function Home() {
 
           {/* Horizontal scroll track */}
           <div
-            className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 px-4"
+            className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 px-4"
             style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+            onScroll={(e) => {
+              const idx = Math.round((e.currentTarget as HTMLDivElement).scrollLeft / 272);
+              setActiveRecIndex(Math.min(Math.max(idx, 0), smartRecs.length - 1));
+            }}
           >
             {smartRecs.map((rec, i) => {
-              const isSaved = savedRecIds.includes(rec.id);
               const flagEmoji = rec.country_code && rec.country_code.length === 2
                 ? String.fromCodePoint(...(rec.country_code.toUpperCase().split("").map((c: string) => 0x1F1E6 + c.charCodeAt(0) - 65)))
                 : "🌍";
@@ -3064,17 +3068,15 @@ export default function Home() {
                   initial={{ opacity: 0, y: 24 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, delay: i * 0.06 }}
-                  className="snap-start flex-shrink-0 flex flex-col items-center gap-4"
+                  className="snap-start flex-shrink-0"
                   style={{ WebkitTapHighlightColor: "transparent" }}
                 >
-                  {/* Full-image card */}
                   <motion.div
                     onClick={() => router.push(`/listings/${rec.id}`)}
                     whileTap={{ scale: 0.97 }}
-                    className="relative w-64 flex-shrink-0 rounded-[24px] overflow-hidden cursor-pointer"
+                    className="relative w-64 rounded-[24px] overflow-hidden cursor-pointer"
                     style={{ height: 380, boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }}
                   >
-                    {/* Background image or gradient */}
                     {isHasPlace && thumbnail ? (
                       <Image src={thumbnail} alt="" fill className="object-cover" />
                     ) : !isHasPlace && recAvatarMap[rec.user_id] ? (
@@ -3091,9 +3093,7 @@ export default function Home() {
                         )}
                       </div>
                     )}
-                    {/* Dark gradient overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none" />
-                    {/* Info overlay at bottom */}
                     <div className="absolute bottom-0 left-0 right-0 px-4 pb-5 pointer-events-none">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
                         <span className="text-base font-bold text-white truncate" style={{ textShadow: "0 1px 6px rgba(0,0,0,0.5)" }}>
@@ -3111,58 +3111,59 @@ export default function Home() {
                       )}
                     </div>
                   </motion.div>
-
-                  {/* Floating action buttons below card */}
-                  <div className="flex items-center justify-center gap-4">
-                    {/* Kaydet */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const next = isSaved ? savedRecIds.filter((x: string) => x !== rec.id) : [...savedRecIds, rec.id];
-                        setSavedRecIds(next);
-                        try { localStorage.setItem("sefira-saved", JSON.stringify(next)); } catch { /* ignore */ }
-                      }}
-                      className="w-12 h-12 rounded-full bg-white flex items-center justify-center active:scale-95 transition-transform"
-                      style={{ border: "2px solid #f97316", boxShadow: "0 4px 16px rgba(0,0,0,0.12)" }}
-                    >
-                      <svg viewBox="0 0 24 24" fill={isSaved ? "#f97316" : "none"} stroke={isSaved ? "#f97316" : "#f97316"} strokeWidth="2" className="w-5 h-5">
-                        <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
-                      </svg>
-                    </button>
-
-                    {/* Mesaj Gönder — center, larger */}
-                    <Link
-                      href={`/listings/${rec.id}`}
-                      onClick={(e) => { e.stopPropagation(); try { sessionStorage.setItem("sefira-scroll", String(window.scrollY)); } catch { /* ignore */ } }}
-                      className="w-16 h-16 rounded-full bg-orange-500 active:bg-orange-600 flex items-center justify-center transition-colors"
-                      style={{ boxShadow: "0 6px 24px rgba(249,115,22,0.45)" }}
-                    >
-                      <svg viewBox="0 0 24 24" fill="white" className="w-7 h-7">
-                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
-                      </svg>
-                    </Link>
-
-                    {/* Geç */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const next = [...dismissedRecIds, rec.id];
-                        setDismissedRecIds(next);
-                        try { sessionStorage.setItem("sefira-dismissed", JSON.stringify(next)); } catch { /* ignore */ }
-                        setSmartRecs((prev) => prev.filter((r) => r.id !== rec.id));
-                      }}
-                      className="w-12 h-12 rounded-full bg-white flex items-center justify-center active:scale-95 transition-transform"
-                      style={{ border: "2px solid #e5e7eb", boxShadow: "0 4px 16px rgba(0,0,0,0.12)" }}
-                    >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2.5" strokeLinecap="round" className="w-5 h-5">
-                        <path d="M18 6L6 18M6 6l12 12"/>
-                      </svg>
-                    </button>
-                  </div>
                 </motion.div>
               );
             })}
           </div>
+
+          {/* Shared action buttons — always reflect the active card */}
+          {(() => {
+            const rec = smartRecs[activeRecIndex];
+            if (!rec) return null;
+            const isSaved = savedRecIds.includes(rec.id);
+            return (
+              <div className="flex items-center justify-center gap-4 mt-5">
+                <button
+                  onClick={() => {
+                    const next = isSaved ? savedRecIds.filter((x: string) => x !== rec.id) : [...savedRecIds, rec.id];
+                    setSavedRecIds(next);
+                    try { localStorage.setItem("sefira-saved", JSON.stringify(next)); } catch { /* ignore */ }
+                  }}
+                  className="w-12 h-12 rounded-full bg-white flex items-center justify-center active:scale-95 transition-transform"
+                  style={{ border: "2px solid #f97316", boxShadow: "0 4px 16px rgba(0,0,0,0.12)" }}
+                >
+                  <svg viewBox="0 0 24 24" fill={isSaved ? "#f97316" : "none"} stroke="#f97316" strokeWidth="2" className="w-5 h-5">
+                    <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
+                  </svg>
+                </button>
+                <Link
+                  href={`/listings/${rec.id}`}
+                  onClick={() => { try { sessionStorage.setItem("sefira-scroll", String(window.scrollY)); } catch { /* ignore */ } }}
+                  className="w-16 h-16 rounded-full bg-orange-500 active:bg-orange-600 flex items-center justify-center transition-colors"
+                  style={{ boxShadow: "0 6px 24px rgba(249,115,22,0.45)" }}
+                >
+                  <svg viewBox="0 0 24 24" fill="white" className="w-7 h-7">
+                    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+                  </svg>
+                </Link>
+                <button
+                  onClick={() => {
+                    const next = [...dismissedRecIds, rec.id];
+                    setDismissedRecIds(next);
+                    try { sessionStorage.setItem("sefira-dismissed", JSON.stringify(next)); } catch { /* ignore */ }
+                    setSmartRecs((prev) => prev.filter((r) => r.id !== rec.id));
+                    setActiveRecIndex((idx) => Math.max(0, Math.min(idx, smartRecs.length - 2)));
+                  }}
+                  className="w-12 h-12 rounded-full bg-white flex items-center justify-center active:scale-95 transition-transform"
+                  style={{ border: "2px solid #e5e7eb", boxShadow: "0 4px 16px rgba(0,0,0,0.12)" }}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2.5" strokeLinecap="round" className="w-5 h-5">
+                    <path d="M18 6L6 18M6 6l12 12"/>
+                  </svg>
+                </button>
+              </div>
+            );
+          })()}
         </section>
       )}
 
