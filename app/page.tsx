@@ -3064,13 +3064,17 @@ export default function Home() {
                   initial={{ opacity: 0, y: 24 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, delay: i * 0.06 }}
-                  onClick={() => router.push(`/listings/${rec.id}`)}
-                  className="snap-start w-60 flex-shrink-0 bg-white rounded-[20px] shadow-lg border border-stone-100 overflow-hidden flex flex-col cursor-pointer"
+                  className="snap-start flex-shrink-0 flex flex-col items-center gap-4"
                   style={{ WebkitTapHighlightColor: "transparent" }}
-                  whileTap={{ scale: 0.97 }}
                 >
-                  {/* Photo / avatar area */}
-                  <div className="relative h-40 w-full flex-shrink-0">
+                  {/* Full-image card */}
+                  <motion.div
+                    onClick={() => router.push(`/listings/${rec.id}`)}
+                    whileTap={{ scale: 0.97 }}
+                    className="relative w-64 flex-shrink-0 rounded-[24px] overflow-hidden cursor-pointer"
+                    style={{ height: 380, boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }}
+                  >
+                    {/* Background image or gradient */}
                     {isHasPlace && thumbnail ? (
                       <Image src={thumbnail} alt="" fill className="object-cover" />
                     ) : !isHasPlace && recAvatarMap[rec.user_id] ? (
@@ -3079,52 +3083,37 @@ export default function Home() {
                     ) : (
                       <div className={`absolute inset-0 flex items-center justify-center ${isHasPlace ? "bg-gradient-to-br from-orange-400 to-amber-500" : "bg-gradient-to-br from-violet-500 to-blue-500"}`}>
                         {isHasPlace ? (
-                          <div className="w-14 h-14 rounded-full bg-white/25 flex items-center justify-center text-3xl">🏠</div>
+                          <div className="w-20 h-20 rounded-full bg-white/25 flex items-center justify-center text-5xl">🏠</div>
                         ) : (
-                          <svg viewBox="0 0 24 24" fill="white" className="w-14 h-14 opacity-80">
+                          <svg viewBox="0 0 24 24" fill="white" className="w-20 h-20 opacity-70">
                             <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
                           </svg>
                         )}
                       </div>
                     )}
                     {/* Dark gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none" />
-                    {/* Info overlay at bottom of photo */}
-                    <div className="absolute bottom-0 left-0 right-0 px-3 pb-2.5 pointer-events-none">
-                      <div className="flex items-center gap-1.5 flex-wrap mb-0.5">
-                        <span className="text-sm font-bold text-white truncate" style={{ textShadow: "0 1px 4px rgba(0,0,0,0.4)" }}>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none" />
+                    {/* Info overlay at bottom */}
+                    <div className="absolute bottom-0 left-0 right-0 px-4 pb-5 pointer-events-none">
+                      <div className="flex items-center gap-2 flex-wrap mb-1">
+                        <span className="text-base font-bold text-white truncate" style={{ textShadow: "0 1px 6px rgba(0,0,0,0.5)" }}>
                           {flagEmoji} {rec.city}
                         </span>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full text-white flex-shrink-0 ${isHasPlace ? "bg-emerald-500" : "bg-blue-500"}`}>
+                        <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full text-white flex-shrink-0 ${isHasPlace ? "bg-emerald-500" : "bg-blue-500"}`}>
                           {listingTypeTrans[rec.type]?.[lang] ?? rec.type}
                         </span>
                       </div>
                       {priceDisplay && (
-                        <p className="text-sm font-black text-orange-300" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.5)" }}>{priceDisplay}</p>
+                        <p className="text-lg font-black text-orange-300" style={{ textShadow: "0 1px 4px rgba(0,0,0,0.6)" }}>{priceDisplay}</p>
                       )}
                       {summary && (
-                        <p className="text-[11px] text-white/80 truncate">{summary}</p>
+                        <p className="text-xs text-white/75 truncate mt-0.5">{summary}</p>
                       )}
                     </div>
-                  </div>
+                  </motion.div>
 
-                  {/* Action popup area */}
-                  <div className="bg-white flex flex-col px-3 pt-2.5 pb-3">
-                    {/* Orange accent line */}
-                    <div className="h-[3px] w-full rounded-full mb-3" style={{ background: "linear-gradient(90deg, #f97316, #fbbf24)" }} />
-
-                    {/* Mesaj Gönder */}
-                    <Link
-                      href={`/listings/${rec.id}`}
-                      onClick={(e) => { e.stopPropagation(); try { sessionStorage.setItem("sefira-scroll", String(window.scrollY)); } catch { /* ignore */ } }}
-                      className="flex items-center justify-center gap-2 bg-orange-500 active:bg-orange-600 text-white text-sm font-bold px-4 py-2.5 rounded-full transition-colors w-full mb-2"
-                    >
-                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 flex-shrink-0">
-                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
-                      </svg>
-                      {({ tr: "Mesaj Gönder", en: "Message", fa: "ارسال پیام", ar: "إرسال رسالة", de: "Nachricht", ru: "Написать" } as Record<string, string>)[lang] ?? "Message"}
-                    </Link>
-
+                  {/* Floating action buttons below card */}
+                  <div className="flex items-center justify-center gap-4">
                     {/* Kaydet */}
                     <button
                       onClick={(e) => {
@@ -3133,17 +3122,27 @@ export default function Home() {
                         setSavedRecIds(next);
                         try { localStorage.setItem("sefira-saved", JSON.stringify(next)); } catch { /* ignore */ }
                       }}
-                      className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-full border-2 text-sm font-bold transition-colors w-full mb-1 ${isSaved ? "bg-orange-500 border-orange-500 text-white" : "border-orange-400 text-orange-500 bg-white active:bg-orange-50"}`}
+                      className="w-12 h-12 rounded-full bg-white flex items-center justify-center active:scale-95 transition-transform"
+                      style={{ border: "2px solid #f97316", boxShadow: "0 4px 16px rgba(0,0,0,0.12)" }}
                     >
-                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 flex-shrink-0">
+                      <svg viewBox="0 0 24 24" fill={isSaved ? "#f97316" : "none"} stroke={isSaved ? "#f97316" : "#f97316"} strokeWidth="2" className="w-5 h-5">
                         <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
                       </svg>
-                      {isSaved
-                        ? ({ tr: "Kaydedildi", en: "Saved", fa: "ذخیره شد", ar: "محفوظ", de: "Gespeichert", ru: "Сохранено" } as Record<string, string>)[lang] ?? "Saved"
-                        : ({ tr: "Kaydet", en: "Save", fa: "ذخیره", ar: "حفظ", de: "Speichern", ru: "Сохранить" } as Record<string, string>)[lang] ?? "Save"}
                     </button>
 
-                    {/* Geç — ghost */}
+                    {/* Mesaj Gönder — center, larger */}
+                    <Link
+                      href={`/listings/${rec.id}`}
+                      onClick={(e) => { e.stopPropagation(); try { sessionStorage.setItem("sefira-scroll", String(window.scrollY)); } catch { /* ignore */ } }}
+                      className="w-16 h-16 rounded-full bg-orange-500 active:bg-orange-600 flex items-center justify-center transition-colors"
+                      style={{ boxShadow: "0 6px 24px rgba(249,115,22,0.45)" }}
+                    >
+                      <svg viewBox="0 0 24 24" fill="white" className="w-7 h-7">
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+                      </svg>
+                    </Link>
+
+                    {/* Geç */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -3152,9 +3151,12 @@ export default function Home() {
                         try { sessionStorage.setItem("sefira-dismissed", JSON.stringify(next)); } catch { /* ignore */ }
                         setSmartRecs((prev) => prev.filter((r) => r.id !== rec.id));
                       }}
-                      className="text-stone-400 active:text-stone-600 text-xs font-medium text-center w-full py-1 transition-colors"
+                      className="w-12 h-12 rounded-full bg-white flex items-center justify-center active:scale-95 transition-transform"
+                      style={{ border: "2px solid #e5e7eb", boxShadow: "0 4px 16px rgba(0,0,0,0.12)" }}
                     >
-                      {({ tr: "Geç", en: "Skip", fa: "رد کن", ar: "تخطى", de: "Überspringen", ru: "Пропустить" } as Record<string, string>)[lang] ?? "Skip"}
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2.5" strokeLinecap="round" className="w-5 h-5">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                      </svg>
                     </button>
                   </div>
                 </motion.div>
