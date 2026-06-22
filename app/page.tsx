@@ -3208,8 +3208,7 @@ export default function Home() {
                           if (!user) {
                             setShowAuth(true);
                           } else {
-                            try { sessionStorage.setItem("sefira-scroll", String(window.scrollY)); } catch { /* ignore */ }
-                            router.push(`/listings/${rec.id}`);
+                            router.push(`/messages?userId=${rec.user_id}&listingId=${rec.id}`);
                           }
                         }}
                         className="flex-1 flex items-center justify-center gap-1.5 h-11 rounded-full bg-orange-500 active:bg-orange-600 transition-colors"
