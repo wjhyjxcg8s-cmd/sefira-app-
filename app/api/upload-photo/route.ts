@@ -19,38 +19,53 @@ export async function POST(req: NextRequest) {
 
   const buffer = Buffer.from(await file.arrayBuffer());
 
-  // Moderation check before upload
+  // MODERATION CHECK - runs BEFORE sharp processing
   try {
-    const moderationForm = new FormData();
-    moderationForm.append('media', new Blob([buffer], { type: 'image/jpeg' }), 'image.jpg');
-    moderationForm.append('models', 'nudity-2.0,weapon,alcohol,recreational_drug,gore-2.0');
-    moderationForm.append('api_user', '64951376');
-    moderationForm.append('api_secret', 'w6bHfthYTid3LTYsTdB6LPXKFJWJ5vQ2');
-    const modRes = await fetch('https://api.sightengine.com/1.0/check.json', {
+    const boundary = '----FormBoundary' + Math.random().toString(36);
+
+    const formParts = [
+      `--${boundary}\r\nContent-Disposition: form-data; name="models"\r\n\r\nnudity-2.0,gore-2.0,weapon\r\n`,
+      `--${boundary}\r\nContent-Disposition: form-data; name="api_user"\r\n\r\n64951376\r\n`,
+      `--${boundary}\r\nContent-Disposition: form-data; name="api_secret"\r\n\r\nw6bHfthYTid3LTYsTdB6LPXKFJWJ5vQ2\r\n`,
+      `--${boundary}\r\nContent-Disposition: form-data; name="media"; filename="image.jpg"\r\nContent-Type: image/jpeg\r\n\r\n`,
+    ];
+
+    const preamble = Buffer.from(formParts.join(''));
+    const ending = Buffer.from(`\r\n--${boundary}--\r\n`);
+    const body = Buffer.concat([preamble, buffer, ending]);
+
+    const modResponse = await fetch('https://api.sightengine.com/1.0/check.json', {
       method: 'POST',
-      body: moderationForm,
+      headers: {
+        'Content-Type': `multipart/form-data; boundary=${boundary}`,
+        'Content-Length': body.length.toString(),
+      },
+      body: body,
     });
-    const modResult = await modRes.json() as Record<string, unknown>;
+
+    const modResult = await modResponse.json() as Record<string, unknown>;
+    console.log('Sightengine result:', JSON.stringify(modResult));
+
     if (modResult.status === 'success') {
-      const nudity = modResult.nudity as Record<string, number> | undefined;
-      if (nudity && (
-        (nudity.sexual_activity ?? 0) > 0.5 ||
-        (nudity.sexual_display ?? 0) > 0.5 ||
-        (nudity.erotica ?? 0) > 0.5
-      )) {
+      const nudity = (modResult.nudity ?? {}) as Record<string, number>;
+      const gore = (modResult.gore ?? {}) as Record<string, number>;
+
+      const isNSFW =
+        (nudity.sexual_activity ?? 0) > 0.4 ||
+        (nudity.sexual_display ?? 0) > 0.4 ||
+        (nudity.erotica ?? 0) > 0.4 ||
+        (nudity.very_suggestive ?? 0) > 0.5 ||
+        (gore.prob ?? 0) > 0.5;
+
+      if (isNSFW) {
         return NextResponse.json({ error: 'inappropriate_content' }, { status: 400 });
       }
-      const gore = modResult.gore as Record<string, number> | undefined;
-      if (gore && (gore.prob ?? 0) > 0.5) {
-        return NextResponse.json({ error: 'inappropriate_content' }, { status: 400 });
-      }
-      const weapon = modResult.weapon as number | undefined;
-      if (typeof weapon === 'number' && weapon > 0.7) {
-        return NextResponse.json({ error: 'inappropriate_content' }, { status: 400 });
-      }
+    } else {
+      console.log('Sightengine error:', modResult);
     }
-  } catch {
-    // If moderation API fails, allow the upload to proceed
+  } catch (err) {
+    console.log('Moderation check failed:', err);
+    // Continue upload if API fails
   }
 
   const compressed = await sharp(buffer)
