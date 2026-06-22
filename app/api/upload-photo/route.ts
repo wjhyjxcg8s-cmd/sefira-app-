@@ -47,15 +47,20 @@ export async function POST(req: NextRequest) {
     console.log('Sightengine result:', JSON.stringify(modResult));
 
     if (modResult.status === 'success') {
-      const nudity = (modResult.nudity ?? {}) as Record<string, number>;
-      const gore = (modResult.gore ?? {}) as Record<string, number>;
+      const nudity = (modResult.nudity || {}) as Record<string, number>;
+      const gore = (modResult.gore || {}) as Record<string, number>;
 
       const isNSFW =
-        (nudity.sexual_activity ?? 0) > 0.4 ||
-        (nudity.sexual_display ?? 0) > 0.4 ||
-        (nudity.erotica ?? 0) > 0.4 ||
-        (nudity.very_suggestive ?? 0) > 0.5 ||
-        (gore.prob ?? 0) > 0.5;
+        (nudity.sexual_activity > 0.3) ||
+        (nudity.sexual_display > 0.3) ||
+        (nudity.erotica > 0.3) ||
+        (nudity.very_suggestive > 0.4) ||
+        (nudity.suggestive > 0.7) ||
+        (nudity.male_chest > 0.8) ||
+        (nudity.lingerie > 0.5) ||
+        (gore.prob > 0.5);
+
+      console.log('isNSFW:', isNSFW, 'nudity:', JSON.stringify(nudity));
 
       if (isNSFW) {
         return NextResponse.json({ error: 'inappropriate_content' }, { status: 400 });
