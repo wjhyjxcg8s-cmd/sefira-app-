@@ -3052,7 +3052,10 @@ export default function Home() {
               if (!el) return;
               const firstCard = el.firstElementChild as HTMLElement | null;
               const cardWidth = firstCard ? firstCard.offsetWidth + 16 : 272; // card + gap-4
-              const idx = Math.round(el.scrollLeft / cardWidth);
+              // RTL browsers (Chrome: negative scrollLeft, Safari: positive but reversed)
+              const isRTLLang = lang === "fa" || lang === "ar";
+              const rawScroll = isRTLLang ? Math.abs(el.scrollLeft) : el.scrollLeft;
+              const idx = Math.round(rawScroll / cardWidth);
               setActiveRecIndex(Math.min(Math.max(idx, 0), smartRecs.length - 1));
             }}
           >
