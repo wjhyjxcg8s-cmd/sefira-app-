@@ -48,6 +48,10 @@ const translations = {
     ],
     signIn: "Giriş Yap",
     signOut: "Çıkış Yap",
+    signOutConfirmTitle: "Çıkış Yap",
+    signOutConfirmMsg: "Hesabınızdan çıkmak istediğinizden emin misiniz?",
+    signOutConfirmCancel: "İptal",
+    signOutConfirmOk: "Çıkış Yap",
     getStarted: "Başla",
     heroBadge: "52 şehirde 127.000'den fazla doğrulanmış kullanıcı tarafından güvenilir",
     heroLine1: "İdeal Evinizi",
@@ -178,6 +182,10 @@ const translations = {
     ],
     signIn: "Sign In",
     signOut: "Log Out",
+    signOutConfirmTitle: "Sign Out",
+    signOutConfirmMsg: "Are you sure you want to sign out?",
+    signOutConfirmCancel: "Cancel",
+    signOutConfirmOk: "Sign Out",
     getStarted: "Get Started",
     heroBadge: "Trusted by 127,000+ verified users across 52 cities",
     heroLine1: "Find Your",
@@ -308,6 +316,10 @@ const translations = {
     ],
     signIn: "ورود",
     signOut: "خروج",
+    signOutConfirmTitle: "خروج از حساب",
+    signOutConfirmMsg: "آیا مطمئن هستید که می‌خواهید از حساب خود خارج شوید؟",
+    signOutConfirmCancel: "انصراف",
+    signOutConfirmOk: "خروج",
     getStarted: "شروع کن",
     heroBadge: "مورد اعتماد بیش از ۱۲۷,۰۰۰ کاربر تأیید شده در ۵۲ شهر",
     heroLine1: "خانه ایده‌آل",
@@ -438,6 +450,10 @@ const translations = {
     ],
     signIn: "Anmelden",
     signOut: "Abmelden",
+    signOutConfirmTitle: "Abmelden",
+    signOutConfirmMsg: "Sind Sie sicher, dass Sie sich abmelden möchten?",
+    signOutConfirmCancel: "Abbrechen",
+    signOutConfirmOk: "Abmelden",
     getStarted: "Loslegen",
     heroBadge: "Von über 127.000 verifizierten Nutzern in 52 Städten vertraut",
     heroLine1: "Finde dein ideales",
@@ -568,6 +584,10 @@ const translations = {
     ],
     signIn: "تسجيل الدخول",
     signOut: "تسجيل الخروج",
+    signOutConfirmTitle: "تسجيل الخروج",
+    signOutConfirmMsg: "هل أنت متأكد من أنك تريد تسجيل الخروج؟",
+    signOutConfirmCancel: "إلغاء",
+    signOutConfirmOk: "خروج",
     getStarted: "ابدأ الآن",
     heroBadge: "موثوق به من قِبَل أكثر من ١٢٧,٠٠٠ مستخدم موثَّق في ٥٢ مدينة",
     heroLine1: "اعثر على",
@@ -698,6 +718,10 @@ const translations = {
     ],
     signIn: "Войти",
     signOut: "Выйти",
+    signOutConfirmTitle: "Выйти",
+    signOutConfirmMsg: "Вы уверены, что хотите выйти?",
+    signOutConfirmCancel: "Отмена",
+    signOutConfirmOk: "Выйти",
     getStarted: "Начать",
     heroBadge: "Поиск соседей по комнате",
     heroLine1: "Найди своего",
@@ -1097,6 +1121,7 @@ export default function Home() {
   const [showListingModal, setShowListingModal] = useState(false);
   const [profileAvatarUrl, setProfileAvatarUrl] = useState<string | null>(null);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [showLangTooltip, setShowLangTooltip] = useState(false);
   const [currencyMenuOpen, setCurrencyMenuOpen] = useState(false);
@@ -2316,7 +2341,7 @@ export default function Home() {
               <motion.button
                 whileHover={{ x: 4 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => { handleSignOut(); setProfileMenuOpen(false); }}
+                onClick={() => { setProfileMenuOpen(false); setShowSignOutConfirm(true); }}
                 className="drawer-item w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-150 group hover:bg-gray-50 active:scale-[0.97] active:bg-red-50"
                 style={{ animationDelay: '240ms' }}
               >
@@ -2335,6 +2360,38 @@ export default function Home() {
             </div>
           </div>
         </>
+      )}
+
+      {/* ── Sign Out Confirmation Dialog ─────────────────────────────────────── */}
+      {showSignOutConfirm && (
+        <div
+          style={{ position: "fixed", inset: 0, zIndex: 99999, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}
+          onClick={() => setShowSignOutConfirm(false)}
+        >
+          <div
+            style={{ background: "white", borderRadius: 20, padding: 24, width: "100%", maxWidth: 360, direction: lang === "fa" || lang === "ar" ? "rtl" : "ltr" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p style={{ fontWeight: 700, fontSize: 18, color: "#111827", marginBottom: 8, textAlign: "center" }}>{t.signOutConfirmTitle}</p>
+            <p style={{ fontSize: 14, color: "#6b7280", textAlign: "center", marginBottom: 20 }}>{t.signOutConfirmMsg}</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <button
+                type="button"
+                onClick={() => { setShowSignOutConfirm(false); handleSignOut(); }}
+                style={{ width: "100%", padding: "14px 0", borderRadius: 12, background: "linear-gradient(to right, #ef4444, #f97316)", color: "white", fontWeight: 700, fontSize: 15, border: "none", cursor: "pointer" }}
+              >
+                {t.signOutConfirmOk}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowSignOutConfirm(false)}
+                style={{ width: "100%", padding: "14px 0", borderRadius: 12, background: "white", color: "#6b7280", fontWeight: 600, fontSize: 15, border: "2px solid #e5e7eb", cursor: "pointer" }}
+              >
+                {t.signOutConfirmCancel}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
