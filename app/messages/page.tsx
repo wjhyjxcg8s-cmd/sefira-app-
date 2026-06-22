@@ -363,7 +363,7 @@ function MessagesPageContent() {
 
   // Block/unblock state
   const [showBlockMenu, setShowBlockMenu] = useState(false);
-  const [blockMenuPos, setBlockMenuPos] = useState({ top: 0, right: 0 });
+  const [blockMenuPos, setBlockMenuPos] = useState({ top: 0, left: 0 });
   const blockMenuBtnRef = useRef<HTMLButtonElement>(null);
   const [showBlockConfirm, setShowBlockConfirm] = useState(false);
   const [blockingUser, setBlockingUser] = useState(false);
@@ -1330,12 +1330,16 @@ function MessagesPageContent() {
                     ref={blockMenuBtnRef}
                     type="button"
                     onClick={() => {
-                      const rect = blockMenuBtnRef.current?.getBoundingClientRect();
-                      if (rect) {
-                        setBlockMenuPos({
-                          top: rect.bottom + 8,
-                          right: window.innerWidth - rect.right,
-                        });
+                      const btn = blockMenuBtnRef.current?.getBoundingClientRect();
+                      if (btn) {
+                        const menuWidth = 220;
+                        const padding = 12;
+                        let left = btn.right - menuWidth;
+                        if (left < padding) left = padding;
+                        if (left + menuWidth > window.innerWidth - padding) {
+                          left = window.innerWidth - menuWidth - padding;
+                        }
+                        setBlockMenuPos({ top: btn.bottom + 8, left });
                       }
                       setShowBlockMenu((v) => !v);
                     }}
@@ -1346,16 +1350,26 @@ function MessagesPageContent() {
                   </button>
                   {showBlockMenu && (
                     <>
-                      <div className="fixed inset-0 z-[9998]" onClick={() => setShowBlockMenu(false)} />
+                      <div style={{ position: "fixed", inset: 0, zIndex: 99998 }} onClick={() => setShowBlockMenu(false)} />
                       <div
-                        className="fixed z-[9999] bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden"
-                        style={{ top: blockMenuPos.top, right: blockMenuPos.right, minWidth: 220 }}
+                        style={{
+                          position: "fixed",
+                          top: blockMenuPos.top,
+                          left: blockMenuPos.left,
+                          width: 220,
+                          zIndex: 99999,
+                          background: "white",
+                          borderRadius: 16,
+                          boxShadow: "0 8px 32px rgba(0,0,0,0.18)",
+                          overflow: "hidden",
+                          direction: isFa ? "rtl" : "ltr",
+                        }}
                       >
                         {blockStatus === "blocker" ? (
                           <button
                             type="button"
                             onClick={() => { setShowBlockMenu(false); setShowUnblockConfirm(true); }}
-                            className="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-orange-500 hover:bg-orange-50 active:bg-orange-100 transition-colors text-left"
+                            style={{ width: "100%", display: "flex", alignItems: "center", flexDirection: isFa ? "row-reverse" : "row", gap: 10, padding: "14px 18px", fontSize: 14, fontWeight: 600, color: "#f97316", background: "none", border: "none", cursor: "pointer", textAlign: isFa ? "right" : "left", whiteSpace: "nowrap" }}
                           >
                             {t.unblock}
                           </button>
@@ -1363,7 +1377,7 @@ function MessagesPageContent() {
                           <button
                             type="button"
                             onClick={() => { setShowBlockMenu(false); setShowBlockConfirm(true); }}
-                            className="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-red-500 hover:bg-red-50 active:bg-red-100 transition-colors text-left"
+                            style={{ width: "100%", display: "flex", alignItems: "center", flexDirection: isFa ? "row-reverse" : "row", gap: 10, padding: "14px 18px", fontSize: 14, fontWeight: 600, color: "#ef4444", background: "none", border: "none", cursor: "pointer", textAlign: isFa ? "right" : "left", whiteSpace: "nowrap" }}
                           >
                             {t.blockUser}
                           </button>
@@ -1371,7 +1385,7 @@ function MessagesPageContent() {
                         <button
                           type="button"
                           onClick={() => setShowBlockMenu(false)}
-                          className="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-gray-500 hover:bg-gray-50 active:bg-gray-100 transition-colors border-t border-gray-100 text-left"
+                          style={{ width: "100%", display: "flex", alignItems: "center", flexDirection: isFa ? "row-reverse" : "row", gap: 10, padding: "14px 18px", fontSize: 14, fontWeight: 600, color: "#6b7280", background: "none", borderTop: "1px solid #f3f4f6", cursor: "pointer", textAlign: isFa ? "right" : "left", whiteSpace: "nowrap" }}
                         >
                           {t.close}
                         </button>
