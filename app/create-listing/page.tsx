@@ -1361,6 +1361,7 @@ function CreateListingPage() {
   const [photoCrop, setPhotoCrop] = useState<Crop>();
   const [photoCompletedCrop, setPhotoCompletedCrop] = useState<PixelCrop>();
   const [cropSaving, setCropSaving] = useState(false);
+  const [cropRotation, setCropRotation] = useState(0);
   const cropImgRef = useRef<HTMLImageElement>(null);
   const pendingCropFilesRef = useRef<File[]>([]);
   const photosUploadedDuringCropRef = useRef(0);
@@ -1368,22 +1369,55 @@ function CreateListingPage() {
   const set = <K extends keyof ListingForm>(key: K, val: ListingForm[K]) =>
     setForm((f) => ({ ...f, [key]: val }));
 
-  const correctImageOrientation = (file: File): Promise<string> => {
-    return new Promise((resolve) => {
-      createImageBitmap(file).then((bitmap) => {
-        const canvas = document.createElement("canvas");
-        canvas.width = bitmap.width;
-        canvas.height = bitmap.height;
-        const ctx = canvas.getContext("2d")!;
-        ctx.drawImage(bitmap, 0, 0);
-        resolve(canvas.toDataURL("image/jpeg", 0.95));
+  const loadImageCorrected = async (file: File): Promise<string> => {
+    try {
+      const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+      const canvas = document.createElement("canvas");
+      canvas.width = bitmap.width;
+      canvas.height = bitmap.height;
+      const ctx = canvas.getContext("2d")!;
+      ctx.drawImage(bitmap, 0, 0);
+      bitmap.close();
+      return canvas.toDataURL("image/jpeg", 0.95);
+    } catch {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.readAsDataURL(file);
       });
+    }
+  };
+
+  const rotateImage = (srcDataUrl: string, degrees: number): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const swap = degrees % 180 !== 0;
+        canvas.width = swap ? img.height : img.width;
+        canvas.height = swap ? img.width : img.height;
+        const ctx = canvas.getContext("2d")!;
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate((degrees * Math.PI) / 180);
+        ctx.drawImage(img, -img.width / 2, -img.height / 2);
+        resolve(canvas.toDataURL("image/jpeg", 0.95));
+      };
+      img.src = srcDataUrl;
     });
   };
 
+  const handleCropRotate = async (delta: number) => {
+    setCropRotation((r) => r + delta);
+    const rotated = await rotateImage(cropImgSrc, delta);
+    setCropImgSrc(rotated);
+    setPhotoCrop(undefined);
+    setPhotoCompletedCrop(undefined);
+  };
+
   const openCropForFile = (file: File) => {
-    correctImageOrientation(file).then((dataUrl) => {
+    loadImageCorrected(file).then((dataUrl) => {
       setCropImgSrc(dataUrl);
+      setCropRotation(0);
       setPhotoCrop(undefined);
       setPhotoCompletedCrop(undefined);
       setShowPhotoCropModal(true);
@@ -3093,6 +3127,24 @@ function CreateListingPage() {
                   />
                 </ReactCrop>
               )}
+            </div>
+            <div className="py-3 flex items-center justify-center gap-4 border-t border-stone-100">
+              <button
+                type="button"
+                onClick={() => handleCropRotate(-90)}
+                disabled={cropSaving}
+                className="w-10 h-10 rounded-full bg-white border-2 border-orange-400 text-orange-500 text-lg flex items-center justify-center hover:bg-orange-50 transition-all active:scale-95 disabled:opacity-60"
+              >
+                ↺
+              </button>
+              <button
+                type="button"
+                onClick={() => handleCropRotate(90)}
+                disabled={cropSaving}
+                className="w-10 h-10 rounded-full bg-white border-2 border-orange-400 text-orange-500 text-lg flex items-center justify-center hover:bg-orange-50 transition-all active:scale-95 disabled:opacity-60"
+              >
+                ↻
+              </button>
             </div>
             <div className="p-4 flex gap-3">
               <button
