@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
   const buffer = Buffer.from(await file.arrayBuffer());
 
   const compressed = await sharp(buffer)
+    .rotate()
     .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
     .webp({ quality: 75 })
     .toBuffer();
