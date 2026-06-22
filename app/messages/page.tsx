@@ -363,6 +363,8 @@ function MessagesPageContent() {
 
   // Block/unblock state
   const [showBlockMenu, setShowBlockMenu] = useState(false);
+  const [blockMenuPos, setBlockMenuPos] = useState({ top: 0, right: 0 });
+  const blockMenuBtnRef = useRef<HTMLButtonElement>(null);
   const [showBlockConfirm, setShowBlockConfirm] = useState(false);
   const [blockingUser, setBlockingUser] = useState(false);
   const [showUnblockConfirm, setShowUnblockConfirm] = useState(false);
@@ -1323,10 +1325,20 @@ function MessagesPageContent() {
                   <p className="text-xs text-green-500">● Çevrimiçi</p>
                 </div>
                 {/* Three-dot menu button */}
-                <div className="relative">
+                <div>
                   <button
+                    ref={blockMenuBtnRef}
                     type="button"
-                    onClick={() => setShowBlockMenu((v) => !v)}
+                    onClick={() => {
+                      const rect = blockMenuBtnRef.current?.getBoundingClientRect();
+                      if (rect) {
+                        setBlockMenuPos({
+                          top: rect.bottom + 8,
+                          right: window.innerWidth - rect.right,
+                        });
+                      }
+                      setShowBlockMenu((v) => !v);
+                    }}
                     className="w-9 h-9 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 active:bg-gray-200 transition-colors text-xl font-bold"
                     aria-label="More options"
                   >
@@ -1334,13 +1346,16 @@ function MessagesPageContent() {
                   </button>
                   {showBlockMenu && (
                     <>
-                      <div className="fixed inset-0 z-[48]" onClick={() => setShowBlockMenu(false)} />
-                      <div className="absolute right-0 top-11 z-[49] bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden min-w-[220px]">
+                      <div className="fixed inset-0 z-[9998]" onClick={() => setShowBlockMenu(false)} />
+                      <div
+                        className="fixed z-[9999] bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden"
+                        style={{ top: blockMenuPos.top, right: blockMenuPos.right, minWidth: 220 }}
+                      >
                         {blockStatus === "blocker" ? (
                           <button
                             type="button"
                             onClick={() => { setShowBlockMenu(false); setShowUnblockConfirm(true); }}
-                            className="w-full flex items-center gap-3 px-5 py-4 text-sm font-semibold text-orange-500 hover:bg-orange-50 active:bg-orange-100 transition-colors text-left"
+                            className="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-orange-500 hover:bg-orange-50 active:bg-orange-100 transition-colors text-left"
                           >
                             {t.unblock}
                           </button>
@@ -1348,7 +1363,7 @@ function MessagesPageContent() {
                           <button
                             type="button"
                             onClick={() => { setShowBlockMenu(false); setShowBlockConfirm(true); }}
-                            className="w-full flex items-center gap-3 px-5 py-4 text-sm font-semibold text-red-500 hover:bg-red-50 active:bg-red-100 transition-colors text-left"
+                            className="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-red-500 hover:bg-red-50 active:bg-red-100 transition-colors text-left"
                           >
                             {t.blockUser}
                           </button>
@@ -1356,7 +1371,7 @@ function MessagesPageContent() {
                         <button
                           type="button"
                           onClick={() => setShowBlockMenu(false)}
-                          className="w-full flex items-center gap-3 px-5 py-4 text-sm font-semibold text-gray-500 hover:bg-gray-50 active:bg-gray-100 transition-colors border-t border-gray-100 text-left"
+                          className="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-gray-500 hover:bg-gray-50 active:bg-gray-100 transition-colors border-t border-gray-100 text-left"
                         >
                           {t.close}
                         </button>
