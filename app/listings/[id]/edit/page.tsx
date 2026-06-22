@@ -54,6 +54,7 @@ const translations = {
     houseTypeDormitory: "Yurt",
     houseTypeIndependent: "Müstakil Ev",
     errorSave: "Kayıt sırasında hata oluştu. Lütfen tekrar deneyin.",
+    errorNoPhoto: "En az bir fotoğraf eklemelisiniz.",
     errorPhoto: "Fotoğraf yüklenirken hata oluştu.",
     notOwner: "Bu ilanı düzenleme yetkiniz yok.",
     notFound: "İlan bulunamadı.",
@@ -99,6 +100,7 @@ const translations = {
     houseTypeDormitory: "Dormitory",
     houseTypeIndependent: "Independent House",
     errorSave: "Error saving. Please try again.",
+    errorNoPhoto: "You must add at least one photo.",
     errorPhoto: "Error uploading photo.",
     notOwner: "You are not authorised to edit this listing.",
     notFound: "Listing not found.",
@@ -144,6 +146,7 @@ const translations = {
     houseTypeDormitory: "خوابگاه",
     houseTypeIndependent: "خانه مستقل",
     errorSave: "خطا در ذخیره‌سازی. لطفاً دوباره تلاش کنید.",
+    errorNoPhoto: "باید حداقل یک عکس اضافه کنید.",
     errorPhoto: "خطا در بارگذاری عکس.",
     notOwner: "شما مجاز به ویرایش این آگهی نیستید.",
     notFound: "آگهی یافت نشد.",
@@ -189,6 +192,7 @@ const translations = {
     houseTypeDormitory: "سكن طلابي",
     houseTypeIndependent: "بيت مستقل",
     errorSave: "خطأ في الحفظ. يرجى المحاولة مرة أخرى.",
+    errorNoPhoto: "يجب إضافة صورة واحدة على الأقل.",
     errorPhoto: "خطأ في رفع الصورة.",
     notOwner: "غير مصرح لك بتعديل هذا الإعلان.",
     notFound: "الإعلان غير موجود.",
@@ -234,6 +238,7 @@ const translations = {
     houseTypeDormitory: "Wohnheim",
     houseTypeIndependent: "Einfamilienhaus",
     errorSave: "Fehler beim Speichern. Bitte versuchen Sie es erneut.",
+    errorNoPhoto: "Sie müssen mindestens ein Foto hinzufügen.",
     errorPhoto: "Fehler beim Hochladen des Fotos.",
     notOwner: "Sie sind nicht berechtigt, dieses Inserat zu bearbeiten.",
     notFound: "Inserat nicht gefunden.",
@@ -279,6 +284,7 @@ const translations = {
     houseTypeDormitory: "Общежитие",
     houseTypeIndependent: "Частный дом",
     errorSave: "Ошибка при сохранении. Попробуйте ещё раз.",
+    errorNoPhoto: "Необходимо добавить хотя бы одно фото.",
     errorPhoto: "Ошибка при загрузке фото.",
     notOwner: "У вас нет прав на редактирование этого объявления.",
     notFound: "Объявление не найдено.",
@@ -510,6 +516,10 @@ export default function EditListingPage() {
 
   const handleSave = async () => {
     if (!user) return;
+    if (!form.photos || form.photos.length === 0) {
+      setSaveError(t.errorNoPhoto);
+      return;
+    }
     setSaving(true);
     setSaveError(null);
     setSaved(false);
