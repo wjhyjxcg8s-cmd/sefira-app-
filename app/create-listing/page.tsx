@@ -1368,15 +1368,26 @@ function CreateListingPage() {
   const set = <K extends keyof ListingForm>(key: K, val: ListingForm[K]) =>
     setForm((f) => ({ ...f, [key]: val }));
 
+  const correctImageOrientation = (file: File): Promise<string> => {
+    return new Promise((resolve) => {
+      createImageBitmap(file).then((bitmap) => {
+        const canvas = document.createElement("canvas");
+        canvas.width = bitmap.width;
+        canvas.height = bitmap.height;
+        const ctx = canvas.getContext("2d")!;
+        ctx.drawImage(bitmap, 0, 0);
+        resolve(canvas.toDataURL("image/jpeg", 0.95));
+      });
+    });
+  };
+
   const openCropForFile = (file: File) => {
-    const reader = new FileReader();
-    reader.addEventListener("load", () => {
-      setCropImgSrc(reader.result?.toString() ?? "");
+    correctImageOrientation(file).then((dataUrl) => {
+      setCropImgSrc(dataUrl);
       setPhotoCrop(undefined);
       setPhotoCompletedCrop(undefined);
       setShowPhotoCropModal(true);
     });
-    reader.readAsDataURL(file);
   };
 
   const handlePhotos = (e: React.ChangeEvent<HTMLInputElement>) => {
