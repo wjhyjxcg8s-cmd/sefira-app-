@@ -66,7 +66,9 @@
       "PowerShell(Get-ChildItem public -Recurse | Where-Object {!$_.PSIsContainer} | Select-Object Name, DirectoryName, @{Name=\"KB\";Expression={[math]::Round\\($_.Length/1KB,1\\)}})",
       "PowerShell(Copy-Item \"public\\\\images\\\\sefira-cat.jpg\" \"public\\\\hero-bg.jpg\")",
       "Bash(powershell -Command \"\\(Get-Content 'e:/sefıra-web/sefira-app/app/messages/page.tsx'\\).Count\")",
-      "Bash(grep -E \"\\\\.\\(tsx|ts\\)$\")"
+      "Bash(grep -E \"\\\\.\\(tsx|ts\\)$\")",
+      "Bash(node -e \"require\\('form-data'\\)\")",
+      "Bash(node -e \"require\\('node-fetch'\\)\")"
     ],
     "additionalDirectories": [
       "e:\\sefıra-web\\sefira-app\\app\\api\\admin\\channels",

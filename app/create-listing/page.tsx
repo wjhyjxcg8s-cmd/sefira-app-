@@ -149,6 +149,7 @@ const translations = {
     // Errors
     errorSubmit: "İlan yayınlanırken hata oluştu. Lütfen tekrar deneyin.",
     errorPhoto: "Fotoğraf yüklenirken hata oluştu.",
+    errorPhotoInappropriate: "Bu fotoğraf uygunsuz içerik nedeniyle yüklenemedi.",
     cropSave: "Kırp ve Kaydet",
     cropCancel: "İptal",
     successTitle: "İlanınız Yayınlandı!",
@@ -290,6 +291,7 @@ const translations = {
     // Errors
     errorSubmit: "Error publishing listing. Please try again.",
     errorPhoto: "Error uploading photo.",
+    errorPhotoInappropriate: "This photo could not be uploaded due to inappropriate content.",
     cropSave: "Crop & Save",
     cropCancel: "Cancel",
     successTitle: "Listing Published!",
@@ -431,6 +433,7 @@ const translations = {
     // Errors
     errorSubmit: "خطا در ثبت آگهی. لطفاً دوباره امتحان کنید.",
     errorPhoto: "خطا در آپلود عکس.",
+    errorPhotoInappropriate: "این عکس به دلیل محتوای نامناسب آپلود نشد.",
     cropSave: "برش و ذخیره",
     cropCancel: "لغو",
     successTitle: "آگهی ثبت شد!",
@@ -569,6 +572,7 @@ const translations = {
     goHome: "Zur Startseite",
     errorSubmit: "Fehler beim Veröffentlichen des Inserats. Bitte versuchen Sie es erneut.",
     errorPhoto: "Fehler beim Hochladen des Fotos.",
+    errorPhotoInappropriate: "Dieses Foto konnte wegen unangemessener Inhalte nicht hochgeladen werden.",
     cropSave: "Zuschneiden & Speichern",
     cropCancel: "Abbrechen",
     successTitle: "Inserat veröffentlicht!",
@@ -710,6 +714,7 @@ const translations = {
     // Errors
     errorSubmit: "خطأ في نشر الإعلان. يرجى المحاولة مرة أخرى.",
     errorPhoto: "خطأ في رفع الصورة.",
+    errorPhotoInappropriate: "لا يمكن تحميل هذه الصورة بسبب محتوى غير لائق.",
     cropSave: "قص وحفظ",
     cropCancel: "إلغاء",
     successTitle: "تم نشر الإعلان!",
@@ -851,6 +856,7 @@ const translations = {
     // Errors
     errorSubmit: "Ошибка при публикации объявления. Попробуйте снова.",
     errorPhoto: "Ошибка загрузки фото.",
+    errorPhotoInappropriate: "Это фото не может быть загружено из-за неприемлемого контента.",
     cropSave: "Обрезать и сохранить",
     cropCancel: "Отмена",
     successTitle: "Объявление опубликовано!",
@@ -1485,7 +1491,8 @@ function CreateListingPage() {
       const res = await fetch("/api/upload-photo", { method: "POST", body: fd });
       setUploadingCount((c) => c - 1);
       if (!res.ok) {
-        setPhotoError(t.errorPhoto);
+        const body = await res.json().catch(() => ({})) as { error?: string };
+        setPhotoError(body.error === 'inappropriate_content' ? t.errorPhotoInappropriate : t.errorPhoto);
       } else {
         const { url } = await res.json();
         setForm((f) => ({ ...f, photos: [...f.photos, url] }));
