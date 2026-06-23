@@ -2334,6 +2334,27 @@ export default function Home() {
                 <span className="text-gray-300 group-hover:text-orange-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
               </motion.button>
 
+              {/* Support */}
+              <motion.button
+                whileHover={{ x: 4 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => { setProfileMenuOpen(false); window.location.href = "mailto:supportsefira@gmail.com?subject=Sefira%20Support"; }}
+                className="drawer-item w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-150 group hover:bg-gray-50 active:scale-[0.97] active:bg-gray-100"
+                style={{ animationDelay: '220ms' }}
+              >
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-sky-400 to-teal-500">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                    <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
+                    <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z" />
+                    <path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
+                  </svg>
+                </div>
+                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-700 transition-colors">
+                  {lang === "tr" ? "Destek" : lang === "fa" ? "پشتیبانی" : lang === "ar" ? "الدعم" : lang === "de" ? "Support" : lang === "ru" ? "Поддержка" : "Support"}
+                </span>
+                <span className="text-gray-300 group-hover:text-orange-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
+              </motion.button>
+
               {/* Divider */}
               <div className="h-px bg-gray-200 mx-4 my-2" />
 
