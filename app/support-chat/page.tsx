@@ -1,11 +1,14 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { supabase } from '@/app/lib/supabase'
+import { useLang } from '@/app/lib/LangContext'
 
 export default function SupportChat() {
+  const { lang } = useLang()
   const [messages, setMessages] = useState<any[]>([])
   const [input, setInput] = useState('')
   const [userId, setUserId] = useState<string | null>(null)
+  const [accessToken, setAccessToken] = useState<string | null>(null)
 
   const [loading, setLoading] = useState(true)
 
@@ -14,6 +17,7 @@ export default function SupportChat() {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session?.user?.id) { setLoading(false); return }
       setUserId(session.user.id)
+      setAccessToken(session.access_token)
 
 
       const { data } = await supabase
@@ -41,7 +45,7 @@ export default function SupportChat() {
   }, [])
 
   const sendMessage = async () => {
-    if (!input.trim() || !userId) return
+    if (!input.trim() || !userId || !accessToken) return
     const text = input.trim()
     setInput('')
 
@@ -57,26 +61,26 @@ export default function SupportChat() {
     }
     setMessages(prev => [...prev, optimistic])
 
-    const { data, error } = await supabase
-      .from('admin_messages')
-      .insert([{
-        user_id: userId,
-        title: 'reply',
-        message: text,
-        is_global: false,
-        sender: 'user',
-        is_read: false
-      }])
-      .select()
-      .single()
+    const res = await fetch('/api/support/send-message', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ message: text, lang }),
+    })
+    const result = await res.json()
 
-    if (data) {
-      setMessages(prev => prev.map(m => m.id === tempId ? data : m))
-    }
-    if (error) {
+    if (!res.ok || result.error) {
       setMessages(prev => prev.filter(m => m.id !== tempId))
-      alert('Error: ' + error.message)
+      alert('Error: ' + (result.error ?? 'Unknown error'))
+      return
     }
+
+    setMessages(prev => {
+      const updated = prev.map(m => m.id === tempId ? result.userMsg : m)
+      return result.autoReplyMsg ? [...updated, result.autoReplyMsg] : updated
+    })
   }
 
   const fmtTime = (d: string) => {

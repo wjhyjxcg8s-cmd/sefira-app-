@@ -666,22 +666,22 @@ function MessagesPageContent() {
       return;
     }
 
-    const { data, error } = await supabase
-      .from("admin_messages")
-      .insert([
-        {
-          user_id: session.user.id,
-          title: "reply",
-          message: text,
-          is_global: false,
-          sender: "user",
-          is_read: false,
-        },
-      ])
-      .select()
-      .single();
+    const res = await fetch("/api/support/send-message", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ message: text, lang }),
+    });
+    const result = await res.json();
 
-    if (!error && data) setChatMessages((prev) => [...prev, data as AdminMessage]);
+    if (res.ok && !result.error) {
+      setChatMessages((prev) => {
+        const updated = [...prev, result.userMsg as AdminMessage];
+        return result.autoReplyMsg ? [...updated, result.autoReplyMsg as AdminMessage] : updated;
+      });
+    }
     setSendingChat(false);
   };
 
