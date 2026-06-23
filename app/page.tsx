@@ -2338,7 +2338,7 @@ export default function Home() {
               <motion.button
                 whileHover={{ x: 4 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => { setProfileMenuOpen(false); window.location.href = "mailto:supportsefira@gmail.com?subject=Sefira%20Support"; }}
+                onClick={() => { setProfileMenuOpen(false); router.push("/support-chat"); }}
                 className="drawer-item w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-150 group hover:bg-gray-50 active:scale-[0.97] active:bg-gray-100"
                 style={{ animationDelay: '220ms' }}
               >
