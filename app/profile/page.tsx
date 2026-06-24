@@ -33,6 +33,7 @@ const translations = {
     goHome: "Ana Sayfaya Git",
     error: "Bir hata oluştu. Lütfen tekrar deneyin.",
     photoError: "Fotoğraf yüklenirken hata oluştu.",
+    inappropriateContentTitle: "Uygunsuz İçerik",
     inappropriateContent: "Bu fotoğraf site kurallarımıza uygun değil. Lütfen başka bir fotoğraf deneyin.",
     emailLabel: "E-posta (değiştirilemez)",
     memberSince: "Üyelik",
@@ -101,6 +102,7 @@ const translations = {
     goHome: "Go to Home",
     error: "An error occurred. Please try again.",
     photoError: "Error uploading photo.",
+    inappropriateContentTitle: "Inappropriate Content",
     inappropriateContent: "This photo does not comply with our site rules. Please try another photo.",
     emailLabel: "Email (cannot be changed)",
     memberSince: "Member since",
@@ -169,6 +171,7 @@ const translations = {
     goHome: "رفتن به صفحه اصلی",
     error: "خطایی رخ داد. لطفاً دوباره امتحان کنید.",
     photoError: "خطا در آپلود عکس.",
+    inappropriateContentTitle: "محتوای نامناسب",
     inappropriateContent: "این عکس با قوانین سایت ما مطابقت ندارد. لطفاً عکس دیگری امتحان کنید.",
     emailLabel: "ایمیل (قابل تغییر نیست)",
     memberSince: "عضو از",
@@ -237,6 +240,7 @@ const translations = {
     goHome: "Zur Startseite",
     error: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
     photoError: "Fehler beim Hochladen des Fotos.",
+    inappropriateContentTitle: "Unangemessener Inhalt",
     inappropriateContent: "Dieses Foto entspricht nicht unseren Website-Regeln. Bitte versuchen Sie ein anderes Foto.",
     emailLabel: "E-Mail (kann nicht geändert werden)",
     memberSince: "Mitglied seit",
@@ -306,6 +310,7 @@ const translations = {
     goHome: "الذهاب إلى الرئيسية",
     error: "حدث خطأ. يرجى المحاولة مرة أخرى.",
     photoError: "خطأ في رفع الصورة.",
+    inappropriateContentTitle: "محتوى غير لائق",
     inappropriateContent: "هذه الصورة لا تتوافق مع قواعد موقعنا. يرجى تجربة صورة أخرى.",
     emailLabel: "البريد الإلكتروني (لا يمكن تغييره)",
     memberSince: "عضو منذ",
@@ -374,6 +379,7 @@ const translations = {
     goHome: "Перейти на главную",
     error: "Ошибка",
     photoError: "Ошибка загрузки фото.",
+    inappropriateContentTitle: "Неприемлемый контент",
     inappropriateContent: "Это фото не соответствует правилам нашего сайта. Пожалуйста, попробуйте другое фото.",
     emailLabel: "Эл. почта (нельзя изменить)",
     memberSince: "Участник с",
@@ -461,13 +467,8 @@ export default function ProfilePage() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [nsfwToast, setNsfwToast] = useState<string | null>(null);
-  const nsfwToastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const showNsfwToast = (msg: string) => {
-    if (nsfwToastTimer.current) clearTimeout(nsfwToastTimer.current);
-    setNsfwToast(msg);
-    nsfwToastTimer.current = setTimeout(() => setNsfwToast(null), 4000);
-  };
+  const showNsfwToast = (msg: string) => setNsfwToast(msg);
   const [profileLoading, setProfileLoading] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -1709,29 +1710,71 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* NSFW toast — fixed top-center, always visible */}
+      {/* NSFW toast — fixed bottom, dismiss on X only */}
       {nsfwToast && (
         <>
-          <style>{`@keyframes nsfw-toast-in{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}`}</style>
+          <style>{`@keyframes nsfw-slide-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}`}</style>
           <div style={{
             position: 'fixed',
-            top: 20,
-            left: '50%',
-            transform: 'translateX(-50%)',
+            bottom: 32,
+            left: 16,
+            right: 16,
             zIndex: 9999,
-            background: '#fee2e2',
-            border: '2px solid #ef4444',
-            borderRadius: 12,
-            padding: '16px 24px',
+            background: 'white',
+            borderLeft: '4px solid #ef4444',
+            borderRadius: 16,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+            padding: '18px 20px',
             display: 'flex',
-            alignItems: 'center',
+            alignItems: 'flex-start',
             gap: 12,
-            maxWidth: 'calc(100vw - 40px)',
-            boxShadow: '0 4px 20px rgba(239,68,68,0.2)',
-            animation: 'nsfw-toast-in 0.25s ease-out forwards',
+            animation: 'nsfw-slide-up 0.28s ease-out forwards',
           }}>
-            <span style={{ fontSize: 20, flexShrink: 0 }}>⚠️</span>
-            <span style={{ color: '#b91c1c', fontWeight: 700, fontSize: 14 }}>{nsfwToast}</span>
+            {/* Red icon circle */}
+            <div style={{
+              width: 40,
+              height: 40,
+              borderRadius: '50%',
+              background: '#fee2e2',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+              fontSize: 18,
+            }}>⚠️</div>
+            {/* Text */}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontWeight: 700, fontSize: 15, color: '#111827', marginBottom: 4 }}>
+                {t.inappropriateContentTitle}
+              </div>
+              <div style={{ fontSize: 13, color: '#6b7280', lineHeight: 1.5 }}>
+                {nsfwToast}
+              </div>
+            </div>
+            {/* X close button */}
+            <button
+              onClick={() => setNsfwToast(null)}
+              style={{
+                width: 24,
+                height: 24,
+                flexShrink: 0,
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                color: '#9ca3af',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: 0,
+                borderRadius: 4,
+              }}
+              aria-label="Close"
+            >
+              <svg viewBox="0 0 24 24" width={18} height={18} fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
           </div>
         </>
       )}
