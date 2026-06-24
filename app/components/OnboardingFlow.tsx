@@ -23,7 +23,7 @@ const i18n: Record<Lang, {
   birthdateQ: string; thanks: string; genderQ: string;
   male: string; female: string; other: string;
   countryQ: string; searchCountry: string; countryConfirm: string;
-  photoQ: string; choosePhoto: string; photoConfirm: string; photoSkip: string;
+  photoQ: string; choosePhoto: string; photoConfirm: string; photoSkip: string; inappropriateContent: string;
   celebration: string; stepLabel: string;
   day: string; month: string; year: string; confirm: string;
 }> = {
@@ -33,7 +33,7 @@ const i18n: Record<Lang, {
     birthdateQ: "Doğum tarihiniz nedir? 🎂", thanks: "Teşekkürler! 🎉",
     genderQ: "Cinsiyetiniz nedir?", male: "Erkek", female: "Kadın", other: "Diğer",
     countryQ: "Hangi ülkenin vatandaşısınız?", searchCountry: "Ülke ara...", countryConfirm: "Devam Et",
-    photoQ: "Sevgilim, güzel bir profil fotoğrafı seç! 🌟", choosePhoto: "Fotoğraf Seç", photoConfirm: "Kaydet", photoSkip: "Şimdilik Atla",
+    photoQ: "Sevgilim, güzel bir profil fotoğrafı seç! 🌟", choosePhoto: "Fotoğraf Seç", photoConfirm: "Kaydet", photoSkip: "Şimdilik Atla", inappropriateContent: "Bu fotoğraf uygunsuz içerik nedeniyle yüklenemez",
     celebration: "Profiliniz tamamlandı! Sefira'ya hoş geldiniz! 🌹❤️", stepLabel: "Adım",
     day: "Gün", month: "Ay", year: "Yıl", confirm: "Onayla",
   },
@@ -43,7 +43,7 @@ const i18n: Record<Lang, {
     birthdateQ: "When is your birthday? 🎂", thanks: "Thank you! 🎉",
     genderQ: "What is your gender?", male: "Male", female: "Female", other: "Other",
     countryQ: "Which country are you from?", searchCountry: "Search country...", countryConfirm: "Continue",
-    photoQ: "Darling, choose a beautiful profile photo! 🌟", choosePhoto: "Choose Photo", photoConfirm: "Save", photoSkip: "Skip for now",
+    photoQ: "Darling, choose a beautiful profile photo! 🌟", choosePhoto: "Choose Photo", photoConfirm: "Save", photoSkip: "Skip for now", inappropriateContent: "This photo cannot be uploaded due to inappropriate content",
     celebration: "Profile complete! Welcome to Sefira! 🌹❤️", stepLabel: "Step",
     day: "Day", month: "Month", year: "Year", confirm: "Confirm",
   },
@@ -53,7 +53,7 @@ const i18n: Record<Lang, {
     birthdateQ: "تاریخ تولدت کیه؟ 🎂", thanks: "ممنون! 🎉",
     genderQ: "جنسیتت چیه؟", male: "مرد", female: "زن", other: "سایر",
     countryQ: "اهل کدام کشور هستی؟", searchCountry: "جستجوی کشور...", countryConfirm: "ادامه",
-    photoQ: "عزیزم، یه عکس پروفایل قشنگ انتخاب کن! 🌟", choosePhoto: "انتخاب عکس", photoConfirm: "ذخیره", photoSkip: "فعلاً رد کن",
+    photoQ: "عزیزم، یه عکس پروفایل قشنگ انتخاب کن! 🌟", choosePhoto: "انتخاب عکس", photoConfirm: "ذخیره", photoSkip: "فعلاً رد کن", inappropriateContent: "این عکس به دلیل محتوای نامناسب قابل آپلود نیست",
     celebration: "پروفایلت کامل شد! به سفیرا خوش اومدی! 🌹❤️", stepLabel: "مرحله",
     day: "روز", month: "ماه", year: "سال", confirm: "تأیید",
   },
@@ -63,7 +63,7 @@ const i18n: Record<Lang, {
     birthdateQ: "متى ميلادك؟ 🎂", thanks: "شكراً! 🎉",
     genderQ: "ما هو جنسك؟", male: "ذكر", female: "أنثى", other: "آخر",
     countryQ: "من أي دولة أنت؟", searchCountry: "ابحث عن دولة...", countryConfirm: "متابعة",
-    photoQ: "عزيزي، اختر صورة ملف شخصي جميلة! 🌟", choosePhoto: "اختر صورة", photoConfirm: "حفظ", photoSkip: "تخطي الآن",
+    photoQ: "عزيزي، اختر صورة ملف شخصي جميلة! 🌟", choosePhoto: "اختر صورة", photoConfirm: "حفظ", photoSkip: "تخطي الآن", inappropriateContent: "لا يمكن تحميل هذه الصورة بسبب محتوى غير لائق",
     celebration: "اكتمل ملفك! مرحباً بك في سفيرا! 🌹❤️", stepLabel: "خطوة",
     day: "يوم", month: "شهر", year: "سنة", confirm: "تأكيد",
   },
@@ -73,7 +73,7 @@ const i18n: Record<Lang, {
     birthdateQ: "Wann ist Ihr Geburtstag? 🎂", thanks: "Danke! 🎉",
     genderQ: "Was ist Ihr Geschlecht?", male: "Mann", female: "Frau", other: "Andere",
     countryQ: "Aus welchem Land kommen Sie?", searchCountry: "Land suchen...", countryConfirm: "Weiter",
-    photoQ: "Liebling, wähle ein schönes Profilbild! 🌟", choosePhoto: "Foto wählen", photoConfirm: "Speichern", photoSkip: "Jetzt überspringen",
+    photoQ: "Liebling, wähle ein schönes Profilbild! 🌟", choosePhoto: "Foto wählen", photoConfirm: "Speichern", photoSkip: "Jetzt überspringen", inappropriateContent: "Dieses Foto kann wegen unangemessener Inhalte nicht hochgeladen werden",
     celebration: "Profil abgeschlossen! Willkommen bei Sefira! 🌹❤️", stepLabel: "Schritt",
     day: "Tag", month: "Monat", year: "Jahr", confirm: "Bestätigen",
   },
@@ -83,7 +83,7 @@ const i18n: Record<Lang, {
     birthdateQ: "Когда ваш день рождения? 🎂", thanks: "Спасибо! 🎉",
     genderQ: "Ваш пол?", male: "Мужской", female: "Женский", other: "Другой",
     countryQ: "Из какой вы страны?", searchCountry: "Поиск страны...", countryConfirm: "Продолжить",
-    photoQ: "Дорогой, выбери красивое фото профиля! 🌟", choosePhoto: "Выбрать фото", photoConfirm: "Сохранить", photoSkip: "Пропустить пока",
+    photoQ: "Дорогой, выбери красивое фото профиля! 🌟", choosePhoto: "Выбрать фото", photoConfirm: "Сохранить", photoSkip: "Пропустить пока", inappropriateContent: "Это фото не может быть загружено из-за неприемлемого контента",
     celebration: "Профиль заполнен! Добро пожаловать в Sefira! 🌹❤️", stepLabel: "Шаг",
     day: "День", month: "Месяц", year: "Год", confirm: "Подтвердить",
   },
@@ -184,6 +184,7 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
   const [countryValid, setCountryValid] = useState(false);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoUploadError, setPhotoUploadError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   // Index of current step within the queue (-1 when on welcome/celebration)
@@ -250,14 +251,19 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
   const savePhoto = async () => {
     if (!photoFile || saving) return;
     setSaving(true);
+    setPhotoUploadError(null);
     const fd = new FormData();
     fd.append('file', photoFile);
     fd.append('userId', userId);
     const res = await fetch('/api/upload-avatar', { method: 'POST', body: fd });
-    if (res.ok) {
-      const { url: publicUrl } = await res.json();
-      await supabase.from("profiles").upsert({ user_id: userId, avatar_url: publicUrl }, { onConflict: "user_id" });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      setPhotoUploadError(body.error === 'inappropriate_content' ? t.inappropriateContent : null);
+      setSaving(false);
+      return;
     }
+    const { url: publicUrl } = await res.json();
+    await supabase.from("profiles").upsert({ user_id: userId, avatar_url: publicUrl }, { onConflict: "user_id" });
     setSaving(false);
     setStep("celebration");
     setTimeout(() => onComplete(), 3000);
@@ -515,6 +521,9 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
                 </button>
                 <input ref={fileInputRef} type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
               </div>
+              {photoUploadError && (
+                <p className="text-red-500 text-xs font-semibold text-center mb-3">{photoUploadError}</p>
+              )}
               <button onClick={savePhoto} disabled={!photoFile || saving}
                 className="w-full py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 font-black text-white text-sm disabled:opacity-40 hover:opacity-95 active:scale-95 transition-all duration-200 shadow-lg shadow-orange-500/25 mb-3">
                 {saving ? "..." : `${t.photoConfirm} 📸`}

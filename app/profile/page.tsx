@@ -33,6 +33,7 @@ const translations = {
     goHome: "Ana Sayfaya Git",
     error: "Bir hata oluştu. Lütfen tekrar deneyin.",
     photoError: "Fotoğraf yüklenirken hata oluştu.",
+    inappropriateContent: "Bu fotoğraf uygunsuz içerik nedeniyle yüklenemez",
     emailLabel: "E-posta (değiştirilemez)",
     memberSince: "Üyelik",
     createListing: "İlan Ver",
@@ -100,6 +101,7 @@ const translations = {
     goHome: "Go to Home",
     error: "An error occurred. Please try again.",
     photoError: "Error uploading photo.",
+    inappropriateContent: "This photo cannot be uploaded due to inappropriate content",
     emailLabel: "Email (cannot be changed)",
     memberSince: "Member since",
     createListing: "Create Listing",
@@ -167,6 +169,7 @@ const translations = {
     goHome: "رفتن به صفحه اصلی",
     error: "خطایی رخ داد. لطفاً دوباره امتحان کنید.",
     photoError: "خطا در آپلود عکس.",
+    inappropriateContent: "این عکس به دلیل محتوای نامناسب قابل آپلود نیست",
     emailLabel: "ایمیل (قابل تغییر نیست)",
     memberSince: "عضو از",
     createListing: "ثبت آگهی",
@@ -234,6 +237,7 @@ const translations = {
     goHome: "Zur Startseite",
     error: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
     photoError: "Fehler beim Hochladen des Fotos.",
+    inappropriateContent: "Dieses Foto kann wegen unangemessener Inhalte nicht hochgeladen werden",
     emailLabel: "E-Mail (kann nicht geändert werden)",
     memberSince: "Mitglied seit",
     createListing: "Inserat aufgeben",
@@ -302,6 +306,7 @@ const translations = {
     goHome: "الذهاب إلى الرئيسية",
     error: "حدث خطأ. يرجى المحاولة مرة أخرى.",
     photoError: "خطأ في رفع الصورة.",
+    inappropriateContent: "لا يمكن تحميل هذه الصورة بسبب محتوى غير لائق",
     emailLabel: "البريد الإلكتروني (لا يمكن تغييره)",
     memberSince: "عضو منذ",
     createListing: "نشر إعلان",
@@ -369,6 +374,7 @@ const translations = {
     goHome: "Перейти на главную",
     error: "Ошибка",
     photoError: "Ошибка загрузки фото.",
+    inappropriateContent: "Это фото не может быть загружено из-за неприемлемого контента",
     emailLabel: "Эл. почта (нельзя изменить)",
     memberSince: "Участник с",
     createListing: "+ Разместить объявление",
@@ -570,7 +576,12 @@ export default function ProfilePage() {
       fd.append("file", blob, "avatar.webp");
       fd.append("userId", currentUser.id);
       const res = await fetch("/api/upload-avatar", { method: "POST", body: fd });
-      if (!res.ok) { setError(t.photoError); setSaving(false); return; }
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(body.error === 'inappropriate_content' ? t.inappropriateContent : t.photoError);
+        setSaving(false);
+        return;
+      }
       const { url: publicUrl } = await res.json();
       const { error: dbError } = await supabase
         .from("profiles")
@@ -678,7 +689,8 @@ export default function ProfilePage() {
       fd.append('userId', currentUser.id);
       const res = await fetch('/api/upload-avatar', { method: 'POST', body: fd });
       if (!res.ok) {
-        setError(t.photoError);
+        const body = await res.json().catch(() => ({}));
+        setError(body.error === 'inappropriate_content' ? t.inappropriateContent : t.photoError);
         setSaving(false);
         return;
       }
