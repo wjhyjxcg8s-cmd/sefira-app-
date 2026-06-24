@@ -33,7 +33,7 @@ const i18n: Record<Lang, {
     birthdateQ: "Doğum tarihiniz nedir? 🎂", thanks: "Teşekkürler! 🎉",
     genderQ: "Cinsiyetiniz nedir?", male: "Erkek", female: "Kadın", other: "Diğer",
     countryQ: "Hangi ülkenin vatandaşısınız?", searchCountry: "Ülke ara...", countryConfirm: "Devam Et",
-    photoQ: "Sevgilim, güzel bir profil fotoğrafı seç! 🌟", choosePhoto: "Fotoğraf Seç", photoConfirm: "Kaydet", photoSkip: "Şimdilik Atla", inappropriateContent: "Bu fotoğraf uygunsuz içerik nedeniyle yüklenemez",
+    photoQ: "Sevgilim, güzel bir profil fotoğrafı seç! 🌟", choosePhoto: "Fotoğraf Seç", photoConfirm: "Kaydet", photoSkip: "Şimdilik Atla", inappropriateContent: "Bu fotoğraf site kurallarımıza uygun değil. Lütfen başka bir fotoğraf deneyin.",
     celebration: "Profiliniz tamamlandı! Sefira'ya hoş geldiniz! 🌹❤️", stepLabel: "Adım",
     day: "Gün", month: "Ay", year: "Yıl", confirm: "Onayla",
   },
@@ -43,7 +43,7 @@ const i18n: Record<Lang, {
     birthdateQ: "When is your birthday? 🎂", thanks: "Thank you! 🎉",
     genderQ: "What is your gender?", male: "Male", female: "Female", other: "Other",
     countryQ: "Which country are you from?", searchCountry: "Search country...", countryConfirm: "Continue",
-    photoQ: "Darling, choose a beautiful profile photo! 🌟", choosePhoto: "Choose Photo", photoConfirm: "Save", photoSkip: "Skip for now", inappropriateContent: "This photo cannot be uploaded due to inappropriate content",
+    photoQ: "Darling, choose a beautiful profile photo! 🌟", choosePhoto: "Choose Photo", photoConfirm: "Save", photoSkip: "Skip for now", inappropriateContent: "This photo does not comply with our site rules. Please try another photo.",
     celebration: "Profile complete! Welcome to Sefira! 🌹❤️", stepLabel: "Step",
     day: "Day", month: "Month", year: "Year", confirm: "Confirm",
   },
@@ -53,7 +53,7 @@ const i18n: Record<Lang, {
     birthdateQ: "تاریخ تولدت کیه؟ 🎂", thanks: "ممنون! 🎉",
     genderQ: "جنسیتت چیه؟", male: "مرد", female: "زن", other: "سایر",
     countryQ: "اهل کدام کشور هستی؟", searchCountry: "جستجوی کشور...", countryConfirm: "ادامه",
-    photoQ: "عزیزم، یه عکس پروفایل قشنگ انتخاب کن! 🌟", choosePhoto: "انتخاب عکس", photoConfirm: "ذخیره", photoSkip: "فعلاً رد کن", inappropriateContent: "این عکس به دلیل محتوای نامناسب قابل آپلود نیست",
+    photoQ: "عزیزم، یه عکس پروفایل قشنگ انتخاب کن! 🌟", choosePhoto: "انتخاب عکس", photoConfirm: "ذخیره", photoSkip: "فعلاً رد کن", inappropriateContent: "این عکس با قوانین سایت ما مطابقت ندارد. لطفاً عکس دیگری امتحان کنید.",
     celebration: "پروفایلت کامل شد! به سفیرا خوش اومدی! 🌹❤️", stepLabel: "مرحله",
     day: "روز", month: "ماه", year: "سال", confirm: "تأیید",
   },
@@ -63,7 +63,7 @@ const i18n: Record<Lang, {
     birthdateQ: "متى ميلادك؟ 🎂", thanks: "شكراً! 🎉",
     genderQ: "ما هو جنسك؟", male: "ذكر", female: "أنثى", other: "آخر",
     countryQ: "من أي دولة أنت؟", searchCountry: "ابحث عن دولة...", countryConfirm: "متابعة",
-    photoQ: "عزيزي، اختر صورة ملف شخصي جميلة! 🌟", choosePhoto: "اختر صورة", photoConfirm: "حفظ", photoSkip: "تخطي الآن", inappropriateContent: "لا يمكن تحميل هذه الصورة بسبب محتوى غير لائق",
+    photoQ: "عزيزي، اختر صورة ملف شخصي جميلة! 🌟", choosePhoto: "اختر صورة", photoConfirm: "حفظ", photoSkip: "تخطي الآن", inappropriateContent: "هذه الصورة لا تتوافق مع قواعد موقعنا. يرجى تجربة صورة أخرى.",
     celebration: "اكتمل ملفك! مرحباً بك في سفيرا! 🌹❤️", stepLabel: "خطوة",
     day: "يوم", month: "شهر", year: "سنة", confirm: "تأكيد",
   },
@@ -73,7 +73,7 @@ const i18n: Record<Lang, {
     birthdateQ: "Wann ist Ihr Geburtstag? 🎂", thanks: "Danke! 🎉",
     genderQ: "Was ist Ihr Geschlecht?", male: "Mann", female: "Frau", other: "Andere",
     countryQ: "Aus welchem Land kommen Sie?", searchCountry: "Land suchen...", countryConfirm: "Weiter",
-    photoQ: "Liebling, wähle ein schönes Profilbild! 🌟", choosePhoto: "Foto wählen", photoConfirm: "Speichern", photoSkip: "Jetzt überspringen", inappropriateContent: "Dieses Foto kann wegen unangemessener Inhalte nicht hochgeladen werden",
+    photoQ: "Liebling, wähle ein schönes Profilbild! 🌟", choosePhoto: "Foto wählen", photoConfirm: "Speichern", photoSkip: "Jetzt überspringen", inappropriateContent: "Dieses Foto entspricht nicht unseren Website-Regeln. Bitte versuchen Sie ein anderes Foto.",
     celebration: "Profil abgeschlossen! Willkommen bei Sefira! 🌹❤️", stepLabel: "Schritt",
     day: "Tag", month: "Monat", year: "Jahr", confirm: "Bestätigen",
   },
@@ -83,7 +83,7 @@ const i18n: Record<Lang, {
     birthdateQ: "Когда ваш день рождения? 🎂", thanks: "Спасибо! 🎉",
     genderQ: "Ваш пол?", male: "Мужской", female: "Женский", other: "Другой",
     countryQ: "Из какой вы страны?", searchCountry: "Поиск страны...", countryConfirm: "Продолжить",
-    photoQ: "Дорогой, выбери красивое фото профиля! 🌟", choosePhoto: "Выбрать фото", photoConfirm: "Сохранить", photoSkip: "Пропустить пока", inappropriateContent: "Это фото не может быть загружено из-за неприемлемого контента",
+    photoQ: "Дорогой, выбери красивое фото профиля! 🌟", choosePhoto: "Выбрать фото", photoConfirm: "Сохранить", photoSkip: "Пропустить пока", inappropriateContent: "Это фото не соответствует правилам нашего сайта. Пожалуйста, попробуйте другое фото.",
     celebration: "Профиль заполнен! Добро пожаловать в Sefira! 🌹❤️", stepLabel: "Шаг",
     day: "День", month: "Месяц", year: "Год", confirm: "Подтвердить",
   },
@@ -259,6 +259,11 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
       setPhotoUploadError(body.error === 'inappropriate_content' ? t.inappropriateContent : null);
+      if (body.error === 'inappropriate_content') {
+        setPhotoFile(null);
+        setPhotoPreview(null);
+        if (fileInputRef.current) fileInputRef.current.value = "";
+      }
       setSaving(false);
       return;
     }

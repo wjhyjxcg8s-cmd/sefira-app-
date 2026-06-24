@@ -33,7 +33,7 @@ const translations = {
     goHome: "Ana Sayfaya Git",
     error: "Bir hata oluştu. Lütfen tekrar deneyin.",
     photoError: "Fotoğraf yüklenirken hata oluştu.",
-    inappropriateContent: "Bu fotoğraf uygunsuz içerik nedeniyle yüklenemez",
+    inappropriateContent: "Bu fotoğraf site kurallarımıza uygun değil. Lütfen başka bir fotoğraf deneyin.",
     emailLabel: "E-posta (değiştirilemez)",
     memberSince: "Üyelik",
     createListing: "İlan Ver",
@@ -101,7 +101,7 @@ const translations = {
     goHome: "Go to Home",
     error: "An error occurred. Please try again.",
     photoError: "Error uploading photo.",
-    inappropriateContent: "This photo cannot be uploaded due to inappropriate content",
+    inappropriateContent: "This photo does not comply with our site rules. Please try another photo.",
     emailLabel: "Email (cannot be changed)",
     memberSince: "Member since",
     createListing: "Create Listing",
@@ -169,7 +169,7 @@ const translations = {
     goHome: "رفتن به صفحه اصلی",
     error: "خطایی رخ داد. لطفاً دوباره امتحان کنید.",
     photoError: "خطا در آپلود عکس.",
-    inappropriateContent: "این عکس به دلیل محتوای نامناسب قابل آپلود نیست",
+    inappropriateContent: "این عکس با قوانین سایت ما مطابقت ندارد. لطفاً عکس دیگری امتحان کنید.",
     emailLabel: "ایمیل (قابل تغییر نیست)",
     memberSince: "عضو از",
     createListing: "ثبت آگهی",
@@ -237,7 +237,7 @@ const translations = {
     goHome: "Zur Startseite",
     error: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
     photoError: "Fehler beim Hochladen des Fotos.",
-    inappropriateContent: "Dieses Foto kann wegen unangemessener Inhalte nicht hochgeladen werden",
+    inappropriateContent: "Dieses Foto entspricht nicht unseren Website-Regeln. Bitte versuchen Sie ein anderes Foto.",
     emailLabel: "E-Mail (kann nicht geändert werden)",
     memberSince: "Mitglied seit",
     createListing: "Inserat aufgeben",
@@ -306,7 +306,7 @@ const translations = {
     goHome: "الذهاب إلى الرئيسية",
     error: "حدث خطأ. يرجى المحاولة مرة أخرى.",
     photoError: "خطأ في رفع الصورة.",
-    inappropriateContent: "لا يمكن تحميل هذه الصورة بسبب محتوى غير لائق",
+    inappropriateContent: "هذه الصورة لا تتوافق مع قواعد موقعنا. يرجى تجربة صورة أخرى.",
     emailLabel: "البريد الإلكتروني (لا يمكن تغييره)",
     memberSince: "عضو منذ",
     createListing: "نشر إعلان",
@@ -374,7 +374,7 @@ const translations = {
     goHome: "Перейти на главную",
     error: "Ошибка",
     photoError: "Ошибка загрузки фото.",
-    inappropriateContent: "Это фото не может быть загружено из-за неприемлемого контента",
+    inappropriateContent: "Это фото не соответствует правилам нашего сайта. Пожалуйста, попробуйте другое фото.",
     emailLabel: "Эл. почта (нельзя изменить)",
     memberSince: "Участник с",
     createListing: "+ Разместить объявление",
@@ -579,6 +579,13 @@ export default function ProfilePage() {
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         setError(body.error === 'inappropriate_content' ? t.inappropriateContent : t.photoError);
+        if (body.error === 'inappropriate_content') {
+          setShowCropModal(false);
+          setAvatarFile(null);
+          setAvatarPreview(null);
+          setImgSrc("");
+          if (fileInputRef.current) fileInputRef.current.value = "";
+        }
         setSaving(false);
         return;
       }
@@ -691,6 +698,10 @@ export default function ProfilePage() {
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         setError(body.error === 'inappropriate_content' ? t.inappropriateContent : t.photoError);
+        if (body.error === 'inappropriate_content') {
+          setAvatarFile(null);
+          if (fileInputRef.current) fileInputRef.current.value = "";
+        }
         setSaving(false);
         return;
       }
