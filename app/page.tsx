@@ -1244,9 +1244,9 @@ export default function Home() {
     const savedScroll = sessionStorage.getItem('homeScrollPosition')
     if (savedScroll) {
       setTimeout(() => {
-        window.scrollTo(0, parseInt(savedScroll))
+        window.scrollTo({ top: parseInt(savedScroll), behavior: 'instant' })
         sessionStorage.removeItem('homeScrollPosition')
-      }, 100)
+      }, 50)
     }
   }, []);
 
