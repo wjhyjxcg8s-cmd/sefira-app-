@@ -1239,6 +1239,17 @@ export default function Home() {
     });
   }, []);
 
+  // ── Restore scroll position (homeScrollPosition) ─────────────────────────
+  useEffect(() => {
+    const savedScroll = sessionStorage.getItem('homeScrollPosition')
+    if (savedScroll) {
+      setTimeout(() => {
+        window.scrollTo(0, parseInt(savedScroll))
+        sessionStorage.removeItem('homeScrollPosition')
+      }, 100)
+    }
+  }, []);
+
   // ── Lock body scroll when profile drawer is open ──────────────────────────
   useEffect(() => {
     document.body.style.overflow = profileMenuOpen ? "hidden" : "";
@@ -3160,7 +3171,10 @@ export default function Home() {
                   style={{ WebkitTapHighlightColor: "transparent" }}
                 >
                   <motion.div
-                    onClick={() => router.push(`/listings/${rec.id}`)}
+                    onClick={() => {
+                      sessionStorage.setItem('homeScrollPosition', window.scrollY.toString())
+                      router.push(`/listings/${rec.id}`)
+                    }}
                     whileTap={{ scale: 0.97 }}
                     className="relative w-64 rounded-[24px] overflow-hidden cursor-pointer"
                     style={{ height: 380, boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }}

@@ -571,6 +571,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
               key={listing.id}
               onClick={() => {
               sessionStorage.setItem("sefira-scroll", String(window.scrollY));
+              sessionStorage.setItem('homeScrollPosition', window.scrollY.toString());
               router.push(`/listings/${listing.id}`);
             }}
               className="rounded-2xl overflow-hidden shadow-md bg-white hover:shadow-xl transition-shadow cursor-pointer"
