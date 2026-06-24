@@ -460,6 +460,14 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [nsfwToast, setNsfwToast] = useState<string | null>(null);
+  const nsfwToastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showNsfwToast = (msg: string) => {
+    if (nsfwToastTimer.current) clearTimeout(nsfwToastTimer.current);
+    setNsfwToast(msg);
+    nsfwToastTimer.current = setTimeout(() => setNsfwToast(null), 4000);
+  };
   const [profileLoading, setProfileLoading] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -578,13 +586,15 @@ export default function ProfilePage() {
       const res = await fetch("/api/upload-avatar", { method: "POST", body: fd });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        setError(body.error === 'inappropriate_content' ? t.inappropriateContent : t.photoError);
         if (body.error === 'inappropriate_content') {
+          showNsfwToast(t.inappropriateContent);
           setShowCropModal(false);
           setAvatarFile(null);
           setAvatarPreview(null);
           setImgSrc("");
           if (fileInputRef.current) fileInputRef.current.value = "";
+        } else {
+          setError(t.photoError);
         }
         setSaving(false);
         return;
@@ -697,10 +707,12 @@ export default function ProfilePage() {
       const res = await fetch('/api/upload-avatar', { method: 'POST', body: fd });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        setError(body.error === 'inappropriate_content' ? t.inappropriateContent : t.photoError);
         if (body.error === 'inappropriate_content') {
+          showNsfwToast(t.inappropriateContent);
           setAvatarFile(null);
           if (fileInputRef.current) fileInputRef.current.value = "";
+        } else {
+          setError(t.photoError);
         }
         setSaving(false);
         return;
@@ -1696,6 +1708,33 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* NSFW toast — fixed top-center, always visible */}
+      {nsfwToast && (
+        <>
+          <style>{`@keyframes nsfw-toast-in{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}`}</style>
+          <div style={{
+            position: 'fixed',
+            top: 20,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 9999,
+            background: '#fee2e2',
+            border: '2px solid #ef4444',
+            borderRadius: 12,
+            padding: '16px 24px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+            maxWidth: 'calc(100vw - 40px)',
+            boxShadow: '0 4px 20px rgba(239,68,68,0.2)',
+            animation: 'nsfw-toast-in 0.25s ease-out forwards',
+          }}>
+            <span style={{ fontSize: 20, flexShrink: 0 }}>⚠️</span>
+            <span style={{ color: '#b91c1c', fontWeight: 700, fontSize: 14 }}>{nsfwToast}</span>
+          </div>
+        </>
+      )}
     </div>
   );
 }
