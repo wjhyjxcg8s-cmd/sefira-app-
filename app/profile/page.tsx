@@ -429,6 +429,15 @@ const translations = {
   },
 };
 
+const cropTranslations = {
+  tr: { title: "Profil Fotoğrafı", save: "Kaydet", cancel: "Vazgeç" },
+  en: { title: "Profile Photo", save: "Save", cancel: "Cancel" },
+  fa: { title: "عکس پروفایل", save: "ذخیره", cancel: "انصراف" },
+  ar: { title: "صورة الملف الشخصي", save: "حفظ", cancel: "إلغاء" },
+  de: { title: "Profilfoto", save: "Speichern", cancel: "Abbrechen" },
+  ru: { title: "Фото профиля", save: "Сохранить", cancel: "Отмена" },
+};
+
 export default function ProfilePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -981,7 +990,7 @@ export default function ProfilePage() {
         <div className="fixed inset-0 z-[250] flex flex-col items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col">
             <div className="p-4 border-b border-stone-100">
-              <p className="text-stone-800 font-bold text-sm text-center">{t.profilePhoto}</p>
+              <p className="text-stone-800 font-bold text-sm text-center">{cropTranslations[lang].title}</p>
             </div>
             <div className="p-4 flex items-center justify-center bg-stone-50">
               {imgSrc && (
@@ -1009,14 +1018,14 @@ export default function ProfilePage() {
                 onClick={() => { setShowCropModal(false); setImgSrc(""); }}
                 className="flex-1 py-3 rounded-xl border-2 border-stone-200 text-stone-600 text-sm font-bold hover:bg-stone-50 transition-all active:scale-95"
               >
-                Vazgeç
+                {cropTranslations[lang].cancel}
               </button>
               <button
                 onClick={handleCropSave}
                 disabled={saving || !completedCrop}
                 className="flex-1 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-bold shadow-md shadow-orange-500/25 hover:opacity-90 transition-all active:scale-95 disabled:opacity-60"
               >
-                {saving ? t.saving : "Kaydet"}
+                {saving ? t.saving : cropTranslations[lang].save}
               </button>
             </div>
           </div>
