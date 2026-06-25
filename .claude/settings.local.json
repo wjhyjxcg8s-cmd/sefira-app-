@@ -73,7 +73,8 @@
     ],
     "additionalDirectories": [
       "e:\\sefıra-web\\sefira-app\\app\\api\\admin\\channels",
-      "e:\\sefıra-web\\sefira-app\\app\\api\\messages"
+      "e:\\sefıra-web\\sefira-app\\app\\api\\messages",
+      "e:\\sefıra-web\\sefira-app\\app"
     ]
   }
 }

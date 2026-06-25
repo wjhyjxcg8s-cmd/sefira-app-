@@ -2221,13 +2221,33 @@ export default function Home() {
                 }
               `}</style>
 
+              {/* Search */}
+              <motion.button
+                whileHover={{ x: 4 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => { setProfileMenuOpen(false); router.push("/search"); }}
+                className="drawer-item w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-150 group hover:bg-gray-50 active:scale-[0.97] active:bg-gray-100"
+                style={{ animationDelay: '0ms' }}
+              >
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-violet-600 to-purple-500">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                </div>
+                <span className="flex-1 text-left font-semibold text-gray-800 text-[15px] group-hover:text-orange-700 transition-colors">
+                  {lang === "tr" ? "Arama" : lang === "fa" ? "جستجو" : lang === "ar" ? "بحث" : lang === "de" ? "Suche" : lang === "ru" ? "Поиск" : "Search"}
+                </span>
+                <span className="text-gray-300 group-hover:text-orange-400 text-lg transition-transform duration-150 group-active:translate-x-1">›</span>
+              </motion.button>
+
               {/* Edit Profile */}
               <motion.button
                 whileHover={{ x: 4 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => { setProfileMenuOpen(false); router.push("/profile"); }}
                 className="drawer-item w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-150 group hover:bg-gray-50 active:scale-[0.97] active:bg-gray-100"
-                style={{ animationDelay: '0ms' }}
+                style={{ animationDelay: '40ms' }}
               >
                 <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 bg-gradient-to-br from-violet-400 to-purple-500">
                   <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
