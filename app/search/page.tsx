@@ -142,39 +142,41 @@ export default function SearchPage() {
 
     const timeout = setTimeout(async () => {
       const q = query.trim();
-      const tasks: Promise<void>[] = [];
 
       if (filter === "all" || filter === "listings") {
-        tasks.push(
+        const [{ data: byTitle }, { data: byCity }] = await Promise.all([
           supabase
             .from("listings")
             .select("id, title, city, price, listing_type, photos")
-            .or(`title.ilike.%${q}%,city.ilike.%${q}%`)
-            .limit(10)
-            .then(({ data }) => {
-              setListings((data as Listing[]) ?? []);
-            })
-        );
+            .ilike("title", `%${q}%`)
+            .limit(10),
+          supabase
+            .from("listings")
+            .select("id, title, city, price, listing_type, photos")
+            .ilike("city", `%${q}%`)
+            .limit(10),
+        ]);
+        const seen = new Set();
+        const listingResults = [...(byTitle || []), ...(byCity || [])].filter((item) => {
+          if (seen.has(item.id)) return false;
+          seen.add(item.id);
+          return true;
+        });
+        setListings(listingResults as Listing[]);
       } else {
         setListings([]);
       }
 
       if (filter === "all" || filter === "users") {
-        tasks.push(
-          supabase
-            .from("profiles")
-            .select("user_id, display_name, avatar_url, country")
-            .ilike("display_name", `%${q}%`)
-            .limit(8)
-            .then(({ data }) => {
-              setUsers((data as Profile[]) ?? []);
-            })
-        );
+        const { data } = await supabase
+          .from("profiles")
+          .select("user_id, display_name, avatar_url, country")
+          .ilike("display_name", `%${q}%`)
+          .limit(8);
+        setUsers((data as Profile[]) ?? []);
       } else {
         setUsers([]);
       }
-
-      await Promise.all(tasks);
       setLoading(false);
       setSearched(true);
     }, 400);
