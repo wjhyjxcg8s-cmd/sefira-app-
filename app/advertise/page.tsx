@@ -151,30 +151,36 @@ export default function AdvertisePage() {
         </p>
 
         {/* Badge */}
-        <span
-          style={{
-            display: "inline-block",
-            background: "linear-gradient(135deg, #f59e0b, #ef4444)",
-            color: "white",
-            fontWeight: 600,
-            fontSize: 14,
-            borderRadius: 9999,
-            padding: "8px 24px",
-          }}
-        >
-          {c.badge}
-        </span>
+        <div className="mt-8 flex flex-col items-center gap-3">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-rose-500 rounded-full blur-md opacity-40 animate-pulse" />
+            <div className="relative px-8 py-3 rounded-full bg-gradient-to-r from-orange-500 to-rose-500 shadow-lg">
+              <span className="text-white font-bold text-sm tracking-widest uppercase">{c.badge}</span>
+            </div>
+          </div>
+        </div>
 
         {/* Back to Home */}
         <button
           onClick={() => router.push("/")}
-          className={`mt-6 flex items-center gap-2 text-gray-400 hover:text-gray-600 transition-colors duration-200 text-sm font-medium group`}
+          className="mt-8 relative group"
           style={{ background: "none", border: "none", cursor: "pointer" }}
         >
-          <span className={`text-lg transition-transform duration-200 ${isRtl ? "group-hover:translate-x-1" : "group-hover:-translate-x-1"}`}>
-            {isRtl ? "→" : "←"}
-          </span>
-          <span>{c.homeLabel}</span>
+          <div className="flex items-center gap-3 px-8 py-4 rounded-2xl border-2 border-gray-100 bg-white shadow-lg hover:shadow-xl hover:border-orange-200 transition-all duration-300 hover:-translate-y-0.5">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-md flex-shrink-0">
+              <svg className="w-4 h-4 text-white" style={isRtl ? { transform: "rotate(180deg)" } : {}} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+              </svg>
+            </div>
+            <span className="text-gray-700 font-semibold text-sm tracking-wide group-hover:text-orange-500 transition-colors duration-200">
+              {c.homeLabel}
+            </span>
+            <div className="ml-1 opacity-40 group-hover:opacity-70 transition-opacity duration-200">
+              <svg className="w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+              </svg>
+            </div>
+          </div>
         </button>
       </div>
 
