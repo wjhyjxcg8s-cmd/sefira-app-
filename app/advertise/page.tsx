@@ -8,31 +8,37 @@ const content = {
     title: "Sefira'da Hedefli Reklamcılık",
     description: "Yakında ilanlarınızı hedef kitlenize gösterebileceksiniz. Bu özellik çok yakında aktif olacak — bizi takip edin!",
     badge: "Çok Yakında",
+    homeLabel: "Ana Sayfaya Dön",
   },
   en: {
     title: "Targeted Advertising on Sefira",
     description: "Soon you'll be able to show your ads to exactly the right users. This feature is coming — stay tuned!",
     badge: "Coming Soon",
+    homeLabel: "Back to Home",
   },
   fa: {
     title: "تبلیغات هدفمند در سفیرا",
     description: "به زودی می‌توانید تبلیغات خود را به کاربران مورد نظر نشان دهید. این قابلیت برای شما فعال خواهد شد — منتظر باشید!",
     badge: "به زودی",
+    homeLabel: "بازگشت به صفحه اصلی",
   },
   ar: {
     title: "الإعلانات المستهدفة على سفيرا",
     description: "قريباً ستتمكن من عرض إعلاناتك للمستخدمين المناسبين. هذه الميزة ستكون متاحة قريباً — ترقبوا!",
     badge: "قريباً",
+    homeLabel: "العودة إلى الصفحة الرئيسية",
   },
   de: {
     title: "Gezielte Werbung auf Sefira",
     description: "Bald kannst du deine Anzeigen genau den richtigen Nutzern zeigen. Diese Funktion kommt bald — bleib dran!",
     badge: "Demnächst",
+    homeLabel: "Zurück zur Startseite",
   },
   ru: {
     title: "Целевая реклама на Sefira",
     description: "Скоро вы сможете показывать свою рекламу нужным пользователям. Эта функция скоро будет доступна — следите за обновлениями!",
     badge: "Скоро",
+    homeLabel: "На главную",
   },
 };
 
@@ -158,6 +164,18 @@ export default function AdvertisePage() {
         >
           {c.badge}
         </span>
+
+        {/* Back to Home */}
+        <button
+          onClick={() => router.push("/")}
+          className={`mt-6 flex items-center gap-2 text-gray-400 hover:text-gray-600 transition-colors duration-200 text-sm font-medium group`}
+          style={{ background: "none", border: "none", cursor: "pointer" }}
+        >
+          <span className={`text-lg transition-transform duration-200 ${isRtl ? "group-hover:translate-x-1" : "group-hover:-translate-x-1"}`}>
+            {isRtl ? "→" : "←"}
+          </span>
+          <span>{c.homeLabel}</span>
+        </button>
       </div>
 
       {/* Decorative dots */}
