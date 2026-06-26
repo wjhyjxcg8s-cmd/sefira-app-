@@ -69,7 +69,8 @@
       "Bash(grep -E \"\\\\.\\(tsx|ts\\)$\")",
       "Bash(node -e \"require\\('form-data'\\)\")",
       "Bash(node -e \"require\\('node-fetch'\\)\")",
-      "Bash(xargs grep -l \"admin_messages\")"
+      "Bash(xargs grep -l \"admin_messages\")",
+      "PowerShell(head -30)"
     ],
     "additionalDirectories": [
       "e:\\sefıra-web\\sefira-app\\app\\api\\admin\\channels",
