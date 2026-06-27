@@ -1,15 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
-
-const supabaseAdmin = createClient(
-  "https://ceetzophaybywfuhezhv.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlZXR6b3BoYXlieXdmdWhlemh2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTM1Nzg1NSwiZXhwIjoyMDk0OTMzODU1fQ.Jw1bDN7wqxdqj-OinqK4ll7mV5ka7fT6T-9jORs4x_4",
-  { auth: { autoRefreshToken: false, persistSession: false } }
-);
 
 const ADMIN_EMAIL = "supportsefira@gmail.com";
 
@@ -62,37 +55,10 @@ export default function ReportedMessagesPage() {
 
   const fetchReports = async () => {
     setPageLoading(true);
-    const { data, error } = await supabaseAdmin
-      .from("reported_messages")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error || !data) { setPageLoading(false); return; }
-
-    const userIds = Array.from(new Set([
-      ...data.map((r: ReportedMsg) => r.reporter_id),
-      ...data.map((r: ReportedMsg) => r.reported_user_id),
-    ].filter(Boolean)));
-
-    const pMap: Record<string, { display_name: string | null }> = {};
-    if (userIds.length > 0) {
-      const { data: profiles } = await supabaseAdmin
-        .from("profiles")
-        .select("user_id, display_name")
-        .in("user_id", userIds);
-      if (profiles) {
-        profiles.forEach((p: { user_id: string; display_name: string | null }) => {
-          pMap[p.user_id] = { display_name: p.display_name };
-        });
-      }
-    }
-
-    setProfileMap(pMap);
-    setReports(data.map((r: ReportedMsg) => ({
-      ...r,
-      reporter_profile: pMap[r.reporter_id] ?? null,
-      reported_profile: pMap[r.reported_user_id] ?? null,
-    })));
+    const res = await fetch('/api/admin/reports-list');
+    const { reports, profileMap } = await res.json();
+    setReports(reports);
+    setProfileMap(profileMap);
     setPageLoading(false);
   };
 
@@ -103,7 +69,11 @@ export default function ReportedMessagesPage() {
 
   const markReviewed = async (id: string) => {
     setMarkingId(id);
-    await supabaseAdmin.from("reported_messages").update({ status: "reviewed" }).eq("id", id);
+    await fetch('/api/admin/reports-update', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
     setReports((prev) => prev.map((r) => r.id === id ? { ...r, status: "reviewed" } : r));
     setMarkingId(null);
   };
