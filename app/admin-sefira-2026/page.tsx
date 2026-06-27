@@ -2311,6 +2311,7 @@ interface ReportedMsg {
 }
 
 function ReportedMessagesSection() {
+  const router = useRouter();
   const [reports, setReports] = useState<ReportedMsg[]>([]);
   const [loading, setLoading] = useState(true);
   const [markingId, setMarkingId] = useState<string | null>(null);
@@ -2420,14 +2421,28 @@ function ReportedMessagesSection() {
                     <p className="text-xs text-gray-400 font-semibold uppercase mb-1">Mesaj</p>
                     <p className="break-words">{r.message_content || "—"}</p>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                     <div>
                       <span className="font-semibold text-gray-400 uppercase">Şikayetçi: </span>
-                      {r.reporter_profile?.display_name ?? r.reporter_id.slice(0, 8)}
+                      <button
+                        type="button"
+                        onClick={() => { const id = r.reporter_id; if (id) router.push(`/admin-sefira-2026/user/${id}`); }}
+                        className="font-bold underline underline-offset-2 cursor-pointer"
+                        style={{ color: "#2563eb", background: "none", border: "none", padding: 0 }}
+                      >
+                        {r.reporter_profile?.display_name || r.reporter_id || "Bilinmiyor"}
+                      </button>
                     </div>
                     <div>
                       <span className="font-semibold text-gray-400 uppercase">Şikayet edilen: </span>
-                      {r.reported_profile?.display_name ?? r.reported_user_id.slice(0, 8)}
+                      <button
+                        type="button"
+                        onClick={() => { const id = r.reported_user_id; if (id) router.push(`/admin-sefira-2026/user/${id}`); }}
+                        className="font-bold underline underline-offset-2 cursor-pointer"
+                        style={{ color: "#dc2626", background: "none", border: "none", padding: 0 }}
+                      >
+                        {r.reported_profile?.display_name || r.reported_user_id || "Bilinmiyor"}
+                      </button>
                     </div>
                   </div>
                 </div>
