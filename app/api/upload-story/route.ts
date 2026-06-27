@@ -13,22 +13,30 @@ export async function POST(req: NextRequest) {
   const file = formData.get('file') as File | null;
 
   if (!file) {
-    return NextResponse.json({ error: 'Missing file' }, { status: 400 });
+    return NextResponse.json({ error: 'No file' }, { status: 400 });
   }
 
-  const buffer = Buffer.from(await file.arrayBuffer());
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
 
-  const compressed = await sharp(buffer)
-    .rotate()
-    .resize(1080, 1920, { fit: 'inside', withoutEnlargement: true })
-    .webp({ quality: 82 })
-    .toBuffer();
+  let compressed: Buffer;
+  try {
+    compressed = await sharp(buffer)
+      .flatten({ background: { r: 255, g: 255, b: 255 } })
+      .resize(1080, 1920, { fit: 'inside', withoutEnlargement: true })
+      .webp({ quality: 82 })
+      .toBuffer();
+  } catch (err) {
+    console.error('sharp error:', err);
+    return NextResponse.json({ error: 'Image processing failed' }, { status: 500 });
+  }
 
   const fileName = `story_${Date.now()}.webp`;
+  const contentType = 'image/webp';
 
   const { error } = await supabase.storage
     .from('stories')
-    .upload(fileName, compressed, { contentType: 'image/webp', upsert: false });
+    .upload(fileName, compressed, { contentType, upsert: true });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
