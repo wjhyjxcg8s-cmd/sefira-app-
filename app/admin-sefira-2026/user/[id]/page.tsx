@@ -60,6 +60,19 @@ interface AdminMessage {
   created_at: string;
 }
 
+interface SentMessage {
+  id: string;
+  content: string | null;
+  created_at: string;
+  conversation_id: string | null;
+}
+
+interface Conversation {
+  id: string;
+  user1_id: string;
+  user2_id: string;
+}
+
 function Field({ label, value }: { label: string; value: string | null | undefined }) {
   return (
     <div>
@@ -93,6 +106,8 @@ export default function UserDetailPage() {
 
   const [userMessages, setUserMessages] = useState<UserMessage[]>([]);
   const [adminMessages, setAdminMessages] = useState<AdminMessage[]>([]);
+  const [sentMessages, setSentMessages] = useState<SentMessage[]>([]);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
 
   const [deletingListing, setDeletingListing] = useState<string | null>(null);
   const [deletingReview, setDeletingReview] = useState<string | null>(null);
@@ -142,6 +157,23 @@ export default function UserDetailPage() {
       if (authRes.data?.user?.email) setEmail(authRes.data.user.email);
       if (msgsRes.data) setUserMessages(msgsRes.data as UserMessage[]);
       if (adminMsgsRes.data) setAdminMessages(adminMsgsRes.data as AdminMessage[]);
+
+      const [sentMsgsRes, convsRes] = await Promise.all([
+        supabaseAdmin
+          .from("user_messages")
+          .select("id, content, created_at, conversation_id")
+          .eq("sender_id", userId)
+          .order("created_at", { ascending: false })
+          .limit(50),
+        supabaseAdmin
+          .from("conversations")
+          .select("id, user1_id, user2_id")
+          .or(`user1_id.eq.${userId},user2_id.eq.${userId}`)
+          .order("updated_at", { ascending: false })
+          .limit(20),
+      ]);
+      if (sentMsgsRes.data) setSentMessages(sentMsgsRes.data as SentMessage[]);
+      if (convsRes.data) setConversations(convsRes.data as Conversation[]);
 
       setPageLoading(false);
     };
@@ -580,6 +612,74 @@ export default function UserDetailPage() {
                       style={{ backgroundColor: "#ffedd5", color: "#F97316" }}
                     >
                       to admin
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* ── Tüm Mesajlar (user_messages) ─────────────────────────────────── */}
+        <div
+          className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
+          style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
+        >
+          <div className="px-5 sm:px-6 py-4 border-b border-gray-100 flex items-center gap-2">
+            <h2 className="text-base font-bold text-gray-800">💬 Tüm Mesajlar</h2>
+            <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-gray-100 text-gray-500">
+              {sentMessages.length}
+            </span>
+          </div>
+          {sentMessages.length === 0 ? (
+            <p className="px-5 sm:px-6 py-8 text-sm text-gray-400 text-center">Bu kullanıcının mesajı yok</p>
+          ) : (
+            <div className="px-5 sm:px-6 py-4 space-y-2">
+              {sentMessages.map((m) => {
+                const body = m.content ?? "";
+                return (
+                  <div key={m.id} className="bg-gray-50 rounded-lg p-3">
+                    <p className="text-sm text-gray-700">
+                      {body ? body.slice(0, 100) + (body.length > 100 ? "…" : "") : <span className="text-gray-400 italic">—</span>}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">{formatDate(m.created_at)}</p>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* ── Konuşmalar (conversations) ───────────────────────────────────── */}
+        <div
+          className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
+          style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
+        >
+          <div className="px-5 sm:px-6 py-4 border-b border-gray-100 flex items-center gap-2">
+            <h2 className="text-base font-bold text-gray-800">🗣 Konuşmalar</h2>
+            <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-gray-100 text-gray-500">
+              {conversations.length}
+            </span>
+          </div>
+          {conversations.length === 0 ? (
+            <p className="px-5 sm:px-6 py-8 text-sm text-gray-400 text-center">Konuşma bulunamadı</p>
+          ) : (
+            <div className="divide-y divide-gray-50">
+              {conversations.map((c) => {
+                const otherId = c.user1_id === userId ? c.user2_id : c.user1_id;
+                return (
+                  <div key={c.id} className="px-5 sm:px-6 py-3 flex items-center justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-gray-400 font-mono truncate">Konuşma: {c.id.slice(0, 16)}…</p>
+                      <button
+                        onClick={() => router.push(`/admin-sefira-2026/user/${otherId}`)}
+                        className="text-blue-600 hover:text-blue-800 hover:underline text-xs font-semibold transition-colors font-mono"
+                      >
+                        Karşı taraf: {otherId.slice(0, 16)}…
+                      </button>
+                    </div>
+                    <span className="shrink-0 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">
+                      konuşma
                     </span>
                   </div>
                 );

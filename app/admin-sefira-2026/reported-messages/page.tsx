@@ -208,17 +208,23 @@ export default function ReportedMessagesPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="bg-blue-50 rounded-xl px-3 py-2.5 text-xs">
                         <p className="font-bold text-blue-400 uppercase mb-0.5">Şikayetçi</p>
-                        <p className="text-gray-700 font-semibold">
-                          {r.reporter_profile?.display_name ?? "—"}
-                        </p>
-                        <p className="text-gray-400 font-mono">{r.reporter_id.slice(0, 12)}…</p>
+                        <button
+                          onClick={() => router.push(`/admin-sefira-2026/user/${r.reporter_id}`)}
+                          className="text-blue-600 hover:text-blue-800 hover:underline font-semibold cursor-pointer transition-colors text-left"
+                        >
+                          {r.reporter_profile?.display_name ?? r.reporter_id}
+                        </button>
+                        <p className="text-gray-400 font-mono mt-0.5">{r.reporter_id.slice(0, 12)}…</p>
                       </div>
                       <div className="bg-red-50 rounded-xl px-3 py-2.5 text-xs">
                         <p className="font-bold text-red-400 uppercase mb-0.5">Şikayet Edilen</p>
-                        <p className="text-gray-700 font-semibold">
-                          {r.reported_profile?.display_name ?? "—"}
-                        </p>
-                        <p className="text-gray-400 font-mono">{r.reported_user_id.slice(0, 12)}…</p>
+                        <button
+                          onClick={() => router.push(`/admin-sefira-2026/user/${r.reported_user_id}`)}
+                          className="text-red-600 hover:text-red-800 hover:underline font-semibold cursor-pointer transition-colors text-left"
+                        >
+                          {r.reported_profile?.display_name ?? r.reported_user_id}
+                        </button>
+                        <p className="text-gray-400 font-mono mt-0.5">{r.reported_user_id.slice(0, 12)}…</p>
                       </div>
                     </div>
                   </div>
