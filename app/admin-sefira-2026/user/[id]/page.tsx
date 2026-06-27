@@ -3,13 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
-import { createClient } from "@supabase/supabase-js";
-
-const supabaseAdmin = createClient(
-  "https://ceetzophaybywfuhezhv.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlZXR6b3BoYXlieXdmdWhlemh2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTM1Nzg1NSwiZXhwIjoyMDk0OTMzODU1fQ.Jw1bDN7wqxdqj-OinqK4ll7mV5ka7fT6T-9jORs4x_4",
-  { auth: { autoRefreshToken: false, persistSession: false } }
-);
 
 const ADMIN_EMAIL = "supportsefira@gmail.com";
 
@@ -101,57 +94,21 @@ export default function UserDetailPage() {
 
     const fetchAll = async () => {
       setPageLoading(true);
-
-      console.log("userId:", userId);
-
-      const [profileRes, listingsRes, reviewsRes, authRes] = await Promise.all([
-        supabaseAdmin.from("profiles").select("*").eq("user_id", userId).single(),
-        supabaseAdmin.from("listings").select("*").eq("user_id", userId).order("created_at", { ascending: false }),
-        supabaseAdmin.from("reviews").select("*").eq("reviewer_id", userId).order("created_at", { ascending: false }),
-        supabaseAdmin.auth.admin.getUserById(userId),
-      ]);
-
-      if (profileRes.data) {
-        const p = profileRes.data as Profile;
+      const res = await fetch(`/api/admin/user-detail?userId=${userId}`);
+      const data = await res.json();
+      if (data.profile) {
+        const p = data.profile as Profile;
         setProfile(p);
         setEditName(p.display_name ?? "");
         setEditGender(p.gender ?? "");
         setEditBirthDate(p.birth_date ?? "");
         setEditCountry(p.country ?? "");
       }
-      if (listingsRes.data) setListings(listingsRes.data as Listing[]);
-      if (reviewsRes.data) setReviews(reviewsRes.data as Review[]);
-      if (authRes.data?.user?.email) setEmail(authRes.data.user.email);
-
-      const convsRes = await supabaseAdmin
-        .from("conversations")
-        .select("id, user1_id, user2_id, updated_at")
-        .or(`user1_id.eq.${userId},user2_id.eq.${userId}`)
-        .order("updated_at", { ascending: false })
-        .limit(20);
-
-      if (convsRes.data) {
-        setConversations(convsRes.data as Conversation[]);
-        const otherIds = Array.from(new Set(
-          convsRes.data
-            .map((c: Conversation) => c.user1_id === userId ? c.user2_id : c.user1_id)
-            .filter(Boolean)
-        ));
-        if (otherIds.length > 0) {
-          const { data: otherProfs } = await supabaseAdmin
-            .from("profiles")
-            .select("user_id, display_name, avatar_url")
-            .in("user_id", otherIds);
-          if (otherProfs) {
-            setOtherProfileMap(
-              Object.fromEntries(
-                otherProfs.map((p: { user_id: string; display_name: string | null; avatar_url: string | null }) => [p.user_id, p])
-              )
-            );
-          }
-        }
-      }
-
+      setListings(data.listings);
+      setReviews(data.reviews);
+      if (data.authUser?.email) setEmail(data.authUser.email);
+      setConversations(data.conversations);
+      setOtherProfileMap(Object.fromEntries((data.otherProfiles || []).map((p: { user_id: string; display_name: string | null; avatar_url: string | null }) => [p.user_id, p])));
       setPageLoading(false);
     };
 
@@ -188,8 +145,12 @@ export default function UserDetailPage() {
   const handleDeleteListing = async (id: string) => {
     if (!confirm("Bu ilanı silmek istiyor musunuz?")) return;
     setDeletingListing(id);
-    const { error } = await supabaseAdmin.from("listings").delete().eq("id", id);
-    if (!error) setListings((prev) => prev.filter((l) => l.id !== id));
+    await fetch('/api/admin/user-delete-listing', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+    setListings((prev) => prev.filter((l) => l.id !== id));
     setDeletingListing(null);
   };
 
@@ -211,21 +172,26 @@ export default function UserDetailPage() {
 
   const loadConversation = async (convId: string) => {
     if (convMessages[convId]) { setOpenConvId(convId); return; }
-    const { data } = await supabaseAdmin
-      .from("user_messages")
-      .select("id, content, sender_id, created_at")
-      .eq("conversation_id", convId)
-      .order("created_at", { ascending: true });
-    setConvMessages((prev) => ({ ...prev, [convId]: data || [] }));
+    const res = await fetch(`/api/admin/user-messages?convId=${convId}`);
+    const { messages } = await res.json();
+    setConvMessages((prev) => ({ ...prev, [convId]: messages || [] }));
     setOpenConvId(convId);
   };
 
   const handleDeleteAccount = async () => {
     setDeletingAccount(true);
     setDeleteAccountMsg(null);
-    const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
-    if (error) {
-      setDeleteAccountMsg("Error: " + error.message);
+    const res = await fetch('/api/admin/delete-user', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session?.access_token}`,
+      },
+      body: JSON.stringify({ userId }),
+    });
+    const json = await res.json();
+    if (json.error) {
+      setDeleteAccountMsg("Error: " + json.error);
       setDeletingAccount(false);
     } else {
       setDeleteAccountMsg("Account deleted.");
