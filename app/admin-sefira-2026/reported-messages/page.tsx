@@ -209,21 +209,25 @@ export default function ReportedMessagesPage() {
 
                     <div className="flex flex-col gap-1">
                       <div>
-                        <span className="text-xs text-gray-500">ŞIKAYETÇI: </span>
+                        <span className="text-xs text-gray-500 font-medium">ŞIKAYETÇI: </span>
                         <button
-                          onClick={() => router.push(`/admin-sefira-2026/user/${r.reporter_id}`)}
-                          className="text-xs text-blue-600 hover:text-blue-800 underline font-semibold cursor-pointer"
+                          type="button"
+                          onClick={() => { const id = r.reporter_id; if (id) router.push(`/admin-sefira-2026/user/${id}`); }}
+                          className="text-sm font-bold underline underline-offset-2 cursor-pointer"
+                          style={{ color: "#2563eb", background: "none", border: "none", padding: 0 }}
                         >
-                          {profileMap[r.reporter_id]?.display_name || r.reporter_id}
+                          {r.reporter_profile?.display_name || r.reporter_id || "Bilinmiyor"}
                         </button>
                       </div>
                       <div>
-                        <span className="text-xs text-gray-500">ŞIKAYET EDİLEN: </span>
+                        <span className="text-xs text-gray-500 font-medium">ŞIKAYET EDİLEN: </span>
                         <button
-                          onClick={() => router.push(`/admin-sefira-2026/user/${r.reported_user_id}`)}
-                          className="text-xs text-red-600 hover:text-red-800 underline font-semibold cursor-pointer"
+                          type="button"
+                          onClick={() => { const id = r.reported_user_id; if (id) router.push(`/admin-sefira-2026/user/${id}`); }}
+                          className="text-sm font-bold underline underline-offset-2 cursor-pointer"
+                          style={{ color: "#dc2626", background: "none", border: "none", padding: 0 }}
                         >
-                          {profileMap[r.reported_user_id]?.display_name || r.reported_user_id}
+                          {r.reported_profile?.display_name || r.reported_user_id || "Bilinmiyor"}
                         </button>
                       </div>
                     </div>
