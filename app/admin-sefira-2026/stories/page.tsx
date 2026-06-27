@@ -82,23 +82,20 @@ export default function StoriesPage() {
     setError(null);
     setSuccess(null);
 
-    const ext = selectedFile.name.split(".").pop() ?? "jpg";
-    const fileName = `story-${Date.now()}.${ext}`;
+    const form = new FormData();
+    form.append("file", selectedFile);
 
-    const { error: uploadError } = await supabaseAdmin.storage
-      .from("stories")
-      .upload(fileName, selectedFile, { contentType: selectedFile.type, upsert: false });
+    const uploadRes = await fetch("/api/upload-story", { method: "POST", body: form });
+    const uploadJson = await uploadRes.json();
 
-    if (uploadError) {
-      setError(`Yükleme hatası: ${uploadError.message}`);
+    if (!uploadRes.ok || !uploadJson.url) {
+      setError(`Yükleme hatası: ${uploadJson.error ?? "Bilinmeyen hata"}`);
       setUploading(false);
       return;
     }
 
-    const { data: urlData } = supabaseAdmin.storage.from("stories").getPublicUrl(fileName);
-
     const { error: insertError } = await supabaseAdmin.from("weekly_stories").insert([{
-      image_url: urlData.publicUrl,
+      image_url: uploadJson.url,
       caption: caption.trim() || null,
       week_label: weekLabel.trim() || "Bu Hafta",
     }]);
