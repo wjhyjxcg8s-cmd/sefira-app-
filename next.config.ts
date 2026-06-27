@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
  images: {
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 60,
     domains: ["images.unsplash.com", "images.pexels.com", "randomuser.me", "ceetzophaybywfuhezhv.supabase.co"],
     qualities: [75, 85],
     remotePatterns: [
