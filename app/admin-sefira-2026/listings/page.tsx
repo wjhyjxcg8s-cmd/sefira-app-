@@ -232,7 +232,7 @@ export default function AdminListingsPage() {
                     <div className="flex flex-col gap-1.5 shrink-0">
                       <button
                         type="button"
-                        onClick={() => window.open(`/listings/${l.id}?from=admin`, '_blank')}
+                        onClick={() => router.push(`/listings/${l.id}?from=admin`)}
                         style={{ cursor: 'pointer' }}
                         className="px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded-lg border border-blue-200 hover:bg-blue-100"
                       >
