@@ -231,12 +231,14 @@ export default function AdminListingsPage() {
                     {/* Actions */}
                     <div className="flex flex-col gap-1.5 shrink-0">
                       <button
-                        type="button"
-                        onClick={() => router.push(`/listings/${l.id}?from=admin`)}
-                        style={{ cursor: 'pointer' }}
-                        className="px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded-lg border border-blue-200 hover:bg-blue-100"
+                        onClick={() => window.open(`/listings/${l.id}`, '_blank')}
+                        className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors"
+                        style={{ backgroundColor: "#eff6ff", color: "#2563eb" }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#dbeafe")}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#eff6ff")}
+                        title="Open in new tab"
                       >
-                        Görüntüle
+                        👁 Görüntüle
                       </button>
                       {l.is_deleted ? (
                         <button
