@@ -3,14 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
-import { createClient } from "@supabase/supabase-js";
 import Image from "next/image";
-
-const supabaseAdmin = createClient(
-  "https://ceetzophaybywfuhezhv.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlZXR6b3BoYXlieXdmdWhlemh2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTM1Nzg1NSwiZXhwIjoyMDk0OTMzODU1fQ.Jw1bDN7wqxdqj-OinqK4ll7mV5ka7fT6T-9jORs4x_4",
-  { auth: { autoRefreshToken: false, persistSession: false } }
-);
 
 const ADMIN_EMAIL = "supportsefira@gmail.com";
 
@@ -62,11 +55,9 @@ export default function StoriesPage() {
 
   const fetchStories = async () => {
     setLoading(true);
-    const { data, error: fetchErr } = await supabaseAdmin
-      .from("weekly_stories")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (!fetchErr && data) setStories(data);
+    const res = await fetch('/api/admin/stories-list');
+    const { stories } = await res.json();
+    setStories(stories);
     setLoading(false);
   };
 
@@ -84,24 +75,14 @@ export default function StoriesPage() {
 
     const form = new FormData();
     form.append("file", selectedFile);
+    form.append("caption", caption.trim());
+    form.append("week_label", weekLabel.trim() || "Bu Hafta");
 
     const uploadRes = await fetch("/api/upload-story", { method: "POST", body: form });
     const uploadJson = await uploadRes.json();
 
-    if (!uploadRes.ok || !uploadJson.url) {
+    if (!uploadRes.ok || uploadJson.error) {
       setError(`Yükleme hatası: ${uploadJson.error ?? "Bilinmeyen hata"}`);
-      setUploading(false);
-      return;
-    }
-
-    const { error: insertError } = await supabaseAdmin.from("weekly_stories").insert([{
-      image_url: uploadJson.url,
-      caption: caption.trim() || null,
-      week_label: weekLabel.trim() || "Bu Hafta",
-    }]);
-
-    if (insertError) {
-      setError(`Kayıt hatası: ${insertError.message}`);
       setUploading(false);
       return;
     }
@@ -119,9 +100,12 @@ export default function StoriesPage() {
   const handleDelete = async (story: WeeklyStory) => {
     if (!confirm("Bu hikayeyi silmek istediğinize emin misiniz?")) return;
     setDeleting(story.id);
-    const fileName = story.image_url.split("/").pop();
-    if (fileName) await supabaseAdmin.storage.from("stories").remove([fileName]);
-    await supabaseAdmin.from("weekly_stories").delete().eq("id", story.id);
+    const filename = story.image_url.split('/').pop();
+    await fetch('/api/admin/stories-delete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: story.id, filename }),
+    });
     setStories((prev) => prev.filter((s) => s.id !== story.id));
     setDeleting(null);
   };

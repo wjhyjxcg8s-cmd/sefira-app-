@@ -43,5 +43,20 @@ export async function POST(req: NextRequest) {
   }
 
   const { data } = supabase.storage.from('stories').getPublicUrl(fileName);
-  return NextResponse.json({ url: data.publicUrl });
+  const publicUrl = data.publicUrl;
+
+  const caption = formData.get('caption') as string | null;
+  const weekLabel = (formData.get('week_label') as string | null) || 'Bu Hafta';
+
+  const { error: insertError } = await supabase.from('weekly_stories').insert([{
+    image_url: publicUrl,
+    caption: caption || null,
+    week_label: weekLabel,
+  }]);
+
+  if (insertError) {
+    return NextResponse.json({ error: insertError.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ url: publicUrl });
 }
