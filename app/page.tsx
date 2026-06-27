@@ -3095,7 +3095,7 @@ export default function Home() {
           </div>
         </div>
         <div className="grid grid-cols-3 gap-3">
-          {listings.map((listing) => (
+          {listings.map((listing, idx) => (
             <div
               key={listing.id}
               className="group bg-white border border-stone-200 rounded-2xl overflow-hidden hover:border-orange-200 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/5 hover:-translate-y-1 cursor-pointer hover:ring-1 hover:ring-orange-200"
@@ -3109,6 +3109,7 @@ export default function Home() {
                   sizes="(max-width: 1280px) 33vw, 25vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   quality={80}
+                  {...(idx === 0 ? { priority: true } : { loading: "lazy" })}
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-stone-900/25 via-transparent to-stone-900/30" />
                 <div className={`absolute top-2 left-2 bg-gradient-to-r ${listing.tagColor} text-white text-xs font-bold px-1.5 py-0.5 rounded-full shadow`}>
@@ -3220,7 +3221,7 @@ export default function Home() {
                   >
                     {/* Background image or gradient */}
                     {isHasPlace && thumbnail ? (
-                      <Image src={thumbnail} alt="" fill className="object-cover" />
+                      <Image src={thumbnail} alt="" fill className="object-cover" sizes="(max-width: 768px) 50vw, 33vw" loading="lazy" />
                     ) : !isHasPlace && recAvatarMap[rec.user_id] ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={recAvatarMap[rec.user_id]!} alt="" className="absolute inset-0 w-full h-full object-cover" />
