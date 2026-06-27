@@ -3,14 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
-import { createClient } from "@supabase/supabase-js";
-
-const supabaseAdmin = createClient(
-  "https://ceetzophaybywfuhezhv.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlZXR6b3BoYXlieXdmdWhlemh2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTM1Nzg1NSwiZXhwIjoyMDk0OTMzODU1fQ.Jw1bDN7wqxdqj-OinqK4ll7mV5ka7fT6T-9jORs4x_4",
-  { auth: { autoRefreshToken: false, persistSession: false } }
-);
-
 const ADMIN_EMAIL = "supportsefira@gmail.com";
 
 interface Listing {
@@ -69,18 +61,20 @@ export default function AdminListingsPage() {
 
   async function fetchListings() {
     setDataLoading(true);
-    const { data } = await supabaseAdmin
-      .from("listings")
-      .select("id, city, district, country_code, rent, currency, type, house_type, rooms, photos, user_id, created_at, is_deleted")
-      .order("created_at", { ascending: false });
-    setListings((data as Listing[]) ?? []);
+    const res = await fetch('/api/admin/listings-list');
+    const { listings } = await res.json();
+    setListings(listings);
     setDataLoading(false);
   }
 
   async function handleSoftDelete() {
     if (!deleteTarget) return;
     setActing(deleteTarget.id);
-    await supabaseAdmin.from("listings").update({ is_deleted: true }).eq("id", deleteTarget.id);
+    await fetch('/api/admin/listings-update', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: deleteTarget.id, action: 'hide' }),
+    });
     setListings((prev) => prev.map((l) => l.id === deleteTarget.id ? { ...l, is_deleted: true } : l));
     setDeleteTarget(null);
     setActing(null);
@@ -88,7 +82,11 @@ export default function AdminListingsPage() {
 
   async function handleRestore(id: string) {
     setActing(id);
-    await supabaseAdmin.from("listings").update({ is_deleted: false }).eq("id", id);
+    await fetch('/api/admin/listings-update', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, action: 'restore' }),
+    });
     setListings((prev) => prev.map((l) => l.id === id ? { ...l, is_deleted: false } : l));
     setActing(null);
   }
