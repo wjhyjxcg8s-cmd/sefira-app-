@@ -2,16 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
 import { useAuth } from "@/app/lib/AuthContext";
 
 const ADMIN_EMAIL = "supportsefira@gmail.com";
-
-const supabaseAdmin = createClient(
-  "https://ceetzophaybywfuhezhv.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlZXR6b3BoYXlieXdmdWhlemh2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTM1Nzg1NSwiZXhwIjoyMDk0OTMzODU1fQ.Jw1bDN7wqxdqj-OinqK4ll7mV5ka7fT6T-9jORs4x_4",
-  { auth: { autoRefreshToken: false, persistSession: false } }
-);
 
 interface BannedUser {
   id: string;
@@ -47,12 +40,9 @@ export default function BannedPage() {
 
   const fetchBanned = async () => {
     setPageLoading(true);
-    const { data, error } = await supabaseAdmin
-      .from("banned_emails")
-      .select("*")
-      .order("banned_at", { ascending: false });
-    console.log("Banned list:", data, error);
-    setBannedList(data ?? []);
+    const res = await fetch('/api/admin/banned-list');
+    const { banned } = await res.json();
+    setBannedList(banned);
     setBannedLastUpdated(new Date().toLocaleTimeString('tr-TR'));
     setPageLoading(false);
   };
