@@ -230,14 +230,14 @@ export default function AdminListingsPage() {
 
                     {/* Actions */}
                     <div className="flex flex-col gap-1.5 shrink-0">
-                      <a
-                        href={`/listings/${l.id}?from=admin`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors text-center"
+                      <button
+                        type="button"
+                        onClick={() => window.open(`/listings/${l.id}?from=admin`, '_blank')}
+                        style={{ cursor: 'pointer' }}
+                        className="px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded-lg border border-blue-200 hover:bg-blue-100"
                       >
                         Görüntüle
-                      </a>
+                      </button>
                       {l.is_deleted ? (
                         <button
                           onClick={() => handleRestore(l.id)}
