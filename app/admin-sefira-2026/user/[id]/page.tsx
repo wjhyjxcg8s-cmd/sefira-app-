@@ -40,37 +40,11 @@ interface Review {
   created_at: string;
 }
 
-interface UserMessage {
-  id: string;
-  sender_id?: string | null;
-  receiver_id?: string | null;
-  recipient_id?: string | null;
-  message?: string | null;
-  content?: string | null;
-  created_at: string;
-}
-
-interface AdminMessage {
-  id: string;
-  user_id?: string | null;
-  message?: string | null;
-  sender?: string | null;
-  title?: string | null;
-  is_global?: boolean;
-  created_at: string;
-}
-
-interface SentMessage {
-  id: string;
-  content: string | null;
-  created_at: string;
-  conversation_id: string | null;
-}
-
 interface Conversation {
   id: string;
   user1_id: string;
   user2_id: string;
+  updated_at?: string | null;
 }
 
 function Field({ label, value }: { label: string; value: string | null | undefined }) {
@@ -104,10 +78,10 @@ export default function UserDetailPage() {
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
-  const [userMessages, setUserMessages] = useState<UserMessage[]>([]);
-  const [adminMessages, setAdminMessages] = useState<AdminMessage[]>([]);
-  const [sentMessages, setSentMessages] = useState<SentMessage[]>([]);
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [otherProfileMap, setOtherProfileMap] = useState<Record<string, { display_name: string | null; avatar_url: string | null }>>({});
+  const [openConvId, setOpenConvId] = useState<string | null>(null);
+  const [convMessages, setConvMessages] = useState<Record<string, Array<{ id: string; content: string | null; sender_id: string; created_at: string }>>>({});
 
   const [deletingListing, setDeletingListing] = useState<string | null>(null);
   const [deletingReview, setDeletingReview] = useState<string | null>(null);
@@ -130,19 +104,12 @@ export default function UserDetailPage() {
 
       console.log("userId:", userId);
 
-      const [profileRes, listingsRes, reviewsRes, authRes, msgsRes, adminMsgsRes] = await Promise.all([
+      const [profileRes, listingsRes, reviewsRes, authRes] = await Promise.all([
         supabaseAdmin.from("profiles").select("*").eq("user_id", userId).single(),
         supabaseAdmin.from("listings").select("*").eq("user_id", userId).order("created_at", { ascending: false }),
         supabaseAdmin.from("reviews").select("*").eq("reviewer_id", userId).order("created_at", { ascending: false }),
         supabaseAdmin.auth.admin.getUserById(userId),
-        supabaseAdmin.from("messages").select("*").eq("sender_id", userId).order("created_at", { ascending: false }).limit(20),
-        supabaseAdmin.from("admin_messages").select("*").eq("user_id", userId).order("created_at", { ascending: false }),
       ]);
-
-      console.log("profile:", profileRes.data, "error:", profileRes.error);
-      console.log("auth user:", authRes.data?.user?.email, "error:", authRes.error);
-      console.log("messages:", msgsRes.data?.length, "error:", msgsRes.error);
-      console.log("admin_messages:", adminMsgsRes.data?.length, "error:", adminMsgsRes.error);
 
       if (profileRes.data) {
         const p = profileRes.data as Profile;
@@ -155,25 +122,35 @@ export default function UserDetailPage() {
       if (listingsRes.data) setListings(listingsRes.data as Listing[]);
       if (reviewsRes.data) setReviews(reviewsRes.data as Review[]);
       if (authRes.data?.user?.email) setEmail(authRes.data.user.email);
-      if (msgsRes.data) setUserMessages(msgsRes.data as UserMessage[]);
-      if (adminMsgsRes.data) setAdminMessages(adminMsgsRes.data as AdminMessage[]);
 
-      const [sentMsgsRes, convsRes] = await Promise.all([
-        supabaseAdmin
-          .from("user_messages")
-          .select("id, content, created_at, conversation_id")
-          .eq("sender_id", userId)
-          .order("created_at", { ascending: false })
-          .limit(50),
-        supabaseAdmin
-          .from("conversations")
-          .select("id, user1_id, user2_id")
-          .or(`user1_id.eq.${userId},user2_id.eq.${userId}`)
-          .order("updated_at", { ascending: false })
-          .limit(20),
-      ]);
-      if (sentMsgsRes.data) setSentMessages(sentMsgsRes.data as SentMessage[]);
-      if (convsRes.data) setConversations(convsRes.data as Conversation[]);
+      const convsRes = await supabaseAdmin
+        .from("conversations")
+        .select("id, user1_id, user2_id, updated_at")
+        .or(`user1_id.eq.${userId},user2_id.eq.${userId}`)
+        .order("updated_at", { ascending: false })
+        .limit(20);
+
+      if (convsRes.data) {
+        setConversations(convsRes.data as Conversation[]);
+        const otherIds = Array.from(new Set(
+          convsRes.data
+            .map((c: Conversation) => c.user1_id === userId ? c.user2_id : c.user1_id)
+            .filter(Boolean)
+        ));
+        if (otherIds.length > 0) {
+          const { data: otherProfs } = await supabaseAdmin
+            .from("profiles")
+            .select("user_id, display_name, avatar_url")
+            .in("user_id", otherIds);
+          if (otherProfs) {
+            setOtherProfileMap(
+              Object.fromEntries(
+                otherProfs.map((p: { user_id: string; display_name: string | null; avatar_url: string | null }) => [p.user_id, p])
+              )
+            );
+          }
+        }
+      }
 
       setPageLoading(false);
     };
@@ -230,6 +207,17 @@ export default function UserDetailPage() {
     const json = await res.json();
     if (!json.error) setReviews((prev) => prev.filter((r) => r.id !== id));
     setDeletingReview(null);
+  };
+
+  const loadConversation = async (convId: string) => {
+    if (convMessages[convId]) { setOpenConvId(convId); return; }
+    const { data } = await supabaseAdmin
+      .from("user_messages")
+      .select("id, content, sender_id, created_at")
+      .eq("conversation_id", convId)
+      .order("created_at", { ascending: true });
+    setConvMessages((prev) => ({ ...prev, [convId]: data || [] }));
+    setOpenConvId(convId);
   };
 
   const handleDeleteAccount = async () => {
@@ -551,112 +539,13 @@ export default function UserDetailPage() {
           )}
         </div>
 
-        {/* ── Messages ─────────────────────────────────────────────────────── */}
-        <div
-          className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
-          style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
-        >
-          <div className="px-5 sm:px-6 py-4 border-b border-gray-100">
-            <h2 className="text-base font-bold text-gray-800">
-              Messages Sent ({userMessages.length + adminMessages.filter(m => m.sender === "user").length})
-            </h2>
-          </div>
-
-          {userMessages.length === 0 && adminMessages.filter(m => m.sender === "user").length === 0 ? (
-            <p className="px-5 sm:px-6 py-8 text-sm text-gray-400 text-center">No messages found.</p>
-          ) : (
-            <div className="divide-y divide-gray-50">
-              {/* User→User messages */}
-              {userMessages.map((m) => {
-                const body = m.message ?? m.content ?? "";
-                const recipient = m.receiver_id ?? m.recipient_id ?? null;
-                return (
-                  <div key={m.id} className="px-5 sm:px-6 py-3 flex items-start gap-4">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                        <span className="text-xs font-semibold text-gray-500">To:</span>
-                        <span className="text-xs text-gray-700 font-mono truncate">{recipient ?? "—"}</span>
-                        <span className="text-xs text-gray-400 ml-auto shrink-0">{formatDate(m.created_at)}</span>
-                      </div>
-                      <p className="text-sm text-gray-700 line-clamp-2">
-                        {body ? body.slice(0, 100) + (body.length > 100 ? "…" : "") : <span className="text-gray-400 italic">—</span>}
-                      </p>
-                    </div>
-                    <span
-                      className="shrink-0 px-2 py-0.5 rounded-full text-xs font-medium"
-                      style={{ backgroundColor: "#eff6ff", color: "#2563eb" }}
-                    >
-                      user msg
-                    </span>
-                  </div>
-                );
-              })}
-              {/* User→Admin messages */}
-              {adminMessages.filter(m => m.sender === "user").map((m) => {
-                const body = m.message ?? "";
-                return (
-                  <div key={m.id} className="px-5 sm:px-6 py-3 flex items-start gap-4">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                        <span className="text-xs font-semibold text-gray-500">To:</span>
-                        <span className="text-xs text-gray-700">Admin</span>
-                        {m.title && <span className="text-xs text-gray-400">· {m.title}</span>}
-                        <span className="text-xs text-gray-400 ml-auto shrink-0">{formatDate(m.created_at)}</span>
-                      </div>
-                      <p className="text-sm text-gray-700 line-clamp-2">
-                        {body ? body.slice(0, 100) + (body.length > 100 ? "…" : "") : <span className="text-gray-400 italic">—</span>}
-                      </p>
-                    </div>
-                    <span
-                      className="shrink-0 px-2 py-0.5 rounded-full text-xs font-medium"
-                      style={{ backgroundColor: "#ffedd5", color: "#F97316" }}
-                    >
-                      to admin
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-
-        {/* ── Tüm Mesajlar (user_messages) ─────────────────────────────────── */}
+        {/* ── Konuşmalar ───────────────────────────────────────────────────── */}
         <div
           className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
           style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
         >
           <div className="px-5 sm:px-6 py-4 border-b border-gray-100 flex items-center gap-2">
-            <h2 className="text-base font-bold text-gray-800">💬 Tüm Mesajlar</h2>
-            <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-gray-100 text-gray-500">
-              {sentMessages.length}
-            </span>
-          </div>
-          {sentMessages.length === 0 ? (
-            <p className="px-5 sm:px-6 py-8 text-sm text-gray-400 text-center">Bu kullanıcının mesajı yok</p>
-          ) : (
-            <div className="px-5 sm:px-6 py-4 space-y-2">
-              {sentMessages.map((m) => {
-                const body = m.content ?? "";
-                return (
-                  <div key={m.id} className="bg-gray-50 rounded-lg p-3">
-                    <p className="text-sm text-gray-700">
-                      {body ? body.slice(0, 100) + (body.length > 100 ? "…" : "") : <span className="text-gray-400 italic">—</span>}
-                    </p>
-                    <p className="text-xs text-gray-400 mt-1">{formatDate(m.created_at)}</p>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-
-        {/* ── Konuşmalar (conversations) ───────────────────────────────────── */}
-        <div
-          className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
-          style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
-        >
-          <div className="px-5 sm:px-6 py-4 border-b border-gray-100 flex items-center gap-2">
-            <h2 className="text-base font-bold text-gray-800">🗣 Konuşmalar</h2>
+            <h2 className="text-base font-bold text-gray-800">💬 Konuşmalar</h2>
             <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-gray-100 text-gray-500">
               {conversations.length}
             </span>
@@ -664,23 +553,73 @@ export default function UserDetailPage() {
           {conversations.length === 0 ? (
             <p className="px-5 sm:px-6 py-8 text-sm text-gray-400 text-center">Konuşma bulunamadı</p>
           ) : (
-            <div className="divide-y divide-gray-50">
-              {conversations.map((c) => {
-                const otherId = c.user1_id === userId ? c.user2_id : c.user1_id;
+            <div className="px-5 sm:px-6 py-4 space-y-3">
+              {conversations.map((conv) => {
+                const otherId = conv.user1_id === userId ? conv.user2_id : conv.user1_id;
+                const other = otherProfileMap[otherId];
+                const isOpen = openConvId === conv.id;
                 return (
-                  <div key={c.id} className="px-5 sm:px-6 py-3 flex items-center justify-between gap-4">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs text-gray-400 font-mono truncate">Konuşma: {c.id.slice(0, 16)}…</p>
-                      <button
-                        onClick={() => router.push(`/admin-sefira-2026/user/${otherId}`)}
-                        className="text-blue-600 hover:text-blue-800 hover:underline text-xs font-semibold transition-colors font-mono"
+                  <div key={conv.id} className="border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+                    <button
+                      type="button"
+                      onClick={() => isOpen ? setOpenConvId(null) : loadConversation(conv.id)}
+                      className="w-full flex items-center gap-3 p-4 bg-white hover:bg-gray-50 transition-colors"
+                    >
+                      <div
+                        className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+                        style={{ background: "linear-gradient(135deg, #fb923c, #ec4899)" }}
                       >
-                        Karşı taraf: {otherId.slice(0, 16)}…
+                        {other?.display_name?.[0]?.toUpperCase() ?? "?"}
+                      </div>
+                      <div className="flex-1 text-left min-w-0">
+                        <div className="font-semibold text-gray-800 text-sm truncate">
+                          {other?.display_name ?? otherId.slice(0, 8) + "…"}
+                        </div>
+                        {conv.updated_at && (
+                          <div className="text-xs text-gray-400">
+                            {new Date(conv.updated_at).toLocaleDateString("tr-TR", { day: "numeric", month: "short", year: "numeric" })}
+                          </div>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); router.push(`/admin-sefira-2026/user/${otherId}`); }}
+                        className="shrink-0 text-xs font-semibold underline"
+                        style={{ color: "#2563eb", background: "none", border: "none", padding: 0 }}
+                      >
+                        Profil
                       </button>
-                    </div>
-                    <span className="shrink-0 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">
-                      konuşma
-                    </span>
+                      <span className="text-gray-400 text-xs ml-1">{isOpen ? "▲" : "▼"}</span>
+                    </button>
+
+                    {isOpen && (
+                      <div className="border-t border-gray-100 bg-gray-50 max-h-80 overflow-y-auto p-3 space-y-2">
+                        {(convMessages[conv.id] ?? []).length === 0 ? (
+                          <p className="text-center text-gray-400 text-sm py-4">Mesaj bulunamadı</p>
+                        ) : (
+                          (convMessages[conv.id] ?? []).map((msg) => {
+                            const isMe = msg.sender_id === userId;
+                            return (
+                              <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
+                                <div
+                                  className={`max-w-[75%] px-3 py-2 rounded-2xl text-sm ${
+                                    isMe
+                                      ? "text-white rounded-br-sm"
+                                      : "text-gray-800 border border-gray-200 bg-white rounded-bl-sm"
+                                  }`}
+                                  style={isMe ? { backgroundColor: "#F97316" } : undefined}
+                                >
+                                  <p>{msg.content}</p>
+                                  <p className={`text-xs mt-1 ${isMe ? "text-orange-100" : "text-gray-400"}`}>
+                                    {new Date(msg.created_at).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}
+                                  </p>
+                                </div>
+                              </div>
+                            );
+                          })
+                        )}
+                      </div>
+                    )}
                   </div>
                 );
               })}
