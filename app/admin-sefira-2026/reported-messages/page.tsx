@@ -49,6 +49,7 @@ export default function ReportedMessagesPage() {
   const router = useRouter();
 
   const [reports, setReports] = useState<ReportedMsg[]>([]);
+  const [profileMap, setProfileMap] = useState<Record<string, { display_name: string | null }>>({});
   const [pageLoading, setPageLoading] = useState(true);
   const [markingId, setMarkingId] = useState<string | null>(null);
   const [filter, setFilter] = useState<"all" | "pending" | "reviewed">("all");
@@ -73,7 +74,7 @@ export default function ReportedMessagesPage() {
       ...data.map((r: ReportedMsg) => r.reported_user_id),
     ].filter(Boolean)));
 
-    const profileMap: Record<string, { display_name: string | null }> = {};
+    const pMap: Record<string, { display_name: string | null }> = {};
     if (userIds.length > 0) {
       const { data: profiles } = await supabaseAdmin
         .from("profiles")
@@ -81,15 +82,16 @@ export default function ReportedMessagesPage() {
         .in("user_id", userIds);
       if (profiles) {
         profiles.forEach((p: { user_id: string; display_name: string | null }) => {
-          profileMap[p.user_id] = { display_name: p.display_name };
+          pMap[p.user_id] = { display_name: p.display_name };
         });
       }
     }
 
+    setProfileMap(pMap);
     setReports(data.map((r: ReportedMsg) => ({
       ...r,
-      reporter_profile: profileMap[r.reporter_id] ?? null,
-      reported_profile: profileMap[r.reported_user_id] ?? null,
+      reporter_profile: pMap[r.reporter_id] ?? null,
+      reported_profile: pMap[r.reported_user_id] ?? null,
     })));
     setPageLoading(false);
   };
@@ -205,26 +207,24 @@ export default function ReportedMessagesPage() {
                       <p className="break-words">{r.message_content || "—"}</p>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div className="bg-blue-50 rounded-xl px-3 py-2.5 text-xs">
-                        <p className="font-bold text-blue-400 uppercase mb-0.5">Şikayetçi</p>
+                    <div className="flex flex-col gap-1">
+                      <div>
+                        <span className="text-xs text-gray-500">ŞIKAYETÇI: </span>
                         <button
                           onClick={() => router.push(`/admin-sefira-2026/user/${r.reporter_id}`)}
-                          className="text-blue-600 hover:text-blue-800 hover:underline font-semibold cursor-pointer transition-colors text-left"
+                          className="text-xs text-blue-600 hover:text-blue-800 underline font-semibold cursor-pointer"
                         >
-                          {r.reporter_profile?.display_name ?? r.reporter_id}
+                          {profileMap[r.reporter_id]?.display_name || r.reporter_id}
                         </button>
-                        <p className="text-gray-400 font-mono mt-0.5">{r.reporter_id.slice(0, 12)}…</p>
                       </div>
-                      <div className="bg-red-50 rounded-xl px-3 py-2.5 text-xs">
-                        <p className="font-bold text-red-400 uppercase mb-0.5">Şikayet Edilen</p>
+                      <div>
+                        <span className="text-xs text-gray-500">ŞIKAYET EDİLEN: </span>
                         <button
                           onClick={() => router.push(`/admin-sefira-2026/user/${r.reported_user_id}`)}
-                          className="text-red-600 hover:text-red-800 hover:underline font-semibold cursor-pointer transition-colors text-left"
+                          className="text-xs text-red-600 hover:text-red-800 underline font-semibold cursor-pointer"
                         >
-                          {r.reported_profile?.display_name ?? r.reported_user_id}
+                          {profileMap[r.reported_user_id]?.display_name || r.reported_user_id}
                         </button>
-                        <p className="text-gray-400 font-mono mt-0.5">{r.reported_user_id.slice(0, 12)}…</p>
                       </div>
                     </div>
                   </div>
