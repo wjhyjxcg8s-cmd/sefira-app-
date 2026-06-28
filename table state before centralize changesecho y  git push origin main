@@ -1,0 +1,10 @@
+[33md898494[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m refactor: centralize Supabase client, use process.env
+[33m6ea7fd8[m refactor: centralize Supabase client in supabase-server.ts
+[33m0c44e00[m fix: inline security headers in next.config
+[33m3576baf[m security: add HTTP security headers to next.config
+[33m9b8cdfe[m security: remove service_role key from admin page, use API routes
+[33md3ad291[m security: move all user detail queries to API routes
+[33m18c88ec[m security: move reported-messages queries to API routes
+[33me95f7aa[m fix: use window.open with stopPropagation for View button in admin listings
+[33mea0edd0[m fix: use router.push instead of window.open for View button
+[33m67724e3[m fix: replace broken View link with button in admin listings
