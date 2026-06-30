@@ -169,7 +169,7 @@ export default function SearchPage() {
 
       if (filter === "all" || filter === "users") {
         const { data } = await supabase
-          .from("profiles")
+          .from("profiles_public")
           .select("user_id, display_name, avatar_url, country")
           .ilike("display_name", `%${q}%`)
           .limit(8);

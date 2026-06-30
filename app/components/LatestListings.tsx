@@ -417,7 +417,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
 
       const userIds = data.map((l: any) => l.user_id).filter(Boolean);
       const { data: profiles } = await supabaseClient
-        .from("profiles")
+        .from("profiles_public")
         .select("user_id, display_name, avatar_url, gender")
         .in("user_id", userIds);
 
