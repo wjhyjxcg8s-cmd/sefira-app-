@@ -7,6 +7,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useSearchParams, useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
+import { formatMessageTime } from "@/app/lib/formatTime";
 
 const translations = {
   tr: {
@@ -289,16 +290,14 @@ interface ListingContextData {
 
 const SYSTEM_CONVS = new Set(["sefira-notifications", "sefira-destek"]);
 
-function formatTime(dateStr: string) {
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diffDays = Math.floor((now.getTime() - date.getTime()) / 86400000);
-  if (diffDays === 0)
-    return date.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
-  if (diffDays === 1)
-    return "Dün " + date.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
-  return date.toLocaleDateString("tr-TR", { day: "numeric", month: "short" });
-}
+const LOCALE_MAP: Record<string, string> = {
+  tr: "tr-TR",
+  en: "en-US",
+  fa: "fa-IR",
+  ar: "ar-SA",
+  de: "de-DE",
+  ru: "ru-RU",
+};
 
 const SendIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -1095,7 +1094,7 @@ function MessagesPageContent() {
                 </p>
                 {chatMessages.length > 0 && (
                   <p className="text-[10px] text-gray-400">
-                    {formatTime(chatMessages[chatMessages.length - 1].created_at)}
+                    {formatMessageTime(chatMessages[chatMessages.length - 1].created_at, LOCALE_MAP[lang])}
                   </p>
                 )}
               </div>
@@ -1146,7 +1145,7 @@ function MessagesPageContent() {
                 </p>
                 {lastGlobalMsg && (
                   <p className="text-[10px] text-gray-400">
-                    {formatTime(lastGlobalMsg.created_at)}
+                    {formatMessageTime(lastGlobalMsg.created_at, LOCALE_MAP[lang])}
                   </p>
                 )}
               </div>
@@ -1261,7 +1260,7 @@ function MessagesPageContent() {
                     </p>
                     {conv.lastMessage && (
                       <p className="text-[10px] text-gray-400 flex-shrink-0 ml-1">
-                        {formatTime(conv.lastMessage.created_at)}
+                        {formatMessageTime(conv.lastMessage.created_at, LOCALE_MAP[lang])}
                       </p>
                     )}
                   </div>
@@ -1530,7 +1529,7 @@ function MessagesPageContent() {
                           </p>
                         </div>
                         <p className="text-right text-[10px] text-gray-400 mt-1 mr-1">
-                          {formatTime(msg.created_at)}
+                          {formatMessageTime(msg.created_at, LOCALE_MAP[lang])}
                         </p>
                       </div>
                     </div>
@@ -1598,7 +1597,7 @@ function MessagesPageContent() {
                           </p>
                         </div>
                         <p className="text-[10px] text-gray-400 mt-1 ml-1">
-                          {formatTime(msg.created_at)}
+                          {formatMessageTime(msg.created_at, LOCALE_MAP[lang])}
                         </p>
                       </div>
                     </div>
@@ -1711,7 +1710,7 @@ function MessagesPageContent() {
                           </p>
                         </div>
                         <p className="text-right text-[10px] text-gray-400 mt-1 mr-1">
-                          {formatTime(msg.created_at)}
+                          {formatMessageTime(msg.created_at, LOCALE_MAP[lang])}
                         </p>
                       </div>
                     </div>
@@ -1727,7 +1726,7 @@ function MessagesPageContent() {
                           </p>
                         </div>
                         <p className="text-[10px] text-gray-400 mt-1 ml-1">
-                          {formatTime(msg.created_at)}
+                          {formatMessageTime(msg.created_at, LOCALE_MAP[lang])}
                         </p>
                       </div>
                     </div>
@@ -1808,7 +1807,7 @@ function MessagesPageContent() {
                         </p>
                       </div>
                       <p className="text-[10px] text-gray-400 mt-1 ml-1">
-                        {formatTime(msg.created_at)}
+                        {formatMessageTime(msg.created_at, LOCALE_MAP[lang])}
                       </p>
                     </div>
                   </div>

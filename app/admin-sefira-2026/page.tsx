@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
 import { createClient } from '@supabase/supabase-js';
+import { formatMessageTime, formatMessageTimeShort } from "@/app/lib/formatTime";
 
 const supabaseAdmin = createClient(
   'https://ceetzophaybywfuhezhv.supabase.co',
@@ -2019,14 +2020,6 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
     setTimeout(() => setDeleteResult(null), 4000);
   };
 
-  const fmtTime = (d: string) => {
-    const date = new Date(d);
-    const isToday = date.toDateString() === new Date().toDateString();
-    return isToday
-      ? date.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })
-      : date.toLocaleDateString("tr-TR", { day: "numeric", month: "short" });
-  };
-
   const selectedConv = conversations.find((c) => c.key === selectedId) ?? selectedConvObj;
   const displayName = (conv: Conversation | null | undefined, uid: string | null) =>
     conv?.display_name ?? conv?.email ?? (uid ? uid.slice(0, 8) + "…" : "?");
@@ -2114,7 +2107,7 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
                       {conv.display_name ?? conv.email ?? conv.user_id.slice(0, 8) + "…"}
                     </span>
                     <span className="text-[11px] text-gray-400 flex-shrink-0">
-                      {fmtTime(conv.last_date)}
+                      {formatMessageTime(conv.last_date, "tr-TR")}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -2241,7 +2234,7 @@ function MessagesSection({ session }: { session: { access_token?: string } | nul
                               </p>
                             </div>
                             <span className="text-[11px] text-gray-400 px-1" style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                              {fmtTime(msg.created_at)}
+                              {formatMessageTimeShort(msg.created_at, "tr-TR")}
                               {/* Feature 2: tick indicators on admin messages */}
                               {isAdmin && (
                                 msg.is_read

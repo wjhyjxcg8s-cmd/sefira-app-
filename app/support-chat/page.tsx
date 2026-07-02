@@ -2,6 +2,16 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/app/lib/supabase'
 import { useLang } from '@/app/lib/LangContext'
+import { formatMessageTimeShort } from '@/app/lib/formatTime'
+
+const LOCALE_MAP: Record<string, string> = {
+  tr: 'tr-TR',
+  en: 'en-US',
+  fa: 'fa-IR',
+  ar: 'ar-SA',
+  de: 'de-DE',
+  ru: 'ru-RU',
+}
 
 export default function SupportChat() {
   const { lang } = useLang()
@@ -83,10 +93,6 @@ export default function SupportChat() {
     })
   }
 
-  const fmtTime = (d: string) => {
-    return new Date(d).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
-  }
-
   if (loading) return <div style={{padding:'20px'}}>Loading...</div>
   if (!userId) return <div style={{padding:'20px'}}>Please login first</div>
 
@@ -110,7 +116,7 @@ export default function SupportChat() {
               {msg.message}
               {/* Time row — ticks on user's own messages only */}
               <div style={{display:'flex',alignItems:'center',justifyContent:'flex-end',gap:'4px',marginTop:'4px'}}>
-                <span style={{fontSize:'10px',opacity:0.55}}>{fmtTime(msg.created_at)}</span>
+                <span style={{fontSize:'10px',opacity:0.55}}>{formatMessageTimeShort(msg.created_at, LOCALE_MAP[lang])}</span>
                 {msg.sender === 'user' && (
                   msg.is_read
                     ? <span style={{fontSize:'12px',color:'#34b7f1',lineHeight:1}}>✓✓</span>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
+import { formatMessageTime, formatMessageTimeShort } from "@/app/lib/formatTime";
 
 const ADMIN_EMAIL = "supportsefira@gmail.com";
 
@@ -543,7 +544,7 @@ export default function UserDetailPage() {
                         </div>
                         {conv.updated_at && (
                           <div className="text-xs text-gray-400">
-                            {new Date(conv.updated_at).toLocaleDateString("tr-TR", { day: "numeric", month: "short", year: "numeric" })}
+                            {formatMessageTime(conv.updated_at, "tr-TR")}
                           </div>
                         )}
                       </div>
@@ -577,7 +578,7 @@ export default function UserDetailPage() {
                                 >
                                   <p>{msg.content}</p>
                                   <p className={`text-xs mt-1 ${isMe ? "text-orange-100" : "text-gray-400"}`}>
-                                    {new Date(msg.created_at).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}
+                                    {formatMessageTimeShort(msg.created_at, "tr-TR")}
                                   </p>
                                 </div>
                               </div>

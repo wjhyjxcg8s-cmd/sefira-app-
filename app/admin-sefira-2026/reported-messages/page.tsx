@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
+import { formatMessageTime } from "@/app/lib/formatTime";
 
 const ADMIN_EMAIL = "supportsefira@gmail.com";
 
@@ -25,17 +26,6 @@ const reasonLabels: Record<string, string> = {
   insult: "Hakaret/Küfür",
   other: "Diğer",
 };
-
-function formatDate(d: string) {
-  if (!d) return "—";
-  return new Date(d).toLocaleDateString("tr-TR", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
 
 export default function ReportedMessagesPage() {
   const { user, loading } = useAuth();
@@ -169,7 +159,7 @@ export default function ReportedMessagesPage() {
                       <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-red-50 text-red-600">
                         {reasonLabels[r.reason] ?? r.reason}
                       </span>
-                      <span className="text-xs text-gray-400">{formatDate(r.created_at)}</span>
+                      <span className="text-xs text-gray-400">{formatMessageTime(r.created_at, "tr-TR")}</span>
                     </div>
 
                     <div className="bg-gray-50 rounded-xl px-4 py-3 text-sm text-gray-700 border border-gray-100">
