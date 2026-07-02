@@ -28,31 +28,17 @@ export async function GET(req: NextRequest) {
   if (!adminUser) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   try {
-    const { data: reports, error } = await supabaseAdmin
-      .from("reported_messages")
-      .select("*")
-      .order("created_at", { ascending: false });
+    const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const { data: { users: allAuthUsers } } = await supabaseAdmin.auth.admin.listUsers({ perPage: 100000 });
+    const { count: feedbackCount } = await supabaseAdmin
+      .from("deletion_feedback")
+      .select("*", { count: "exact", head: true });
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-
-    const allUserIds = [
-      ...new Set(
-        (reports || [])
-          .flatMap((r: any) => [r.reporter_id, r.reported_user_id])
-          .filter(Boolean)
-      ),
-    ];
-
-    const { data: profilesData } = await supabaseAdmin
-      .from("profiles")
-      .select("user_id, display_name")
-      .in("user_id", allUserIds);
-
-    const profileMap = Object.fromEntries(
-      (profilesData || []).map((p: any) => [p.user_id, p])
-    );
-
-    return NextResponse.json({ reports: reports ?? [], profileMap });
+    return NextResponse.json({
+      usersCount: allAuthUsers.length,
+      newUsersCount: allAuthUsers.filter((u: any) => u.created_at >= oneWeekAgo).length,
+      feedbackCount: feedbackCount ?? 0,
+    });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
   }

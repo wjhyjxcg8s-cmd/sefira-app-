@@ -28,31 +28,17 @@ export async function GET(req: NextRequest) {
   if (!adminUser) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   try {
-    const { data: reports, error } = await supabaseAdmin
-      .from("reported_messages")
-      .select("*")
-      .order("created_at", { ascending: false });
+    const [authUsersRes, profilesRes, announcementsRes] = await Promise.all([
+      supabaseAdmin.auth.admin.listUsers({ perPage: 100000 }),
+      supabaseAdmin.from("profiles").select("*"),
+      supabaseAdmin.from("admin_messages").select("*", { count: "exact", head: true }).eq("is_global", true),
+    ]);
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-
-    const allUserIds = [
-      ...new Set(
-        (reports || [])
-          .flatMap((r: any) => [r.reporter_id, r.reported_user_id])
-          .filter(Boolean)
-      ),
-    ];
-
-    const { data: profilesData } = await supabaseAdmin
-      .from("profiles")
-      .select("user_id, display_name")
-      .in("user_id", allUserIds);
-
-    const profileMap = Object.fromEntries(
-      (profilesData || []).map((p: any) => [p.user_id, p])
-    );
-
-    return NextResponse.json({ reports: reports ?? [], profileMap });
+    return NextResponse.json({
+      authUsers: authUsersRes.data?.users ?? [],
+      profiles: profilesRes.data ?? [],
+      announcementsCount: announcementsRes.count ?? 0,
+    });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
   }

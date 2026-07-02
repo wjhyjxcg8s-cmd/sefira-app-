@@ -4,14 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
-import { createClient } from '@supabase/supabase-js';
 import { formatMessageTime, formatMessageTimeShort } from "@/app/lib/formatTime";
-
-const supabaseAdmin = createClient(
-  'https://ceetzophaybywfuhezhv.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlZXR6b3BoYXlieXdmdWhlemh2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTM1Nzg1NSwiZXhwIjoyMDk0OTMzODU1fQ.Jw1bDN7wqxdqj-OinqK4ll7mV5ka7fT6T-9jORs4x_4',
-  { auth: { autoRefreshToken: false, persistSession: false } }
-);
 
 const ADMIN_EMAIL = "supportsefira@gmail.com";
 const PAGE_SIZE = 20;
@@ -391,27 +384,23 @@ export default function AdminPage() {
     setDataLoading(true);
 
     const fetchStats = async () => {
-      const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-
-      const { data: { users: allAuthUsers } } = await supabaseAdmin.auth.admin.listUsers({ perPage: 100000 });
-      const usersCount = allAuthUsers.length;
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      const res = await fetch("/api/admin/dashboard-stats", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const stats = await res.json();
 
       const { count: listingsCount } = await supabase
         .from("listings")
         .select("*", { count: "exact", head: true });
 
-      const { count: feedbackCount } = await supabaseAdmin
-        .from("deletion_feedback")
-        .select("*", { count: "exact", head: true });
-
-      const newUsersCount = allAuthUsers.filter((u: any) => u.created_at >= oneWeekAgo).length;
-
       if (active) {
         setStats({
-          totalUsers: usersCount ?? 0,
+          totalUsers: stats.usersCount ?? 0,
           totalListings: listingsCount ?? 0,
-          totalDeletionFeedback: feedbackCount ?? 0,
-          newUsersThisWeek: newUsersCount,
+          totalDeletionFeedback: stats.feedbackCount ?? 0,
+          newUsersThisWeek: stats.newUsersCount ?? 0,
         });
         setStatsLastUpdated(new Date().toLocaleTimeString('tr-TR'));
         setDataLoading(false);
@@ -431,14 +420,15 @@ export default function AdminPage() {
     setDataLoading(true);
 
     const fetchUsers = async () => {
-      const [authUsersRes, profilesRes, bannedRes, announcementsRes] = await Promise.all([
-        supabaseAdmin.auth.admin.listUsers({ perPage: 100000 }),
-        supabaseAdmin.from("profiles").select("*"),
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      const [usersRes, bannedRes] = await Promise.all([
+        fetch("/api/admin/users-list", { headers: { Authorization: `Bearer ${token}` } }),
         supabase.from("banned_emails").select("email"),
-        supabaseAdmin.from("admin_messages").select("*", { count: "exact", head: true }).eq("is_global", true),
       ]);
-      const authUsers = authUsersRes.data?.users ?? [];
-      const profiles = profilesRes.data ?? [];
+      const data = await usersRes.json();
+      const authUsers = data.authUsers ?? [];
+      const profiles = data.profiles ?? [];
 
       if (active) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -460,7 +450,7 @@ export default function AdminPage() {
         });
 
         setUsersAll(rawUsers);
-        setAnnouncementCount(announcementsRes.count ?? 0);
+        setAnnouncementCount(data.announcementsCount ?? 0);
 
         let allUsers = rawUsers;
         if (usersSearch) {
@@ -526,14 +516,15 @@ export default function AdminPage() {
     setDataLoading(true);
 
     const fetchFeedback = async () => {
-      const { data: feedbackData, error: feedbackError } = await supabaseAdmin
-        .from('deletion_feedback')
-        .select('id, email, reasons, rating, feedback, deleted_at, profile_snapshot')
-        .order('deleted_at', { ascending: false });
-      console.log('FEEDBACK RESULT:', feedbackData?.length, feedbackError?.message);
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      const res = await fetch("/api/admin/feedback-list", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
 
       if (active) {
-        const allFeedback: FeedbackRecord[] = feedbackData || [];
+        const allFeedback: FeedbackRecord[] = data.feedback || [];
         const rated = allFeedback.filter((f) => f.rating !== null);
         const avg =
           rated.length > 0
@@ -562,14 +553,15 @@ export default function AdminPage() {
     setDataLoading(true);
 
     const fetchReviews = async () => {
-      const { data: reviewsData, error } = await supabaseAdmin
-        .from("deletion_feedback")
-        .select("*")
-        .order("deleted_at", { ascending: false });
-      console.log('deletion_feedback:', reviewsData?.length, error);
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      const res = await fetch("/api/admin/feedback-list", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
 
       if (active) {
-        const allReviews: FeedbackRecord[] = reviewsData ?? [];
+        const allReviews: FeedbackRecord[] = data.feedback ?? [];
         setReviewsTotal(allReviews.length);
         setReviews(allReviews.slice((reviewsPage - 1) * PAGE_SIZE, reviewsPage * PAGE_SIZE));
         setReviewsLastUpdated(new Date().toLocaleTimeString('tr-TR'));
@@ -2309,45 +2301,27 @@ function ReportedMessagesSection() {
   const [loading, setLoading] = useState(true);
   const [markingId, setMarkingId] = useState<string | null>(null);
 
-  const supabaseAdm = createClient(
-    'https://ceetzophaybywfuhezhv.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlZXR6b3BoYXlieXdmdWhlemh2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTM1Nzg1NSwiZXhwIjoyMDk0OTMzODU1fQ.Jw1bDN7wqxdqj-OinqK4ll7mV5ka7fT6T-9jORs4x_4',
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  );
-
   const fetchReports = async () => {
     setLoading(true);
-    const { data, error } = await supabaseAdm
-      .from("reported_messages")
-      .select("*")
-      .order("created_at", { ascending: false });
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const res = await fetch("/api/admin/reports-list", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const json = await res.json();
+      const data = json.reports ?? [];
+      const profileMap = json.profileMap ?? {};
 
-    if (error || !data) { setLoading(false); return; }
-
-    const userIds = Array.from(new Set([
-      ...data.map((r: ReportedMsg) => r.reporter_id),
-      ...data.map((r: ReportedMsg) => r.reported_user_id),
-    ].filter(Boolean)));
-
-    const profileMap: Record<string, { display_name: string | null }> = {};
-    if (userIds.length > 0) {
-      const { data: profiles } = await supabaseAdm
-        .from("profiles")
-        .select("user_id, display_name")
-        .in("user_id", userIds);
-      if (profiles) {
-        profiles.forEach((p: { user_id: string; display_name: string | null }) => {
-          profileMap[p.user_id] = { display_name: p.display_name };
-        });
-      }
+      setReports(data.map((r: ReportedMsg) => ({
+        ...r,
+        reporter_profile: profileMap[r.reporter_id] ?? null,
+        reported_profile: profileMap[r.reported_user_id] ?? null,
+      })));
+      setLoading(false);
+    } catch {
+      setLoading(false);
     }
-
-    setReports(data.map((r: ReportedMsg) => ({
-      ...r,
-      reporter_profile: profileMap[r.reporter_id] ?? null,
-      reported_profile: profileMap[r.reported_user_id] ?? null,
-    })));
-    setLoading(false);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -2355,7 +2329,11 @@ function ReportedMessagesSection() {
 
   const markReviewed = async (id: string) => {
     setMarkingId(id);
-    await supabaseAdm.from("reported_messages").update({ status: "reviewed" }).eq("id", id);
+    await fetch("/api/admin/reports-update", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
     setReports((prev) => prev.map((r) => r.id === id ? { ...r, status: "reviewed" } : r));
     setMarkingId(null);
   };
