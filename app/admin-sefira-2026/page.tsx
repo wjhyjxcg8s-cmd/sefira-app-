@@ -2329,9 +2329,14 @@ function ReportedMessagesSection() {
 
   const markReviewed = async (id: string) => {
     setMarkingId(id);
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
     await fetch("/api/admin/reports-update", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ id }),
     });
     setReports((prev) => prev.map((r) => r.id === id ? { ...r, status: "reviewed" } : r));

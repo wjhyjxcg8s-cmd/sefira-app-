@@ -1,16 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-const supabase = createClient(
+
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const ADMIN_EMAIL = "supportsefira@gmail.com";
+
+async function verifyAdmin(req: NextRequest) {
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader) return null;
+  const supabaseUser = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    global: { headers: { Authorization: authHeader } },
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+  const { data: { user }, error } = await supabaseUser.auth.getUser();
+  if (error || !user || user.email !== ADMIN_EMAIL) return null;
+  return user;
+}
+
+const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
-export async function POST(request: NextRequest) {
-  const { id } = await request.json()
-  if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 })
-  const { error } = await supabase
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  { auth: { autoRefreshToken: false, persistSession: false } }
+);
+
+export async function POST(req: NextRequest) {
+  const adminUser = await verifyAdmin(req);
+  if (!adminUser) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const { id } = await req.json();
+  if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
+
+  const { error } = await supabaseAdmin
     .from('reported_messages')
     .update({ status: 'reviewed' })
-    .eq('id', id)
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ success: true })
+    .eq('id', id);
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ success: true });
 }

@@ -38,7 +38,7 @@ function countryFlag(code: string | null) {
 }
 
 export default function AdminListingsPage() {
-  const { user, loading } = useAuth();
+  const { user, loading, session } = useAuth();
   const router = useRouter();
 
   const [listings, setListings] = useState<Listing[]>([]);
@@ -61,7 +61,9 @@ export default function AdminListingsPage() {
 
   async function fetchListings() {
     setDataLoading(true);
-    const res = await fetch('/api/admin/listings-list');
+    const res = await fetch('/api/admin/listings-list', {
+      headers: { Authorization: `Bearer ${session?.access_token}` },
+    });
     const { listings } = await res.json();
     setListings(listings);
     setDataLoading(false);

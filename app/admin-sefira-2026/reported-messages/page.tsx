@@ -28,7 +28,7 @@ const reasonLabels: Record<string, string> = {
 };
 
 export default function ReportedMessagesPage() {
-  const { user, loading } = useAuth();
+  const { user, loading, session } = useAuth();
   const router = useRouter();
 
   const [reports, setReports] = useState<ReportedMsg[]>([]);
@@ -45,7 +45,9 @@ export default function ReportedMessagesPage() {
 
   const fetchReports = async () => {
     setPageLoading(true);
-    const res = await fetch('/api/admin/reports-list');
+    const res = await fetch('/api/admin/reports-list', {
+      headers: { Authorization: `Bearer ${session?.access_token}` },
+    });
     const { reports, profileMap } = await res.json();
     setReports(reports);
     setProfileMap(profileMap);
@@ -61,7 +63,10 @@ export default function ReportedMessagesPage() {
     setMarkingId(id);
     await fetch('/api/admin/reports-update', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session?.access_token}`,
+      },
       body: JSON.stringify({ id }),
     });
     setReports((prev) => prev.map((r) => r.id === id ? { ...r, status: "reviewed" } : r));
