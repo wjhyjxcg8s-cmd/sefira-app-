@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -1318,6 +1318,22 @@ export default function Home() {
     }
   }, []);
 
+  // ── Commercial space type-selector modal ─────────────────────────────────
+  const [showCommercialModal, setShowCommercialModal] = useState(false);
+  const [commercialMode, setCommercialMode] = useState<'owner' | 'seeker' | null>(null);
+  const commercialTypeOptions = [
+    { emoji: "🏢", label: "Ofis" },
+    { emoji: "🏪", label: "Dükkan" },
+    { emoji: "💈", label: "Berber Koltuğu" },
+    { emoji: "🔧", label: "Atölye" },
+    { emoji: "📦", label: "Depo" },
+    { emoji: "🍳", label: "Mutfak" },
+    { emoji: "🎬", label: "İçerik Stüdyosu" },
+    { emoji: "📚", label: "Eğitim Sınıfı" },
+    { emoji: "🚗", label: "Otopark" },
+    { emoji: "📮", label: "Ticari Adres" },
+  ];
+
   // ── Onboarding flow ───────────────────────────────────────────────────────
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [onboardingMissing, setOnboardingMissing] = useState({
@@ -2598,6 +2614,92 @@ export default function Home() {
                         >→</motion.span>
                       </div>
                     </motion.button>
+
+                    {/* Card 3 — Commercial space owner */}
+                    <motion.button
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.4 }}
+                      whileTap={{ scale: 0.97 }}
+                      whileHover={{ y: -4 }}
+                      onClick={() => { setCommercialMode('owner'); setShowCommercialModal(true); }}
+                      className="w-full relative overflow-hidden rounded-3xl p-6 text-left shadow-[0_12px_40px_-12px_rgba(16,185,129,0.6)] active:scale-[0.98] transition-transform"
+                      style={{ background: 'linear-gradient(135deg,#34D399 0%,#10B981 55%,#047857 100%)' }}
+                    >
+                      <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/15 rounded-full blur-xl" />
+                      <div className="absolute right-8 bottom-2 w-20 h-20 bg-white/10 rounded-full blur-md" />
+
+                      <div className="relative z-10 flex items-center gap-4">
+                        <motion.div
+                          animate={{ y: [0, -6, 0] }}
+                          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
+                          className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-4xl shrink-0 shadow-inner"
+                        >
+                          🏢
+                        </motion.div>
+
+                        <div className="flex-1 min-w-0">
+                          <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full mb-2 tracking-wide">
+                            🏢 TİCARİ ALAN SAHİBİ
+                          </span>
+                          <p className="text-white font-black text-lg leading-snug">
+                            Ticari paylaşım alanım var, kiracı arıyorum
+                          </p>
+                          <p className="text-white/80 text-sm mt-1 font-medium">
+                            Alanınızı doğru kişiyle paylaşın
+                          </p>
+                        </div>
+
+                        <motion.span
+                          animate={{ x: [0, 6, 0] }}
+                          transition={{ duration: 1.4, repeat: Infinity, delay: 0.5 }}
+                          className="text-white text-2xl shrink-0"
+                        >→</motion.span>
+                      </div>
+                    </motion.button>
+
+                    {/* Card 4 — Commercial space seeker */}
+                    <motion.button
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.55 }}
+                      whileTap={{ scale: 0.97 }}
+                      whileHover={{ y: -4 }}
+                      onClick={() => { setCommercialMode('seeker'); setShowCommercialModal(true); }}
+                      className="w-full relative overflow-hidden rounded-3xl p-6 text-left shadow-[0_12px_40px_-12px_rgba(13,148,136,0.6)] active:scale-[0.98] transition-transform"
+                      style={{ background: 'linear-gradient(135deg,#2DD4BF 0%,#0D9488 55%,#115E59 100%)' }}
+                    >
+                      <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/15 rounded-full blur-xl" />
+                      <div className="absolute right-8 bottom-2 w-20 h-20 bg-white/10 rounded-full blur-md" />
+
+                      <div className="relative z-10 flex items-center gap-4">
+                        <motion.div
+                          animate={{ y: [0, -6, 0] }}
+                          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
+                          className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-4xl shrink-0 shadow-inner"
+                        >
+                          🔍
+                        </motion.div>
+
+                        <div className="flex-1 min-w-0">
+                          <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full mb-2 tracking-wide">
+                            🔍 TİCARİ ALAN ARAYAN
+                          </span>
+                          <p className="text-white font-black text-lg leading-snug">
+                            Ticari paylaşım alanı arıyorum
+                          </p>
+                          <p className="text-white/80 text-sm mt-1 font-medium">
+                            Size uygun ticari alanı bulun
+                          </p>
+                        </div>
+
+                        <motion.span
+                          animate={{ x: [0, 6, 0] }}
+                          transition={{ duration: 1.4, repeat: Infinity, delay: 0.7 }}
+                          className="text-white text-2xl shrink-0"
+                        >→</motion.span>
+                      </div>
+                    </motion.button>
                   </div>
                 </>
 
@@ -3816,6 +3918,59 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      {/* ── Commercial space type-selector modal ─────────────────────────────── */}
+      <AnimatePresence>
+        {showCommercialModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] flex items-end justify-center bg-black/50 backdrop-blur-sm"
+            onClick={() => setShowCommercialModal(false)}
+          >
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="bg-white w-full sm:max-w-md rounded-t-3xl shadow-2xl overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Orange header */}
+              <div className="relative bg-gradient-to-r from-orange-500 to-amber-500 px-6 py-5">
+                <h3 className="text-white font-black text-lg pr-8">
+                  {commercialMode === 'owner' ? 'Mekan türünü seçin' : 'Aradığınız mekan türünü seçin'}
+                </h3>
+                <button
+                  onClick={() => setShowCommercialModal(false)}
+                  className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
+                  aria-label="Kapat"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Options grid */}
+              <div className="p-5 pb-8 grid grid-cols-2 gap-3 max-h-[60vh] overflow-y-auto">
+                {commercialTypeOptions.map((opt) => (
+                  <button
+                    key={opt.label}
+                    onClick={() => setShowCommercialModal(false)}
+                    className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border-2 border-stone-200 hover:border-orange-300 hover:bg-orange-50 active:scale-95 transition-all duration-200 text-center"
+                  >
+                    <span className="text-3xl">{opt.emoji}</span>
+                    <span className="text-sm font-bold text-stone-700">{opt.label}</span>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
