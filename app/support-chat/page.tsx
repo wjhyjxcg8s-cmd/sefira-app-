@@ -1,5 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { ArrowLeft } from 'lucide-react'
 import { supabase } from '@/app/lib/supabase'
 import { useLang } from '@/app/lib/LangContext'
 import { formatMessageTimeShort } from '@/app/lib/formatTime'
@@ -14,6 +16,7 @@ const LOCALE_MAP: Record<string, string> = {
 }
 
 export default function SupportChat() {
+  const router = useRouter()
   const { lang } = useLang()
   const [messages, setMessages] = useState<any[]>([])
   const [input, setInput] = useState('')
@@ -98,8 +101,17 @@ export default function SupportChat() {
 
   return (
     <div style={{display:'flex',flexDirection:'column',height:'100vh',background:'#f0ebe4'}}>
-      <div style={{padding:'16px',background:'#F97316',color:'white',fontWeight:'bold',fontSize:'18px'}}>
-        Sefira Destek
+      <div style={{padding:'16px',background:'#F97316',color:'white',fontWeight:'bold',fontSize:'18px',display:'flex',alignItems:'center',position:'relative'}}>
+        <button
+          onClick={() => router.push('/')}
+          style={{background:'none',border:'none',padding:0,margin:0,color:'white',cursor:'pointer',display:'flex',alignItems:'center',zIndex:1}}
+          aria-label="Geri"
+        >
+          <ArrowLeft size={22} />
+        </button>
+        <span style={{position:'absolute',left:0,right:0,textAlign:'center',pointerEvents:'none'}}>
+          Sefira Destek
+        </span>
       </div>
       <div style={{flex:1,overflowY:'auto',padding:'16px',display:'flex',flexDirection:'column',gap:'8px'}}>
         {messages.length === 0 && <p style={{color:'#888',textAlign:'center'}}>Henüz mesaj yok</p>}
