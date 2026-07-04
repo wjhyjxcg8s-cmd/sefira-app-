@@ -2640,7 +2640,7 @@ export default function Home() {
                   </div>
 
                   {/* CTA buttons */}
-                  <div className="flex flex-col gap-4 max-w-md mx-auto px-4 my-6">
+                  <div className="flex flex-col gap-3 max-w-md mx-auto px-4 my-6">
                     {/* Card 1 — Landlord */}
                     <motion.button
                       initial={{ opacity: 0, y: 30 }}
@@ -2649,7 +2649,7 @@ export default function Home() {
                       whileTap={{ scale: 0.97 }}
                       whileHover={{ y: -4 }}
                       onClick={() => router.push('/create-listing?type=has_place')}
-                      className="w-full relative overflow-hidden rounded-3xl p-6 text-left shadow-[0_12px_40px_-12px_rgba(249,115,22,0.6)] active:scale-[0.98] transition-transform"
+                      className="w-full relative overflow-hidden rounded-3xl p-[17px] text-left shadow-[0_12px_40px_-12px_rgba(249,115,22,0.6)] active:scale-[0.98] transition-transform"
                       style={{ background: 'linear-gradient(135deg,#F97316 0%,#ea580c 55%,#c2410c 100%)' }}
                     >
                       <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/15 rounded-full blur-xl" />
@@ -2665,13 +2665,13 @@ export default function Home() {
                         </motion.div>
 
                         <div className="flex-1 min-w-0">
-                          <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full mb-2 tracking-wide">
+                          <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2 py-0.5 rounded-full mb-2 tracking-wide">
                             🔑 {t.landlordBadge}
                           </span>
-                          <p className="text-white font-black text-lg leading-snug">
+                          <p className="text-white font-black text-base leading-snug">
                             {t.optionSeekingTitle}
                           </p>
-                          <p className="text-white/80 text-sm mt-1 font-medium">
+                          <p className="text-white/80 text-[13px] mt-1 font-medium">
                             {t.landlordSubtext}
                           </p>
                         </div>
@@ -2692,7 +2692,7 @@ export default function Home() {
                       whileTap={{ scale: 0.97 }}
                       whileHover={{ y: -4 }}
                       onClick={() => router.push('/create-listing?type=needs_place')}
-                      className="w-full relative overflow-hidden rounded-3xl p-6 text-left shadow-[0_12px_40px_-12px_rgba(79,70,229,0.6)] active:scale-[0.98] transition-transform"
+                      className="w-full relative overflow-hidden rounded-3xl p-[17px] text-left shadow-[0_12px_40px_-12px_rgba(79,70,229,0.6)] active:scale-[0.98] transition-transform"
                       style={{ background: 'linear-gradient(135deg,#7C8CF8 0%,#5B6EE8 55%,#4F46E5 100%)' }}
                     >
                       <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/15 rounded-full blur-xl" />
@@ -2708,13 +2708,13 @@ export default function Home() {
                         </motion.div>
 
                         <div className="flex-1 min-w-0">
-                          <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full mb-2 tracking-wide">
+                          <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2 py-0.5 rounded-full mb-2 tracking-wide">
                             🎒 {t.tenantBadge}
                           </span>
-                          <p className="text-white font-black text-lg leading-snug">
+                          <p className="text-white font-black text-base leading-snug">
                             {t.optionOfferingTitle}
                           </p>
-                          <p className="text-white/80 text-sm mt-1 font-medium">
+                          <p className="text-white/80 text-[13px] mt-1 font-medium">
                             {t.tenantSubtext}
                           </p>
                         </div>
@@ -2735,7 +2735,7 @@ export default function Home() {
                       whileTap={{ scale: 0.97 }}
                       whileHover={{ y: -4 }}
                       onClick={() => { setCommercialMode('owner'); setShowCommercialModal(true); }}
-                      className="w-full relative overflow-hidden rounded-3xl p-6 text-left shadow-[0_12px_40px_-12px_rgba(16,185,129,0.6)] active:scale-[0.98] transition-transform"
+                      className="w-full relative overflow-hidden rounded-3xl p-[17px] text-left shadow-[0_12px_40px_-12px_rgba(16,185,129,0.6)] active:scale-[0.98] transition-transform"
                       style={{ background: 'linear-gradient(135deg,#34D399 0%,#10B981 55%,#047857 100%)' }}
                     >
                       <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/15 rounded-full blur-xl" />
@@ -2751,13 +2751,13 @@ export default function Home() {
                         </motion.div>
 
                         <div className="flex-1 min-w-0">
-                          <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full mb-2 tracking-wide">
+                          <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2 py-0.5 rounded-full mb-2 tracking-wide">
                             🏢 {t.commercialOwnerBadge}
                           </span>
-                          <p className="text-white font-black text-lg leading-snug">
+                          <p className="text-white font-black text-base leading-snug">
                             {t.commercialOwnerTitle}
                           </p>
-                          <p className="text-white/80 text-sm mt-1 font-medium">
+                          <p className="text-white/80 text-[13px] mt-1 font-medium">
                             {t.commercialOwnerSubtitle}
                           </p>
                         </div>
@@ -2778,7 +2778,7 @@ export default function Home() {
                       whileTap={{ scale: 0.97 }}
                       whileHover={{ y: -4 }}
                       onClick={() => { setCommercialMode('seeker'); setShowCommercialModal(true); }}
-                      className="w-full relative overflow-hidden rounded-3xl p-6 text-left shadow-[0_12px_40px_-12px_rgba(13,148,136,0.6)] active:scale-[0.98] transition-transform"
+                      className="w-full relative overflow-hidden rounded-3xl p-[17px] text-left shadow-[0_12px_40px_-12px_rgba(13,148,136,0.6)] active:scale-[0.98] transition-transform"
                       style={{ background: 'linear-gradient(135deg,#2DD4BF 0%,#0D9488 55%,#115E59 100%)' }}
                     >
                       <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/15 rounded-full blur-xl" />
@@ -2794,13 +2794,13 @@ export default function Home() {
                         </motion.div>
 
                         <div className="flex-1 min-w-0">
-                          <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full mb-2 tracking-wide">
+                          <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2 py-0.5 rounded-full mb-2 tracking-wide">
                             🔍 {t.commercialSeekerBadge}
                           </span>
-                          <p className="text-white font-black text-lg leading-snug">
+                          <p className="text-white font-black text-base leading-snug">
                             {t.commercialSeekerTitle}
                           </p>
-                          <p className="text-white/80 text-sm mt-1 font-medium">
+                          <p className="text-white/80 text-[13px] mt-1 font-medium">
                             {t.commercialSeekerSubtitle}
                           </p>
                         </div>
