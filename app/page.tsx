@@ -2466,13 +2466,13 @@ export default function Home() {
       )}
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
-      <div className="min-h-screen w-full px-4 pb-8 pt-16 overflow-hidden relative bg-stone-50">
+      <div className="min-h-screen w-full px-4 pb-4 pt-16 overflow-hidden relative bg-stone-50">
 
         {/* Decorative blur circles */}
         <div className="absolute w-96 h-96 rounded-full bg-orange-50 blur-3xl opacity-60 -top-20 -right-20 pointer-events-none" />
         <div className="absolute w-72 h-72 rounded-full bg-blue-50 blur-3xl opacity-40 bottom-0 -left-10 pointer-events-none" />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-5 py-16 md:grid md:grid-cols-2 gap-8 items-center w-full">
+        <div className="relative z-10 max-w-7xl mx-auto px-5 pt-16 pb-8 md:grid md:grid-cols-2 gap-8 items-center w-full">
 
           {/* ── LEFT: Typography + Wizard ───────────────────────────────────── */}
           <motion.div
