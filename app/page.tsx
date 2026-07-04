@@ -2643,7 +2643,7 @@ export default function Home() {
                             🏢 TİCARİ ALAN SAHİBİ
                           </span>
                           <p className="text-white font-black text-lg leading-snug">
-                            Ticari paylaşım alanım var, kiracı arıyorum
+                            Ticari paylaşım alanım var, paylaşmak istiyorum
                           </p>
                           <p className="text-white/80 text-sm mt-1 font-medium">
                             Alanınızı doğru kişiyle paylaşın
