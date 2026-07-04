@@ -4039,10 +4039,14 @@ export default function Home() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed inset-0 z-50 bg-white flex flex-col"
+            className="bg-white flex flex-col"
+            style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999 }}
           >
             {/* Orange header */}
-            <div className="relative flex items-center bg-gradient-to-r from-orange-500 to-amber-500 px-4 py-5 shrink-0">
+            <div
+              className="relative flex items-center px-4 shrink-0"
+              style={{ height: '56px', paddingTop: 'env(safe-area-inset-top)', backgroundColor: '#f97316' }}
+            >
               <button
                 onClick={() => setShowCommercialModal(false)}
                 className="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors shrink-0"
