@@ -4031,55 +4031,45 @@ export default function Home() {
         </div>
       )}
 
-      {/* ── Commercial space type-selector modal ─────────────────────────────── */}
+      {/* ── Commercial space type-selector full-page screen ──────────────────── */}
       <AnimatePresence>
         {showCommercialModal && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] flex items-end justify-center bg-black/50 backdrop-blur-sm"
-            onClick={() => setShowCommercialModal(false)}
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="fixed inset-0 z-50 bg-white flex flex-col"
           >
-            <motion.div
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="bg-white w-full sm:max-w-md rounded-t-3xl shadow-2xl overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Orange header */}
-              <div className="relative bg-gradient-to-r from-orange-500 to-amber-500 px-6 py-5">
-                <h3 className="text-white font-black text-lg pr-8">
-                  {commercialMode === 'owner' ? t.commercialModalTitleOwner : t.commercialModalTitleSeeker}
-                </h3>
-                <button
-                  onClick={() => setShowCommercialModal(false)}
-                  className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
-                  aria-label="Kapat"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4">
-                    <line x1="18" y1="6" x2="6" y2="18" />
-                    <line x1="6" y1="6" x2="18" y2="18" />
-                  </svg>
-                </button>
-              </div>
+            {/* Orange header */}
+            <div className="relative flex items-center bg-gradient-to-r from-orange-500 to-amber-500 px-4 py-5 shrink-0">
+              <button
+                onClick={() => setShowCommercialModal(false)}
+                className="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors shrink-0"
+                aria-label="Geri"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                  <path d="M15 18l-6-6 6-6" />
+                </svg>
+              </button>
+              <h3 className="text-white font-black text-lg flex-1 text-center pr-9">
+                {commercialMode === 'owner' ? t.commercialModalTitleOwner : t.commercialModalTitleSeeker}
+              </h3>
+            </div>
 
-              {/* Options grid */}
-              <div className="p-5 pb-8 grid grid-cols-2 gap-3 max-h-[60vh] overflow-y-auto">
-                {commercialTypeOptions.map((opt) => (
-                  <button
-                    key={opt.label}
-                    onClick={() => setShowCommercialModal(false)}
-                    className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border-2 border-stone-200 hover:border-orange-300 hover:bg-orange-50 active:scale-95 transition-all duration-200 text-center"
-                  >
-                    <span className="text-3xl">{opt.emoji}</span>
-                    <span className="text-sm font-bold text-stone-700">{opt.label}</span>
-                  </button>
-                ))}
-              </div>
-            </motion.div>
+            {/* Options grid */}
+            <div className="flex-1 overflow-y-auto p-5 pb-8 grid grid-cols-2 gap-3 content-start">
+              {commercialTypeOptions.map((opt) => (
+                <button
+                  key={opt.label}
+                  onClick={() => setShowCommercialModal(false)}
+                  className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border-2 border-stone-200 hover:border-orange-300 hover:bg-orange-50 active:scale-95 transition-all duration-200 text-center"
+                >
+                  <span className="text-3xl">{opt.emoji}</span>
+                  <span className="text-sm font-bold text-stone-700">{opt.label}</span>
+                </button>
+              ))}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
