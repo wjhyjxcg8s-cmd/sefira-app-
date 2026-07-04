@@ -7,8 +7,28 @@ const supabaseAdmin = createClient(
   { auth: { autoRefreshToken: false, persistSession: false } }
 );
 
+async function verifyUser(request: Request) {
+  const auth = request.headers.get("Authorization");
+  if (!auth) return null;
+  const c = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      global: { headers: { Authorization: auth } },
+      auth: { autoRefreshToken: false, persistSession: false },
+    }
+  );
+  const { data: { user } } = await c.auth.getUser();
+  return user ?? null;
+}
+
 export async function POST(request: Request) {
   try {
+    const user = await verifyUser(request);
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const body = await request.json();
     console.log("FULL REQUEST BODY:", JSON.stringify(body));
 
@@ -22,6 +42,10 @@ export async function POST(request: Request) {
         { error: "Missing required fields: senderId, content, targetUserId" },
         { status: 400 }
       );
+    }
+
+    if (senderId !== user.id) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     // Block check — reject if either user has blocked the other
