@@ -166,6 +166,14 @@ const translations = {
     tenantBadge: "EV ARKADAŞI ARAYAN",
     landlordSubtext: "Güvenli housemate bul",
     tenantSubtext: "İdeal evinizi bul",
+    commercialOwnerBadge: "TİCARİ ALAN SAHİBİ",
+    commercialOwnerTitle: "Ticari paylaşım alanım var, paylaşmak istiyorum",
+    commercialOwnerSubtitle: "Alanınızı doğru kişiyle paylaşın",
+    commercialSeekerBadge: "TİCARİ ALAN ARAYAN",
+    commercialSeekerTitle: "Ticari paylaşım alanı arıyorum",
+    commercialSeekerSubtitle: "Size uygun ticari alanı bulun",
+    commercialModalTitleOwner: "Mekan türünü seçin",
+    commercialModalTitleSeeker: "Aradığınız mekan türünü seçin",
   },
   en: {
     navLinks: [
@@ -300,6 +308,14 @@ const translations = {
     tenantBadge: "ROOM SEEKER",
     landlordSubtext: "Find a verified roommate",
     tenantSubtext: "Find your ideal home",
+    commercialOwnerBadge: "COMMERCIAL SPACE OWNER",
+    commercialOwnerTitle: "I have a commercial space to share",
+    commercialOwnerSubtitle: "Share your space with the right person",
+    commercialSeekerBadge: "LOOKING FOR COMMERCIAL SPACE",
+    commercialSeekerTitle: "I'm looking for a commercial space",
+    commercialSeekerSubtitle: "Find the right space for you",
+    commercialModalTitleOwner: "Select space type",
+    commercialModalTitleSeeker: "Select the space you're looking for",
   },
   fa: {
     navLinks: [
@@ -434,6 +450,14 @@ const translations = {
     tenantBadge: "هم‌خانه‌یاب",
     landlordSubtext: "هم‌خانه معتبر پیدا کن",
     tenantSubtext: "خانه ایده‌آلت را بیاب",
+    commercialOwnerBadge: "صاحب فضای تجاری",
+    commercialOwnerTitle: "فضای تجاری دارم، می‌خواهم به اشتراک بگذارم",
+    commercialOwnerSubtitle: "فضای خود را با فرد مناسب به اشتراک بگذارید",
+    commercialSeekerBadge: "دنبال فضای تجاری",
+    commercialSeekerTitle: "دنبال فضای تجاری مشترک می‌گردم",
+    commercialSeekerSubtitle: "فضای مناسب خود را پیدا کنید",
+    commercialModalTitleOwner: "نوع مکان را انتخاب کنید",
+    commercialModalTitleSeeker: "نوع مکان مورد نظر را انتخاب کنید",
   },
   de: {
     navLinks: [
@@ -567,6 +591,14 @@ const translations = {
     tenantBadge: "MITBEWOHNER SUCHER",
     landlordSubtext: "Mitbewohner finden",
     tenantSubtext: "Traumzuhause finden",
+    commercialOwnerBadge: "GEWERBERAUM-EIGENTÜMER",
+    commercialOwnerTitle: "Ich habe einen Gewerberaum zum Teilen",
+    commercialOwnerSubtitle: "Teilen Sie Ihren Raum mit der richtigen Person",
+    commercialSeekerBadge: "GEWERBERAUM GESUCHT",
+    commercialSeekerTitle: "Ich suche einen gemeinsamen Gewerberaum",
+    commercialSeekerSubtitle: "Finden Sie den richtigen Raum für Sie",
+    commercialModalTitleOwner: "Raumtyp auswählen",
+    commercialModalTitleSeeker: "Gesuchten Raumtyp auswählen",
   },
   // Always add "ar" key when adding new translations
   ar: {
@@ -702,6 +734,14 @@ const translations = {
     tenantBadge: "باحث عن شريك سكن",
     landlordSubtext: "ابحث عن شريك سكن موثَّق",
     tenantSubtext: "ابحث عن منزلك المثالي",
+    commercialOwnerBadge: "صاحب مساحة تجارية",
+    commercialOwnerTitle: "لدي مساحة تجارية أريد مشاركتها",
+    commercialOwnerSubtitle: "شارك مساحتك مع الشخص المناسب",
+    commercialSeekerBadge: "أبحث عن مساحة تجارية",
+    commercialSeekerTitle: "أبحث عن مساحة تجارية مشتركة",
+    commercialSeekerSubtitle: "اعثر على المساحة المناسبة لك",
+    commercialModalTitleOwner: "اختر نوع المكان",
+    commercialModalTitleSeeker: "اختر نوع المكان الذي تبحث عنه",
   },
   ru: {
     navLinks: [
@@ -835,6 +875,14 @@ const translations = {
     tenantBadge: "Ищу соседа",
     landlordSubtext: "Найди проверенного соседа",
     tenantSubtext: "Найди своё идеальное жильё",
+    commercialOwnerBadge: "ВЛАДЕЛЕЦ КОММЕРЧЕСКОЙ ПЛОЩАДИ",
+    commercialOwnerTitle: "У меня есть коммерческая площадь для совместного использования",
+    commercialOwnerSubtitle: "Поделитесь площадью с подходящим человеком",
+    commercialSeekerBadge: "ИЩУ КОММЕРЧЕСКУЮ ПЛОЩАДЬ",
+    commercialSeekerTitle: "Ищу коммерческую площадь для совместного использования",
+    commercialSeekerSubtitle: "Найдите подходящую площадь для себя",
+    commercialModalTitleOwner: "Выберите тип помещения",
+    commercialModalTitleSeeker: "Выберите тип помещения, которое ищете",
   },
 };
 type Lang = keyof typeof translations;
@@ -987,6 +1035,81 @@ const trendingCities = [
   { name: "Amsterdam", country: "Netherlands", listings: "987",   growth: "+12%", glow: "bg-red-500/10",    border: "border-red-500/20",    emoji: "🚲" },
   { name: "London",    country: "UK",          listings: "3,201", growth: "+8%",  glow: "bg-indigo-500/10", border: "border-indigo-500/20", emoji: "🎡" },
 ];
+
+const commercialTypeOptionsByLang: Record<string, { emoji: string; label: string }[]> = {
+  tr: [
+    { emoji: "🏢", label: "Ofis" },
+    { emoji: "🏪", label: "Dükkan" },
+    { emoji: "💈", label: "Berber Koltuğu" },
+    { emoji: "🔧", label: "Atölye" },
+    { emoji: "📦", label: "Depo" },
+    { emoji: "🍳", label: "Mutfak" },
+    { emoji: "🎬", label: "İçerik Stüdyosu" },
+    { emoji: "📚", label: "Eğitim Sınıfı" },
+    { emoji: "🚗", label: "Otopark" },
+    { emoji: "📮", label: "Ticari Adres" },
+  ],
+  en: [
+    { emoji: "🏢", label: "Office" },
+    { emoji: "🏪", label: "Shop" },
+    { emoji: "💈", label: "Barber Chair" },
+    { emoji: "🔧", label: "Workshop" },
+    { emoji: "📦", label: "Warehouse" },
+    { emoji: "🍳", label: "Kitchen" },
+    { emoji: "🎬", label: "Content Studio" },
+    { emoji: "📚", label: "Training Room" },
+    { emoji: "🚗", label: "Parking" },
+    { emoji: "📮", label: "Business Address" },
+  ],
+  fa: [
+    { emoji: "🏢", label: "آفیس" },
+    { emoji: "🏪", label: "دکان" },
+    { emoji: "💈", label: "صندلی آرایشگاه" },
+    { emoji: "🔧", label: "کارگاه" },
+    { emoji: "📦", label: "انبار" },
+    { emoji: "🍳", label: "آشپزخانه" },
+    { emoji: "🎬", label: "استودیو تولید محتوا" },
+    { emoji: "📚", label: "کلاس آموزشی" },
+    { emoji: "🚗", label: "پارکینگ" },
+    { emoji: "📮", label: "آدرس تجاری" },
+  ],
+  ar: [
+    { emoji: "🏢", label: "مكتب" },
+    { emoji: "🏪", label: "محل تجاري" },
+    { emoji: "💈", label: "كرسي حلاقة" },
+    { emoji: "🔧", label: "ورشة" },
+    { emoji: "📦", label: "مستودع" },
+    { emoji: "🍳", label: "مطبخ" },
+    { emoji: "🎬", label: "استوديو المحتوى" },
+    { emoji: "📚", label: "قاعة تدريب" },
+    { emoji: "🚗", label: "موقف سيارات" },
+    { emoji: "📮", label: "عنوان تجاري" },
+  ],
+  de: [
+    { emoji: "🏢", label: "Büro" },
+    { emoji: "🏪", label: "Laden" },
+    { emoji: "💈", label: "Friseurstuhl" },
+    { emoji: "🔧", label: "Werkstatt" },
+    { emoji: "📦", label: "Lager" },
+    { emoji: "🍳", label: "Küche" },
+    { emoji: "🎬", label: "Content-Studio" },
+    { emoji: "📚", label: "Schulungsraum" },
+    { emoji: "🚗", label: "Parkplatz" },
+    { emoji: "📮", label: "Geschäftsadresse" },
+  ],
+  ru: [
+    { emoji: "🏢", label: "Офис" },
+    { emoji: "🏪", label: "Магазин" },
+    { emoji: "💈", label: "Кресло парикмахера" },
+    { emoji: "🔧", label: "Мастерская" },
+    { emoji: "📦", label: "Склад" },
+    { emoji: "🍳", label: "Кухня" },
+    { emoji: "🎬", label: "Студия контента" },
+    { emoji: "📚", label: "Учебный класс" },
+    { emoji: "🚗", label: "Парковка" },
+    { emoji: "📮", label: "Бизнес-адрес" },
+  ],
+};
 
 
 
@@ -1321,18 +1444,6 @@ export default function Home() {
   // ── Commercial space type-selector modal ─────────────────────────────────
   const [showCommercialModal, setShowCommercialModal] = useState(false);
   const [commercialMode, setCommercialMode] = useState<'owner' | 'seeker' | null>(null);
-  const commercialTypeOptions = [
-    { emoji: "🏢", label: "Ofis" },
-    { emoji: "🏪", label: "Dükkan" },
-    { emoji: "💈", label: "Berber Koltuğu" },
-    { emoji: "🔧", label: "Atölye" },
-    { emoji: "📦", label: "Depo" },
-    { emoji: "🍳", label: "Mutfak" },
-    { emoji: "🎬", label: "İçerik Stüdyosu" },
-    { emoji: "📚", label: "Eğitim Sınıfı" },
-    { emoji: "🚗", label: "Otopark" },
-    { emoji: "📮", label: "Ticari Adres" },
-  ];
 
   // ── Onboarding flow ───────────────────────────────────────────────────────
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -1542,6 +1653,7 @@ export default function Home() {
   const [selectedCity, setSelectedCity] = useState("");
   const [loadingCities, setLoadingCities] = useState(false);
   const { lang, setLang } = useLang();
+  const commercialTypeOptions = commercialTypeOptionsByLang[lang] ?? commercialTypeOptionsByLang.tr;
 
   // ── Smart Recommendations ─────────────────────────────────────────────────
   const [smartRecs, setSmartRecs] = useState<SmartRec[]>([]);
@@ -2640,13 +2752,13 @@ export default function Home() {
 
                         <div className="flex-1 min-w-0">
                           <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full mb-2 tracking-wide">
-                            🏢 TİCARİ ALAN SAHİBİ
+                            🏢 {t.commercialOwnerBadge}
                           </span>
                           <p className="text-white font-black text-lg leading-snug">
-                            Ticari paylaşım alanım var, paylaşmak istiyorum
+                            {t.commercialOwnerTitle}
                           </p>
                           <p className="text-white/80 text-sm mt-1 font-medium">
-                            Alanınızı doğru kişiyle paylaşın
+                            {t.commercialOwnerSubtitle}
                           </p>
                         </div>
 
@@ -2683,13 +2795,13 @@ export default function Home() {
 
                         <div className="flex-1 min-w-0">
                           <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full mb-2 tracking-wide">
-                            🔍 TİCARİ ALAN ARAYAN
+                            🔍 {t.commercialSeekerBadge}
                           </span>
                           <p className="text-white font-black text-lg leading-snug">
-                            Ticari paylaşım alanı arıyorum
+                            {t.commercialSeekerTitle}
                           </p>
                           <p className="text-white/80 text-sm mt-1 font-medium">
-                            Size uygun ticari alanı bulun
+                            {t.commercialSeekerSubtitle}
                           </p>
                         </div>
 
@@ -3940,7 +4052,7 @@ export default function Home() {
               {/* Orange header */}
               <div className="relative bg-gradient-to-r from-orange-500 to-amber-500 px-6 py-5">
                 <h3 className="text-white font-black text-lg pr-8">
-                  {commercialMode === 'owner' ? 'Mekan türünü seçin' : 'Aradığınız mekan türünü seçin'}
+                  {commercialMode === 'owner' ? t.commercialModalTitleOwner : t.commercialModalTitleSeeker}
                 </h3>
                 <button
                   onClick={() => setShowCommercialModal(false)}
