@@ -25,8 +25,8 @@ export async function POST(req: NextRequest) {
 
     const formParts = [
       `--${boundary}\r\nContent-Disposition: form-data; name="models"\r\n\r\nnudity-2.0,gore-2.0,weapon\r\n`,
-      `--${boundary}\r\nContent-Disposition: form-data; name="api_user"\r\n\r\n64951376\r\n`,
-      `--${boundary}\r\nContent-Disposition: form-data; name="api_secret"\r\n\r\nw6bHfthYTid3LTYsTdB6LPXKFJWJ5vQ2\r\n`,
+      `--${boundary}\r\nContent-Disposition: form-data; name="api_user"\r\n\r\n${process.env.SIGHTENGINE_API_USER!}\r\n`,
+      `--${boundary}\r\nContent-Disposition: form-data; name="api_secret"\r\n\r\n${process.env.SIGHTENGINE_API_SECRET!}\r\n`,
       `--${boundary}\r\nContent-Disposition: form-data; name="media"; filename="image.jpg"\r\nContent-Type: image/jpeg\r\n\r\n`,
     ];
 
