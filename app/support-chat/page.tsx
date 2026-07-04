@@ -122,9 +122,11 @@ export default function SupportChat() {
               color:msg.sender==='user'?'white':'black',
               padding:'10px 14px',borderRadius:'16px',maxWidth:'75%'
             }}>
-              <div style={{fontSize:'11px',fontWeight:'bold',marginBottom:'4px',opacity:0.7}}>
-                {msg.sender==='user'?'Siz':'Sefira Destek'}
-              </div>
+              {msg.sender !== 'user' && (
+                <div style={{fontSize:'11px',fontWeight:'bold',marginBottom:'4px',opacity:0.7}}>
+                  Sefira Destek
+                </div>
+              )}
               {msg.message}
               {/* Time row — ticks on user's own messages only */}
               <div style={{display:'flex',alignItems:'center',justifyContent:'flex-end',gap:'4px',marginTop:'4px'}}>
