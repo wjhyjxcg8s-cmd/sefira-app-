@@ -1515,6 +1515,7 @@ function MessagesPageContent() {
                           transform: `translateX(${swipeDelta}px) scale(${isPressed ? 0.97 : 1})`,
                           transition: isSwiping ? "none" : isPressed ? "transform 0.1s ease" : "transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
                           willChange: "transform",
+                          touchAction: 'manipulation',
                         }}
                         onTouchStart={(e) => onMsgTouchStart(msg, e)}
                         onTouchMove={(e) => onMsgTouchMove(msg, e)}
@@ -1583,6 +1584,7 @@ function MessagesPageContent() {
                           transform: `translateX(${swipeDelta}px) scale(${isPressed ? 0.97 : 1})`,
                           transition: isSwiping ? "none" : isPressed ? "transform 0.1s ease" : "transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
                           willChange: "transform",
+                          touchAction: 'manipulation',
                         }}
                         onTouchStart={(e) => onMsgTouchStart(msg, e)}
                         onTouchMove={(e) => onMsgTouchMove(msg, e)}
