@@ -1123,8 +1123,113 @@ const commercialTypeOptionsByLang: Record<string, { slug: string; emoji: string;
   ],
 };
 
+const commercialTypeDescriptions: Record<string, Record<string, string>> = {
+  ofis: {
+    tr: "Ofisinizdeki boş masa, oda veya alanları serbest çalışanlar, girişimler veya diğer şirketlerle paylaşarak kullanılmayan alanınızdan gelir elde edebilirsiniz.",
+    en: "If you have empty desks, rooms or space in your office, you can share them with freelancers, startups or other companies and earn income from your unused space.",
+    fa: "اگر در دفتر کارتان میز، اتاق یا فضای خالی دارید، می‌توانید آن را با فریلنسرها، استارتاپ‌ها یا شرکت‌های دیگر به اشتراک بگذارید و از فضای بلااستفاده خود درآمد کسب کنید.",
+    ar: "إذا كان لديك مكاتب أو غرف أو مساحات فارغة في مكتبك، يمكنك مشاركتها مع المستقلين والشركات الناشئة وكسب دخل من المساحة غير المستخدمة.",
+    de: "Wenn Sie freie Schreibtische, Räume oder Flächen in Ihrem Büro haben, können Sie diese mit Freelancern, Startups oder anderen Unternehmen teilen.",
+    ru: "Если в вашем офисе есть свободные столы, комнаты или площади, вы можете сдавать их фрилансерам, стартапам или другим компаниям.",
+  },
+  dukkan: {
+    tr: "Dükkanınızın kullanılmayan bir bölümü varsa veya başka bir işletmeyle iş birliği yapacak kadar alanınız varsa, bu alanı başkalarıyla paylaşabilirsiniz.",
+    en: "If part of your shop is unused or you have enough space to collaborate with another business, you can share it with others.",
+    fa: "اگر بخشی از مغازه شما بدون استفاده مانده یا فضای کافی برای همکاری با کسب‌وکار دیگری دارید، می‌توانید آن را با دیگران به اشتراک بگذارید.",
+    ar: "إذا كان جزء من محلك غير مستخدم أو لديك مساحة كافية للتعاون مع عمل آخر، يمكنك مشاركته مع الآخرين.",
+    de: "Wenn ein Teil Ihres Ladens ungenutzt ist oder Sie genug Platz für die Zusammenarbeit mit einem anderen Unternehmen haben, können Sie ihn mit anderen teilen.",
+    ru: "Если часть вашего магазина пустует или у вас достаточно места для сотрудничества с другим бизнесом, вы можете поделиться им.",
+  },
+  "berber-koltugu": {
+    tr: "Berber salonunuzda boş koltuk varsa, bunu diğer berberlere kiralayabilir veya ortaklık şeklinde kullanımlarına sunabilirsiniz.",
+    en: "If you have an empty chair in your barbershop, you can rent it to other barbers or make it available on a shared basis.",
+    fa: "اگر در سالن آرایشگری خود صندلی خالی دارید، می‌توانید آن را به آرایشگران دیگر اجاره دهید یا به صورت اشتراکی در اختیارشان قرار دهید.",
+    ar: "إذا كان لديك كرسي فارغ في صالون الحلاقة، يمكنك تأجيره لحلاقين آخرين أو إتاحته على أساس مشترك.",
+    de: "Wenn Sie in Ihrem Friseursalon einen freien Stuhl haben, können Sie ihn an andere Friseure vermieten oder gemeinschaftlich nutzen lassen.",
+    ru: "Если в вашей парикмахерской есть свободное кресло, вы можете сдать его другим мастерам.",
+  },
+  atolye: {
+    tr: "Atölyenizde boş alan veya başkalarının kullanabileceği ekipmanlarınız varsa, bunları diğer kişi veya işletmelerle paylaşabilirsiniz.",
+    en: "If you have empty space or equipment that others can use in your workshop, you can share it with other individuals or businesses.",
+    fa: "اگر در کارگاه خود فضای خالی یا تجهیزات قابل استفاده برای دیگران دارید، می‌توانید آن را با افراد یا کسب‌وکارهای دیگر به اشتراک بگذارید.",
+    ar: "إذا كان لديك مساحة فارغة أو معدات يمكن للآخرين استخدامها في ورشتك، يمكنك مشاركتها مع أفراد أو شركات أخرى.",
+    de: "Wenn Sie in Ihrer Werkstatt freie Flächen oder Geräte haben, die andere nutzen können, können Sie diese teilen.",
+    ru: "Если в вашей мастерской есть свободное место или оборудование для других, вы можете поделиться ими.",
+  },
+  depo: {
+    tr: "Ürün depolamaya uygun bir deponuz veya alanınız varsa ve bir kısmı boşsa, bunu başkalarıyla paylaşabilirsiniz.",
+    en: "If you have a warehouse or suitable space for storing goods and part of it is empty, you can share it with others.",
+    fa: "اگر انبار یا فضای مناسبی برای نگهداری کالا دارید و بخشی از آن خالی است، می‌توانید آن را با دیگران به اشتراک بگذارید.",
+    ar: "إذا كان لديك مستودع أو مساحة مناسبة لتخزين البضائع وجزء منها فارغ، يمكنك مشاركته مع الآخرين.",
+    de: "Wenn Sie ein Lager oder geeigneten Stauraum haben und ein Teil davon leer ist, können Sie ihn mit anderen teilen.",
+    ru: "Если у вас есть склад или подходящее место для хранения товаров и часть его пустует, вы можете поделиться им.",
+  },
+  mutfak: {
+    tr: "Endüstriyel mutfağınız veya yemek hazırlama alanınız belirli saat veya günlerde kullanılmıyorsa, aşçılar, catering firmaları veya yemek markaları ile paylaşabilirsiniz.",
+    en: "If your commercial kitchen or food preparation space is unused at certain hours or days, you can share it with chefs, caterers or food brands.",
+    fa: "اگر آشپزخانه صنعتی یا فضای آماده‌سازی غذا یا رستوران دارید و در ساعات یا روزهای خاص بدون استفاده است، می‌توانید آن را با آشپزها، کترینگ‌ها یا برندهای غذایی به اشتراک بگذارید.",
+    ar: "إذا كانت مطبخك التجاري أو مساحة تحضير الطعام غير مستخدمة في أوقات أو أيام معينة، يمكنك مشاركتها مع الطهاة وشركات تقديم الطعام.",
+    de: "Wenn Ihre Großküche oder Speisenzubereitungsfläche zu bestimmten Zeiten ungenutzt ist, können Sie sie mit Köchen, Caterern oder Lebensmittelmarken teilen.",
+    ru: "Если ваша коммерческая кухня или пространство для приготовления еды пустует в определённые часы или дни, вы можете поделиться им с поварами или кейтеринговыми компаниями.",
+  },
+  "icerik-studyosu": {
+    tr: "Stüdyonuz, fotoğraf çekim alanınız veya içerik üretim ekipmanlarınız varsa, bunları içerik üreticileri, fotoğrafçılar ve kameramanlarla paylaşabilirsiniz.",
+    en: "If you have a studio, photography space or content production equipment, you can make them available to content creators, photographers and videographers.",
+    fa: "اگر استودیو، فضای عکاسی یا تجهیزات تولید محتوا دارید، می‌توانید آن را در اختیار تولیدکنندگان محتوا، عکاسان و فیلم‌برداران قرار دهید.",
+    ar: "إذا كان لديك استوديو أو مساحة تصوير أو معدات إنتاج محتوى، يمكنك إتاحتها لمنتجي المحتوى والمصورين.",
+    de: "Wenn Sie ein Studio, einen Fotobereich oder Inhaltsproduktionsausrüstung haben, können Sie diese Kreativen, Fotografen und Kameraleuten zur Verfügung stellen.",
+    ru: "Если у вас есть студия, фотопространство или оборудование для создания контента, вы можете предоставить их контент-мейкерам, фотографам и видеографам.",
+  },
+  "egitim-sinifi": {
+    tr: "Sınıfınız veya eğitim alanınız bazı gün veya saatlerde boşsa, kurs, atölye ve seminerler için başkalarıyla paylaşabilirsiniz.",
+    en: "If your classroom or training space is empty on certain days or hours, you can share it with others for courses, workshops and seminars.",
+    fa: "اگر کلاس یا فضای آموزشی شما در بعضی روزها یا ساعات خالی است، می‌توانید آن را برای برگزاری دوره‌ها، کارگاه‌ها و سمینارها با دیگران به اشتراک بگذارید.",
+    ar: "إذا كانت قاعة الدراسة أو مساحة التدريب فارغة في أيام أو ساعات معينة، يمكنك مشاركتها مع الآخرين للدورات والورش والندوات.",
+    de: "Wenn Ihr Klassenzimmer oder Schulungsraum an bestimmten Tagen oder Stunden leer steht, können Sie ihn für Kurse, Workshops und Seminare mit anderen teilen.",
+    ru: "Если ваш класс или учебное пространство пустует в определённые дни или часы, вы можете поделиться им для проведения курсов, мастер-классов и семинаров.",
+  },
+  otopark: {
+    tr: "Otopark olarak kullanılabilecek fazla alanınız varsa, bunu başkalarıyla paylaşabilir ve kullanılmayan alanınızdan gelir elde edebilirsiniz.",
+    en: "If you have extra space that can be used as a parking area, you can share it with others and earn income from your unused space.",
+    fa: "اگر فضای اضافی دارید که می‌توان از آن به عنوان پارکینگ استفاده کرد، می‌توانید آن را با دیگران به اشتراک بگذارید و از فضای بلااستفاده خود درآمد کسب کنید.",
+    ar: "إذا كان لديك مساحة إضافية يمكن استخدامها كموقف سيارات، يمكنك مشاركتها مع الآخرين وكسب دخل من المساحة غير المستخدمة.",
+    de: "Wenn Sie zusätzlichen Platz haben, der als Parkplatz genutzt werden kann, können Sie ihn mit anderen teilen und Einnahmen erzielen.",
+    ru: "Если у вас есть дополнительное пространство, которое можно использовать как парковку, вы можете поделиться им и получать доход.",
+  },
+  "ticari-adres": {
+    tr: "Şirket tescili veya posta alımı için ticari adres sağlayabiliyorsanız, bu hizmetleri başkalarıyla paylaşabilirsiniz.",
+    en: "If you can provide a business address for company registration or receiving mail, you can share this service with others.",
+    fa: "اگر امکان ارائه آدرس تجاری برای ثبت شرکت یا دریافت مرسولات را دارید، می‌توانید این خدمات را با دیگران به اشتراک بگذارید.",
+    ar: "إذا كان بإمكانك توفير عنوان تجاري لتسجيل الشركات أو استلام البريد، يمكنك مشاركة هذه الخدمة مع الآخرين.",
+    de: "Wenn Sie eine Geschäftsadresse für die Unternehmensregistrierung oder den Postempfang anbieten können, können Sie diesen Service mit anderen teilen.",
+    ru: "Если вы можете предоставить юридический адрес для регистрации компании или получения почты, вы можете поделиться этой услугой с другими.",
+  },
+  "kuafor-guzellik-salonu": {
+    tr: "Güzellik salonunuzda boş koltuk, oda veya alan varsa, bunları kuaförler ve güzellik uzmanlarıyla paylaşabilirsiniz.",
+    en: "If you have empty chairs, rooms or space in your beauty salon, you can share them with hairdressers and beauty professionals.",
+    fa: "اگر در سالن زیبایی خود صندلی، اتاق یا فضای خالی دارید، می‌توانید آن را با آرایشگران و متخصصان زیبایی به اشتراک بگذارید.",
+    ar: "إذا كان لديك كراسي أو غرف أو مساحات فارغة في صالون التجميل، يمكنك مشاركتها مع مصففي الشعر وخبراء التجميل.",
+    de: "Wenn Sie in Ihrem Schönheitssalon freie Stühle, Räume oder Flächen haben, können Sie diese mit Friseuren und Schönheitsprofis teilen.",
+    ru: "Если в вашем салоне красоты есть свободные кресла, комнаты или пространство, вы можете поделиться ими с парикмахерами и специалистами по красоте.",
+  },
+  "muayenehane-klinik": {
+    tr: "Muayenehane veya kliniğiniz büyükse ve başka bir doktor ya da uzmanın odalardan birini kullanabilmesi mümkünse, alanınızı başkalarıyla paylaşabilirsiniz.",
+    en: "If your clinic or medical office is large and another doctor or specialist can use one of its rooms, you can share your space with others.",
+    fa: "اگر مطب یا کلینیک شما بزرگ است و امکان استفاده یک پزشک یا متخصص دیگر از یکی از فضاها یا اتاق‌های آن وجود دارد، می‌توانید فضای خود را با دیگران به اشتراک بگذارید.",
+    ar: "إذا كانت عيادتك أو مركزك الطبي كبيراً ويمكن لطبيب أو متخصص آخر استخدام أحد غرفه، يمكنك مشاركة مساحتك مع الآخرين.",
+    de: "Wenn Ihre Praxis oder Klinik groß ist und ein anderer Arzt oder Spezialist einen der Räume nutzen kann, können Sie Ihren Raum mit anderen teilen.",
+    ru: "Если ваш медицинский кабинет или клиника большие и другой врач или специалист может использовать одну из комнат, вы можете поделиться своим пространством.",
+  },
+};
 
-
+const commercialConfirmLabels: Record<string, { continue: string; cancel: string }> = {
+  tr: { continue: "Devam Et", cancel: "İptal" },
+  en: { continue: "Continue", cancel: "Cancel" },
+  fa: { continue: "ادامه", cancel: "انصراف" },
+  ar: { continue: "متابعة", cancel: "إلغاء" },
+  de: { continue: "Weiter", cancel: "Abbrechen" },
+  ru: { continue: "Продолжить", cancel: "Отмена" },
+};
 
 const thisWeekLabel: Record<string, string> = {
   tr: "Bu Hafta",
@@ -1458,6 +1563,7 @@ export default function Home() {
   // ── Commercial space type-selector modal ─────────────────────────────────
   const [showCommercialModal, setShowCommercialModal] = useState(false);
   const [commercialMode, setCommercialMode] = useState<'owner' | 'seeker' | null>(null);
+  const [selectedTypeForConfirm, setSelectedTypeForConfirm] = useState<string | null>(null);
 
   // ── Onboarding flow ───────────────────────────────────────────────────────
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -4179,10 +4285,7 @@ export default function Home() {
               {commercialTypeOptions.map((opt) => (
                 <button
                   key={opt.slug}
-                  onClick={() => {
-                    setShowCommercialModal(false);
-                    router.push(`/create-commercial-listing?type=${opt.slug}&mode=${commercialMode}`);
-                  }}
+                  onClick={() => setSelectedTypeForConfirm(opt.slug)}
                   className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border-2 border-stone-200 hover:border-orange-300 hover:bg-orange-50 active:scale-95 transition-all duration-200 text-center"
                 >
                   <span className="text-3xl">{opt.emoji}</span>
@@ -4192,6 +4295,58 @@ export default function Home() {
             </div>
           </motion.div>
         )}
+      </AnimatePresence>
+
+      {/* ── Commercial type confirmation bottom sheet ─────────────────────────── */}
+      <AnimatePresence>
+        {selectedTypeForConfirm && (() => {
+          const selectedOpt = commercialTypeOptions.find((o) => o.slug === selectedTypeForConfirm);
+          if (!selectedOpt) return null;
+          const description = commercialTypeDescriptions[selectedOpt.slug]?.[lang] ?? commercialTypeDescriptions[selectedOpt.slug]?.tr ?? "";
+          const labels = commercialConfirmLabels[lang] ?? commercialConfirmLabels.tr;
+          return (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setSelectedTypeForConfirm(null)}
+                className="fixed inset-0 bg-black/40"
+                style={{ zIndex: 99999 }}
+              />
+              <motion.div
+                initial={{ y: 300 }}
+                animate={{ y: 0 }}
+                exit={{ y: 300 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl p-6 max-h-[70vh] overflow-y-auto"
+                style={{ zIndex: 100000 }}
+              >
+                <div className="text-5xl text-center mb-3">{selectedOpt.emoji}</div>
+                <h4 className="text-center font-bold text-[20px] text-stone-900 mb-2">{selectedOpt.label}</h4>
+                <p className="text-gray-500 text-[15px] leading-relaxed mb-6">{description}</p>
+                <div className="flex flex-col gap-3">
+                  <button
+                    onClick={() => {
+                      setShowCommercialModal(false);
+                      router.push(`/create-commercial-listing?type=${selectedOpt.slug}&mode=${commercialMode}`);
+                      setSelectedTypeForConfirm(null);
+                    }}
+                    className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black text-sm py-3 rounded-xl shadow-lg shadow-orange-500/25 hover:opacity-95 active:scale-95 transition-all duration-200"
+                  >
+                    {labels.continue}
+                  </button>
+                  <button
+                    onClick={() => setSelectedTypeForConfirm(null)}
+                    className="w-full border-2 border-stone-200 text-stone-700 font-black text-sm py-3 rounded-xl hover:border-orange-300 hover:bg-orange-50 hover:text-orange-800 active:scale-95 transition-all duration-200"
+                  >
+                    {labels.cancel}
+                  </button>
+                </div>
+              </motion.div>
+            </>
+          );
+        })()}
       </AnimatePresence>
     </div>
   );
