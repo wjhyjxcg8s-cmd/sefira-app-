@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { useLang } from "@/app/lib/LangContext";
 
 const headerTitle: Record<string, string> = {
@@ -12,6 +12,24 @@ const headerTitle: Record<string, string> = {
   ar: "اختر نوع الإعلان",
   de: "Inseratstyp wählen",
   ru: "Выберите тип объявления",
+};
+
+const pageSubtitle: Record<string, string> = {
+  tr: "Hangi türde ilan vermek istiyorsunuz?",
+  en: "What type of listing would you like to post?",
+  fa: "چه نوع آگهی می‌خواهید ثبت کنید؟",
+  ar: "ما نوع الإعلان الذي تريد نشره؟",
+  de: "Welche Art von Inserat möchten Sie aufgeben?",
+  ru: "Какой тип объявления вы хотите разместить?",
+};
+
+const residentialBadge: Record<string, string> = {
+  tr: "KONUT",
+  en: "HOME",
+  fa: "مسکونی",
+  ar: "سكني",
+  de: "WOHNEN",
+  ru: "ЖИЛЬЕ",
 };
 
 const residentialTitle: Record<string, string> = {
@@ -30,6 +48,15 @@ const residentialSubtitle: Record<string, string> = {
   ar: "أضف إعلان منزل أو غرفة أو شريك سكن",
   de: "Wohnung, Zimmer oder Mitbewohner inserieren",
   ru: "Подать объявление о жилье, комнате или соседе",
+};
+
+const commercialBadge: Record<string, string> = {
+  tr: "TİCARİ",
+  en: "COMMERCIAL",
+  fa: "تجاری",
+  ar: "تجاري",
+  de: "GEWERBE",
+  ru: "КОММЕРЧЕСКОЕ",
 };
 
 const commercialTitle: Record<string, string> = {
@@ -104,6 +131,34 @@ const seekerOptionSubtitle: Record<string, string> = {
   ru: "Найдите подходящую площадь для себя",
 };
 
+const containerVariants: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1 } },
+};
+
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 30 } },
+};
+
+function PatternOverlay() {
+  return (
+    <div
+      className="absolute inset-0 opacity-10 pointer-events-none"
+      style={{ backgroundImage: "radial-gradient(circle, #fff 1.5px, transparent 1.5px)", backgroundSize: "18px 18px" }}
+    />
+  );
+}
+
+function CornerBlobs() {
+  return (
+    <>
+      <div className="absolute -right-8 -top-8 w-36 h-36 bg-white rounded-full opacity-10 blur-2xl" />
+      <div className="absolute -left-6 -bottom-10 w-32 h-32 bg-white rounded-full opacity-10 blur-2xl" />
+    </>
+  );
+}
+
 export default function ChooseListingTypePage() {
   const router = useRouter();
   const { lang } = useLang();
@@ -111,7 +166,7 @@ export default function ChooseListingTypePage() {
   const [step, setStep] = useState<1 | 2>(1);
 
   return (
-    <div className="min-h-screen bg-white flex flex-col overflow-hidden" dir={isRtl ? "rtl" : "ltr"}>
+    <div className="min-h-screen bg-gradient-to-b from-stone-50 to-orange-50 flex flex-col overflow-hidden" dir={isRtl ? "rtl" : "ltr"}>
       {/* Orange header */}
       <div
         className="relative flex items-center px-4 shrink-0"
@@ -131,6 +186,12 @@ export default function ChooseListingTypePage() {
         </h3>
       </div>
 
+      {step === 1 && (
+        <p className="text-center text-stone-500 text-sm font-medium pt-4 px-6">
+          {pageSubtitle[lang] ?? pageSubtitle.tr}
+        </p>
+      )}
+
       <div className="flex-1 relative overflow-hidden">
         <AnimatePresence mode="wait" initial={false}>
           {step === 1 ? (
@@ -140,39 +201,82 @@ export default function ChooseListingTypePage() {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="absolute inset-0 overflow-y-auto p-5 flex flex-col gap-4"
+              className="absolute inset-0 overflow-y-auto"
             >
-              <motion.button
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05, type: "spring", stiffness: 300, damping: 30 }}
-                onClick={() => router.push("/create-listing")}
-                className="relative flex items-center rounded-2xl p-8 shadow-lg text-white text-left overflow-hidden"
-                style={{ minHeight: "40vh", background: "linear-gradient(135deg, #f97316, #ea580c)" }}
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="px-4 py-6 flex flex-col gap-4"
               >
-                <div className="flex flex-col items-start gap-3 flex-1">
-                  <span style={{ fontSize: 64, lineHeight: 1 }}>🏠</span>
-                  <span className="font-bold" style={{ fontSize: 24 }}>{residentialTitle[lang] ?? residentialTitle.tr}</span>
-                  <span className="text-white/80" style={{ fontSize: 14 }}>{residentialSubtitle[lang] ?? residentialSubtitle.tr}</span>
-                </div>
-                <span className="text-white/80 text-3xl shrink-0" style={{ transform: isRtl ? 'scaleX(-1)' : undefined }}>→</span>
-              </motion.button>
+                {/* Card 1 — Residential */}
+                <motion.button
+                  variants={cardVariants}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => router.push("/create-listing")}
+                  className="relative w-full rounded-[24px] overflow-hidden text-left shadow-[0_20px_45px_-12px_rgba(234,88,12,0.45)]"
+                  style={{ minHeight: 200, background: "linear-gradient(135deg, #fb923c 0%, #f97316 55%, #c2410c 100%)" }}
+                >
+                  <PatternOverlay />
+                  <CornerBlobs />
 
-              <motion.button
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15, type: "spring", stiffness: 300, damping: 30 }}
-                onClick={() => setStep(2)}
-                className="relative flex items-center rounded-2xl p-8 shadow-lg text-white text-left overflow-hidden"
-                style={{ minHeight: "40vh", background: "linear-gradient(135deg, #10b981, #059669)" }}
-              >
-                <div className="flex flex-col items-start gap-3 flex-1">
-                  <span style={{ fontSize: 64, lineHeight: 1 }}>🏢</span>
-                  <span className="font-bold" style={{ fontSize: 24 }}>{commercialTitle[lang] ?? commercialTitle.tr}</span>
-                  <span className="text-white/80" style={{ fontSize: 14 }}>{commercialSubtitle[lang] ?? commercialSubtitle.tr}</span>
-                </div>
-                <span className="text-white/80 text-3xl shrink-0" style={{ transform: isRtl ? 'scaleX(-1)' : undefined }}>→</span>
-              </motion.button>
+                  <span className="absolute top-4 left-4 inline-flex items-center gap-1 bg-white/25 backdrop-blur-md text-white text-[11px] font-bold px-3 py-1 rounded-full tracking-wide border border-white/30">
+                    🏠 {residentialBadge[lang] ?? residentialBadge.tr}
+                  </span>
+
+                  <div className="absolute right-5 top-1/2 -translate-y-1/2">
+                    <motion.span
+                      animate={{ y: [0, -8, 0] }}
+                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                      style={{ fontSize: 80, lineHeight: 1, display: "inline-block", rotate: 10, filter: "drop-shadow(0 12px 16px rgba(0,0,0,0.28))" }}
+                    >
+                      🏠
+                    </motion.span>
+                  </div>
+
+                  <div className="absolute bottom-4 left-5 right-28 flex flex-col gap-1.5">
+                    <span className="text-white font-bold" style={{ fontSize: 22 }}>{residentialTitle[lang] ?? residentialTitle.tr}</span>
+                    <span className="text-white/80" style={{ fontSize: 13 }}>{residentialSubtitle[lang] ?? residentialSubtitle.tr}</span>
+                    <div className="flex items-center gap-2 mt-1 text-lg">
+                      <span>🛏️</span><span>🚿</span><span>👥</span>
+                    </div>
+                  </div>
+                </motion.button>
+
+                {/* Card 2 — Commercial */}
+                <motion.button
+                  variants={cardVariants}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setStep(2)}
+                  className="relative w-full rounded-[24px] overflow-hidden text-left shadow-[0_20px_45px_-12px_rgba(5,150,105,0.45)]"
+                  style={{ minHeight: 200, background: "linear-gradient(135deg, #34d399 0%, #10b981 55%, #047857 100%)" }}
+                >
+                  <PatternOverlay />
+                  <CornerBlobs />
+
+                  <span className="absolute top-4 left-4 inline-flex items-center gap-1 bg-white/25 backdrop-blur-md text-white text-[11px] font-bold px-3 py-1 rounded-full tracking-wide border border-white/30">
+                    🏢 {commercialBadge[lang] ?? commercialBadge.tr}
+                  </span>
+
+                  <div className="absolute right-5 top-1/2 -translate-y-1/2">
+                    <motion.span
+                      animate={{ y: [0, -8, 0] }}
+                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
+                      style={{ fontSize: 80, lineHeight: 1, display: "inline-block", rotate: -10, filter: "drop-shadow(0 12px 16px rgba(0,0,0,0.28))" }}
+                    >
+                      🏢
+                    </motion.span>
+                  </div>
+
+                  <div className="absolute bottom-4 left-5 right-28 flex flex-col gap-1.5">
+                    <span className="text-white font-bold" style={{ fontSize: 22 }}>{commercialTitle[lang] ?? commercialTitle.tr}</span>
+                    <span className="text-white/80" style={{ fontSize: 13 }}>{commercialSubtitle[lang] ?? commercialSubtitle.tr}</span>
+                    <div className="flex items-center gap-2 mt-1 text-lg">
+                      <span>🏢</span><span>🏪</span><span>🔧</span>
+                    </div>
+                  </div>
+                </motion.button>
+              </motion.div>
             </motion.div>
           ) : (
             <motion.div
@@ -181,73 +285,92 @@ export default function ChooseListingTypePage() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="absolute inset-0 overflow-y-auto p-5 flex flex-col gap-4"
+              className="absolute inset-0 overflow-y-auto"
             >
-              {/* Option A — commercial space owner */}
-              <motion.button
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
-                whileTap={{ scale: 0.97 }}
-                whileHover={{ y: -4 }}
-                onClick={() => router.push("/commercial-type-select?mode=owner")}
-                className="w-full relative overflow-hidden rounded-3xl p-[17px] text-left shadow-[0_12px_40px_-12px_rgba(16,185,129,0.6)] active:scale-[0.98] transition-transform"
-                style={{ background: 'linear-gradient(135deg,#34D399 0%,#10B981 55%,#047857 100%)' }}
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="px-4 py-6 flex flex-col gap-4"
               >
-                <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/15 rounded-full blur-xl" />
-                <div className="absolute right-8 bottom-2 w-20 h-20 bg-white/10 rounded-full blur-md" />
+                {/* Option A — commercial space owner */}
+                <motion.button
+                  variants={cardVariants}
+                  whileTap={{ scale: 0.98 }}
+                  whileHover={{ y: -4 }}
+                  onClick={() => router.push("/commercial-type-select?mode=owner")}
+                  className="w-full relative overflow-hidden rounded-[24px] p-5 text-left shadow-[0_20px_45px_-12px_rgba(16,185,129,0.5)]"
+                  style={{ minHeight: 180, background: 'linear-gradient(135deg,#34D399 0%,#10B981 55%,#047857 100%)' }}
+                >
+                  <PatternOverlay />
+                  <CornerBlobs />
 
-                <div className="relative z-10 flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-4xl shrink-0 shadow-inner">
-                    🏢
+                  <div className="relative z-10 flex items-center gap-4 h-full">
+                    <motion.div
+                      animate={{ y: [0, -6, 0] }}
+                      transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                      className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-4xl shrink-0 shadow-inner"
+                    >
+                      🏢
+                    </motion.div>
+                    <div className="flex-1 min-w-0">
+                      <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2 py-0.5 rounded-full mb-2 tracking-wide">
+                        🏢 {ownerBadge[lang] ?? ownerBadge.tr}
+                      </span>
+                      <p className="text-white font-black text-base leading-snug">
+                        {ownerOptionTitle[lang] ?? ownerOptionTitle.tr}
+                      </p>
+                      <p className="text-white/80 text-[13px] mt-1 font-medium">
+                        {ownerOptionSubtitle[lang] ?? ownerOptionSubtitle.tr}
+                      </p>
+                    </div>
+                    <motion.span
+                      animate={{ x: [0, 6, 0] }}
+                      transition={{ duration: 1.4, repeat: Infinity }}
+                      className="text-white text-2xl shrink-0"
+                    >→</motion.span>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2 py-0.5 rounded-full mb-2 tracking-wide">
-                      🏢 {ownerBadge[lang] ?? ownerBadge.tr}
-                    </span>
-                    <p className="text-white font-black text-base leading-snug">
-                      {ownerOptionTitle[lang] ?? ownerOptionTitle.tr}
-                    </p>
-                    <p className="text-white/80 text-[13px] mt-1 font-medium">
-                      {ownerOptionSubtitle[lang] ?? ownerOptionSubtitle.tr}
-                    </p>
-                  </div>
-                  <span className="text-white text-2xl shrink-0">→</span>
-                </div>
-              </motion.button>
+                </motion.button>
 
-              {/* Option B — commercial space seeker */}
-              <motion.button
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.2 }}
-                whileTap={{ scale: 0.97 }}
-                whileHover={{ y: -4 }}
-                onClick={() => router.push("/commercial-type-select?mode=seeker")}
-                className="w-full relative overflow-hidden rounded-3xl p-[17px] text-left shadow-[0_12px_40px_-12px_rgba(13,148,136,0.6)] active:scale-[0.98] transition-transform"
-                style={{ background: 'linear-gradient(135deg,#2DD4BF 0%,#0D9488 55%,#115E59 100%)' }}
-              >
-                <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/15 rounded-full blur-xl" />
-                <div className="absolute right-8 bottom-2 w-20 h-20 bg-white/10 rounded-full blur-md" />
+                {/* Option B — commercial space seeker */}
+                <motion.button
+                  variants={cardVariants}
+                  whileTap={{ scale: 0.98 }}
+                  whileHover={{ y: -4 }}
+                  onClick={() => router.push("/commercial-type-select?mode=seeker")}
+                  className="w-full relative overflow-hidden rounded-[24px] p-5 text-left shadow-[0_20px_45px_-12px_rgba(13,148,136,0.5)]"
+                  style={{ minHeight: 180, background: 'linear-gradient(135deg,#2DD4BF 0%,#0D9488 55%,#115E59 100%)' }}
+                >
+                  <PatternOverlay />
+                  <CornerBlobs />
 
-                <div className="relative z-10 flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-4xl shrink-0 shadow-inner">
-                    🔍
+                  <div className="relative z-10 flex items-center gap-4 h-full">
+                    <motion.div
+                      animate={{ y: [0, -6, 0] }}
+                      transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
+                      className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-4xl shrink-0 shadow-inner"
+                    >
+                      🔍
+                    </motion.div>
+                    <div className="flex-1 min-w-0">
+                      <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2 py-0.5 rounded-full mb-2 tracking-wide">
+                        🔍 {seekerBadge[lang] ?? seekerBadge.tr}
+                      </span>
+                      <p className="text-white font-black text-base leading-snug">
+                        {seekerOptionTitle[lang] ?? seekerOptionTitle.tr}
+                      </p>
+                      <p className="text-white/80 text-[13px] mt-1 font-medium">
+                        {seekerOptionSubtitle[lang] ?? seekerOptionSubtitle.tr}
+                      </p>
+                    </div>
+                    <motion.span
+                      animate={{ x: [0, 6, 0] }}
+                      transition={{ duration: 1.4, repeat: Infinity, delay: 0.2 }}
+                      className="text-white text-2xl shrink-0"
+                    >→</motion.span>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2 py-0.5 rounded-full mb-2 tracking-wide">
-                      🔍 {seekerBadge[lang] ?? seekerBadge.tr}
-                    </span>
-                    <p className="text-white font-black text-base leading-snug">
-                      {seekerOptionTitle[lang] ?? seekerOptionTitle.tr}
-                    </p>
-                    <p className="text-white/80 text-[13px] mt-1 font-medium">
-                      {seekerOptionSubtitle[lang] ?? seekerOptionSubtitle.tr}
-                    </p>
-                  </div>
-                  <span className="text-white text-2xl shrink-0">→</span>
-                </div>
-              </motion.button>
+                </motion.button>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
