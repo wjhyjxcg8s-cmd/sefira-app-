@@ -1050,6 +1050,8 @@ const commercialTypeOptionsByLang: Record<string, { slug: string; emoji: string;
     { slug: "ticari-adres", emoji: "📮", label: "Ticari Adres" },
     { slug: "kuafor-guzellik-salonu", emoji: "💇", label: "Kuaför / Güzellik Salonu" },
     { slug: "muayenehane-klinik", emoji: "🏥", label: "Muayenehane / Klinik" },
+    { slug: "spor-alani", emoji: "🏋️", label: "Spor Alanı" },
+    { slug: "etkinlik-salonu", emoji: "🎪", label: "Etkinlik Salonu" },
   ],
   en: [
     { slug: "ofis", emoji: "🏢", label: "Office" },
@@ -1064,6 +1066,8 @@ const commercialTypeOptionsByLang: Record<string, { slug: string; emoji: string;
     { slug: "ticari-adres", emoji: "📮", label: "Business Address" },
     { slug: "kuafor-guzellik-salonu", emoji: "💇", label: "Hair Salon / Beauty Salon" },
     { slug: "muayenehane-klinik", emoji: "🏥", label: "Clinic / Doctor's Office" },
+    { slug: "spor-alani", emoji: "🏋️", label: "Sports Facility" },
+    { slug: "etkinlik-salonu", emoji: "🎪", label: "Event Hall" },
   ],
   fa: [
     { slug: "ofis", emoji: "🏢", label: "آفیس" },
@@ -1078,6 +1082,8 @@ const commercialTypeOptionsByLang: Record<string, { slug: string; emoji: string;
     { slug: "ticari-adres", emoji: "📮", label: "آدرس تجاری" },
     { slug: "kuafor-guzellik-salonu", emoji: "💇", label: "آرایشگاه / سالن زیبایی" },
     { slug: "muayenehane-klinik", emoji: "🏥", label: "مطب / کلینیک" },
+    { slug: "spor-alani", emoji: "🏋️", label: "فضای ورزشی" },
+    { slug: "etkinlik-salonu", emoji: "🎪", label: "سالن مراسمات" },
   ],
   ar: [
     { slug: "ofis", emoji: "🏢", label: "مكتب" },
@@ -1092,6 +1098,8 @@ const commercialTypeOptionsByLang: Record<string, { slug: string; emoji: string;
     { slug: "ticari-adres", emoji: "📮", label: "عنوان تجاري" },
     { slug: "kuafor-guzellik-salonu", emoji: "💇", label: "صالون تجميل" },
     { slug: "muayenehane-klinik", emoji: "🏥", label: "عيادة / كلينيك" },
+    { slug: "spor-alani", emoji: "🏋️", label: "مرفق رياضي" },
+    { slug: "etkinlik-salonu", emoji: "🎪", label: "قاعة الفعاليات" },
   ],
   de: [
     { slug: "ofis", emoji: "🏢", label: "Büro" },
@@ -1106,6 +1114,8 @@ const commercialTypeOptionsByLang: Record<string, { slug: string; emoji: string;
     { slug: "ticari-adres", emoji: "📮", label: "Geschäftsadresse" },
     { slug: "kuafor-guzellik-salonu", emoji: "💇", label: "Friseursalon / Schönheitssalon" },
     { slug: "muayenehane-klinik", emoji: "🏥", label: "Praxis / Klinik" },
+    { slug: "spor-alani", emoji: "🏋️", label: "Sportstätte" },
+    { slug: "etkinlik-salonu", emoji: "🎪", label: "Veranstaltungssaal" },
   ],
   ru: [
     { slug: "ofis", emoji: "🏢", label: "Офис" },
@@ -1120,6 +1130,8 @@ const commercialTypeOptionsByLang: Record<string, { slug: string; emoji: string;
     { slug: "ticari-adres", emoji: "📮", label: "Бизнес-адрес" },
     { slug: "kuafor-guzellik-salonu", emoji: "💇", label: "Салон красоты" },
     { slug: "muayenehane-klinik", emoji: "🏥", label: "Клиника / Кабинет врача" },
+    { slug: "spor-alani", emoji: "🏋️", label: "Спортивный объект" },
+    { slug: "etkinlik-salonu", emoji: "🎪", label: "Зал мероприятий" },
   ],
 };
 
@@ -1219,6 +1231,22 @@ const commercialTypeDescriptions: Record<string, Record<string, string>> = {
     ar: "إذا كانت عيادتك أو مركزك الطبي كبيراً ويمكن لطبيب أو متخصص آخر استخدام أحد غرفه، يمكنك مشاركة مساحتك مع الآخرين.",
     de: "Wenn Ihre Praxis oder Klinik groß ist und ein anderer Arzt oder Spezialist einen der Räume nutzen kann, können Sie Ihren Raum mit anderen teilen.",
     ru: "Если ваш медицинский кабинет или клиника большие и другой врач или специалист может использовать одну из комнат, вы можете поделиться своим пространством.",
+  },
+  "spor-alani": {
+    tr: "Spor salonunuz, futbol sahanız veya başka bir spor alanınız belirli saat ya da günlerde kullanılmıyorsa, antrenörler, takımlar ve sporcularla paylaşarak boş zamanlarınızdan gelir elde edebilirsiniz.",
+    en: "If you have a gym, football pitch, sports hall or any other sports facility that is unused at certain hours or days, you can share it with coaches, teams and athletes and earn income from your idle time.",
+    fa: "اگر باشگاه، زمین فوتبال، سالن ورزشی یا هر فضای ورزشی دیگری دارید که در برخی ساعات یا روزها بدون استفاده است، می‌توانید آن را با مربیان، تیم‌ها و ورزشکاران به اشتراک بگذارید و از زمان‌های خالی مجموعه خود درآمد کسب کنید.",
+    ar: "إذا كان لديك صالة رياضية أو ملعب كرة قدم أو أي مرفق رياضي آخر غير مستخدم في أوقات أو أيام معينة، يمكنك مشاركته مع المدربين والفرق والرياضيين وكسب دخل من الأوقات الفارغة.",
+    de: "Wenn Ihr Fitnessstudio, Fußballplatz, Sporthalle oder eine andere Sportstätte zu bestimmten Zeiten oder Tagen ungenutzt ist, können Sie sie mit Trainern, Teams und Sportlern teilen und Einnahmen erzielen.",
+    ru: "Если ваш спортзал, футбольное поле, спортивный зал или другой спортивный объект пустует в определённые часы или дни, вы можете поделиться им с тренерами, командами и спортсменами.",
+  },
+  "etkinlik-salonu": {
+    tr: "Düğün, doğum günü, konferans veya diğer etkinlikler için uygun bir salon, bahçe veya alanınız varsa ve bazı günler boşsa, bunu başkalarıyla paylaşarak gelirinizi artırabilirsiniz.",
+    en: "If you have a hall, garden or suitable space for weddings, birthdays, conferences or other events and it is empty on some days, you can share it with others and earn income from your space.",
+    fa: "اگر سالن، باغ یا فضای مناسبی برای برگزاری عروسی، تولد، همایش یا سایر مراسم و رویدادها دارید و در برخی روزها خالی است، می‌توانید آن را با دیگران به اشتراک بگذارید و از فضای خود درآمد کسب کنید.",
+    ar: "إذا كان لديك قاعة أو حديقة أو مساحة مناسبة لإقامة حفلات الأعراس وأعياد الميلاد والمؤتمرات أو الفعاليات الأخرى وكانت فارغة في بعض الأيام، يمكنك مشاركتها مع الآخرين وكسب دخل.",
+    de: "Wenn Sie einen Saal, Garten oder geeigneten Raum für Hochzeiten, Geburtstage, Konferenzen oder andere Veranstaltungen haben und dieser an manchen Tagen leer steht, können Sie ihn mit anderen teilen.",
+    ru: "Если у вас есть зал, сад или подходящее пространство для свадеб, дней рождения, конференций или других мероприятий, и оно пустует в некоторые дни, вы можете поделиться им с другими.",
   },
 };
 
