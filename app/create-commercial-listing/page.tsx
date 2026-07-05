@@ -581,11 +581,11 @@ function CreateCommercialListingPage() {
         user_id: session.user.id,
         listing_category: "commercial",
         commercial_type: typeParam || null,
+        country_code: form.countryCode || null,
         country: form.country || null,
         city: form.city || null,
         district: form.district || null,
         neighborhood: form.neighborhood || null,
-        price: parseFloat(form.price) || null,
         currency: form.currency,
         square_meters: form.sqm ? parseFloat(form.sqm) : null,
         amenities: form.amenities,
@@ -593,6 +593,10 @@ function CreateCommercialListingPage() {
         photos: photoUrls,
         has_place: modeParam === "owner",
         needs_place: modeParam === "seeker",
+        // residential schema splits price by role: rent (offering) vs max_budget (seeking) — same split applied here
+        ...(modeParam === "owner"
+          ? { rent: parseFloat(form.price) || null }
+          : { max_budget: parseFloat(form.price) || null }),
       };
 
       const { error: dbErr } = await supabase.from("listings").insert(payload);
