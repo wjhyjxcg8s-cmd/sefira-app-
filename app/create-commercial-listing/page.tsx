@@ -581,7 +581,6 @@ function CreateCommercialListingPage() {
         user_id: session.user.id,
         listing_category: "commercial",
         commercial_type: typeParam || null,
-        mode: modeParam,
         country: form.country || null,
         city: form.city || null,
         district: form.district || null,
@@ -592,6 +591,8 @@ function CreateCommercialListingPage() {
         amenities: form.amenities,
         description: description || null,
         photos: photoUrls,
+        has_place: modeParam === "owner",
+        needs_place: modeParam === "seeker",
       };
 
       const { error: dbErr } = await supabase.from("listings").insert(payload);
