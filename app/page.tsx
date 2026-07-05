@@ -1245,6 +1245,7 @@ interface SmartRec {
   gender_preference: string | null;
   seeker_gender: string | null;
   user_id: string;
+  listing_category: string | null;
 }
 
 export default function Home() {
@@ -1531,7 +1532,7 @@ export default function Home() {
   // ── Fetch smart recommendations ──────────────────────────────────────────
   useEffect(() => {
     let active = true;
-    const SMART_REC_SELECT = `id, type, city, country_code, rent, max_budget, currency, photos, house_type, rooms, seeker_age, occupation, gender_preference, seeker_gender, user_id`;
+    const SMART_REC_SELECT = `id, type, city, country_code, rent, max_budget, currency, photos, house_type, rooms, seeker_age, occupation, gender_preference, seeker_gender, user_id, listing_category`;
 
     // Build reverse map: lowercased localized country name -> ISO-3166-1 alpha-2 code.
     // Covers all 6 app locales so profile.country matches regardless of how it was stored.
@@ -1671,6 +1672,7 @@ export default function Home() {
 
   // ── Smart Recommendations ─────────────────────────────────────────────────
   const [smartRecs, setSmartRecs] = useState<SmartRec[]>([]);
+  const [recommendationFilter, setRecommendationFilter] = useState<'all' | 'residential' | 'commercial'>('all');
   const [savedRecIds, setSavedRecIds] = useState<string[]>([]);
   const [dismissedRecIds, setDismissedRecIds] = useState<string[]>([]);
   const [recAvatarMap, setRecAvatarMap] = useState<Record<string, string | null>>({});
@@ -3399,6 +3401,27 @@ export default function Home() {
             )}
           </div>
 
+          {/* Filter tabs */}
+          <div className="max-w-2xl mx-auto px-4 mb-4 flex items-center gap-2">
+            {([
+              { value: "all", label: ({ tr: "Tümü", en: "All", fa: "همه", ar: "الكل", de: "Alle", ru: "Все" } as Record<string, string>)[lang] ?? "All" },
+              { value: "residential", label: "🏠 " + (({ tr: "Konut", en: "Residential", fa: "مسکونی", ar: "سكني", de: "Wohnen", ru: "Жильё" } as Record<string, string>)[lang] ?? "Residential") },
+              { value: "commercial", label: "🏢 " + (({ tr: "Ticari", en: "Commercial", fa: "تجاری", ar: "تجاري", de: "Gewerbe", ru: "Коммерция" } as Record<string, string>)[lang] ?? "Commercial") },
+            ] as const).map((tab) => (
+              <button
+                key={tab.value}
+                onClick={() => setRecommendationFilter(tab.value)}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
+                  recommendationFilter === tab.value
+                    ? "bg-orange-500 border-orange-500 text-white shadow-sm shadow-orange-500/30"
+                    : "bg-white border-stone-200 text-stone-500 hover:border-stone-300"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
           {/* Horizontal scroll track */}
           <div
             ref={recScrollRef}
@@ -3416,7 +3439,11 @@ export default function Home() {
               setActiveRecIndex(Math.min(Math.max(idx, 0), smartRecs.length - 1));
             }}
           >
-            {smartRecs.map((rec, i) => {
+            {smartRecs.filter((rec) => {
+              if (recommendationFilter === "all") return true;
+              if (recommendationFilter === "commercial") return rec.listing_category === "commercial";
+              return rec.listing_category === "residential" || rec.listing_category == null;
+            }).map((rec, i) => {
               const isSaved = savedRecIds.includes(rec.id);
               const flagEmoji = rec.country_code && rec.country_code.length === 2
                 ? String.fromCodePoint(...(rec.country_code.toUpperCase().split("").map((c: string) => 0x1F1E6 + c.charCodeAt(0) - 65)))
