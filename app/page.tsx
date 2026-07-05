@@ -1048,6 +1048,8 @@ const commercialTypeOptionsByLang: Record<string, { slug: string; emoji: string;
     { slug: "egitim-sinifi", emoji: "📚", label: "Eğitim Sınıfı" },
     { slug: "otopark", emoji: "🚗", label: "Otopark" },
     { slug: "ticari-adres", emoji: "📮", label: "Ticari Adres" },
+    { slug: "kuafor-guzellik-salonu", emoji: "💇", label: "Kuaför / Güzellik Salonu" },
+    { slug: "muayenehane-klinik", emoji: "🏥", label: "Muayenehane / Klinik" },
   ],
   en: [
     { slug: "ofis", emoji: "🏢", label: "Office" },
@@ -1060,6 +1062,8 @@ const commercialTypeOptionsByLang: Record<string, { slug: string; emoji: string;
     { slug: "egitim-sinifi", emoji: "📚", label: "Training Room" },
     { slug: "otopark", emoji: "🚗", label: "Parking" },
     { slug: "ticari-adres", emoji: "📮", label: "Business Address" },
+    { slug: "kuafor-guzellik-salonu", emoji: "💇", label: "Hair Salon / Beauty Salon" },
+    { slug: "muayenehane-klinik", emoji: "🏥", label: "Clinic / Doctor's Office" },
   ],
   fa: [
     { slug: "ofis", emoji: "🏢", label: "آفیس" },
@@ -1072,6 +1076,8 @@ const commercialTypeOptionsByLang: Record<string, { slug: string; emoji: string;
     { slug: "egitim-sinifi", emoji: "📚", label: "کلاس آموزشی" },
     { slug: "otopark", emoji: "🚗", label: "پارکینگ" },
     { slug: "ticari-adres", emoji: "📮", label: "آدرس تجاری" },
+    { slug: "kuafor-guzellik-salonu", emoji: "💇", label: "آرایشگاه / سالن زیبایی" },
+    { slug: "muayenehane-klinik", emoji: "🏥", label: "مطب / کلینیک" },
   ],
   ar: [
     { slug: "ofis", emoji: "🏢", label: "مكتب" },
@@ -1084,6 +1090,8 @@ const commercialTypeOptionsByLang: Record<string, { slug: string; emoji: string;
     { slug: "egitim-sinifi", emoji: "📚", label: "قاعة تدريب" },
     { slug: "otopark", emoji: "🚗", label: "موقف سيارات" },
     { slug: "ticari-adres", emoji: "📮", label: "عنوان تجاري" },
+    { slug: "kuafor-guzellik-salonu", emoji: "💇", label: "صالون تجميل" },
+    { slug: "muayenehane-klinik", emoji: "🏥", label: "عيادة / كلينيك" },
   ],
   de: [
     { slug: "ofis", emoji: "🏢", label: "Büro" },
@@ -1096,6 +1104,8 @@ const commercialTypeOptionsByLang: Record<string, { slug: string; emoji: string;
     { slug: "egitim-sinifi", emoji: "📚", label: "Schulungsraum" },
     { slug: "otopark", emoji: "🚗", label: "Parkplatz" },
     { slug: "ticari-adres", emoji: "📮", label: "Geschäftsadresse" },
+    { slug: "kuafor-guzellik-salonu", emoji: "💇", label: "Friseursalon / Schönheitssalon" },
+    { slug: "muayenehane-klinik", emoji: "🏥", label: "Praxis / Klinik" },
   ],
   ru: [
     { slug: "ofis", emoji: "🏢", label: "Офис" },
@@ -1108,6 +1118,8 @@ const commercialTypeOptionsByLang: Record<string, { slug: string; emoji: string;
     { slug: "egitim-sinifi", emoji: "📚", label: "Учебный класс" },
     { slug: "otopark", emoji: "🚗", label: "Парковка" },
     { slug: "ticari-adres", emoji: "📮", label: "Бизнес-адрес" },
+    { slug: "kuafor-guzellik-salonu", emoji: "💇", label: "Салон красоты" },
+    { slug: "muayenehane-klinik", emoji: "🏥", label: "Клиника / Кабинет врача" },
   ],
 };
 
