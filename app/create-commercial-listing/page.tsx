@@ -103,20 +103,246 @@ const SPACE_TYPES: Record<string, { emoji: string; label: string }> = {
   "ticari-adres": { emoji: "📮", label: "Ticari Adres" },
 };
 
-const AMENITIES: { key: string; emoji: string; label: string }[] = [
-  { key: "wifi", emoji: "🌐", label: "İnternet/WiFi" },
-  { key: "ac", emoji: "❄️", label: "Klima" },
-  { key: "heating", emoji: "🔥", label: "Isıtma" },
-  { key: "parking", emoji: "🚗", label: "Otopark" },
-  { key: "security", emoji: "🔒", label: "Güvenlik/Kamera" },
-  { key: "elevator", emoji: "🛗", label: "Asansör" },
-  { key: "accessibility", emoji: "♿", label: "Engelli Erişimi" },
-  { key: "wc", emoji: "🚽", label: "WC/Tuvalet" },
-  { key: "kitchen", emoji: "🍳", label: "Mutfak/Çay Ocağı" },
-  { key: "access247", emoji: "💡", label: "7/24 Erişim" },
-  { key: "printer", emoji: "🖨️", label: "Yazıcı/Fotokopi" },
-  { key: "storage", emoji: "📦", label: "Depolama Alanı" },
+const AMENITIES: { key: string; emoji: string }[] = [
+  { key: "wifi", emoji: "🌐" },
+  { key: "ac", emoji: "❄️" },
+  { key: "heating", emoji: "🔥" },
+  { key: "parking", emoji: "🚗" },
+  { key: "security", emoji: "🔒" },
+  { key: "elevator", emoji: "🛗" },
+  { key: "accessibility", emoji: "♿" },
+  { key: "wc", emoji: "🚽" },
+  { key: "kitchen", emoji: "🍳" },
+  { key: "access247", emoji: "💡" },
+  { key: "printer", emoji: "🖨️" },
+  { key: "storage", emoji: "📦" },
 ];
+
+// ── i18n ──────────────────────────────────────────────────────────────────────
+const translations = {
+  tr: {
+    appTitle: "Ticari İlan Ver",
+    stepOf: (s: number) => `Adım ${s} / 2`,
+    step1Title: "Konum & Bütçe",
+    step1Subtitle: "Ticari alanınızın konumunu ve aylık bedelini belirtin",
+    countryLabel: "Ülke",
+    countryPlaceholder: "Ülke ara...",
+    cityLabelTR: "İl",
+    cityLabelOther: "Şehir",
+    districtLabel: "İlçe",
+    neighborhoodLabel: "Mahalle / Semt",
+    priceLabel: "Aylık Bedel",
+    priceSub: "Ticari alanınız için aylık beklenen bedel",
+    currencyLabel: "Para Birimi",
+    back: "Geri",
+    next: "İleri",
+    publish: "Yayınla",
+    publishing: "Yayınlanıyor...",
+    step2Title: "Ticari Detaylar",
+    step2Subtitle: "Alanınızın özelliklerini belirtin",
+    spaceTypeLabel: "Mekan Türü",
+    sqmLabel: "Metrekare (m²)",
+    amenitiesLabel: "Olanaklar",
+    descriptionLabel: "Açıklama *",
+    descriptionPlaceholder: "Alanınız hakkında detaylı bilgi verin...",
+    photosLabel: "Fotoğraflar *",
+    photosSub: "En az 1, en fazla 3 fotoğraf",
+    uploadPhotos: "Fotoğraf Yükle",
+    uploadHint: "PNG, JPG • Maks. 3 fotoğraf",
+    successToast: "İlanınız başarıyla yayınlandı!",
+    amenities: {
+      wifi: "İnternet/WiFi", ac: "Klima", heating: "Isıtma", parking: "Otopark",
+      security: "Güvenlik/Kamera", elevator: "Asansör", accessibility: "Engelli Erişimi",
+      wc: "WC/Tuvalet", kitchen: "Mutfak/Çay Ocağı", access247: "7/24 Erişim",
+      printer: "Yazıcı/Fotokopi", storage: "Depolama Alanı",
+    } as Record<string, string>,
+  },
+  en: {
+    appTitle: "List Commercial Space",
+    stepOf: (s: number) => `Step ${s} / 2`,
+    step1Title: "Location & Budget",
+    step1Subtitle: "Specify your commercial space's location and monthly rate",
+    countryLabel: "Country",
+    countryPlaceholder: "Search country...",
+    cityLabelTR: "Province",
+    cityLabelOther: "City",
+    districtLabel: "District",
+    neighborhoodLabel: "Neighborhood / Area",
+    priceLabel: "Monthly Rate",
+    priceSub: "Expected monthly rate for your commercial space",
+    currencyLabel: "Currency",
+    back: "Back",
+    next: "Next",
+    publish: "Publish",
+    publishing: "Publishing...",
+    step2Title: "Commercial Details",
+    step2Subtitle: "Specify your space's features",
+    spaceTypeLabel: "Space Type",
+    sqmLabel: "Square Meters (m²)",
+    amenitiesLabel: "Amenities",
+    descriptionLabel: "Description *",
+    descriptionPlaceholder: "Provide detailed information about your space...",
+    photosLabel: "Photos *",
+    photosSub: "At least 1, up to 3 photos",
+    uploadPhotos: "Upload Photo",
+    uploadHint: "PNG, JPG • Max. 3 photos",
+    successToast: "Your listing has been published successfully!",
+    amenities: {
+      wifi: "Internet/WiFi", ac: "Air Conditioning", heating: "Heating", parking: "Parking",
+      security: "Security/CCTV", elevator: "Elevator", accessibility: "Wheelchair Access",
+      wc: "WC/Restroom", kitchen: "Kitchen/Pantry", access247: "24/7 Access",
+      printer: "Printer/Copier", storage: "Storage Space",
+    } as Record<string, string>,
+  },
+  fa: {
+    appTitle: "ثبت آگهی تجاری",
+    stepOf: (s: number) => `مرحله ${s} / 2`,
+    step1Title: "موقعیت و بودجه",
+    step1Subtitle: "موقعیت فضای تجاری و مبلغ ماهانه خود را مشخص کنید",
+    countryLabel: "کشور",
+    countryPlaceholder: "جستجوی کشور...",
+    cityLabelTR: "استان",
+    cityLabelOther: "شهر",
+    districtLabel: "منطقه",
+    neighborhoodLabel: "محله",
+    priceLabel: "مبلغ ماهانه",
+    priceSub: "مبلغ ماهانه مورد انتظار برای فضای تجاری شما",
+    currencyLabel: "واحد پول",
+    back: "برگشت",
+    next: "بعدی",
+    publish: "انتشار",
+    publishing: "در حال انتشار...",
+    step2Title: "جزئیات تجاری",
+    step2Subtitle: "ویژگی‌های فضای خود را مشخص کنید",
+    spaceTypeLabel: "نوع مکان",
+    sqmLabel: "متراژ (متر مربع)",
+    amenitiesLabel: "امکانات",
+    descriptionLabel: "توضیحات *",
+    descriptionPlaceholder: "اطلاعات کاملی درباره فضای خود ارائه دهید...",
+    photosLabel: "عکس‌ها *",
+    photosSub: "حداقل ۱، حداکثر ۳ عکس",
+    uploadPhotos: "آپلود عکس",
+    uploadHint: "PNG, JPG • حداکثر ۳ عکس",
+    successToast: "آگهی شما با موفقیت منتشر شد!",
+    amenities: {
+      wifi: "اینترنت/وای‌فای", ac: "تهویه مطبوع", heating: "سیستم گرمایشی", parking: "پارکینگ",
+      security: "امنیت/دوربین مداربسته", elevator: "آسانسور", accessibility: "دسترسی معلولین",
+      wc: "سرویس بهداشتی", kitchen: "آشپزخانه/آبدارخانه", access247: "دسترسی ۲۴/۷",
+      printer: "پرینتر/فتوکپی", storage: "فضای انبار",
+    } as Record<string, string>,
+  },
+  ar: {
+    appTitle: "نشر إعلان تجاري",
+    stepOf: (s: number) => `الخطوة ${s} / 2`,
+    step1Title: "الموقع والميزانية",
+    step1Subtitle: "حدد موقع مساحتك التجارية والسعر الشهري",
+    countryLabel: "البلد",
+    countryPlaceholder: "ابحث عن البلد...",
+    cityLabelTR: "المحافظة",
+    cityLabelOther: "المدينة",
+    districtLabel: "الحي",
+    neighborhoodLabel: "الحارة / المنطقة",
+    priceLabel: "السعر الشهري",
+    priceSub: "السعر الشهري المتوقع لمساحتك التجارية",
+    currencyLabel: "العملة",
+    back: "رجوع",
+    next: "التالي",
+    publish: "نشر",
+    publishing: "جارٍ النشر...",
+    step2Title: "التفاصيل التجارية",
+    step2Subtitle: "حدد ميزات مساحتك",
+    spaceTypeLabel: "نوع المكان",
+    sqmLabel: "المساحة (م²)",
+    amenitiesLabel: "المرافق",
+    descriptionLabel: "الوصف *",
+    descriptionPlaceholder: "قدّم معلومات تفصيلية عن مساحتك...",
+    photosLabel: "الصور *",
+    photosSub: "صورة واحدة على الأقل، حتى 3 صور",
+    uploadPhotos: "رفع صورة",
+    uploadHint: "PNG, JPG • بحد أقصى 3 صور",
+    successToast: "تم نشر إعلانك بنجاح!",
+    amenities: {
+      wifi: "إنترنت/واي فاي", ac: "تكييف", heating: "تدفئة", parking: "موقف سيارات",
+      security: "أمن/كاميرات مراقبة", elevator: "مصعد", accessibility: "إمكانية الوصول لذوي الإعاقة",
+      wc: "دورة مياه", kitchen: "مطبخ/غرفة شاي", access247: "وصول على مدار الساعة",
+      printer: "طابعة/ناسخة", storage: "مساحة تخزين",
+    } as Record<string, string>,
+  },
+  de: {
+    appTitle: "Gewerbeimmobilie inserieren",
+    stepOf: (s: number) => `Schritt ${s} / 2`,
+    step1Title: "Standort & Budget",
+    step1Subtitle: "Geben Sie den Standort und die monatliche Miete Ihres Gewerberaums an",
+    countryLabel: "Land",
+    countryPlaceholder: "Land suchen...",
+    cityLabelTR: "Provinz",
+    cityLabelOther: "Stadt",
+    districtLabel: "Bezirk",
+    neighborhoodLabel: "Stadtteil / Viertel",
+    priceLabel: "Monatliche Miete",
+    priceSub: "Erwartete monatliche Miete für Ihren Gewerberaum",
+    currencyLabel: "Währung",
+    back: "Zurück",
+    next: "Weiter",
+    publish: "Veröffentlichen",
+    publishing: "Wird veröffentlicht...",
+    step2Title: "Gewerbliche Details",
+    step2Subtitle: "Geben Sie die Eigenschaften Ihres Raums an",
+    spaceTypeLabel: "Raumtyp",
+    sqmLabel: "Quadratmeter (m²)",
+    amenitiesLabel: "Ausstattung",
+    descriptionLabel: "Beschreibung *",
+    descriptionPlaceholder: "Geben Sie detaillierte Informationen über Ihren Raum an...",
+    photosLabel: "Fotos *",
+    photosSub: "Mindestens 1, bis zu 3 Fotos",
+    uploadPhotos: "Foto hochladen",
+    uploadHint: "PNG, JPG • Max. 3 Fotos",
+    successToast: "Ihr Inserat wurde erfolgreich veröffentlicht!",
+    amenities: {
+      wifi: "Internet/WLAN", ac: "Klimaanlage", heating: "Heizung", parking: "Parkplatz",
+      security: "Sicherheit/Kamera", elevator: "Aufzug", accessibility: "Barrierefreier Zugang",
+      wc: "WC/Toilette", kitchen: "Küche/Teeküche", access247: "24/7 Zugang",
+      printer: "Drucker/Kopierer", storage: "Lagerfläche",
+    } as Record<string, string>,
+  },
+  ru: {
+    appTitle: "Разместить коммерческое объявление",
+    stepOf: (s: number) => `Шаг ${s} / 2`,
+    step1Title: "Расположение и бюджет",
+    step1Subtitle: "Укажите расположение вашего коммерческого помещения и ежемесячную арендную плату",
+    countryLabel: "Страна",
+    countryPlaceholder: "Поиск страны...",
+    cityLabelTR: "Область",
+    cityLabelOther: "Город",
+    districtLabel: "Район",
+    neighborhoodLabel: "Микрорайон / Квартал",
+    priceLabel: "Ежемесячная плата",
+    priceSub: "Ожидаемая ежемесячная плата за ваше коммерческое помещение",
+    currencyLabel: "Валюта",
+    back: "Назад",
+    next: "Далее",
+    publish: "Опубликовать",
+    publishing: "Публикация...",
+    step2Title: "Коммерческие детали",
+    step2Subtitle: "Укажите характеристики вашего помещения",
+    spaceTypeLabel: "Тип помещения",
+    sqmLabel: "Площадь (м²)",
+    amenitiesLabel: "Удобства",
+    descriptionLabel: "Описание *",
+    descriptionPlaceholder: "Предоставьте подробную информацию о вашем помещении...",
+    photosLabel: "Фото *",
+    photosSub: "Минимум 1, максимум 3 фото",
+    uploadPhotos: "Загрузить фото",
+    uploadHint: "PNG, JPG • Макс. 3 фото",
+    successToast: "Ваше объявление успешно опубликовано!",
+    amenities: {
+      wifi: "Интернет/Wi-Fi", ac: "Кондиционер", heating: "Отопление", parking: "Парковка",
+      security: "Охрана/Видеонаблюдение", elevator: "Лифт", accessibility: "Доступ для инвалидов",
+      wc: "Туалет", kitchen: "Кухня/Чайная комната", access247: "Доступ 24/7",
+      printer: "Принтер/Копир", storage: "Складское помещение",
+    } as Record<string, string>,
+  },
+} as const;
 
 interface CommercialForm {
   countryCode: string;
@@ -234,6 +460,7 @@ function CreateCommercialListingPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const { lang } = useLang();
+  const t = translations[lang as keyof typeof translations] ?? translations.tr;
   const searchParams = useSearchParams();
   const typeParam = searchParams.get("type") || "";
   const modeParam = (searchParams.get("mode") as "owner" | "seeker" | null) ?? null;
@@ -603,7 +830,7 @@ function CreateCommercialListingPage() {
       if (dbErr) throw new Error(dbErr.message);
 
       setToastError(false);
-      setToastMsg("İlanınız başarıyla yayınlandı! ✅");
+      setToastMsg(`${t.successToast} ✅`);
       setShowToast(true);
       setTimeout(() => {
         setShowToast(false);
@@ -659,14 +886,14 @@ function CreateCommercialListingPage() {
           <button
             onClick={goBack}
             className="w-9 h-9 rounded-full bg-stone-100 hover:bg-stone-200 flex items-center justify-center text-stone-700 transition-colors flex-shrink-0"
-            aria-label="Geri"
+            aria-label={t.back}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
               <path d="M15 18l-6-6 6-6" />
             </svg>
           </button>
           <span className="font-black text-stone-900 flex-1 text-center pr-9">
-            Ticari İlan Ver — Adım {step} / 2
+            {t.appTitle} — {t.stepOf(step)}
           </span>
         </div>
       </nav>
@@ -675,7 +902,7 @@ function CreateCommercialListingPage() {
         {/* ── Progress bar ─────────────────────────────────────────────── */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-xs font-semibold text-stone-500">Adım {step} / 2</p>
+            <p className="text-xs font-semibold text-stone-500">{t.stepOf(step)}</p>
             <p className="text-xs font-bold text-orange-500">{Math.round((step / 2) * 100)}%</p>
           </div>
           <div className="h-1.5 bg-stone-100 rounded-full overflow-hidden">
@@ -704,8 +931,8 @@ function CreateCommercialListingPage() {
               exit={{ opacity: 0, x: -40 }}
               transition={{ type: "tween", duration: 0.2 }}
             >
-              <h1 className="text-2xl font-black text-stone-900 mb-1">Konum &amp; Bütçe</h1>
-              <p className="text-stone-500 mb-6 text-sm">Ticari alanınızın konumunu ve aylık bedelini belirtin</p>
+              <h1 className="text-2xl font-black text-stone-900 mb-1">{t.step1Title}</h1>
+              <p className="text-stone-500 mb-6 text-sm">{t.step1Subtitle}</p>
 
               <div className="bg-white rounded-2xl border border-stone-100 shadow-sm divide-y divide-stone-100">
                 {/* Location */}
@@ -714,8 +941,8 @@ function CreateCommercialListingPage() {
                     countryCode={form.countryCode}
                     lang={lang}
                     onSelect={handleCountryChange}
-                    label="Ülke"
-                    placeholder="Ülke ara..."
+                    label={t.countryLabel}
+                    placeholder={t.countryPlaceholder}
                     hasError={invalidFields.includes("country") && !form.countryCode}
                     required
                   />
@@ -723,7 +950,7 @@ function CreateCommercialListingPage() {
                   {/* Şehir / İl */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      {countryIso === "TR" ? "İl" : "Şehir"}<span className="text-red-500 ml-1">*</span>
+                      {countryIso === "TR" ? t.cityLabelTR : t.cityLabelOther}<span className="text-red-500 ml-1">*</span>
                     </label>
                     <div className="relative">
                       <input
@@ -814,7 +1041,7 @@ function CreateCommercialListingPage() {
                   {countryIso === "TR" && (
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        İlçe<span className="text-red-500 ml-1">*</span>
+                        {t.districtLabel}<span className="text-red-500 ml-1">*</span>
                       </label>
                       <div className="relative">
                         <input
@@ -874,7 +1101,7 @@ function CreateCommercialListingPage() {
 
                   {/* Mahalle (optional) */}
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Mahalle / Semt</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">{t.neighborhoodLabel}</label>
                     {countryIso === "TR" && selectedIl && selectedIlce ? (
                       <div className="relative">
                         <input
@@ -939,9 +1166,9 @@ function CreateCommercialListingPage() {
 
                 {/* Monthly price + currency */}
                 <div className="p-5">
-                  <label className="block text-sm font-semibold text-stone-700 mb-1">Aylık Bedel<span className="text-red-500 ml-1">*</span></label>
-                  <p className="text-xs text-stone-400 mb-3">Ticari alanınız için aylık beklenen bedel</p>
-                  <label className="block text-sm font-semibold text-stone-700 mb-2">Para Birimi<span className="text-red-500 ml-1">*</span></label>
+                  <label className="block text-sm font-semibold text-stone-700 mb-1">{t.priceLabel}<span className="text-red-500 ml-1">*</span></label>
+                  <p className="text-xs text-stone-400 mb-3">{t.priceSub}</p>
+                  <label className="block text-sm font-semibold text-stone-700 mb-2">{t.currencyLabel}<span className="text-red-500 ml-1">*</span></label>
                   <div className="flex gap-2 overflow-x-auto pb-1 mb-3">
                     {CURRENCY_OPTIONS.map((c) => (
                       <button
@@ -974,13 +1201,13 @@ function CreateCommercialListingPage() {
                   onClick={goBack}
                   className="flex-1 py-3.5 rounded-xl font-bold text-stone-700 border border-stone-200 bg-white hover:bg-stone-50 active:scale-95 transition-all duration-200 text-sm"
                 >
-                  Geri
+                  {t.back}
                 </button>
                 <button
                   onClick={goNext}
                   className="flex-[2] py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg shadow-orange-500/25 hover:opacity-90 active:scale-95 transition-all duration-200 text-sm"
                 >
-                  İleri
+                  {t.next}
                 </button>
               </div>
             </motion.div>
@@ -992,14 +1219,14 @@ function CreateCommercialListingPage() {
               exit={{ opacity: 0, x: -40 }}
               transition={{ type: "tween", duration: 0.2 }}
             >
-              <h1 className="text-2xl font-black text-stone-900 mb-1">Ticari Detaylar</h1>
-              <p className="text-stone-500 mb-6 text-sm">Alanınızın özelliklerini belirtin</p>
+              <h1 className="text-2xl font-black text-stone-900 mb-1">{t.step2Title}</h1>
+              <p className="text-stone-500 mb-6 text-sm">{t.step2Subtitle}</p>
 
               <div className="bg-white rounded-2xl border border-stone-100 shadow-sm divide-y divide-stone-100">
                 {/* Space type badge (read-only, from URL param) */}
                 {spaceType && (
                   <div className="p-5">
-                    <label className="block text-sm font-semibold text-stone-700 mb-2">Mekan Türü</label>
+                    <label className="block text-sm font-semibold text-stone-700 mb-2">{t.spaceTypeLabel}</label>
                     <span className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 text-orange-700 font-bold text-sm px-4 py-2 rounded-full">
                       <span className="text-lg">{spaceType.emoji}</span>
                       {spaceType.label}
@@ -1009,7 +1236,7 @@ function CreateCommercialListingPage() {
 
                 {/* Square meters */}
                 <div className="p-5">
-                  <label className="block text-sm font-semibold text-stone-700 mb-2">Metrekare (m²)</label>
+                  <label className="block text-sm font-semibold text-stone-700 mb-2">{t.sqmLabel}</label>
                   <input
                     type="number"
                     min={0}
@@ -1022,7 +1249,7 @@ function CreateCommercialListingPage() {
 
                 {/* Amenities */}
                 <div className="p-5">
-                  <label className="block text-sm font-semibold text-stone-700 mb-3">Olanaklar</label>
+                  <label className="block text-sm font-semibold text-stone-700 mb-3">{t.amenitiesLabel}</label>
                   <div className="grid grid-cols-2 gap-2.5">
                     {AMENITIES.map((a) => {
                       const active = form.amenities.includes(a.key);
@@ -1038,7 +1265,7 @@ function CreateCommercialListingPage() {
                           }`}
                         >
                           <span className="text-lg shrink-0">{a.emoji}</span>
-                          <span className="leading-tight">{a.label}</span>
+                          <span className="leading-tight">{t.amenities[a.key] ?? a.key}</span>
                         </button>
                       );
                     })}
@@ -1047,7 +1274,7 @@ function CreateCommercialListingPage() {
 
                 {/* Description */}
                 <div className="p-5">
-                  <label className="block text-sm font-semibold text-stone-700 mb-2">Açıklama *</label>
+                  <label className="block text-sm font-semibold text-stone-700 mb-2">{t.descriptionLabel}</label>
                   <textarea
                     ref={descriptionRef}
                     rows={4}
@@ -1056,7 +1283,7 @@ function CreateCommercialListingPage() {
                       setDescription(e.target.value);
                       if (errors.description) setErrors(prev => ({ ...prev, description: undefined }));
                     }}
-                    placeholder="Alanınız hakkında detaylı bilgi verin..."
+                    placeholder={t.descriptionPlaceholder}
                     className={`w-full border rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm resize-none ${errors.description ? "border-red-400 border-2" : "border-gray-200"}`}
                   />
                   {errors.description && (
@@ -1067,10 +1294,10 @@ function CreateCommercialListingPage() {
                 {/* Photos */}
                 <div ref={photosRef} className={`p-5 ${errors.photos && photos.length === 0 ? "border-2 border-red-400 rounded-2xl" : ""}`}>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="text-sm font-semibold text-stone-700">Fotoğraflar *</label>
+                    <label className="text-sm font-semibold text-stone-700">{t.photosLabel}</label>
                     <span className="text-xs text-stone-400">{photos.length + uploadingCount}/3</span>
                   </div>
-                  <p className="text-xs text-stone-400 mb-3">En az 1, en fazla 3 fotoğraf</p>
+                  <p className="text-xs text-stone-400 mb-3">{t.photosSub}</p>
 
                   {/* Preview grid */}
                   {(photos.length > 0 || uploadingCount > 0) && (
@@ -1104,8 +1331,8 @@ function CreateCommercialListingPage() {
                       className={`border-2 border-dashed rounded-2xl p-6 flex flex-col items-center gap-2 cursor-pointer active:bg-orange-100 transition-colors ${errors.photos && photos.length === 0 ? "border-red-400 bg-red-50" : "border-orange-300 bg-orange-50"}`}
                     >
                       <span className="text-3xl">📷</span>
-                      <p className="text-sm font-medium text-orange-700">Fotoğraf Yükle</p>
-                      <p className="text-xs text-gray-400">PNG, JPG • Maks. 3 fotoğraf</p>
+                      <p className="text-sm font-medium text-orange-700">{t.uploadPhotos}</p>
+                      <p className="text-xs text-gray-400">{t.uploadHint}</p>
                     </div>
                   )}
 
@@ -1136,7 +1363,7 @@ function CreateCommercialListingPage() {
                   disabled={submitting}
                   className="flex-[2] py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg shadow-orange-500/25 hover:opacity-90 active:scale-95 transition-all duration-200 text-sm disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
                 >
-                  {submitting ? "Yayınlanıyor..." : "Yayınla"}
+                  {submitting ? t.publishing : t.publish}
                 </button>
               </div>
             </motion.div>
