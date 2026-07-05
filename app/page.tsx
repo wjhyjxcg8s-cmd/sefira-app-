@@ -1259,12 +1259,6 @@ const commercialConfirmLabels: Record<string, { continue: string; cancel: string
   ru: { continue: "Продолжить", cancel: "Отмена" },
 };
 
-const categoryTabs = [
-  { key: 'all', label: { TR: 'Tümü', EN: 'All', FA: 'همه', AR: 'الكل', DE: 'Alle', RU: 'Все' }, icon: '🌐' },
-  { key: 'residential', label: { TR: 'Konut', EN: 'Residential', FA: 'مسکونی', AR: 'سكني', DE: 'Wohnen', RU: 'Жильё' }, icon: '🏠' },
-  { key: 'commercial', label: { TR: 'Ticari', EN: 'Commercial', FA: 'تجاری', AR: 'تجاري', DE: 'Gewerbe', RU: 'Коммерческий' }, icon: '🏢' },
-] as const;
-
 const thisWeekLabel: Record<string, string> = {
   tr: "Bu Hafta",
   en: "This Week",
@@ -1800,7 +1794,6 @@ export default function Home() {
   }
 
   // ── Existing state ────────────────────────────────────────────────────────
-  const [categoryFilter, setCategoryFilter] = useState<'all' | 'residential' | 'commercial'>('all');
   const [likedListings, setLikedListings] = useState<number[]>([]);
   const [searchInput, setSearchInput] = useState("");
   const [countries, setCountries] = useState<string[]>([]);
@@ -3458,31 +3451,9 @@ export default function Home() {
             </h2>
             <p className="text-stone-500">{t.featuredP}</p>
           </div>
-          <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
-            {categoryTabs.map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setCategoryFilter(tab.key)}
-                className={`px-4 py-2 rounded-full text-sm font-medium flex items-center gap-1.5 whitespace-nowrap ${
-                  categoryFilter === tab.key
-                    ? "bg-gray-900 text-white shadow-md"
-                    : "bg-white text-gray-600 border border-gray-200 shadow-sm"
-                }`}
-                style={{ transition: "all 0.2s ease" }}
-              >
-                <span>{tab.icon}</span>
-                <span>{tab.label[lang.toUpperCase() as keyof typeof tab.label] ?? tab.label.EN}</span>
-              </button>
-            ))}
-          </div>
         </div>
         <div className="grid grid-cols-3 gap-3">
-          {listings.filter((listing) => {
-            const category = (listing as { listing_category?: string | null }).listing_category ?? null;
-            if (categoryFilter === "all") return true;
-            if (categoryFilter === "commercial") return category === "commercial";
-            return category === "residential" || category == null;
-          }).map((listing, idx) => (
+          {listings.map((listing, idx) => (
             <div
               key={listing.id}
               className="group bg-white border border-stone-200 rounded-2xl overflow-hidden hover:border-orange-200 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/5 hover:-translate-y-1 cursor-pointer hover:ring-1 hover:ring-orange-200"

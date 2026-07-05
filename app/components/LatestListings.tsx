@@ -322,6 +322,12 @@ const titles: Record<Lang, string> = {
   ru: "Последние объявления",
 };
 
+const categoryTabs: { key: "all" | "residential" | "commercial"; icon: string; label: Record<Lang, string> }[] = [
+  { key: "all", icon: "🌐", label: { tr: "Tümü", en: "All", fa: "همه", ar: "الكل", de: "Alle", ru: "Все" } },
+  { key: "residential", icon: "🏠", label: { tr: "Konut", en: "Residential", fa: "مسکونی", ar: "سكني", de: "Wohnen", ru: "Жильё" } },
+  { key: "commercial", icon: "🏢", label: { tr: "Ticari", en: "Commercial", fa: "تجاری", ar: "تجاري", de: "Gewerbe", ru: "Коммерческий" } },
+];
+
 const cardLabels: Record<Lang, {
   furnished: string; unfurnished: string; residents: string;
   maxBudget: string; age: string; working: string; student: string; privateRoom: string;
@@ -393,18 +399,15 @@ const listingTypeTrans: Record<string, Record<string, string>> = {
 export default function LatestListings({ lang, filterCity, onClearFilter }: LatestListingsProps) {
   const router = useRouter();
   const [allListings, setAllListings] = useState<any[]>([]);
-  const [selectedCountry, setSelectedCountry] = useState("all");
+  const [sonIlanlarCategory, setSonIlanlarCategory] = useState<'all' | 'residential' | 'commercial'>('all');
   const [loading, setLoading] = useState(true);
-  const [showCountryModal, setShowCountryModal] = useState(false);
-  const [countrySearch, setCountrySearch] = useState("");
-  const [extraPills, setExtraPills] = useState<{ code: string; flag: string; name: string }[]>([]);
 
   useEffect(() => {
     async function fetchListings() {
       setLoading(true);
       const { data, error } = await supabaseClient
         .from("listings")
-        .select("id, type, city, district, neighborhood, rent, currency, photos, house_type, rooms, smoking, furnished, elevator, current_residents, user_id, country_code, country, max_budget, seeker_age, seeker_gender, occupation, private_room_required, about_text")
+        .select("id, type, city, district, neighborhood, rent, currency, photos, house_type, rooms, smoking, furnished, elevator, current_residents, user_id, country_code, country, max_budget, seeker_age, seeker_gender, occupation, private_room_required, about_text, listing_category")
         .eq("is_deleted", false)
         .order("created_at", { ascending: false })
         .limit(50);
@@ -433,11 +436,18 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
   }, []);
 
   useEffect(() => {
-    if (filterCity) setSelectedCountry("all");
+    if (filterCity) setSonIlanlarCategory("all");
   }, [filterCity]);
 
   const listings = useMemo(() => {
-    let base = filterByCountry(allListings, filterCity ? "all" : selectedCountry);
+    let base = filterCity
+      ? allListings
+      : allListings.filter((l) => {
+          const category = l.listing_category ?? null;
+          if (sonIlanlarCategory === "all") return true;
+          if (sonIlanlarCategory === "commercial") return category === "commercial";
+          return category === "residential" || category == null;
+        });
     if (filterCity) {
       const q = normalizeTR(filterCity);
       base = base.filter(
@@ -447,38 +457,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
       );
     }
     return base.slice(0, 12);
-  }, [allListings, selectedCountry, filterCity]);
-
-  function selectFromModal(country: { code: string; flag: string; name: string }) {
-    if (!fixedCodes.has(country.code) && !extraPills.find((p) => p.code === country.code)) {
-      setExtraPills((prev) => [...prev, country]);
-    }
-    setSelectedCountry(country.code);
-    setShowCountryModal(false);
-    setCountrySearch("");
-    onClearFilter?.();
-  }
-
-  const pillList = (() => {
-    const allPill = countries[0];
-    const rest = [
-      ...countries.slice(1),
-      ...extraPills.map((p) => ({
-        code: p.code,
-        flag: p.flag,
-        name: { tr: p.name, en: p.name, fa: p.name, ar: p.name, de: p.name, ru: p.name } as Record<Lang, string>,
-      })),
-    ];
-    const priority = langPriorityCountry[lang] ?? null;
-    if (priority) {
-      rest.sort((a, b) => {
-        if (a.code === priority) return -1;
-        if (b.code === priority) return 1;
-        return 0;
-      });
-    }
-    return [allPill, ...rest];
-  })();
+  }, [allListings, sonIlanlarCategory, filterCity]);
 
   const lbl = cardLabels[lang as Lang] ?? cardLabels.tr;
 
@@ -512,31 +491,22 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
         </>
       )}
 
-      {/* Country filter pills */}
+      {/* Category filter tabs */}
       <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide mb-6">
-        {pillList.map((c) => (
+        {categoryTabs.map((tab) => (
           <button
-            key={c.code}
-            onClick={() => { setSelectedCountry(c.code); onClearFilter?.(); }}
+            key={tab.key}
+            onClick={() => { setSonIlanlarCategory(tab.key); onClearFilter?.(); }}
             className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-all ${
-              selectedCountry === c.code
-                ? c.code === "all"
-                  ? "bg-slate-800 text-white shadow-md scale-105"
-                  : "bg-orange-500 text-white shadow-md scale-105"
+              sonIlanlarCategory === tab.key
+                ? "bg-gray-900 text-white shadow-md"
                 : "bg-white text-gray-600 border border-gray-200 hover:border-orange-300"
             }`}
           >
-            <span className="text-lg">{c.flag}</span>
-            <span>{c.name[lang as Lang] || c.name.tr}</span>
+            <span className="text-lg">{tab.icon}</span>
+            <span>{tab.label[lang as Lang] ?? tab.label.tr}</span>
           </button>
         ))}
-
-        <button
-          onClick={() => setShowCountryModal(true)}
-          className="flex items-center gap-1 px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-all border-2 border-dashed border-gray-300 text-gray-500 hover:border-orange-400 hover:text-orange-500 bg-white"
-        >
-          🌐 +
-        </button>
       </div>
 
       {loading ? (
@@ -734,70 +704,6 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
         </div>
       )}
 
-      {/* Country selector bottom sheet */}
-      {showCountryModal && (
-        <div className="fixed inset-0 bg-black/50 z-50" onClick={() => setShowCountryModal(false)}>
-          <div
-            className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl max-h-[85vh] flex flex-col"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-100">
-              <h3 className="font-bold text-lg">🌍 Ülke Seç</h3>
-              <button
-                onClick={() => setShowCountryModal(false)}
-                className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Search */}
-            <div className="p-4 pb-2">
-              <input
-                value={countrySearch}
-                onChange={(e) => setCountrySearch(e.target.value)}
-                placeholder="Ülke ara..."
-                className="w-full px-4 py-2.5 bg-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
-                autoFocus
-              />
-            </div>
-
-            {/* Show All option */}
-            <div className="px-4 pb-2">
-              <button
-                onClick={() => { setSelectedCountry("all"); setShowCountryModal(false); }}
-                className="w-full flex items-center gap-2 p-3 rounded-xl border-2 border-orange-200 bg-orange-50 text-orange-700 font-medium text-sm"
-              >
-                🌍 Tüm Ülkeleri Göster
-              </button>
-            </div>
-
-            {/* Country grid */}
-            <div className="overflow-y-auto flex-1 px-4 pb-6">
-              <div className="grid grid-cols-2 gap-2">
-                {allCountries
-                  .filter((c) => c.name.toLowerCase().includes(countrySearch.toLowerCase()))
-                  .map((c) => (
-                    <button
-                      key={c.code}
-                      onClick={() => { selectFromModal(c); setCountrySearch(""); }}
-                      className={`flex items-center gap-2 p-3 rounded-xl border text-sm text-left transition-all ${
-                        selectedCountry === c.code
-                          ? "border-orange-500 bg-orange-50 text-orange-700 font-medium"
-                          : "border-gray-200 hover:border-orange-300 hover:bg-orange-50"
-                      }`}
-                    >
-                      <span className="text-xl">{c.flag}</span>
-                      <span className="truncate">{c.name}</span>
-                    </button>
-                  ))
-                }
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 }
