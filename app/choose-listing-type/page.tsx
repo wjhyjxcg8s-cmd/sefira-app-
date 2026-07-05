@@ -224,21 +224,15 @@ export default function ChooseListingTypePage() {
                     🏠 {residentialBadge[lang] ?? residentialBadge.tr}
                   </span>
 
-                  <div className="absolute right-5 top-1/2 -translate-y-1/2">
-                    <motion.span
-                      animate={{ y: [0, -8, 0] }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                      style={{ fontSize: 80, lineHeight: 1, display: "inline-block", rotate: 10, filter: "drop-shadow(0 12px 16px rgba(0,0,0,0.28))" }}
-                    >
-                      🏠
-                    </motion.span>
-                  </div>
+                  <span className="absolute bottom-4 right-4 text-7xl leading-none">
+                    🏠
+                  </span>
 
                   <div className="absolute bottom-4 left-5 right-28 flex flex-col gap-1.5">
                     <span className="text-white font-bold" style={{ fontSize: 22 }}>{residentialTitle[lang] ?? residentialTitle.tr}</span>
                     <span className="text-white/80" style={{ fontSize: 13 }}>{residentialSubtitle[lang] ?? residentialSubtitle.tr}</span>
-                    <div className="flex items-center gap-2 mt-1 text-lg">
-                      <span>🛏️</span><span>🚿</span><span>👥</span>
+                    <div className="flex items-center gap-2" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span className="text-xl">🛏️</span><span className="text-xl">🚿</span><span className="text-xl">👥</span>
                     </div>
                   </div>
                 </motion.button>
@@ -258,21 +252,15 @@ export default function ChooseListingTypePage() {
                     🏢 {commercialBadge[lang] ?? commercialBadge.tr}
                   </span>
 
-                  <div className="absolute right-5 top-1/2 -translate-y-1/2">
-                    <motion.span
-                      animate={{ y: [0, -8, 0] }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-                      style={{ fontSize: 80, lineHeight: 1, display: "inline-block", rotate: -10, filter: "drop-shadow(0 12px 16px rgba(0,0,0,0.28))" }}
-                    >
-                      🏢
-                    </motion.span>
-                  </div>
+                  <span className="absolute bottom-4 right-4 text-7xl leading-none">
+                    🏢
+                  </span>
 
                   <div className="absolute bottom-4 left-5 right-28 flex flex-col gap-1.5">
                     <span className="text-white font-bold" style={{ fontSize: 22 }}>{commercialTitle[lang] ?? commercialTitle.tr}</span>
                     <span className="text-white/80" style={{ fontSize: 13 }}>{commercialSubtitle[lang] ?? commercialSubtitle.tr}</span>
-                    <div className="flex items-center gap-2 mt-1 text-lg">
-                      <span>🏢</span><span>🏪</span><span>🔧</span>
+                    <div className="flex items-center gap-2" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span className="text-xl">🏢</span><span className="text-xl">🏪</span><span className="text-xl">🔧</span>
                     </div>
                   </div>
                 </motion.button>
