@@ -1794,7 +1794,7 @@ export default function Home() {
   }
 
   // ── Existing state ────────────────────────────────────────────────────────
-  const [activeFilter, setActiveFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState<'all' | 'residential' | 'commercial'>('all');
   const [likedListings, setLikedListings] = useState<number[]>([]);
   const [searchInput, setSearchInput] = useState("");
   const [countries, setCountries] = useState<string[]>([]);
@@ -3453,23 +3453,32 @@ export default function Home() {
             <p className="text-stone-500">{t.featuredP}</p>
           </div>
           <div className="flex gap-2 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
-            {["all", "Berlin", "Dubai", "Istanbul", "Barcelona"].map((f) => (
+            {([
+              { value: "all", label: ({ tr: "Tümü", en: "All", fa: "همه", ar: "الكل", de: "Alle", ru: "Все" } as Record<string, string>)[lang] ?? "All" },
+              { value: "residential", label: "🏠 " + (({ tr: "Konut", en: "Residential", fa: "مسکونی", ar: "سكني", de: "Wohnen", ru: "Жильё" } as Record<string, string>)[lang] ?? "Residential") },
+              { value: "commercial", label: "🏢 " + (({ tr: "Ticari", en: "Commercial", fa: "تجاری", ar: "تجاري", de: "Gewerbe", ru: "Коммерческий" } as Record<string, string>)[lang] ?? "Commercial") },
+            ] as const).map((tab) => (
               <button
-                key={f}
-                onClick={() => setActiveFilter(f)}
+                key={tab.value}
+                onClick={() => setCategoryFilter(tab.value)}
                 className={`px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 whitespace-nowrap ${
-                  activeFilter === f
+                  categoryFilter === tab.value
                     ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/25"
                     : "bg-stone-100 text-stone-600 hover:text-stone-900 border border-stone-200 hover:border-stone-300"
                 }`}
               >
-                {f === "all" ? t.listingFilterAll : f}
+                {tab.label}
               </button>
             ))}
           </div>
         </div>
         <div className="grid grid-cols-3 gap-3">
-          {listings.map((listing, idx) => (
+          {listings.filter((listing) => {
+            const category = (listing as { listing_category?: string | null }).listing_category ?? null;
+            if (categoryFilter === "all") return true;
+            if (categoryFilter === "commercial") return category === "commercial";
+            return category === "residential" || category == null;
+          }).map((listing, idx) => (
             <div
               key={listing.id}
               className="group bg-white border border-stone-200 rounded-2xl overflow-hidden hover:border-orange-200 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/5 hover:-translate-y-1 cursor-pointer hover:ring-1 hover:ring-orange-200"
