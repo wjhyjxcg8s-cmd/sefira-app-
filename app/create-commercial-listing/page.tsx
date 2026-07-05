@@ -239,6 +239,11 @@ function CreateCommercialListingPage() {
   const dir = lang === "fa" || lang === "ar" ? "rtl" : "ltr";
 
   const [step, setStep] = useState(1);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [step]);
+
   const [form, setForm] = useState<CommercialForm>(initialForm);
   const set = <K extends keyof CommercialForm>(key: K, val: CommercialForm[K]) =>
     setForm((f) => ({ ...f, [key]: val }));
@@ -457,7 +462,7 @@ function CreateCommercialListingPage() {
               initial={{ opacity: 0, x: 40 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -40 }}
-              transition={{ duration: 0.25 }}
+              transition={{ type: "tween", duration: 0.2 }}
             >
               <h1 className="text-2xl font-black text-stone-900 mb-1">Konum &amp; Bütçe</h1>
               <p className="text-stone-500 mb-6 text-sm">Ticari alanınızın konumunu ve aylık bedelini belirtin</p>
@@ -745,7 +750,7 @@ function CreateCommercialListingPage() {
               initial={{ opacity: 0, x: 40 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -40 }}
-              transition={{ duration: 0.25 }}
+              transition={{ type: "tween", duration: 0.2 }}
             >
               <h1 className="text-2xl font-black text-stone-900 mb-1">Ticari Detaylar</h1>
               <p className="text-stone-500 mb-6 text-sm">Alanınızın özelliklerini belirtin</p>
