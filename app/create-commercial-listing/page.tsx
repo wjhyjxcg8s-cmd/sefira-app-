@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/app/lib/AuthContext";
 import { useLang } from "@/app/lib/LangContext";
+import { supabase } from "@/app/lib/supabase";
 
 // ── Countries (same list as create-listing) ──────────────────────────────────
 const TOP_COUNTRY_CODES = ["TR", "IR", "DE", "AE", "GB", "RU", "US", "FR", "ES"];
@@ -347,6 +348,8 @@ function CreateCommercialListingPage() {
 
   const [toastMsg, setToastMsg] = useState("");
   const [showToast, setShowToast] = useState(false);
+  const [toastError, setToastError] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const goNext = () => {
     setStepErrors([]);
@@ -385,7 +388,7 @@ function CreateCommercialListingPage() {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const newErrors: { description?: string; photos?: string } = {};
     if (!description.trim() || description.trim().length < 20) {
       newErrors.description = "Açıklama en az 20 karakter olmalıdır.";
@@ -403,17 +406,68 @@ function CreateCommercialListingPage() {
       return;
     }
     setErrors({});
+    setSubmitting(true);
 
-    console.log("Commercial listing submission:", {
-      type: typeParam,
-      mode: modeParam,
-      ...form,
-      description,
-      photos,
-    });
-    setToastMsg("İlanınız başarıyla oluşturuldu!");
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000);
+    try {
+      // 1. Current user session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
+        throw new Error("Oturum bulunamadı. Lütfen tekrar giriş yapın.");
+      }
+
+      // 2. Upload photos (same /api/upload-photo pipeline create-listing uses)
+      const photoUrls: string[] = [];
+      for (const file of photos) {
+        const fd = new FormData();
+        fd.append("file", file);
+        fd.append("userId", session.user.id);
+        const res = await fetch("/api/upload-photo", { method: "POST", body: fd });
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({})) as { error?: string };
+          throw new Error(body.error === "inappropriate_content" ? "Uygunsuz içerik nedeniyle bir fotoğraf yüklenemedi." : "Fotoğraf yüklenirken hata oluştu.");
+        }
+        const { url } = await res.json();
+        photoUrls.push(url);
+      }
+
+      // 3. Insert listing row
+      const payload: Record<string, unknown> = {
+        user_id: session.user.id,
+        listing_category: "commercial",
+        commercial_type: typeParam || null,
+        mode: modeParam,
+        country: form.country || null,
+        city: form.city || null,
+        district: form.district || null,
+        neighborhood: form.neighborhood || null,
+        price: parseFloat(form.price) || null,
+        currency: form.currency,
+        square_meters: form.sqm ? parseFloat(form.sqm) : null,
+        amenities: form.amenities,
+        description: description || null,
+        photos: photoUrls,
+        has_place: modeParam === "owner",
+        needs_place: modeParam === "seeker",
+      };
+
+      const { error: dbErr } = await supabase.from("listings").insert(payload);
+      if (dbErr) throw new Error(dbErr.message);
+
+      setToastError(false);
+      setToastMsg("İlanınız başarıyla yayınlandı! ✅");
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+        router.push("/");
+      }, 1500);
+    } catch (err) {
+      setToastError(true);
+      setToastMsg(err instanceof Error ? err.message : "İlan yayınlanırken bir hata oluştu.");
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 4000);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   // ── Auth guard ─────────────────────────────────────────────────────────────
@@ -909,9 +963,10 @@ function CreateCommercialListingPage() {
                 </button>
                 <button
                   onClick={handleSubmit}
-                  className="flex-[2] py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg shadow-orange-500/25 hover:opacity-90 active:scale-95 transition-all duration-200 text-sm"
+                  disabled={submitting}
+                  className="flex-[2] py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg shadow-orange-500/25 hover:opacity-90 active:scale-95 transition-all duration-200 text-sm disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
                 >
-                  Yayınla
+                  {submitting ? "Yayınlanıyor..." : "Yayınla"}
                 </button>
               </div>
             </motion.div>
@@ -919,16 +974,16 @@ function CreateCommercialListingPage() {
         </AnimatePresence>
       </div>
 
-      {/* ── Success toast ─────────────────────────────────────────────────── */}
+      {/* ── Success / error toast ────────────────────────────────────────────── */}
       <AnimatePresence>
         {showToast && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[10000] bg-stone-900 text-white text-sm font-semibold px-5 py-3 rounded-2xl shadow-xl whitespace-nowrap"
+            className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[10000] text-white text-sm font-semibold px-5 py-3 rounded-2xl shadow-xl whitespace-nowrap ${toastError ? "bg-red-600" : "bg-stone-900"}`}
           >
-            ✅ {toastMsg}
+            {toastError ? "⚠️" : "✅"} {toastMsg}
           </motion.div>
         )}
       </AnimatePresence>
