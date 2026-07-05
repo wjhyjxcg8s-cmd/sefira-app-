@@ -1259,6 +1259,12 @@ const commercialConfirmLabels: Record<string, { continue: string; cancel: string
   ru: { continue: "Продолжить", cancel: "Отмена" },
 };
 
+const categoryTabs = [
+  { key: 'all', label: { TR: 'Tümü', EN: 'All', FA: 'همه', AR: 'الكل', DE: 'Alle', RU: 'Все' }, icon: '🌐' },
+  { key: 'residential', label: { TR: 'Konut', EN: 'Residential', FA: 'مسکونی', AR: 'سكني', DE: 'Wohnen', RU: 'Жильё' }, icon: '🏠' },
+  { key: 'commercial', label: { TR: 'Ticari', EN: 'Commercial', FA: 'تجاری', AR: 'تجاري', DE: 'Gewerbe', RU: 'Коммерческий' }, icon: '🏢' },
+] as const;
+
 const thisWeekLabel: Record<string, string> = {
   tr: "Bu Hafta",
   en: "This Week",
@@ -3452,22 +3458,20 @@ export default function Home() {
             </h2>
             <p className="text-stone-500">{t.featuredP}</p>
           </div>
-          <div className="flex gap-2 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
-            {([
-              { value: "all", label: ({ tr: "Tümü", en: "All", fa: "همه", ar: "الكل", de: "Alle", ru: "Все" } as Record<string, string>)[lang] ?? "All" },
-              { value: "residential", label: "🏠 " + (({ tr: "Konut", en: "Residential", fa: "مسکونی", ar: "سكني", de: "Wohnen", ru: "Жильё" } as Record<string, string>)[lang] ?? "Residential") },
-              { value: "commercial", label: "🏢 " + (({ tr: "Ticari", en: "Commercial", fa: "تجاری", ar: "تجاري", de: "Gewerbe", ru: "Коммерческий" } as Record<string, string>)[lang] ?? "Commercial") },
-            ] as const).map((tab) => (
+          <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
+            {categoryTabs.map((tab) => (
               <button
-                key={tab.value}
-                onClick={() => setCategoryFilter(tab.value)}
-                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 whitespace-nowrap ${
-                  categoryFilter === tab.value
-                    ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/25"
-                    : "bg-stone-100 text-stone-600 hover:text-stone-900 border border-stone-200 hover:border-stone-300"
+                key={tab.key}
+                onClick={() => setCategoryFilter(tab.key)}
+                className={`px-4 py-2 rounded-full text-sm font-medium flex items-center gap-1.5 whitespace-nowrap ${
+                  categoryFilter === tab.key
+                    ? "bg-gray-900 text-white shadow-md"
+                    : "bg-white text-gray-600 border border-gray-200 shadow-sm"
                 }`}
+                style={{ transition: "all 0.2s ease" }}
               >
-                {tab.label}
+                <span>{tab.icon}</span>
+                <span>{tab.label[lang.toUpperCase() as keyof typeof tab.label] ?? tab.label.EN}</span>
               </button>
             ))}
           </div>
