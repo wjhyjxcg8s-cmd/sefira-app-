@@ -2021,9 +2021,18 @@ export default function Home() {
   };
 
   const handleCreateListing = () => {
-    if (user) router.push("/create-listing");
+    if (user) router.push("/choose-listing-type");
     else setShowListingModal(true);
   };
+
+  useEffect(() => {
+    const openCommercial = new URLSearchParams(window.location.search).get("openCommercial");
+    if (openCommercial === "owner" || openCommercial === "seeker") {
+      setCommercialMode(openCommercial);
+      setShowCommercialModal(true);
+      router.replace("/");
+    }
+  }, []);
 
   useEffect(() => {
     fetch("https://countriesnow.space/api/v0.1/countries")
