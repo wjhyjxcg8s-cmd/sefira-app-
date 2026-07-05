@@ -1626,10 +1626,12 @@ export default function Home() {
         .limit(12);
 
       if (mine.type === "has_place") {
-        q = q.eq("type", "needs_place");
+        // Residential rows use type='needs_place'; commercial rows have no `type` but set needs_place=true
+        q = q.or("type.eq.needs_place,needs_place.eq.true");
         if (mine.gender_preference && mine.gender_preference !== "any") q = q.eq("seeker_gender", mine.gender_preference);
       } else {
-        q = q.eq("type", "has_place");
+        // Residential rows use type='has_place'; commercial rows have no `type` but set has_place=true
+        q = q.or("type.eq.has_place,has_place.eq.true");
         if (mine.max_budget) q = q.lte("rent", mine.max_budget);
       }
 
