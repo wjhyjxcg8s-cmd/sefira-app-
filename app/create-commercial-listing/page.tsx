@@ -89,18 +89,21 @@ const normalize = (str: string): string =>
     .replace(/ç/g, 'c').replace(/ğ/g, 'g').replace(/ö/g, 'o')
     .replace(/ş/g, 's').replace(/ü/g, 'u');
 
-// ── Commercial space types (matches the 10 options on the homepage picker) ──
-const SPACE_TYPES: Record<string, { emoji: string; label: string }> = {
-  "ofis": { emoji: "🏢", label: "Ofis" },
-  "dukkan": { emoji: "🏪", label: "Dükkan" },
-  "berber-koltugu": { emoji: "💈", label: "Berber Koltuğu" },
-  "atolye": { emoji: "🔧", label: "Atölye" },
-  "depo": { emoji: "📦", label: "Depo" },
-  "mutfak": { emoji: "🍳", label: "Mutfak" },
-  "icerik-studyosu": { emoji: "🎬", label: "İçerik Stüdyosu" },
-  "egitim-sinifi": { emoji: "📚", label: "Eğitim Sınıfı" },
-  "otopark": { emoji: "🚗", label: "Otopark" },
-  "ticari-adres": { emoji: "📮", label: "Ticari Adres" },
+// ── Commercial space types (matches the 12 options on the homepage picker) ──
+// labels mirror commercialTypeOptionsByLang in app/page.tsx, keyed the same way (slug + per-language label)
+const SPACE_TYPES: Record<string, { emoji: string; labels: Record<string, string> }> = {
+  "ofis": { emoji: "🏢", labels: { tr: "Ofis", en: "Office", fa: "آفیس", ar: "مكتب", de: "Büro", ru: "Офис" } },
+  "dukkan": { emoji: "🏪", labels: { tr: "Dükkan", en: "Shop", fa: "دکان", ar: "محل تجاري", de: "Laden", ru: "Магазин" } },
+  "berber-koltugu": { emoji: "💈", labels: { tr: "Berber Koltuğu", en: "Barber Chair", fa: "صندلی آرایشگاه", ar: "كرسي حلاقة", de: "Friseurstuhl", ru: "Кресло парикмахера" } },
+  "atolye": { emoji: "🔧", labels: { tr: "Atölye", en: "Workshop", fa: "کارگاه", ar: "ورشة", de: "Werkstatt", ru: "Мастерская" } },
+  "depo": { emoji: "📦", labels: { tr: "Depo", en: "Warehouse", fa: "انبار", ar: "مستودع", de: "Lager", ru: "Склад" } },
+  "mutfak": { emoji: "🍳", labels: { tr: "Mutfak", en: "Kitchen", fa: "آشپزخانه", ar: "مطبخ", de: "Küche", ru: "Кухня" } },
+  "icerik-studyosu": { emoji: "🎬", labels: { tr: "İçerik Stüdyosu", en: "Content Studio", fa: "استودیو تولید محتوا", ar: "استوديو المحتوى", de: "Content-Studio", ru: "Студия контента" } },
+  "egitim-sinifi": { emoji: "📚", labels: { tr: "Eğitim Sınıfı", en: "Training Room", fa: "کلاس آموزشی", ar: "قاعة تدريب", de: "Schulungsraum", ru: "Учебный класс" } },
+  "otopark": { emoji: "🚗", labels: { tr: "Otopark", en: "Parking", fa: "پارکینگ", ar: "موقف سيارات", de: "Parkplatz", ru: "Парковка" } },
+  "ticari-adres": { emoji: "📮", labels: { tr: "Ticari Adres", en: "Business Address", fa: "آدرس تجاری", ar: "عنوان تجاري", de: "Geschäftsadresse", ru: "Бизнес-адрес" } },
+  "kuafor-guzellik-salonu": { emoji: "💇", labels: { tr: "Kuaför / Güzellik Salonu", en: "Hair Salon / Beauty Salon", fa: "آرایشگاه / سالن زیبایی", ar: "صالون تجميل", de: "Friseursalon / Schönheitssalon", ru: "Салон красоты" } },
+  "muayenehane-klinik": { emoji: "🏥", labels: { tr: "Muayenehane / Klinik", en: "Clinic / Doctor's Office", fa: "مطب / کلینیک", ar: "عيادة / كلينيك", de: "Praxis / Klinik", ru: "Клиника / Кабинет врача" } },
 };
 
 const AMENITIES: { key: string; emoji: string }[] = [
@@ -1229,7 +1232,7 @@ function CreateCommercialListingPage() {
                     <label className="block text-sm font-semibold text-stone-700 mb-2">{t.spaceTypeLabel}</label>
                     <span className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 text-orange-700 font-bold text-sm px-4 py-2 rounded-full">
                       <span className="text-lg">{spaceType.emoji}</span>
-                      {spaceType.label}
+                      {spaceType.labels[lang] || spaceType.labels.tr}
                     </span>
                   </div>
                 )}
@@ -1356,7 +1359,7 @@ function CreateCommercialListingPage() {
                   onClick={goBack}
                   className="flex-1 py-3.5 rounded-xl font-bold text-stone-700 border border-stone-200 bg-white hover:bg-stone-50 active:scale-95 transition-all duration-200 text-sm"
                 >
-                  Geri
+                  {t.back}
                 </button>
                 <button
                   onClick={handleSubmit}
