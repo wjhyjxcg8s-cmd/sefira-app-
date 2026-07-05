@@ -1254,6 +1254,7 @@ export default function Home() {
   const router = useRouter();
   const [showAuth, setShowAuth] = useState(false);
   const [authTab, setAuthTab] = useState<"login" | "register">("login");
+  const [showAuthPromptModal, setShowAuthPromptModal] = useState(false);
   const [showListingModal, setShowListingModal] = useState(false);
   const [profileAvatarUrl, setProfileAvatarUrl] = useState<string | null>(null);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
@@ -2664,7 +2665,7 @@ export default function Home() {
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
                       whileTap={{ scale: 0.97 }}
                       whileHover={{ y: -4 }}
-                      onClick={() => router.push('/create-listing?type=has_place')}
+                      onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=has_place'); }}
                       className="w-full relative overflow-hidden rounded-3xl p-[17px] text-left shadow-[0_12px_40px_-12px_rgba(249,115,22,0.6)] active:scale-[0.98] transition-transform"
                       style={{ background: 'linear-gradient(135deg,#F97316 0%,#ea580c 55%,#c2410c 100%)' }}
                     >
@@ -2707,7 +2708,7 @@ export default function Home() {
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.25 }}
                       whileTap={{ scale: 0.97 }}
                       whileHover={{ y: -4 }}
-                      onClick={() => router.push('/create-listing?type=needs_place')}
+                      onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=needs_place'); }}
                       className="w-full relative overflow-hidden rounded-3xl p-[17px] text-left shadow-[0_12px_40px_-12px_rgba(79,70,229,0.6)] active:scale-[0.98] transition-transform"
                       style={{ background: 'linear-gradient(135deg,#7C8CF8 0%,#5B6EE8 55%,#4F46E5 100%)' }}
                     >
@@ -2750,7 +2751,7 @@ export default function Home() {
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.4 }}
                       whileTap={{ scale: 0.97 }}
                       whileHover={{ y: -4 }}
-                      onClick={() => { setCommercialMode('owner'); setShowCommercialModal(true); }}
+                      onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('owner'); setShowCommercialModal(true); }}
                       className="w-full relative overflow-hidden rounded-3xl p-[17px] text-left shadow-[0_12px_40px_-12px_rgba(16,185,129,0.6)] active:scale-[0.98] transition-transform"
                       style={{ background: 'linear-gradient(135deg,#34D399 0%,#10B981 55%,#047857 100%)' }}
                     >
@@ -2793,7 +2794,7 @@ export default function Home() {
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.55 }}
                       whileTap={{ scale: 0.97 }}
                       whileHover={{ y: -4 }}
-                      onClick={() => { setCommercialMode('seeker'); setShowCommercialModal(true); }}
+                      onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('seeker'); setShowCommercialModal(true); }}
                       className="w-full relative overflow-hidden rounded-3xl p-[17px] text-left shadow-[0_12px_40px_-12px_rgba(13,148,136,0.6)] active:scale-[0.98] transition-transform"
                       style={{ background: 'linear-gradient(135deg,#2DD4BF 0%,#0D9488 55%,#115E59 100%)' }}
                     >
@@ -3793,6 +3794,77 @@ export default function Home() {
       {showAuth && (
         <AuthModal lang={lang} initialTab={authTab} onClose={() => { setShowAuth(false); setAuthTab('login'); }} />
       )}
+
+      {/* ── Auth prompt modal (non-logged-in users clicking hero cards) ──────── */}
+      <AnimatePresence>
+        {showAuthPromptModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9999] flex items-center justify-center"
+            onClick={() => setShowAuthPromptModal(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              className="relative bg-white rounded-3xl max-w-sm w-full mx-4 shadow-2xl p-8"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setShowAuthPromptModal(false)}
+                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 flex items-center justify-center text-stone-500 transition-colors"
+                aria-label="Kapat"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+
+              <div className="text-5xl text-center mb-4">🔐</div>
+
+              <h3 className="text-center font-black text-stone-900 mb-2" style={{ fontSize: 22 }}>
+                {({
+                  tr: "Devam etmek için giriş yapın",
+                  en: "Sign in to continue",
+                  fa: "برای ادامه وارد شوید",
+                  ar: "سجّل الدخول للمتابعة",
+                  de: "Melden Sie sich an, um fortzufahren",
+                  ru: "Войдите для продолжения",
+                } as Record<string, string>)[lang] ?? "Sign in to continue"}
+              </h3>
+              <p className="text-center text-stone-500 mb-6" style={{ fontSize: 14 }}>
+                {({
+                  tr: "Sefira'nın tüm özelliklerinden yararlanmak için hesabınıza giriş yapın.",
+                  en: "Sign in to your account to access all Sefira features.",
+                  fa: "برای دسترسی به تمام امکانات سفیرا وارد حساب کاربری خود شوید.",
+                  ar: "سجّل الدخول للوصول إلى جميع ميزات سفيرا.",
+                  de: "Melden Sie sich an, um alle Sefira-Funktionen zu nutzen.",
+                  ru: "Войдите в аккаунт для доступа ко всем функциям Sefira.",
+                } as Record<string, string>)[lang] ?? "Sign in to your account to access all Sefira features."}
+              </p>
+
+              <div className="flex flex-col gap-3">
+                <button
+                  onClick={() => { setShowAuthPromptModal(false); setAuthTab("login"); setShowAuth(true); }}
+                  className="w-full py-3.5 rounded-full font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg shadow-orange-500/25 hover:opacity-90 active:scale-95 transition-all duration-200 text-sm"
+                >
+                  {({ tr: "Giriş Yap", en: "Sign In", fa: "ورود", ar: "تسجيل الدخول", de: "Anmelden", ru: "Войти" } as Record<string, string>)[lang] ?? "Sign In"}
+                </button>
+                <button
+                  onClick={() => { setShowAuthPromptModal(false); setAuthTab("register"); setShowAuth(true); }}
+                  className="w-full py-3.5 rounded-full font-bold text-orange-600 bg-white border-2 border-orange-400 hover:bg-orange-50 active:scale-95 transition-all duration-200 text-sm"
+                >
+                  {({ tr: "Kayıt Ol", en: "Sign Up", fa: "ثبت نام", ar: "إنشاء حساب", de: "Registrieren", ru: "Зарегистрироваться" } as Record<string, string>)[lang] ?? "Sign Up"}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── WELCOME MODAL ─────────────────────────────────────────────────────── */}
       <style>{`

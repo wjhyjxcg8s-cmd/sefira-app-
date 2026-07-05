@@ -15,7 +15,9 @@
       "Bash(Sort-Object Name)",
       "Bash(Select-Object -First 20)",
       "Bash(find app/api/states app/api/cities app/api/cities-of-state -type f)",
-      "Bash(find public *)"
+      "Bash(find public *)",
+      "Bash(find app/login app/signup -type f)",
+      "Bash(find app *)"
     ]
   }
 }
