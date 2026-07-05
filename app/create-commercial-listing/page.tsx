@@ -251,6 +251,23 @@ function CreateCommercialListingPage() {
   const [stepErrors, setStepErrors] = useState<string[]>([]);
   const [invalidFields, setInvalidFields] = useState<string[]>([]);
 
+  // ── Description & photos (Step 2) ─────────────────────────────────────────
+  const [description, setDescription] = useState('');
+  const [photos, setPhotos] = useState<File[]>([]);
+  const [errors, setErrors] = useState<{ description?: string; photos?: string }>({});
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
+  const photosRef = useRef<HTMLDivElement>(null);
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    setPhotos(prev => [...prev, ...files].slice(0, 3));
+    e.target.value = "";
+  };
+
+  const removePhoto = (idx: number) => {
+    setPhotos(prev => prev.filter((_, i) => i !== idx));
+  };
+
   // ── Location cascading state (identical approach to create-listing) ───────
   const [countryIso, setCountryIso] = useState("TR");
   const [turkiyeData, setTurkiyeData] = useState<Record<string, Record<string, string[]>>>({});
@@ -369,10 +386,30 @@ function CreateCommercialListingPage() {
   };
 
   const handleSubmit = () => {
+    const newErrors: { description?: string; photos?: string } = {};
+    if (!description.trim() || description.trim().length < 20) {
+      newErrors.description = "Açıklama en az 20 karakter olmalıdır.";
+    }
+    if (photos.length < 1) {
+      newErrors.photos = "En az 1 fotoğraf yüklemelisiniz.";
+    }
+    if (newErrors.description || newErrors.photos) {
+      setErrors(newErrors);
+      if (newErrors.description) {
+        descriptionRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else {
+        photosRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      return;
+    }
+    setErrors({});
+
     console.log("Commercial listing submission:", {
       type: typeParam,
       mode: modeParam,
       ...form,
+      description,
+      photos,
     });
     setToastMsg("İlanınız başarıyla oluşturuldu!");
     setShowToast(true);
@@ -803,6 +840,63 @@ function CreateCommercialListingPage() {
                       );
                     })}
                   </div>
+                </div>
+
+                {/* Description */}
+                <div className="p-5">
+                  <label className="block text-sm font-semibold text-stone-700 mb-2">Açıklama *</label>
+                  <textarea
+                    ref={descriptionRef}
+                    rows={4}
+                    value={description}
+                    onChange={(e) => {
+                      setDescription(e.target.value);
+                      if (errors.description) setErrors(prev => ({ ...prev, description: undefined }));
+                    }}
+                    placeholder="Alanınız hakkında detaylı bilgi verin..."
+                    className={`w-full border rounded-xl px-3 py-2.5 text-stone-900 placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all text-sm resize-none ${errors.description ? "border-red-400 border-2" : "border-gray-200"}`}
+                  />
+                  {errors.description && (
+                    <p className="text-red-500 text-xs font-semibold mt-1.5">{errors.description}</p>
+                  )}
+                </div>
+
+                {/* Photos */}
+                <div className="p-5" ref={photosRef}>
+                  <label className="block text-sm font-semibold text-stone-700 mb-1">Fotoğraflar *</label>
+                  <p className="text-xs text-stone-400 mb-3">En az 1, en fazla 3 fotoğraf</p>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={(e) => {
+                      handlePhotoChange(e);
+                      if (errors.photos) setErrors(prev => ({ ...prev, photos: undefined }));
+                    }}
+                    disabled={photos.length >= 3}
+                    className="block w-full text-sm text-stone-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 disabled:opacity-50"
+                  />
+                  {photos.length > 0 && (
+                    <div className="flex gap-2.5 mt-3">
+                      {photos.map((file, idx) => (
+                        <div key={idx} className="relative w-20 h-20 rounded-xl overflow-hidden border border-stone-200 shrink-0">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={URL.createObjectURL(file)} alt="" className="w-full h-full object-cover" />
+                          <button
+                            type="button"
+                            onClick={() => removePhoto(idx)}
+                            className="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/60 text-white text-xs flex items-center justify-center"
+                            aria-label="Kaldır"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {errors.photos && (
+                    <p className="text-red-500 text-xs font-semibold mt-2">{errors.photos}</p>
+                  )}
                 </div>
               </div>
 
