@@ -3448,9 +3448,9 @@ export default function Home() {
                     style={{ height: 380, boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }}
                   >
                     {/* Background image or gradient */}
-                    {isHasPlace && thumbnail ? (
+                    {thumbnail ? (
                       <Image src={thumbnail} alt="" fill className="object-cover" sizes="(max-width: 768px) 50vw, 33vw" loading="lazy" />
-                    ) : !isHasPlace && recAvatarMap[rec.user_id] ? (
+                    ) : recAvatarMap[rec.user_id] ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={recAvatarMap[rec.user_id]!} alt="" className="absolute inset-0 w-full h-full object-cover" />
                     ) : (
