@@ -3502,7 +3502,7 @@ export default function Home() {
 
       {/* ── SMART RECOMMENDATIONS ─────────────────────────────────────────────── */}
       {smartRecs.length > 0 && (
-        <section className="py-10 bg-white border-b border-stone-100">
+        <section className="py-10 bg-white border-b border-stone-100" style={{ touchAction: "pan-y" }}>
           {/* Header */}
           <div className="max-w-2xl mx-auto px-4 mb-5 flex items-end justify-between">
             <div>
@@ -3547,7 +3547,7 @@ export default function Home() {
           <div
             ref={recScrollRef}
             className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 px-4 overscroll-x-contain"
-            style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollBehavior: "smooth", touchAction: "pan-y", overscrollBehaviorX: "contain" } as React.CSSProperties}
+            style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollBehavior: "smooth", touchAction: "pan-x", overscrollBehaviorX: "contain" } as React.CSSProperties}
             onScroll={() => {
               const el = recScrollRef.current;
               if (!el) return;
@@ -3584,7 +3584,7 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, delay: i * 0.06 }}
                   className="snap-start flex-shrink-0"
-                  style={{ WebkitTapHighlightColor: "transparent", touchAction: "pan-y" }}
+                  style={{ WebkitTapHighlightColor: "transparent" }}
                 >
                   <motion.div
                     onClick={() => {
