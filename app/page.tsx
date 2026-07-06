@@ -2753,13 +2753,13 @@ export default function Home() {
       )}
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
-      <div className="min-h-screen w-full px-4 pb-4 pt-16 overflow-hidden relative bg-stone-50">
+      <div className="min-h-screen w-full px-4 pb-4 pt-10 overflow-hidden relative bg-stone-50">
 
         {/* Decorative blur circles */}
         <div className="absolute w-96 h-96 rounded-full bg-orange-50 blur-3xl opacity-60 -top-20 -right-20 pointer-events-none" />
         <div className="absolute w-72 h-72 rounded-full bg-blue-50 blur-3xl opacity-40 bottom-0 -left-10 pointer-events-none" />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-5 pt-16 pb-8 md:grid md:grid-cols-2 gap-8 items-center w-full">
+        <div className="relative z-10 max-w-7xl mx-auto px-5 pt-10 pb-8 md:grid md:grid-cols-2 gap-8 items-center w-full">
 
           {/* ── LEFT: Typography + Wizard ───────────────────────────────────── */}
           <motion.div
@@ -2791,13 +2791,6 @@ export default function Home() {
 
               {wizardMode === null ? (
                 <>
-                  {/* Inline trust stats */}
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    <span className="bg-gray-50 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700">✅ {({ tr: "127K+ Kullanıcı", en: "127K+ Users", fa: "۱۲۷ هزار+ کاربر", ar: "١٢٧ألف+ مستخدم", de: "127K+ Nutzer", ru: "127K+ Пользователей" } as Record<string, string>)[lang] ?? "127K+ Users"}</span>
-                    <span className="bg-gray-50 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700">⭐ {({ tr: "4.9 Puan", en: "4.9 Rating", fa: "۴.۹ امتیاز", ar: "٤.٩ تقييم", de: "4.9 Bewertung", ru: "4.9 Рейтинг" } as Record<string, string>)[lang] ?? "4.9 Rating"}</span>
-                    <span className="bg-gray-50 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700">🏙️ {({ tr: "52 Şehir", en: "52 Cities", fa: "۵۲ شهر", ar: "٥٢ مدينة", de: "52 Städte", ru: "52 Города" } as Record<string, string>)[lang] ?? "52 Cities"}</span>
-                  </div>
-
                   {/* CTA buttons */}
                   <div className="flex flex-col gap-3 max-w-md mx-auto px-4 my-6">
                     {/* Card 1 — Landlord */}
