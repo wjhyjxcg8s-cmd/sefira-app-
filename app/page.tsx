@@ -3623,6 +3623,17 @@ export default function Home() {
                     {/* Dark gradient overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
 
+                    {/* Category badge */}
+                    {rec.listing_category === "commercial" ? (
+                      <span className="absolute top-3 left-3 z-20 inline-flex items-center gap-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold text-xs px-3 py-1.5 rounded-full shadow-lg backdrop-blur-sm">
+                        🏢 {({ tr: "Ticari", en: "Commercial", fa: "تجاری", ar: "تجاري", de: "Gewerbe", ru: "Коммерческий" } as Record<string, string>)[lang] ?? "Commercial"}
+                      </span>
+                    ) : (
+                      <span className="absolute top-3 left-3 z-20 inline-flex items-center gap-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold text-xs px-3 py-1.5 rounded-full shadow-lg backdrop-blur-sm">
+                        🏠 {({ tr: "Konut", en: "Residential", fa: "مسکونی", ar: "سكني", de: "Wohnen", ru: "Жильё" } as Record<string, string>)[lang] ?? "Residential"}
+                      </span>
+                    )}
+
                     {/* Info text — above the buttons */}
                     <div className="absolute bottom-[68px] left-0 right-0 px-4 pointer-events-none">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
