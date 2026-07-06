@@ -57,7 +57,7 @@ const translations = {
     heroLine1: "Alanınız Size Kazandırsın, Başkalarına Fırsat Olsun.",
     heroLine2: "",
     heroLine3: "",
-    heroP: "Binlerce ilan arasında kaybolmayın. Size uygun ev ve ev arkadaşlarını keşfedin.",
+    heroP: "Evinizi, ofisinizi veya ticari alanınızı güvenle paylaşın ya da ihtiyacınız olan alanı kolayca bulun.",
     // ── Wizard ──
     wizardTitle: "Ne arıyorsunuz?",
     optionSeekingTitle: "Evim var, iyi bir ev arkadaşı arıyorum",
@@ -199,7 +199,7 @@ const translations = {
     heroLine1: "Let Your Space Earn for You, and Open Doors for Others.",
     heroLine2: "",
     heroLine3: "",
-    heroP: "Don't get lost among thousands of listings. Discover the home and roommate that suits you.",
+    heroP: "Share your home, office or commercial space with confidence — or easily find the space you need.",
     // ── Wizard ──
     wizardTitle: "What are you looking for?",
     optionSeekingTitle: "I have a place and I'm looking for a good roommate",
@@ -341,7 +341,7 @@ const translations = {
     heroLine1: "فضای شما برایتان درآمد بسازد، برای دیگران فرصت.",
     heroLine2: "",
     heroLine3: "",
-    heroP: "میان هزاران آگهی گم نشوید؛ خانه و هم‌خانه مناسب خود را پیدا کنید.",
+    heroP: "خانه، آفیس یا فضای تجاری خود را با اطمینان به اشتراک بگذارید یا فضای مورد نیازتان را به راحتی پیدا کنید.",
     // ── Wizard ──
     wizardTitle: "دنبال چه می‌گردید؟",
     optionSeekingTitle: "خونه یا اتاق دارم و دنبال هم‌خونه خوب می‌گردم",
@@ -483,7 +483,7 @@ const translations = {
     heroLine1: "Lassen Sie Ihren Raum für Sie verdienen und für andere zur Chance werden.",
     heroLine2: "",
     heroLine3: "",
-    heroP: "Verlieren Sie sich nicht zwischen tausenden Anzeigen. Entdecken Sie das passende Zuhause und den richtigen Mitbewohner.",
+    heroP: "Teilen Sie Ihr Zuhause, Büro oder Ihre Gewerbefläche sicher — oder finden Sie ganz einfach den Raum, den Sie suchen.",
     wizardTitle: "Was suchen Sie?",
     optionSeekingTitle: "Ich habe ein Zimmer und suche einen guten Mitbewohner",
     optionSeekingSubtitle: "Ich habe ein Zimmer und suche einen guten Mitbewohner",
@@ -625,7 +625,7 @@ const translations = {
     heroLine1: "دع مساحتك تربح لك، وتفتح فرصة للآخرين.",
     heroLine2: "",
     heroLine3: "",
-    heroP: "لا تضيع بين آلاف الإعلانات. اكتشف المنزل وشريك السكن المناسب لك.",
+    heroP: "شارك منزلك أو مكتبك أو مساحتك التجارية بثقة، أو ابحث بسهولة عن المساحة التي تحتاجها.",
     // ── Wizard ──
     wizardTitle: "ماذا تبحث عن؟",
     optionSeekingTitle: "لدي غرفة وأبحث عن شريك سكن جيد",
@@ -767,7 +767,7 @@ const translations = {
     heroLine1: "Пусть ваше пространство приносит доход вам и возможности другим.",
     heroLine2: "",
     heroLine3: "",
-    heroP: "Не теряйтесь среди тысяч объявлений. Найдите подходящее жильё и соседа.",
+    heroP: "Делитесь своим домом, офисом или коммерческим пространством уверенно — или легко найдите нужное вам место.",
     wizardTitle: "Что вы ищете?",
     optionSeekingTitle: "У меня есть комната, ищу хорошего соседа",
     optionSeekingSubtitle: "У меня есть комната, ищу хорошего соседа",
