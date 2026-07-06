@@ -2787,12 +2787,12 @@ export default function Home() {
             </p>
 
             {/* ── SEARCH WIZARD ─────────────────────────────────────────────── */}
-            <div className="w-full mt-6">
+            <div className="w-full mt-3">
 
               {wizardMode === null ? (
                 <>
                   {/* CTA buttons */}
-                  <div className="flex flex-col gap-3 max-w-md mx-auto px-4 my-6">
+                  <div className="flex flex-col gap-3 max-w-md mx-auto px-4 my-3">
                     {/* Card 1 — Landlord */}
                     <motion.button
                       initial={{ opacity: 0, y: 30 }}
