@@ -117,7 +117,7 @@ const commercialTypeDescriptions: Record<string, { owner: Record<string, string>
     seeker: {
       tr: "İş yeriniz için ofis alanı mı arıyorsunuz? Size uygun paylaşımlı ofis bulun.",
       en: "Looking for office space for your business? Find a shared office that suits you.",
-      fa: "به دنبال فضای اداری برای کسب‌وکار خود هستید؟ دفتر اشتراکی مناسب را پیدا کنید.",
+      fa: "اگر برای کار، استارتاپ یا شرکت خود به میز، اتاق یا دفتر اشتراکی نیاز دارید، می‌توانید فضای مناسب خود را از میان آگهی‌های موجود پیدا کنید.",
       ar: "هل تبحث عن مساحة مكتبية لعملك؟ ابحث عن مكتب مشترك مناسب لك.",
       de: "Suchen Sie Bürofläche für Ihr Unternehmen? Finden Sie das passende Shared Office.",
       ru: "Ищете офисное пространство для бизнеса? Найдите подходящий общий офис.",
@@ -135,7 +135,7 @@ const commercialTypeDescriptions: Record<string, { owner: Record<string, string>
     seeker: {
       tr: "Bir dükkan alanı paylaşmak veya kiralamak mı istiyorsunuz? Uygun işletme ortaklarını bulun.",
       en: "Looking for a shop space to share or rent for your business? Find the right partner.",
-      fa: "به دنبال فضای مغازه برای کسب‌وکار خود می‌گردید؟ شریک مناسب را پیدا کنید.",
+      fa: "اگر برای راه‌اندازی یا گسترش کسب‌وکار خود به بخشی از یک مغازه یا فضای فروشگاهی نیاز دارید، می‌توانید گزینه مناسب را پیدا کنید.",
       ar: "هل تبحث عن مساحة محل للمشاركة أو الإيجار؟ ابحث عن الشريك المناسب.",
       de: "Suchen Sie einen Ladenraum zum Teilen oder Mieten? Finden Sie den richtigen Partner.",
       ru: "Ищете торговое помещение для аренды или совместного использования? Найдите подходящего партнёра.",
@@ -153,7 +153,7 @@ const commercialTypeDescriptions: Record<string, { owner: Record<string, string>
     seeker: {
       tr: "Berber koltuğu veya güzellik salonu alanı mı arıyorsunuz? Uygun yer bulun.",
       en: "Looking for a barber chair or salon space to work from? Find your spot.",
-      fa: "به دنبال صندلی آرایشگاه یا فضای سالن زیبایی برای کار هستید؟ جای مناسب را پیدا کنید.",
+      fa: "اگر آرایشگر هستید و به یک صندلی در سالن آرایش نیاز دارید، می‌توانید سالن مناسب را پیدا کرده و فعالیت خود را آغاز کنید.",
       ar: "هل تبحث عن كرسي حلاقة أو مساحة صالون تجميل للعمل؟ ابحث عن مكانك المناسب.",
       de: "Suchen Sie einen Friseurstuhl oder Salonraum zum Arbeiten? Finden Sie Ihren Platz.",
       ru: "Ищете парикмахерское кресло или место в салоне для работы? Найдите подходящее место.",
@@ -171,7 +171,7 @@ const commercialTypeDescriptions: Record<string, { owner: Record<string, string>
     seeker: {
       tr: "Atölye veya üretim alanı mı arıyorsunuz? Uygun çalışma ortamını bulun.",
       en: "Looking for a workshop or production space? Find the right working environment.",
-      fa: "به دنبال کارگاه یا فضای تولیدی می‌گردید؟ محیط کاری مناسب را پیدا کنید.",
+      fa: "اگر برای تولید، تعمیر یا انجام فعالیت‌های فنی به یک کارگاه یا فضای کاری نیاز دارید، می‌توانید فضای مناسب خود را پیدا کنید.",
       ar: "هل تبحث عن ورشة عمل أو مساحة إنتاج؟ ابحث عن البيئة المناسبة.",
       de: "Suchen Sie eine Werkstatt oder Produktionsfläche? Finden Sie die richtige Arbeitsumgebung.",
       ru: "Ищете мастерскую или производственное помещение? Найдите подходящую рабочую среду.",
@@ -189,7 +189,7 @@ const commercialTypeDescriptions: Record<string, { owner: Record<string, string>
     seeker: {
       tr: "İşletmeniz için depo alanı mı arıyorsunuz? Uygun depolama alanını bulun.",
       en: "Looking for warehouse space for your business? Find the right storage space.",
-      fa: "به دنبال فضای انبار برای کسب‌وکار خود می‌گردید؟ فضای مناسب برای نگهداری کالا را پیدا کنید.",
+      fa: "اگر برای نگهداری کالا، تجهیزات یا وسایل خود به فضای انبار نیاز دارید، می‌توانید انبار مناسب را پیدا کنید.",
       ar: "هل تبحث عن مساحة مستودع لعملك؟ ابحث عن مساحة التخزين المناسبة.",
       de: "Suchen Sie Lagerfläche für Ihr Unternehmen? Finden Sie den passenden Stauraum.",
       ru: "Ищете складское помещение для бизнеса? Найдите подходящее место для хранения.",
@@ -207,7 +207,7 @@ const commercialTypeDescriptions: Record<string, { owner: Record<string, string>
     seeker: {
       tr: "Yemek hazırlamak için endüstriyel mutfak mı arıyorsunuz? Uygun mutfak alanını bulun.",
       en: "Looking for a commercial kitchen to prepare food? Find the right kitchen space.",
-      fa: "به دنبال آشپزخانه صنعتی برای آماده‌سازی غذا هستید؟ فضای آشپزخانه مناسب را پیدا کنید.",
+      fa: "اگر برای پخت‌وپز، کترینگ یا کسب‌وکار غذایی خود به آشپزخانه صنعتی یا فضای آماده‌سازی غذا نیاز دارید، می‌توانید گزینه مناسب را پیدا کنید.",
       ar: "هل تبحث عن مطبخ تجاري لتحضير الطعام؟ ابحث عن مساحة المطبخ المناسبة.",
       de: "Suchen Sie eine Großküche zur Speisenzubereitung? Finden Sie die richtige Küchenfläche.",
       ru: "Ищете коммерческую кухню для приготовления еды? Найдите подходящее кухонное пространство.",
@@ -225,7 +225,7 @@ const commercialTypeDescriptions: Record<string, { owner: Record<string, string>
     seeker: {
       tr: "İçerik üretimi için stüdyo veya çekim alanı mı arıyorsunuz? Uygun stüdyoyu bulun.",
       en: "Looking for a studio or shooting space for content production? Find the right studio.",
-      fa: "به دنبال استودیو یا فضای عکاسی برای تولید محتوا هستید؟ استودیوی مناسب را پیدا کنید.",
+      fa: "اگر برای عکاسی، فیلم‌برداری، پادکست یا تولید محتوا به استودیو نیاز دارید، می‌توانید فضای مناسب خود را پیدا کنید.",
       ar: "هل تبحث عن استوديو أو مساحة تصوير لإنتاج المحتوى؟ ابحث عن الاستوديو المناسب.",
       de: "Suchen Sie ein Studio oder eine Aufnahmefläche für Ihre Content-Produktion? Finden Sie das passende Studio.",
       ru: "Ищете студию или пространство для съёмок контента? Найдите подходящую студию.",
@@ -243,7 +243,7 @@ const commercialTypeDescriptions: Record<string, { owner: Record<string, string>
     seeker: {
       tr: "Kurs, atölye veya seminer için eğitim sınıfı mı arıyorsunuz? Uygun sınıfı bulun.",
       en: "Looking for a classroom for your course, workshop or seminar? Find the right room.",
-      fa: "به دنبال کلاس آموزشی برای دوره، کارگاه یا سمینار خود هستید؟ کلاس مناسب را پیدا کنید.",
+      fa: "اگر برای برگزاری کلاس، دوره آموزشی، کارگاه یا سمینار به فضای آموزشی نیاز دارید، می‌توانید کلاس مناسب را پیدا کنید.",
       ar: "هل تبحث عن قاعة تدريب لدورتك أو ورشتك أو ندوتك؟ ابحث عن القاعة المناسبة.",
       de: "Suchen Sie einen Schulungsraum für Ihren Kurs, Workshop oder Seminar? Finden Sie den passenden Raum.",
       ru: "Ищете учебный класс для курса, мастер-класса или семинара? Найдите подходящий класс.",
@@ -261,7 +261,7 @@ const commercialTypeDescriptions: Record<string, { owner: Record<string, string>
     seeker: {
       tr: "Aracınız için otopark alanı mı arıyorsunuz? Uygun park yerini bulun.",
       en: "Looking for a parking space for your vehicle? Find the right spot.",
-      fa: "به دنبال فضای پارکینگ برای خودروی خود هستید؟ جای مناسب را پیدا کنید.",
+      fa: "اگر برای خودرو یا موتورسیکلت خود به جای پارک نیاز دارید، می‌توانید پارکینگ مناسب را در نزدیکی خود پیدا کنید.",
       ar: "هل تبحث عن موقف سيارات لسيارتك؟ ابحث عن المكان المناسب.",
       de: "Suchen Sie einen Parkplatz für Ihr Fahrzeug? Finden Sie den passenden Platz.",
       ru: "Ищете парковочное место для своего автомобиля? Найдите подходящее место.",
@@ -279,7 +279,7 @@ const commercialTypeDescriptions: Record<string, { owner: Record<string, string>
     seeker: {
       tr: "Şirket tescili veya posta alımı için ticari adres mi arıyorsunuz? Uygun adresi bulun.",
       en: "Looking for a business address for company registration or mail? Find the right address.",
-      fa: "به دنبال آدرس تجاری برای ثبت شرکت یا دریافت مرسولات هستید؟ آدرس مناسب را پیدا کنید.",
+      fa: "اگر برای ثبت شرکت یا دریافت مرسولات به آدرس تجاری نیاز دارید، می‌توانید خدمات مناسب را پیدا کنید.",
       ar: "هل تبحث عن عنوان تجاري لتسجيل الشركة أو استلام البريد؟ ابحث عن العنوان المناسب.",
       de: "Suchen Sie eine Geschäftsadresse für die Unternehmensregistrierung oder den Postempfang? Finden Sie die passende Adresse.",
       ru: "Ищете юридический адрес для регистрации компании или получения почты? Найдите подходящий адрес.",
@@ -297,7 +297,7 @@ const commercialTypeDescriptions: Record<string, { owner: Record<string, string>
     seeker: {
       tr: "Kuaförlük veya güzellik hizmetleri için salon alanı mı arıyorsunuz? Uygun yeri bulun.",
       en: "Looking for a salon space for hairdressing or beauty services? Find your spot.",
-      fa: "به دنبال فضای سالن برای خدمات آرایشگری یا زیبایی هستید؟ جای مناسب را پیدا کنید.",
+      fa: "اگر آرایشگر یا متخصص خدمات زیبایی هستید و به صندلی، اتاق یا فضای کاری در یک سالن زیبایی نیاز دارید، می‌توانید سالن مناسب را پیدا کنید.",
       ar: "هل تبحث عن مساحة صالون لخدمات تصفيف الشعر أو التجميل؟ ابحث عن مكانك المناسب.",
       de: "Suchen Sie einen Salonraum für Friseur- oder Kosmetikdienstleistungen? Finden Sie Ihren Platz.",
       ru: "Ищете помещение салона для парикмахерских или косметических услуг? Найдите подходящее место.",
@@ -315,7 +315,7 @@ const commercialTypeDescriptions: Record<string, { owner: Record<string, string>
     seeker: {
       tr: "Muayenehane veya klinik odası mı arıyorsunuz? Uygun tıbbi alanı bulun.",
       en: "Looking for a medical office or clinic room? Find the right space.",
-      fa: "به دنبال مطب یا اتاق کلینیک هستید؟ فضای پزشکی مناسب را پیدا کنید.",
+      fa: "اگر پزشک یا متخصص هستید و به اتاق معاینه یا فضای درمانی نیاز دارید، می‌توانید مطب یا کلینیک مناسب را پیدا کنید.",
       ar: "هل تبحث عن عيادة أو غرفة في مركز طبي؟ ابحث عن المساحة الطبية المناسبة.",
       de: "Suchen Sie eine Praxis oder ein Klinikzimmer? Finden Sie den passenden medizinischen Raum.",
       ru: "Ищете медицинский кабинет или комнату в клинике? Найдите подходящее медицинское помещение.",
@@ -333,7 +333,7 @@ const commercialTypeDescriptions: Record<string, { owner: Record<string, string>
     seeker: {
       tr: "Antrenman veya maç için spor alanı mı arıyorsunuz? Uygun tesisi bulun.",
       en: "Looking for a sports facility for training or matches? Find the right venue.",
-      fa: "به دنبال فضای ورزشی برای تمرین یا مسابقه هستید؟ مکان مناسب را پیدا کنید.",
+      fa: "اگر برای تمرین، برگزاری کلاس یا فعالیت‌های ورزشی به باشگاه، سالن یا زمین ورزشی نیاز دارید، می‌توانید فضای مناسب را پیدا کنید.",
       ar: "هل تبحث عن مرفق رياضي للتدريب أو المباريات؟ ابحث عن المكان المناسب.",
       de: "Suchen Sie eine Sportstätte für Training oder Spiele? Finden Sie die passende Einrichtung.",
       ru: "Ищете спортивный объект для тренировок или матчей? Найдите подходящее место.",
@@ -351,7 +351,7 @@ const commercialTypeDescriptions: Record<string, { owner: Record<string, string>
     seeker: {
       tr: "Düğün, doğum günü veya etkinlik için salon mu arıyorsunuz? Uygun mekanı bulun.",
       en: "Looking for a hall for your wedding, birthday or event? Find the right venue.",
-      fa: "به دنبال سالن برای عروسی، تولد یا رویداد خود هستید؟ مکان مناسب را پیدا کنید.",
+      fa: "اگر برای برگزاری عروسی، تولد، همایش یا سایر مراسم و رویدادها به سالن یا فضای مناسب نیاز دارید، می‌توانید گزینه دلخواه خود را پیدا کنید.",
       ar: "هل تبحث عن قاعة لحفل زفافك أو عيد ميلادك أو فعاليتك؟ ابحث عن المكان المناسب.",
       de: "Suchen Sie einen Saal für Ihre Hochzeit, Ihren Geburtstag oder Ihre Veranstaltung? Finden Sie den passenden Ort.",
       ru: "Ищете зал для свадьбы, дня рождения или мероприятия? Найдите подходящее место.",

@@ -17,7 +17,25 @@
       "Bash(find app/api/states app/api/cities app/api/cities-of-state -type f)",
       "Bash(find public *)",
       "Bash(find app/login app/signup -type f)",
-      "Bash(find app *)"
+      "Bash(find app *)",
+      "Skill(run)",
+      "Skill(run:*)",
+      "Bash(chromium-cli --help)",
+      "Read(//c/Users/pascal/AppData/Local/ms-playwright/**)",
+      "Read(//e//**)",
+      "Bash(npm ls *)",
+      "Read(//c/Users/pascal/AppData/Roaming/npm/**)",
+      "Bash(npm root *)",
+      "Bash(mkdir -p \"/c/Users/pascal/AppData/Local/Temp/claude/e--sef-ra-web-sefira-app/ad9fb161-89b4-4eaf-8ec7-c04ce30d9a40/scratchpad/pw\")",
+      "Read(//c/Users/pascal/AppData/Local/Temp/claude/e--sef-ra-web-sefira-app/ad9fb161-89b4-4eaf-8ec7-c04ce30d9a40/scratchpad/**)",
+      "Bash(npm init *)",
+      "Bash(npm install *)",
+      "Bash(find \"$HOME/AppData/Local/ms-playwright/chromium-1223\" -iname \"chrome.exe\" 2>/dev/null)",
+      "Read(//c/Users/pascal/AppData/Local/ms-playwright/chromium-1223/**)",
+      "Read(//c/Users/pascal/AppData/Local/Temp/claude/e--sef-ra-web-sefira-app/ad9fb161-89b4-4eaf-8ec7-c04ce30d9a40/scratchpad/pw/**)",
+      "Bash(node check.js)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill //PID 668 //F)"
     ]
   }
 }
