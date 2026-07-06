@@ -2061,7 +2061,7 @@ export default function Home() {
   const sliderPct = ((budgetUSD - 100) / 4900) * 100;
 
   return (
-    <div className="min-h-screen bg-stone-50 text-stone-900 overflow-x-hidden" dir={lang === "fa" || lang === "ar" ? "rtl" : "ltr"}>
+    <div className="min-h-screen bg-stone-50 text-stone-900 overflow-x-hidden" dir={lang === "fa" || lang === "ar" ? "rtl" : "ltr"} style={{ overscrollBehavior: "none" }}>
       <style>{`
         @keyframes sefira-kenburns {
           0% { transform: scale(1); }
@@ -3333,8 +3333,8 @@ export default function Home() {
             {thisWeekLabel[lang] ?? "Bu Hafta"}
           </p>
           <div
-            className="flex gap-3 sm:gap-4 overflow-x-auto pb-2"
-            style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+            className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 overscroll-x-contain"
+            style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch", touchAction: "pan-x", overscrollBehaviorX: "contain" } as React.CSSProperties}
           >
             {weeklyStories.map((story, idx) => (
               <button
@@ -3546,8 +3546,8 @@ export default function Home() {
           {/* Horizontal scroll track */}
           <div
             ref={recScrollRef}
-            className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 px-4"
-            style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollBehavior: "smooth" } as React.CSSProperties}
+            className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 px-4 overscroll-x-contain"
+            style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollBehavior: "smooth", touchAction: "pan-x", overscrollBehaviorX: "contain" } as React.CSSProperties}
             onScroll={() => {
               const el = recScrollRef.current;
               if (!el) return;
