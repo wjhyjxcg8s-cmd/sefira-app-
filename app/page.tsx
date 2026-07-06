@@ -3502,7 +3502,7 @@ export default function Home() {
 
       {/* ── SMART RECOMMENDATIONS ─────────────────────────────────────────────── */}
       {smartRecs.length > 0 && (
-        <section className="py-10 bg-white border-b border-stone-100" style={{ touchAction: "pan-y" }}>
+        <section className="py-10 bg-white border-b border-stone-100">
           {/* Header */}
           <div className="max-w-2xl mx-auto px-4 mb-5 flex items-end justify-between">
             <div>
@@ -3547,7 +3547,7 @@ export default function Home() {
           <div
             ref={recScrollRef}
             className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 px-4 overscroll-x-contain"
-            style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollBehavior: "smooth", touchAction: "pan-x", overscrollBehaviorX: "contain" } as React.CSSProperties}
+            style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollBehavior: "smooth", touchAction: "pan-x pan-y", overscrollBehaviorX: "contain" } as React.CSSProperties}
             onScroll={() => {
               const el = recScrollRef.current;
               if (!el) return;
