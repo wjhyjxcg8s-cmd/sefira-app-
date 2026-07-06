@@ -35,7 +35,8 @@
       "Read(//c/Users/pascal/AppData/Local/Temp/claude/e--sef-ra-web-sefira-app/ad9fb161-89b4-4eaf-8ec7-c04ce30d9a40/scratchpad/pw/**)",
       "Bash(node check.js)",
       "Bash(netstat -ano)",
-      "Bash(taskkill //PID 668 //F)"
+      "Bash(taskkill //PID 668 //F)",
+      "Bash(grep -i \"app/page.tsx\\\\|app\\\\\\\\\\\\\\\\page.tsx\")"
     ]
   }
 }
