@@ -2770,12 +2770,8 @@ export default function Home() {
           >
 
             {/* Pill badge */}
-            <span className="relative inline-flex items-center bg-gradient-to-r from-orange-500 to-rose-500 text-white font-bold text-sm px-4 py-2 rounded-full shadow-lg shadow-orange-200 overflow-hidden">
-              <span className="absolute inset-0 rounded-full bg-white/10 pointer-events-none" />
-              <span className="relative w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block mr-2" />
-              <span className="relative">
-                ✨ {({ tr: "#1 Alan Paylaşım Platformu", en: "#1 Space Sharing Platform", fa: "پلتفرم شماره ۱ اشتراک‌گذاری فضا", ar: "منصة مشاركة المساحات #1", de: "#1 Plattform für Raumteilung", ru: "Платформа совместного использования №1" } as Record<string, string>)[lang] ?? "#1 Space Sharing Platform"}
-              </span>
+            <span className="inline-flex items-center bg-orange-50 border border-orange-200 text-orange-600 text-xs font-medium px-3 py-1 rounded-full">
+              {({ tr: "Alan Paylaşım Platformu", en: "Space Sharing Platform", fa: "پلتفرم اشتراک‌گذاری فضا", ar: "منصة مشاركة المساحات", de: "Plattform für Raumteilung", ru: "Платформа совместного использования" } as Record<string, string>)[lang] ?? "Space Sharing Platform"}
             </span>
 
             {/* Headline */}
