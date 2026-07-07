@@ -937,6 +937,10 @@ const MOBILE_APP_TEXTS = new Set([
   "App Store", "Google Play",
 ]);
 
+const BLOG_TEXTS = new Set([
+  "Blog",
+]);
+
 const ROOM_SEEKER_TEXTS = new Set([
   "Oda / Ev Arkadaşı Bul", "Find a Room / Roommate", "اتاق یا هم‌خانه پیدا کن", "ابحث عن غرفة أو شريك سكن", "Zimmer / Mitbewohner finden", "Найти комнату / соседа",
 ]);
@@ -3974,7 +3978,9 @@ export default function Home() {
                                         ? <Link href="/commercial-type-select?mode=owner" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
                                         : MOBILE_APP_TEXTS.has(link)
                                           ? <Link href="/mobile-app" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
-                                          : <a href="#" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</a>
+                                          : BLOG_TEXTS.has(link)
+                                            ? <Link href="/blog" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
+                                            : <a href="#" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</a>
                       }
                     </li>
                   ))}
