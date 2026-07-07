@@ -3891,8 +3891,11 @@ export default function Home() {
       {/* ── POPULAR CITIES ────────────────────────────────────────────────────── */}
       <PopularCities lang={lang} onCityClick={handleCityClick} />
 
+      {/* ── LIGHT → DARK TRANSITION ───────────────────────────────────────────── */}
+      <div className="h-24 bg-gradient-to-b from-stone-50 to-stone-900" />
+
       {/* ── FOOTER ────────────────────────────────────────────────────────────── */}
-      <footer className="bg-stone-900 border-t border-stone-700">
+      <footer className="bg-gradient-to-b from-stone-900 to-stone-950 border-t border-stone-700">
         <div className="max-w-7xl mx-auto px-5 py-16">
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-12 mb-14">
             <div className="lg:col-span-2">
