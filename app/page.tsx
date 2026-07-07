@@ -150,6 +150,7 @@ const translations = {
       { title: "Seçenekler",   links: ["Oda / Ev Arkadaşı Bul", "Evini Paylaş", "Ticari Alan Bul", "Ticari Alanını Paylaş"] },
       { title: "Şirket", links: ["Hakkımızda", "Blog", "Kariyer", "Basın", "İletişim"] },
       { title: "Destek", links: ["Yardım Merkezi", "Güvenlik", "Kullanım Koşulları", "Gizlilik", "Çerezler"] },
+      { title: "Uygulama", links: ["App Store", "Google Play"] },
     ],
     footerCopy: "2025 Sefira Technologies, Inc. Tüm hakları saklıdır.",
     footerLegal: ["Kullanım Koşulları", "Gizlilik", "Çerezler"],
@@ -292,6 +293,7 @@ const translations = {
       { title: "Options", links: ["Find a Room / Roommate", "Share Your Home", "Find Commercial Space", "Share Your Commercial Space"] },
       { title: "Company", links: ["About", "Blog", "Careers", "Press", "Contact"] },
       { title: "Support", links: ["Help Center", "Safety", "Terms", "Privacy", "Cookies"] },
+      { title: "App", links: ["App Store", "Google Play"] },
     ],
     footerCopy: "2025 Sefira Technologies, Inc. All rights reserved.",
     footerLegal: ["Terms", "Privacy", "Cookies"],
@@ -434,6 +436,7 @@ const translations = {
       { title: "گزینه‌ها",    links: ["اتاق یا هم‌خانه پیدا کن", "خانه‌ات را به اشتراک بگذار", "مکان تجاری پیدا کن", "مکان تجاری‌ات را به اشتراک بگذار"] },
       { title: "شرکت",     links: ["درباره ما", "وبلاگ", "مشاغل", "مطبوعات", "تماس"] },
       { title: "پشتیبانی", links: ["مرکز کمک", "امنیت", "شرایط استفاده", "حریم خصوصی", "کوکی‌ها"] },
+      { title: "اپلیکیشن", links: ["App Store", "Google Play"] },
     ],
     footerCopy: "۲۰۲۵ Sefira Technologies, Inc. تمامی حقوق محفوظ است.",
     footerLegal: ["شرایط استفاده", "حریم خصوصی", "کوکی‌ها"],
@@ -575,6 +578,7 @@ const translations = {
       { title: "Optionen",    links: ["Zimmer / Mitbewohner finden", "Dein Zuhause teilen", "Gewerbefläche finden", "Gewerbefläche teilen"] },
       { title: "Unternehmen", links: ["Über uns", "Blog", "Karriere", "Presse", "Kontakt"] },
       { title: "Support",    links: ["Hilfe-Center", "Sicherheit", "Nutzungsbedingungen", "Datenschutz", "Cookies"] },
+      { title: "App", links: ["App Store", "Google Play"] },
     ],
     footerCopy: "2025 Sefira Technologies, Inc. Alle Rechte vorbehalten.",
     footerLegal: ["Nutzungsbedingungen", "Datenschutz", "Cookies"],
@@ -718,6 +722,7 @@ const translations = {
       { title: "الخيارات",  links: ["ابحث عن غرفة أو شريك سكن", "شارك منزلك", "إيجاد مساحة تجارية", "شارك مساحتك التجارية"] },
       { title: "الشركة",  links: ["من نحن", "المدوّنة", "الوظائف", "الصحافة", "اتصل بنا"] },
       { title: "الدعم",   links: ["مركز المساعدة", "الأمان", "شروط الاستخدام", "الخصوصية", "ملفات تعريف الارتباط"] },
+      { title: "التطبيق", links: ["App Store", "Google Play"] },
     ],
     footerCopy: "٢٠٢٥ Sefira Technologies, Inc. جميع الحقوق محفوظة.",
     footerLegal: ["شروط الاستخدام", "الخصوصية", "ملفات تعريف الارتباط"],
@@ -859,6 +864,7 @@ const translations = {
       { title: "Опции",   links: ["Найти комнату / соседа", "Поделиться жильём", "Найти коммерческое помещение", "Поделиться коммерческим помещением"] },
       { title: "Компания",  links: ["О нас", "Блог", "Карьера", "Пресса", "Контакты"] },
       { title: "Поддержка", links: ["Центр помощи", "Безопасность", "Условия", "Конфиденциальность", "Cookies"] },
+      { title: "Приложение", links: ["App Store", "Google Play"] },
     ],
     footerCopy: "Все права защищены",
     footerLegal: ["Политика конфиденциальности", "Условия использования", "Cookies"],
@@ -925,6 +931,10 @@ const TERMS_TEXTS = new Set([
 const SECURITY_TEXTS = new Set([
   "Güvenlik", "Safety", "Sicherheit",
   "امنیت", "الأمان", "Безопасность",
+]);
+
+const MOBILE_APP_TEXTS = new Set([
+  "App Store", "Google Play",
 ]);
 
 const ROOM_SEEKER_TEXTS = new Set([
@@ -3962,7 +3972,9 @@ export default function Home() {
                                       ? <Link href="/commercial-type-select?mode=seeker" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
                                       : COMMERCIAL_OWNER_TEXTS.has(link)
                                         ? <Link href="/commercial-type-select?mode=owner" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
-                                        : <a href="#" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</a>
+                                        : MOBILE_APP_TEXTS.has(link)
+                                          ? <Link href="/mobile-app" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
+                                          : <a href="#" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</a>
                       }
                     </li>
                   ))}
