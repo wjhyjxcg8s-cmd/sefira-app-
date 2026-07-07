@@ -147,7 +147,7 @@ const translations = {
     suggested: "Önerilen",
     footerDesc: "Evinizi, ofisinizi veya ticari alanınızı güvenle paylaşın ya da ihtiyacınız olan alanı kolayca bulun.",
     footerLinks: [
-      { title: "Ürün",   links: ["Oda / Ev Arkadaşı Bul", "Evini Paylaş", "Ticari Alan Bul", "Ticari Alanını Paylaş"] },
+      { title: "Seçenekler",   links: ["Oda / Ev Arkadaşı Bul", "Evini Paylaş", "Ticari Alan Bul", "Ticari Alanını Paylaş"] },
       { title: "Şirket", links: ["Hakkımızda", "Blog", "Kariyer", "Basın", "İletişim"] },
       { title: "Destek", links: ["Yardım Merkezi", "Güvenlik", "Kullanım Koşulları", "Gizlilik", "Çerezler"] },
     ],
@@ -289,7 +289,7 @@ const translations = {
     suggested: "Suggested",
     footerDesc: "Safely share your home, office or commercial space — or easily find the space you need.",
     footerLinks: [
-      { title: "Product", links: ["Find a Room / Roommate", "Share Your Home", "Find Commercial Space", "Share Your Commercial Space"] },
+      { title: "Options", links: ["Find a Room / Roommate", "Share Your Home", "Find Commercial Space", "Share Your Commercial Space"] },
       { title: "Company", links: ["About", "Blog", "Careers", "Press", "Contact"] },
       { title: "Support", links: ["Help Center", "Safety", "Terms", "Privacy", "Cookies"] },
     ],
@@ -431,7 +431,7 @@ const translations = {
     suggested: "پیشنهادی",
     footerDesc: "خانه، دفتر یا فضای تجاری خود را با اطمینان به اشتراک بگذارید یا فضای موردنیاز خود را به‌راحتی پیدا کنید.",
     footerLinks: [
-      { title: "محصول",    links: ["اتاق یا هم‌خانه پیدا کن", "خانه‌ات را به اشتراک بگذار", "مکان تجاری پیدا کن", "مکان تجاری‌ات را به اشتراک بگذار"] },
+      { title: "گزینه‌ها",    links: ["اتاق یا هم‌خانه پیدا کن", "خانه‌ات را به اشتراک بگذار", "مکان تجاری پیدا کن", "مکان تجاری‌ات را به اشتراک بگذار"] },
       { title: "شرکت",     links: ["درباره ما", "وبلاگ", "مشاغل", "مطبوعات", "تماس"] },
       { title: "پشتیبانی", links: ["مرکز کمک", "امنیت", "شرایط استفاده", "حریم خصوصی", "کوکی‌ها"] },
     ],
@@ -572,7 +572,7 @@ const translations = {
     suggested: "Vorgeschlagen",
     footerDesc: "Teilen Sie Ihr Zuhause, Ihr Büro oder Ihre Gewerbefläche sicher — oder finden Sie ganz einfach den Raum, den Sie brauchen.",
     footerLinks: [
-      { title: "Produkt",    links: ["Zimmer / Mitbewohner finden", "Dein Zuhause teilen", "Gewerbefläche finden", "Gewerbefläche teilen"] },
+      { title: "Optionen",    links: ["Zimmer / Mitbewohner finden", "Dein Zuhause teilen", "Gewerbefläche finden", "Gewerbefläche teilen"] },
       { title: "Unternehmen", links: ["Über uns", "Blog", "Karriere", "Presse", "Kontakt"] },
       { title: "Support",    links: ["Hilfe-Center", "Sicherheit", "Nutzungsbedingungen", "Datenschutz", "Cookies"] },
     ],
@@ -715,7 +715,7 @@ const translations = {
     suggested: "مقترَح",
     footerDesc: "شارك منزلك أو مكتبك أو مساحتك التجارية بأمان، أو ابحث بسهولة عن المساحة التي تحتاجها.",
     footerLinks: [
-      { title: "المنتج",  links: ["ابحث عن غرفة أو شريك سكن", "شارك منزلك", "إيجاد مساحة تجارية", "شارك مساحتك التجارية"] },
+      { title: "الخيارات",  links: ["ابحث عن غرفة أو شريك سكن", "شارك منزلك", "إيجاد مساحة تجارية", "شارك مساحتك التجارية"] },
       { title: "الشركة",  links: ["من نحن", "المدوّنة", "الوظائف", "الصحافة", "اتصل بنا"] },
       { title: "الدعم",   links: ["مركز المساعدة", "الأمان", "شروط الاستخدام", "الخصوصية", "ملفات تعريف الارتباط"] },
     ],
@@ -856,7 +856,7 @@ const translations = {
     suggested: "Рекомендуется",
     footerDesc: "Безопасно делитесь своим домом, офисом или коммерческим пространством — или легко найдите нужное вам место.",
     footerLinks: [
-      { title: "Продукт",   links: ["Найти комнату / соседа", "Поделиться жильём", "Найти коммерческое помещение", "Поделиться коммерческим помещением"] },
+      { title: "Опции",   links: ["Найти комнату / соседа", "Поделиться жильём", "Найти коммерческое помещение", "Поделиться коммерческим помещением"] },
       { title: "Компания",  links: ["О нас", "Блог", "Карьера", "Пресса", "Контакты"] },
       { title: "Поддержка", links: ["Центр помощи", "Безопасность", "Условия", "Конфиденциальность", "Cookies"] },
     ],
