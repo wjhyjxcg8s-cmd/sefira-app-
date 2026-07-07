@@ -100,13 +100,14 @@ const countries = [
   { code: "all", flag: "🌍", name: { tr: "Tümü", en: "All", fa: "همه", ar: "الكل", de: "Alle", ru: "Все" } },
   { code: "US", flag: "🇺🇸", name: { tr: "Amerika", en: "USA", fa: "آمریکا", ar: "أمريكا", de: "USA", ru: "США" } },
   { code: "TR", flag: "🇹🇷", name: { tr: "Türkiye", en: "Turkey", fa: "ترکیه", ar: "تركيا", de: "Türkei", ru: "Турция" } },
-  { code: "DE", flag: "🇩🇪", name: { tr: "Almanya", en: "Germany", fa: "آلمان", ar: "ألمانيا", de: "Deutschland", ru: "Германия" } },
   { code: "RU", flag: "🇷🇺", name: { tr: "Rusya", en: "Russia", fa: "روسیه", ar: "روسيا", de: "Russland", ru: "Россия" } },
+  { code: "IR", flag: "🇮🇷", name: { tr: "İran", en: "Iran", fa: "ایران", ar: "إيران", de: "Iran", ru: "Иран" } },
+  { code: "DE", flag: "🇩🇪", name: { tr: "Almanya", en: "Germany", fa: "آلمان", ar: "ألمانيا", de: "Deutschland", ru: "Германия" } },
   { code: "AE", flag: "🇦🇪", name: { tr: "BAE", en: "UAE", fa: "امارات", ar: "الإمارات", de: "VAE", ru: "ОАЭ" } },
+  { code: "SA", flag: "🇸🇦", name: { tr: "Suudi Arabistan", en: "Saudi Arabia", fa: "عربستان سعودی", ar: "المملكة العربية السعودية", de: "Saudi-Arabien", ru: "Саудовская Аравия" } },
   { code: "GB", flag: "🇬🇧", name: { tr: "İngiltere", en: "UK", fa: "انگلیس", ar: "بريطانيا", de: "UK", ru: "Великобритания" } },
   { code: "FR", flag: "🇫🇷", name: { tr: "Fransa", en: "France", fa: "فرانسه", ar: "فرنسا", de: "Frankreich", ru: "Франция" } },
   { code: "CA", flag: "🇨🇦", name: { tr: "Kanada", en: "Canada", fa: "کانادا", ar: "كندا", de: "Kanada", ru: "Канада" } },
-  { code: "IR", flag: "🇮🇷", name: { tr: "İran", en: "Iran", fa: "ایران", ar: "إيران", de: "Iran", ru: "Иран" } },
   { code: "NL", flag: "🇳🇱", name: { tr: "Hollanda", en: "Netherlands", fa: "هلند", ar: "هولندا", de: "Niederlande", ru: "Нидерланды" } },
   { code: "SE", flag: "🇸🇪", name: { tr: "İsveç", en: "Sweden", fa: "سوئد", ar: "السويد", de: "Schweden", ru: "Швеция" } },
 ];
@@ -400,6 +401,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
   const router = useRouter();
   const [allListings, setAllListings] = useState<any[]>([]);
   const [sonIlanlarCategory, setSonIlanlarCategory] = useState<'all' | 'residential' | 'commercial'>('all');
+  const [selectedCountry, setSelectedCountry] = useState<string>('all');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -439,6 +441,10 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
     if (filterCity) setSonIlanlarCategory("all");
   }, [filterCity]);
 
+  useEffect(() => {
+    if (sonIlanlarCategory !== 'all') setSelectedCountry('all');
+  }, [sonIlanlarCategory]);
+
   const listings = useMemo(() => {
     let base = filterCity
       ? allListings
@@ -456,8 +462,11 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
           normalizeTR(l.district || "").includes(q)
       );
     }
+    if (selectedCountry !== 'all') {
+      base = filterByCountry(base, selectedCountry);
+    }
     return base.slice(0, 12);
-  }, [allListings, sonIlanlarCategory, filterCity]);
+  }, [allListings, sonIlanlarCategory, filterCity, selectedCountry]);
 
   const lbl = cardLabels[lang as Lang] ?? cardLabels.tr;
 
@@ -508,6 +517,33 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
           </button>
         ))}
       </div>
+
+      {/* Country selector — only when viewing all categories */}
+      {sonIlanlarCategory === 'all' && (
+        <div className="mb-6">
+          <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 pb-2">
+            <div className="flex gap-2 w-max">
+              {countries.map((country) => (
+                <button
+                  key={country.code}
+                  onClick={() => setSelectedCountry(country.code)}
+                  className={`rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200 whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
+                    selectedCountry === country.code
+                      ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md scale-105"
+                      : "bg-white border border-stone-200 text-stone-700 hover:border-orange-300 hover:text-orange-500"
+                  }`}
+                >
+                  <span>{country.flag}</span>
+                  <span>{country.name[lang as Lang] ?? country.name.tr}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+          {selectedCountry !== 'all' && (
+            <p className="text-xs text-stone-400 mt-1">{listings.length} ilan</p>
+          )}
+        </div>
+      )}
 
       {loading ? (
         <div className="grid grid-cols-3 gap-3">
