@@ -147,7 +147,7 @@ const translations = {
     suggested: "Önerilen",
     footerDesc: "Evinizi, ofisinizi veya ticari alanınızı güvenle paylaşın ya da ihtiyacınız olan alanı kolayca bulun.",
     footerLinks: [
-      { title: "Ürün",   links: ["Oda Bul", "Ev Arkadaşı Bul", "İlan Ver", "Yapay Zeka Eşleştirme", "Premium", "Ticari Alan Bul", "Ticari Alanını Paylaş"] },
+      { title: "Ürün",   links: ["Oda / Ev Arkadaşı Bul", "Evini Paylaş", "Ticari Alan Bul", "Ticari Alanını Paylaş"] },
       { title: "Şirket", links: ["Hakkımızda", "Blog", "Kariyer", "Basın", "İletişim"] },
       { title: "Destek", links: ["Yardım Merkezi", "Güvenlik", "Kullanım Koşulları", "Gizlilik", "Çerezler"] },
     ],
@@ -289,7 +289,7 @@ const translations = {
     suggested: "Suggested",
     footerDesc: "Safely share your home, office or commercial space — or easily find the space you need.",
     footerLinks: [
-      { title: "Product", links: ["Find Rooms", "Find Roommates", "List Property", "AI Matching", "Premium", "Find Commercial Space", "Share Your Commercial Space"] },
+      { title: "Product", links: ["Find a Room / Roommate", "Share Your Home", "Find Commercial Space", "Share Your Commercial Space"] },
       { title: "Company", links: ["About", "Blog", "Careers", "Press", "Contact"] },
       { title: "Support", links: ["Help Center", "Safety", "Terms", "Privacy", "Cookies"] },
     ],
@@ -431,7 +431,7 @@ const translations = {
     suggested: "پیشنهادی",
     footerDesc: "خانه، دفتر یا فضای تجاری خود را با اطمینان به اشتراک بگذارید یا فضای موردنیاز خود را به‌راحتی پیدا کنید.",
     footerLinks: [
-      { title: "محصول",    links: ["پیدا کردن اتاق", "پیدا کردن هم‌خانه", "ثبت آگهی", "تطابق هوش مصنوعی", "پریمیوم", "پیدا کردن فضای تجاری", "به اشتراک‌گذاری فضای تجاری"] },
+      { title: "محصول",    links: ["اتاق یا هم‌خانه پیدا کن", "خانه‌ات را به اشتراک بگذار", "مکان تجاری پیدا کن", "مکان تجاری‌ات را به اشتراک بگذار"] },
       { title: "شرکت",     links: ["درباره ما", "وبلاگ", "مشاغل", "مطبوعات", "تماس"] },
       { title: "پشتیبانی", links: ["مرکز کمک", "امنیت", "شرایط استفاده", "حریم خصوصی", "کوکی‌ها"] },
     ],
@@ -572,7 +572,7 @@ const translations = {
     suggested: "Vorgeschlagen",
     footerDesc: "Teilen Sie Ihr Zuhause, Ihr Büro oder Ihre Gewerbefläche sicher — oder finden Sie ganz einfach den Raum, den Sie brauchen.",
     footerLinks: [
-      { title: "Produkt",    links: ["Zimmer finden", "Mitbewohner finden", "Inserat aufgeben", "KI-Matching", "Premium", "Gewerbefläche finden", "Gewerbefläche teilen"] },
+      { title: "Produkt",    links: ["Zimmer / Mitbewohner finden", "Dein Zuhause teilen", "Gewerbefläche finden", "Gewerbefläche teilen"] },
       { title: "Unternehmen", links: ["Über uns", "Blog", "Karriere", "Presse", "Kontakt"] },
       { title: "Support",    links: ["Hilfe-Center", "Sicherheit", "Nutzungsbedingungen", "Datenschutz", "Cookies"] },
     ],
@@ -715,7 +715,7 @@ const translations = {
     suggested: "مقترَح",
     footerDesc: "شارك منزلك أو مكتبك أو مساحتك التجارية بأمان، أو ابحث بسهولة عن المساحة التي تحتاجها.",
     footerLinks: [
-      { title: "المنتج",  links: ["البحث عن غرفة", "البحث عن شريك سكن", "نشر إعلان", "المطابقة بالذكاء الاصطناعي", "بريميوم", "إيجاد مساحة تجارية", "شارك مساحتك التجارية"] },
+      { title: "المنتج",  links: ["ابحث عن غرفة أو شريك سكن", "شارك منزلك", "إيجاد مساحة تجارية", "شارك مساحتك التجارية"] },
       { title: "الشركة",  links: ["من نحن", "المدوّنة", "الوظائف", "الصحافة", "اتصل بنا"] },
       { title: "الدعم",   links: ["مركز المساعدة", "الأمان", "شروط الاستخدام", "الخصوصية", "ملفات تعريف الارتباط"] },
     ],
@@ -856,7 +856,7 @@ const translations = {
     suggested: "Рекомендуется",
     footerDesc: "Безопасно делитесь своим домом, офисом или коммерческим пространством — или легко найдите нужное вам место.",
     footerLinks: [
-      { title: "Продукт",   links: ["Найти комнату", "Найти соседа", "Разместить объявление", "ИИ подбор", "Премиум", "Найти коммерческое пространство", "Поделитесь коммерческим пространством"] },
+      { title: "Продукт",   links: ["Найти комнату / соседа", "Поделиться жильём", "Найти коммерческое помещение", "Поделиться коммерческим помещением"] },
       { title: "Компания",  links: ["О нас", "Блог", "Карьера", "Пресса", "Контакты"] },
       { title: "Поддержка", links: ["Центр помощи", "Безопасность", "Условия", "Конфиденциальность", "Cookies"] },
     ],
@@ -927,9 +927,20 @@ const SECURITY_TEXTS = new Set([
   "امنیت", "الأمان", "Безопасность",
 ]);
 
-const COMMERCIAL_SPACE_TEXTS = new Set([
-  "Ticari Alan Bul", "Find Commercial Space", "پیدا کردن فضای تجاری", "إيجاد مساحة تجارية", "Gewerbefläche finden", "Найти коммерческое пространство",
-  "Ticari Alanını Paylaş", "Share Your Commercial Space", "به اشتراک‌گذاری فضای تجاری", "شارك مساحتك التجارية", "Gewerbefläche teilen", "Поделитесь коммерческим пространством",
+const ROOM_SEEKER_TEXTS = new Set([
+  "Oda / Ev Arkadaşı Bul", "Find a Room / Roommate", "اتاق یا هم‌خانه پیدا کن", "ابحث عن غرفة أو شريك سكن", "Zimmer / Mitbewohner finden", "Найти комнату / соседа",
+]);
+
+const SHARE_HOME_TEXTS = new Set([
+  "Evini Paylaş", "Share Your Home", "خانه‌ات را به اشتراک بگذار", "شارك منزلك", "Dein Zuhause teilen", "Поделиться жильём",
+]);
+
+const COMMERCIAL_SEEKER_TEXTS = new Set([
+  "Ticari Alan Bul", "Find Commercial Space", "مکان تجاری پیدا کن", "إيجاد مساحة تجارية", "Gewerbefläche finden", "Найти коммерческое помещение",
+]);
+
+const COMMERCIAL_OWNER_TEXTS = new Set([
+  "Ticari Alanını Paylaş", "Share Your Commercial Space", "مکان تجاری‌ات را به اشتراک بگذار", "شارك مساحتك التجارية", "Gewerbefläche teilen", "Поделиться коммерческим помещением",
 ]);
 
 
@@ -3943,9 +3954,15 @@ export default function Home() {
                               ? <Link href="/terms" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
                               : SECURITY_TEXTS.has(link)
                                 ? <Link href="/security" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
-                                : COMMERCIAL_SPACE_TEXTS.has(link)
-                                  ? <Link href="/choose-listing-type" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
-                                  : <a href="#" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</a>
+                                : ROOM_SEEKER_TEXTS.has(link)
+                                  ? <Link href="/create-listing?type=needs_place" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
+                                  : SHARE_HOME_TEXTS.has(link)
+                                    ? <Link href="/create-listing?type=has_place" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
+                                    : COMMERCIAL_SEEKER_TEXTS.has(link)
+                                      ? <Link href="/commercial-type-select?mode=seeker" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
+                                      : COMMERCIAL_OWNER_TEXTS.has(link)
+                                        ? <Link href="/commercial-type-select?mode=owner" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</Link>
+                                        : <a href="#" className="text-sm text-stone-400 hover:text-white transition-colors duration-200">{link}</a>
                       }
                     </li>
                   ))}
