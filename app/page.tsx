@@ -939,8 +939,8 @@ const MOBILE_APP_TEXTS = new Set([
 
 const BLOG_TEXTS = new Set([
   "Blog",        // TR, EN, DE
-  "بلاگ",        // FA
-  "المدونة",     // AR
+  "وبلاگ",       // FA
+  "المدوّنة",    // AR (with shadda diacritic on the د)
   "Блог",        // RU
 ]);
 
