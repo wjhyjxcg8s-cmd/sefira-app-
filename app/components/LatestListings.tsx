@@ -371,6 +371,15 @@ const cityFilterUI: Record<Lang, { label: string; clear: string; backToAll: stri
   ru: { label: "объявлений показано",   clear: "✕ Очистить",    backToAll: "← Вернуться ко всем объявлениям" },
 };
 
+const autoCountryLabel: Record<Lang, string> = {
+  tr: "📍 Dilinize göre",
+  en: "📍 Based on your language",
+  fa: "📍 بر اساس زبان شما",
+  ar: "📍 بناءً على لغتك",
+  de: "📍 Basierend auf Ihrer Sprache",
+  ru: "📍 По вашему языку",
+};
+
 const fixedCodes = new Set(countries.map((c) => c.code));
 
 const countryNameToCode: Record<string, string> = {};
@@ -407,6 +416,15 @@ const langPriorityCountry: Record<string, string> = {
   en: 'US',
 };
 
+const langPriorityCountries: Record<string, string[]> = {
+  en: ['US', 'GB', 'CA'],
+  fa: ['IR', 'AF'],
+  ru: ['RU'],
+  de: ['DE', 'NO'],
+  ar: ['AE', 'SA', 'QA', 'EG'],
+  tr: ['TR'],
+};
+
 interface LatestListingsProps {
   lang: string;
   filterCity?: string | null;
@@ -423,6 +441,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
   const [allListings, setAllListings] = useState<any[]>([]);
   const [sonIlanlarCategory, setSonIlanlarCategory] = useState<'all' | 'residential' | 'commercial'>('all');
   const [selectedCountry, setSelectedCountry] = useState<string>('all');
+  const [autoCountryCodes, setAutoCountryCodes] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -466,6 +485,11 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
     if (sonIlanlarCategory !== 'all') setSelectedCountry('all');
   }, [sonIlanlarCategory]);
 
+  useEffect(() => {
+    const codes = langPriorityCountries[lang] ?? [];
+    setAutoCountryCodes(codes);
+  }, [lang]);
+
   const listings = useMemo(() => {
     let base = filterCity
       ? allListings
@@ -485,9 +509,11 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
     }
     if (selectedCountry !== 'all') {
       base = filterByCountry(base, selectedCountry);
+    } else if (autoCountryCodes.length > 0) {
+      base = base.filter((l) => autoCountryCodes.some((code) => filterByCountry([l], code).length > 0));
     }
     return base.slice(0, 12);
-  }, [allListings, sonIlanlarCategory, filterCity, selectedCountry]);
+  }, [allListings, sonIlanlarCategory, filterCity, selectedCountry, autoCountryCodes]);
 
   const lbl = cardLabels[lang as Lang] ?? cardLabels.tr;
 
@@ -542,22 +568,40 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
       {/* Country selector — only when viewing all categories */}
       {sonIlanlarCategory === 'all' && (
         <div className="mb-6">
+          {autoCountryCodes.length > 0 && selectedCountry === 'all' && (
+            <p className="text-xs text-stone-400 mb-1.5">
+              {autoCountryLabel[lang as Lang] ?? autoCountryLabel.tr}
+            </p>
+          )}
           <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 pb-2">
             <div className="flex gap-2 w-max">
-              {countries.map((country) => (
-                <button
-                  key={country.code}
-                  onClick={() => setSelectedCountry(country.code)}
-                  className={`rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200 whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
-                    selectedCountry === country.code
-                      ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md scale-105"
-                      : "bg-white border border-stone-200 text-stone-700 hover:border-orange-300 hover:text-orange-500"
-                  }`}
-                >
-                  <span>{country.flag}</span>
-                  <span>{country.name[lang as Lang] ?? country.name.tr}</span>
-                </button>
-              ))}
+              {countries.map((country) => {
+                const isActive = country.code === 'all'
+                  ? selectedCountry === 'all' && autoCountryCodes.length === 0
+                  : country.code === selectedCountry || (selectedCountry === 'all' && autoCountryCodes.includes(country.code));
+                return (
+                  <button
+                    key={country.code}
+                    onClick={() => {
+                      if (country.code === 'all') {
+                        setSelectedCountry('all');
+                        setAutoCountryCodes(langPriorityCountries[lang] ?? []);
+                      } else {
+                        setSelectedCountry(country.code);
+                        setAutoCountryCodes([]);
+                      }
+                    }}
+                    className={`rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200 whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
+                      isActive
+                        ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md scale-105"
+                        : "bg-white border border-stone-200 text-stone-700 hover:border-orange-300 hover:text-orange-500"
+                    }`}
+                  >
+                    <span>{country.flag}</span>
+                    <span>{country.name[lang as Lang] ?? country.name.tr}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
           {selectedCountry !== 'all' && (
