@@ -145,7 +145,7 @@ const translations = {
     likedProfile: "Emma W. profilinizi beğendi",
     compatibility: "%97 uyumluluk · 2 dakika önce",
     suggested: "Önerilen",
-    footerDesc: "Ev arkadaşı ve ev bulmak için en güvenilir platform. Modern, sınırsız yaşam için tasarlandı.",
+    footerDesc: "Evinizi, ofisinizi veya ticari alanınızı güvenle paylaşın ya da ihtiyacınız olan alanı kolayca bulun.",
     footerLinks: [
       { title: "Ürün",   links: ["Oda Bul", "Ev Arkadaşı Bul", "İlan Ver", "Yapay Zeka Eşleştirme", "Premium"] },
       { title: "Şirket", links: ["Hakkımızda", "Blog", "Kariyer", "Basın", "İletişim"] },
@@ -287,7 +287,7 @@ const translations = {
     likedProfile: "Emma W. liked your profile",
     compatibility: "97% compatibility · 2 min ago",
     suggested: "Suggested",
-    footerDesc: "The most trusted platform for finding roommates and rooms. Built for modern, borderless living.",
+    footerDesc: "Safely share your home, office or commercial space — or easily find the space you need.",
     footerLinks: [
       { title: "Product", links: ["Find Rooms", "Find Roommates", "List Property", "AI Matching", "Premium"] },
       { title: "Company", links: ["About", "Blog", "Careers", "Press", "Contact"] },
@@ -429,7 +429,7 @@ const translations = {
     likedProfile: "Emma W. پروفایل شما را لایک کرد",
     compatibility: "۹۷٪ سازگاری · ۲ دقیقه پیش",
     suggested: "پیشنهادی",
-    footerDesc: "معتمدترین پلتفرم برای پیدا کردن هم‌خانه و اتاق. طراحی شده برای زندگی مدرن و بدون مرز.",
+    footerDesc: "خانه، دفتر یا فضای تجاری خود را با اطمینان به اشتراک بگذارید یا فضای موردنیاز خود را به‌راحتی پیدا کنید.",
     footerLinks: [
       { title: "محصول",    links: ["پیدا کردن اتاق", "پیدا کردن هم‌خانه", "ثبت آگهی", "تطابق هوش مصنوعی", "پریمیوم"] },
       { title: "شرکت",     links: ["درباره ما", "وبلاگ", "مشاغل", "مطبوعات", "تماس"] },
@@ -570,7 +570,7 @@ const translations = {
     likedProfile: "Emma W. hat Ihr Profil geliked",
     compatibility: "97 % Kompatibilität · vor 2 Minuten",
     suggested: "Vorgeschlagen",
-    footerDesc: "Die vertrauenswürdigste Plattform für die Suche nach Mitbewohnern und Zimmern. Für modernes, grenzenloses Wohnen entwickelt.",
+    footerDesc: "Teilen Sie Ihr Zuhause, Ihr Büro oder Ihre Gewerbefläche sicher — oder finden Sie ganz einfach den Raum, den Sie brauchen.",
     footerLinks: [
       { title: "Produkt",    links: ["Zimmer finden", "Mitbewohner finden", "Inserat aufgeben", "KI-Matching", "Premium"] },
       { title: "Unternehmen", links: ["Über uns", "Blog", "Karriere", "Presse", "Kontakt"] },
@@ -713,7 +713,7 @@ const translations = {
     likedProfile: "أعجبت Emma W. بملفك الشخصي",
     compatibility: "توافق ٩٧٪ · منذ دقيقتين",
     suggested: "مقترَح",
-    footerDesc: "المنصة الأكثر ثقةً للعثور على شركاء السكن والغرف. مصمَّمة للمعيشة العصرية عبر الحدود.",
+    footerDesc: "شارك منزلك أو مكتبك أو مساحتك التجارية بأمان، أو ابحث بسهولة عن المساحة التي تحتاجها.",
     footerLinks: [
       { title: "المنتج",  links: ["البحث عن غرفة", "البحث عن شريك سكن", "نشر إعلان", "المطابقة بالذكاء الاصطناعي", "بريميوم"] },
       { title: "الشركة",  links: ["من نحن", "المدوّنة", "الوظائف", "الصحافة", "اتصل بنا"] },
@@ -854,7 +854,7 @@ const translations = {
     likedProfile: "оценил ваш профиль",
     compatibility: "Совместимость",
     suggested: "Рекомендуется",
-    footerDesc: "Лучшая платформа для поиска соседей по комнате",
+    footerDesc: "Безопасно делитесь своим домом, офисом или коммерческим пространством — или легко найдите нужное вам место.",
     footerLinks: [
       { title: "Продукт",   links: ["Найти комнату", "Найти соседа", "Разместить объявление", "ИИ подбор", "Премиум"] },
       { title: "Компания",  links: ["О нас", "Блог", "Карьера", "Пресса", "Контакты"] },
