@@ -938,7 +938,10 @@ const MOBILE_APP_TEXTS = new Set([
 ]);
 
 const BLOG_TEXTS = new Set([
-  "Blog",
+  "Blog",        // TR, EN, DE
+  "بلاگ",        // FA
+  "المدونة",     // AR
+  "Блог",        // RU
 ]);
 
 const ROOM_SEEKER_TEXTS = new Set([
