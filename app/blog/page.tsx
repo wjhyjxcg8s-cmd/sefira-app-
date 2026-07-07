@@ -8,15 +8,16 @@ type ListingContent = {
   heading: string;
   sub: string;
   back: string;
+  home: string;
 };
 
 const BLOG_LISTING_CONTENT: Record<string, ListingContent> = {
-  tr: { heading: "Blog", sub: "Uzmanların ipuçları ve ilham verici hikayeler", back: "← Geri" },
-  en: { heading: "Blog", sub: "Expert tips and inspiring stories", back: "← Back" },
-  fa: { heading: "بلاگ", sub: "راهنمایی‌های تخصصی و داستان‌های الهام‌بخش", back: "→ بازگشت" },
-  ar: { heading: "المدونة", sub: "نصائح الخبراء وقصص ملهمة", back: "→ رجوع" },
-  de: { heading: "Blog", sub: "Expertentipps und inspirierende Geschichten", back: "← Zurück" },
-  ru: { heading: "Блог", sub: "Советы экспертов и вдохновляющие истории", back: "← Назад" },
+  tr: { heading: "Blog", sub: "Uzmanların ipuçları ve ilham verici hikayeler", back: "← Geri", home: "🏠 Ana Sayfa" },
+  en: { heading: "Blog", sub: "Expert tips and inspiring stories", back: "← Back", home: "🏠 Home" },
+  fa: { heading: "بلاگ", sub: "راهنمایی‌های تخصصی و داستان‌های الهام‌بخش", back: "→ بازگشت", home: "🏠 صفحه اصلی" },
+  ar: { heading: "المدونة", sub: "نصائح الخبراء وقصص ملهمة", back: "→ رجوع", home: "🏠 الصفحة الرئيسية" },
+  de: { heading: "Blog", sub: "Expertentipps und inspirierende Geschichten", back: "← Zurück", home: "🏠 Startseite" },
+  ru: { heading: "Блог", sub: "Советы экспертов и вдохновляющие истории", back: "← Назад", home: "🏠 Главная" },
 };
 
 type ArticleCard = {
@@ -83,26 +84,35 @@ export default function BlogPage() {
   return (
     <div className="min-h-screen bg-white" dir={isRtl ? "rtl" : "ltr"}>
       <div className="max-w-2xl mx-auto px-5 py-8">
-        <button
-          onClick={() => router.back()}
-          className="inline-flex items-center gap-2 text-sm font-semibold text-stone-500 hover:text-stone-900 transition-colors duration-200 mb-8"
-        >
-          {listing.back}
-        </button>
+        <div className="flex items-center gap-2 mb-8">
+          <button
+            onClick={() => router.back()}
+            className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 bg-stone-100 hover:bg-stone-200 rounded-full px-4 py-2 transition-colors duration-200"
+          >
+            {listing.back}
+          </button>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 bg-stone-100 hover:bg-stone-200 rounded-full px-4 py-2 transition-colors duration-200"
+          >
+            {listing.home}
+          </Link>
+        </div>
 
-        <h1 className="text-3xl sm:text-4xl font-black text-stone-900 mb-2">
-          {listing.heading}
+        <h1 className="text-4xl sm:text-5xl font-black mb-2">
+          <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
+            {listing.heading}
+          </span>
         </h1>
         <p className="text-base text-stone-500 mb-10">{listing.sub}</p>
 
         <Link
           href="/blog/space-sharing-psychology"
-          className="group block bg-white border border-stone-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+          className="group relative block overflow-hidden bg-gradient-to-br from-orange-50 via-white to-amber-50 border border-orange-100 rounded-3xl p-7 shadow-sm hover:shadow-2xl hover:-translate-y-1.5 hover:scale-[1.01] transition-all duration-300"
         >
-          <span
-            className="inline-block text-xs font-bold px-3 py-1 rounded-full mb-4"
-            style={{ background: "rgba(249,115,22,0.1)", color: "#f97316" }}
-          >
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-400" />
+
+          <span className="inline-block text-xs font-bold px-3 py-1 rounded-full mb-4 text-white bg-gradient-to-r from-orange-500 to-amber-500">
             {article.tag}
           </span>
 
@@ -114,10 +124,15 @@ export default function BlogPage() {
             {article.excerpt}
           </p>
 
-          <div className="flex items-center gap-3 text-xs font-semibold text-stone-400">
-            <span>{article.date}</span>
-            <span className="w-1 h-1 rounded-full bg-stone-300" />
-            <span>{article.readTime}</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3 text-xs font-semibold text-stone-400">
+              <span>{article.date}</span>
+              <span className="w-1 h-1 rounded-full bg-orange-400" />
+              <span>{article.readTime}</span>
+            </div>
+            <span className="text-orange-500 font-bold text-lg translate-x-0 rtl:-scale-x-100 group-hover:translate-x-1.5 rtl:group-hover:-translate-x-1.5 transition-transform duration-300">
+              →
+            </span>
           </div>
         </Link>
       </div>
