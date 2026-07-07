@@ -36,7 +36,10 @@
       "Bash(node check.js)",
       "Bash(netstat -ano)",
       "Bash(taskkill //PID 668 //F)",
-      "Bash(grep -i \"app/page.tsx\\\\|app\\\\\\\\\\\\\\\\page.tsx\")"
+      "Bash(grep -i \"app/page.tsx\\\\|app\\\\\\\\\\\\\\\\page.tsx\")",
+      "Bash(git stash *)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(git status *)"
     ]
   }
 }
