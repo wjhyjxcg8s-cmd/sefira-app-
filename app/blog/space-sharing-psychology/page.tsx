@@ -501,6 +501,15 @@ const BACK_TO_BLOG: Record<string, string> = {
   ru: "← Назад в блог",
 };
 
+const HOME_LABEL: Record<string, string> = {
+  tr: "Ana Sayfa",
+  en: "Home",
+  fa: "صفحه اصلی",
+  ar: "الصفحة الرئيسية",
+  de: "Startseite",
+  ru: "Главная",
+};
+
 function renderBlock(block: Block, i: number) {
   switch (block.type) {
     case "h2":
@@ -549,6 +558,7 @@ export default function SpaceSharingPsychologyPage() {
   const article = ARTICLE_CONTENT[lang] || ARTICLE_CONTENT.tr;
   const cta = CTA_CONTENT[lang] || CTA_CONTENT.tr;
   const backLabel = BACK_TO_BLOG[lang] || BACK_TO_BLOG.tr;
+  const homeLabel = HOME_LABEL[lang] || HOME_LABEL.tr;
 
   return (
     <div className="min-h-screen bg-white" dir={isRtl ? "rtl" : "ltr"}>
@@ -587,12 +597,18 @@ export default function SpaceSharingPsychologyPage() {
           </Link>
         </div>
 
-        <div className="mt-10 text-center">
+        <div className="flex items-center justify-center gap-3 mt-8 mb-4">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-stone-500 hover:text-stone-900 transition-colors duration-200"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 bg-white border border-stone-200 hover:bg-stone-50 rounded-full px-5 py-2.5 transition-colors duration-200"
           >
             {backLabel}
+          </Link>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-white bg-gradient-to-r from-orange-500 to-amber-500 rounded-full px-5 py-2.5 hover:shadow-lg hover:scale-105 transition-all duration-200"
+          >
+            🏠 {homeLabel}
           </Link>
         </div>
       </div>
