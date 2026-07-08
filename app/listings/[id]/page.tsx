@@ -136,16 +136,6 @@ const labels: Record<Lang, Record<string, string>> = {
   },
 };
 
-function calcAge(birthDate: string | null): number | null {
-  if (!birthDate) return null;
-  const birth = new Date(birthDate);
-  const now = new Date();
-  let age = now.getFullYear() - birth.getFullYear();
-  const m = now.getMonth() - birth.getMonth();
-  if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) age--;
-  return age;
-}
-
 function formatDate(dateStr: string, lang: Lang): string {
   try {
     return new Date(dateStr).toLocaleDateString(
@@ -256,7 +246,6 @@ export default function ListingDetailPage() {
     );
   }
 
-  const age = calcAge(profile?.birth_date ?? null);
   const genderEmoji =
     profile?.gender === "male" || profile?.gender === "erkek" ? "👨"
     : profile?.gender === "female" || profile?.gender === "kadın" || profile?.gender === "kadin" ? "👩"
@@ -445,7 +434,6 @@ export default function ListingDetailPage() {
               </div>
               <div className="flex items-center gap-2 mt-1 text-sm text-gray-500 flex-wrap">
                 {genderEmoji && <span>{genderEmoji}</span>}
-                {age !== null && <span>{age} {t.age}</span>}
                 {profile.country && <span>· {profile.country}</span>}
               </div>
               {profile.created_at && (
