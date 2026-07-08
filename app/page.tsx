@@ -2239,7 +2239,7 @@ export default function Home() {
   const sliderPct = ((budgetUSD - 100) / 4900) * 100;
 
   return (
-    <div className="min-h-screen bg-stone-50 text-stone-900 overflow-x-hidden" dir={lang === "fa" || lang === "ar" ? "rtl" : "ltr"} style={{ overscrollBehavior: "none" }}>
+    <div className="min-h-screen bg-stone-50 text-stone-900 overflow-x-hidden" dir={lang === "fa" || lang === "ar" ? "rtl" : "ltr"}>
       <style>{`
         @keyframes sefira-kenburns {
           0% { transform: scale(1); }
