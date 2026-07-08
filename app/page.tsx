@@ -2948,7 +2948,7 @@ export default function Home() {
             </span>
 
             {/* Headline */}
-            <AnimatedGradientText className="text-2xl font-bold px-6 py-2 mt-4">
+            <AnimatedGradientText className="text-2xl font-bold px-6 py-2 mt-2">
               <span className="animate-gradient bg-gradient-to-r from-orange-600 via-amber-500 to-orange-700 bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent [--bg-size:300%]">
                 {t.heroLine1} {t.heroLine2} {t.heroLine3}
               </span>
