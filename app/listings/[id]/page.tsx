@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useLang } from "@/app/lib/LangContext";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import AuthModal from "@/app/components/AuthModal";
@@ -35,6 +36,12 @@ const labels: Record<Lang, Record<string, string>> = {
     wantsPrivateRoom: "Özel oda istiyor", maxPrefix: "Maks",
     seekerBadge: "Ev Arıyor", roomType: "Oda Tipi", privateRoomYes: "Özel Oda", privateRoomAny: "Fark Etmez",
     genderPref: "Ev Arkadaşı Tercihi", aboutTitle: "İstek Hakkında",
+    home: "Ana Sayfa", share: "Paylaş", linkCopied: "Link kopyalandı",
+    houseTypeCaption: "Ev Tipi", roomsCaption: "Oda Sayısı", elevatorCaption: "Asansör",
+    furnishedCaption: "Eşya Durumu", parkingCaption: "Otopark", smokingCaption: "Sigara",
+    residentsCaption: "Mevcut Sakin", roomsSuffix: "oda", residentsSuffix: "kişi yaşıyor",
+    houseTypeApartment: "Daire", houseTypeVilla: "Villa", houseTypeResidence: "Rezidans",
+    houseTypeDormitory: "Yurt", houseTypeIndependent: "Müstakil Ev",
   },
   en: {
     contact: "Send Message",
@@ -57,6 +64,12 @@ const labels: Record<Lang, Record<string, string>> = {
     wantsPrivateRoom: "Wants private room", maxPrefix: "Max",
     seekerBadge: "Seeker", roomType: "Room Type", privateRoomYes: "Private Room", privateRoomAny: "Doesn't matter",
     genderPref: "Roommate Preference", aboutTitle: "About the Request",
+    home: "Home", share: "Share", linkCopied: "Link copied",
+    houseTypeCaption: "House Type", roomsCaption: "Rooms", elevatorCaption: "Elevator",
+    furnishedCaption: "Furnishing", parkingCaption: "Parking", smokingCaption: "Smoking",
+    residentsCaption: "Current Residents", roomsSuffix: "rooms", residentsSuffix: "residents",
+    houseTypeApartment: "Apartment", houseTypeVilla: "Villa", houseTypeResidence: "Residence",
+    houseTypeDormitory: "Dormitory", houseTypeIndependent: "Independent House",
   },
   fa: {
     contact: "ارسال پیام",
@@ -79,6 +92,12 @@ const labels: Record<Lang, Record<string, string>> = {
     wantsPrivateRoom: "اتاق خصوصی می‌خواهد", maxPrefix: "حداکثر",
     seekerBadge: "دنبال فضا", roomType: "نوع فضا", privateRoomYes: "اتاق خصوصی", privateRoomAny: "مهم نیست",
     genderPref: "ترجیح هم‌خانه", aboutTitle: "درباره درخواست",
+    home: "خانه", share: "اشتراک‌گذاری", linkCopied: "لینک کپی شد",
+    houseTypeCaption: "نوع خانه", roomsCaption: "تعداد اتاق", elevatorCaption: "آسانسور",
+    furnishedCaption: "وضعیت مبلمان", parkingCaption: "پارکینگ", smokingCaption: "سیگار",
+    residentsCaption: "ساکنان فعلی", roomsSuffix: "اتاق", residentsSuffix: "نفر ساکن",
+    houseTypeApartment: "آپارتمان", houseTypeVilla: "ویلا", houseTypeResidence: "رزیدانس",
+    houseTypeDormitory: "خوابگاه", houseTypeIndependent: "خانه مستقل",
   },
   ar: {
     contact: "إرسال رسالة",
@@ -101,6 +120,12 @@ const labels: Record<Lang, Record<string, string>> = {
     wantsPrivateRoom: "يريد غرفة خاصة", maxPrefix: "الحد الأقصى",
     seekerBadge: "يبحث عن سكن", roomType: "نوع الغرفة", privateRoomYes: "غرفة خاصة", privateRoomAny: "لا يهم",
     genderPref: "تفضيل شريك السكن", aboutTitle: "عن الطلب",
+    home: "الرئيسية", share: "مشاركة", linkCopied: "تم نسخ الرابط",
+    houseTypeCaption: "نوع المسكن", roomsCaption: "عدد الغرف", elevatorCaption: "المصعد",
+    furnishedCaption: "التأثيث", parkingCaption: "موقف السيارات", smokingCaption: "التدخين",
+    residentsCaption: "السكان الحاليون", roomsSuffix: "غرفة", residentsSuffix: "ساكن",
+    houseTypeApartment: "شقة", houseTypeVilla: "فيلا", houseTypeResidence: "ريزيدنس",
+    houseTypeDormitory: "سكن طلابي", houseTypeIndependent: "بيت مستقل",
   },
   de: {
     contact: "Nachricht senden",
@@ -123,6 +148,12 @@ const labels: Record<Lang, Record<string, string>> = {
     wantsPrivateRoom: "Möchte Privatzimmer", maxPrefix: "Max",
     seekerBadge: "Suchend", roomType: "Zimmerart", privateRoomYes: "Privatzimmer", privateRoomAny: "Egal",
     genderPref: "Mitbewohner-Präferenz", aboutTitle: "Über die Anfrage",
+    home: "Startseite", share: "Teilen", linkCopied: "Link kopiert",
+    houseTypeCaption: "Haustyp", roomsCaption: "Zimmer", elevatorCaption: "Aufzug",
+    furnishedCaption: "Möblierung", parkingCaption: "Parkplatz", smokingCaption: "Rauchen",
+    residentsCaption: "Aktuelle Bewohner", roomsSuffix: "Zimmer", residentsSuffix: "Bewohner",
+    houseTypeApartment: "Wohnung", houseTypeVilla: "Villa", houseTypeResidence: "Residenz",
+    houseTypeDormitory: "Wohnheim", houseTypeIndependent: "Einfamilienhaus",
   },
   ru: {
     contact: "Отправить сообщение",
@@ -145,12 +176,30 @@ const labels: Record<Lang, Record<string, string>> = {
     wantsPrivateRoom: "Хочет отдельную комнату", maxPrefix: "Макс",
     seekerBadge: "Ищет жильё", roomType: "Тип комнаты", privateRoomYes: "Отдельная комната", privateRoomAny: "Неважно",
     genderPref: "Предпочтение соседа", aboutTitle: "О запросе",
+    home: "Главная", share: "Поделиться", linkCopied: "Ссылка скопирована",
+    houseTypeCaption: "Тип жилья", roomsCaption: "Комнат", elevatorCaption: "Лифт",
+    furnishedCaption: "Мебель", parkingCaption: "Парковка", smokingCaption: "Курение",
+    residentsCaption: "Текущие жильцы", roomsSuffix: "комнат", residentsSuffix: "жильцов",
+    houseTypeApartment: "Квартира", houseTypeVilla: "Вилла", houseTypeResidence: "Резиденция",
+    houseTypeDormitory: "Общежитие", houseTypeIndependent: "Частный дом",
   },
 };
 
 function codeToFlag(code: string): string {
   if (!code || !/^[A-Za-z]{2}$/.test(code)) return "🌍";
   return String.fromCodePoint(...[...code.toUpperCase()].map((c) => 0x1f1e6 - 65 + c.charCodeAt(0)));
+}
+
+function houseTypeLabel(t: Record<string, string>, houseType: string | null): string | null {
+  if (!houseType) return null;
+  const map: Record<string, string> = {
+    apartment: t.houseTypeApartment,
+    villa: t.houseTypeVilla,
+    residence: t.houseTypeResidence,
+    dormitory: t.houseTypeDormitory,
+    independent: t.houseTypeIndependent,
+  };
+  return map[houseType] ?? houseType;
 }
 
 export default function ListingDetailPage() {
@@ -164,6 +213,7 @@ export default function ListingDetailPage() {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [activePhoto, setActivePhoto] = useState(0);
   const [showAuth, setShowAuth] = useState(false);
+  const [showCopyToast, setShowCopyToast] = useState(false);
   const { lang } = useLang();
 
   useEffect(() => {
@@ -217,6 +267,7 @@ export default function ListingDetailPage() {
   }, []);
 
   const t = labels[lang];
+  const isRtl = lang === "fa" || lang === "ar";
   const isLoggedIn = !!currentUserId;
   const isOwner = isLoggedIn && listing && currentUserId === listing.user_id;
   const photos: string[] = listing?.photos ?? [];
@@ -224,6 +275,18 @@ export default function ListingDetailPage() {
 
   function handleSendMessage() {
     router.push(`/messages?userId=${listing.user_id}&listingId=${listing.id}`);
+  }
+
+  function handleShare() {
+    const url = window.location.href;
+    const title = listing?.city ?? "Sefira";
+    if (navigator.share) {
+      navigator.share({ title, text: `${title} - Sefira`, url }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(url);
+      setShowCopyToast(true);
+      setTimeout(() => setShowCopyToast(false), 2000);
+    }
   }
 
   if (loading) {
@@ -254,32 +317,42 @@ export default function ListingDetailPage() {
     : null;
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-32">
+    <div className="min-h-screen bg-gray-50 pb-32" dir={isRtl ? "rtl" : "ltr"}>
       {/* Header */}
       <div className="flex items-center justify-between p-4 bg-white sticky top-0 z-10 border-b border-gray-100">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              if (searchParams.get("from") === "admin") router.push("/admin-sefira-2026/listings");
+              else if (window.history.length > 1) router.back();
+              else router.push("/");
+            }}
+            className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 text-lg"
+          >
+            {isRtl ? "→" : "←"}
+          </button>
+          <Link
+            href="/"
+            aria-label={t.home}
+            className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 text-lg"
+          >
+            🏠
+          </Link>
+        </div>
         <button
-          onClick={() => {
-            if (searchParams.get("from") === "admin") router.push("/admin-sefira-2026/listings");
-            else if (window.history.length > 1) router.back();
-            else router.push("/");
-          }}
+          onClick={handleShare}
+          aria-label={t.share}
           className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 text-lg"
         >
-          ←
-        </button>
-        <button
-          onClick={() => {
-            if (navigator.share) {
-              navigator.share({ url: window.location.href });
-            } else {
-              navigator.clipboard.writeText(window.location.href);
-            }
-          }}
-          className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 text-xl"
-        >
-          ⋯
+          📤
         </button>
       </div>
+
+      {showCopyToast && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-full shadow-lg">
+          {t.linkCopied}
+        </div>
+      )}
 
       {isSeeker ? (
       <>
@@ -428,176 +501,184 @@ export default function ListingDetailPage() {
       </>
       ) : (
       <>
-      {/* Photo gallery */}
-      {photos.length > 0 ? (
-        <div className="bg-black">
-          <div className="aspect-video w-full overflow-hidden">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={photos[activePhoto]}
-              alt={listing.city ?? ""}
-              className="w-full h-full object-cover"
-            />
-          </div>
-          {photos.length > 1 && (
-            <div className="flex gap-2 p-2 overflow-x-auto bg-black">
-              {photos.map((p: string, i: number) => (
-                <button key={i} onClick={() => setActivePhoto(i)}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={p}
-                    alt=""
-                    className={`w-16 h-12 object-cover rounded-lg border-2 transition-all ${
-                      i === activePhoto ? "border-orange-400" : "border-transparent opacity-60"
-                    }`}
-                  />
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      ) : profile?.avatar_url ? (
-        <div className="aspect-video w-full bg-gradient-to-br from-orange-50 to-amber-50 flex items-center justify-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={profile.avatar_url}
-            alt={profile.display_name ?? ""}
-            className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
-          />
-        </div>
-      ) : (
-        <div className="aspect-video w-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-16 h-16 text-stone-400">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-          </svg>
-        </div>
-      )}
-
-      {/* Listing info card */}
-      <div className="mx-4 mt-4 bg-white rounded-2xl shadow-md p-5">
-        <div className="flex items-center gap-2 mb-3">
-          <span className={`text-xs px-3 py-1 rounded-full font-semibold text-white ${
-            listing.type === "has_place" ? "bg-emerald-500" : "bg-blue-500"
-          }`}>
-            {listing.type === "has_place" ? t.ownerBadge : t.tenantBadge}
-          </span>
-        </div>
-
-        <h1 className="text-xl font-black text-gray-900">
-          {listing.city ?? ""}{listing.district ? ` / ${listing.district}` : ""}
-        </h1>
-
-        {listing.country_code && (
-          <p className="text-sm text-gray-400 mt-0.5">{listing.country_code}</p>
-        )}
-
-        {!isSeeker && listing.rent && listing.currency && (
-          <p className="text-3xl font-black text-orange-600 mt-3">
-            {Number(listing.rent).toLocaleString()} {listing.currency}
-            <span className="text-base font-normal text-gray-400 ml-1">{t.perMonth}</span>
-          </p>
-        )}
-
-        {isSeeker && listing.max_budget && listing.currency && (
-          <p className="text-3xl font-black text-orange-600 mt-3">
-            <span className="text-base font-normal text-gray-400 mr-1">{t.maxPrefix}</span>
-            {Number(listing.max_budget).toLocaleString()} {listing.currency}
-            <span className="text-base font-normal text-gray-400 ml-1">{t.perMonth}</span>
-          </p>
-        )}
-
-        <div className="grid grid-cols-2 gap-y-2 gap-x-4 mt-4 text-sm text-gray-600">
-          {listing.house_type && (
-            <div className="flex items-center gap-2">
-              <span>🏠</span>
-              <span>{listing.house_type}</span>
-            </div>
-          )}
-          {listing.rooms && (
-            <div className="flex items-center gap-2">
-              <span>🛏</span>
-              <span>{listing.rooms} oda</span>
-            </div>
-          )}
-          {listing.parking != null && (isSeeker ? listing.parking === true : true) && (
-            <div className="flex items-center gap-2">
-              <span>🚗</span>
-              <span>{isSeeker ? t.parkingSeekerOn : (listing.parking ? t.parkingOwnerOn : t.parkingOwnerOff)}</span>
-            </div>
-          )}
-          {listing.elevator != null && (isSeeker ? listing.elevator === true : true) && (
-            <div className="flex items-center gap-2">
-              <span>🛗</span>
-              <span>{isSeeker ? t.elevatorSeekerOn : (listing.elevator ? t.elevatorOwnerOn : t.elevatorOwnerOff)}</span>
-            </div>
-          )}
-          {listing.furnished != null && (isSeeker ? listing.furnished === true : true) && (
-            <div className="flex items-center gap-2">
-              <span>🪑</span>
-              <span>{isSeeker ? t.furnishedSeekerOn : (listing.furnished ? t.furnishedOwnerOn : t.furnishedOwnerOff)}</span>
-            </div>
-          )}
-          {listing.smoking != null && (
-            <div className="flex items-center gap-2">
-              <span>🚬</span>
-              <span>
-                {isSeeker
-                  ? (listing.smoking ? t.smokingSeekerOn : t.smokingSeekerOff)
-                  : (listing.smoking ? t.smokingOwnerOn : t.smokingOwnerOff)}
-              </span>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Owner profile card */}
-      {profile && (
-        <div className="mx-4 mt-4 bg-white rounded-2xl shadow-md p-5">
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '12px' }}>
-            {profile.avatar_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
+        {/* ── Owner hero ───────────────────────────────────────────────────── */}
+        {photos.length > 0 ? (
+          <div className="bg-black">
+            <div className="aspect-video w-full overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={profile.avatar_url}
-                alt={profile?.display_name ?? ""}
-                style={{
-                  width: '64px',
-                  height: '64px',
-                  borderRadius: '50%',
-                  objectFit: 'cover',
-                  flexShrink: 0
-                }}
+                src={photos[activePhoto]}
+                alt={listing.city ?? ""}
+                className="w-full h-full object-cover"
               />
-            ) : (
-              <div className="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center text-2xl font-bold text-orange-600">
-                {(profile.display_name ?? "?")[0].toUpperCase()}
+            </div>
+            {photos.length > 1 && (
+              <div className="flex gap-2 p-2 overflow-x-auto bg-black">
+                {photos.map((p: string, i: number) => (
+                  <button key={i} onClick={() => setActivePhoto(i)}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={p}
+                      alt=""
+                      className={`w-16 h-12 object-cover rounded-lg border-2 transition-all ${
+                        i === activePhoto ? "border-emerald-400" : "border-transparent opacity-60"
+                      }`}
+                    />
+                  </button>
+                ))}
               </div>
             )}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-bold text-gray-900 truncate">{profile.display_name ?? "—"}</span>
-                {profile.avatar_url && (
-                  <span className="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full font-medium">
-                    ✓ {t.verified}
-                  </span>
-                )}
+          </div>
+        ) : (
+          <div className="relative aspect-video w-full overflow-hidden bg-gradient-to-br from-stone-100 to-stone-200 flex items-center justify-center">
+            <svg
+              className="absolute inset-0 w-full h-full"
+              viewBox="0 0 400 180"
+              preserveAspectRatio="xMidYMid slice"
+              style={{ opacity: 0.15 }}
+              aria-hidden="true"
+            >
+              <rect x="15" y="110" width="45" height="40" fill="#78716c" />
+              <path d="M10 110 L37.5 85 L65 110 Z" fill="#78716c" />
+              <rect x="330" y="90" width="50" height="60" fill="#78716c" />
+              <path d="M324 90 L355 60 L386 90 Z" fill="#78716c" />
+              <rect x="290" y="130" width="30" height="20" fill="#78716c" />
+              <path d="M286 130 L305 115 L324 130 Z" fill="#78716c" />
+              <rect x="160" y="70" width="80" height="80" fill="#78716c" />
+              <path d="M150 70 L200 30 L250 70 Z" fill="#78716c" />
+            </svg>
+            <span className="relative text-6xl">🏠</span>
+          </div>
+        )}
+
+        {/* ── Info card ────────────────────────────────────────────────────── */}
+        <div className="mx-4 mt-4 bg-white rounded-3xl shadow-md p-5">
+          <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-bold px-3 py-1.5 rounded-full mb-3">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+              <path d="M3 10.5L12 3l9 7.5" />
+              <path d="M5 9.5V20a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1V9.5" />
+            </svg>
+            {t.ownerBadge}
+          </span>
+
+          <h1 className="text-xl font-black text-gray-900">
+            {listing.city ?? ""}{listing.district ? ` / ${listing.district}` : ""}
+          </h1>
+
+          {listing.country && (
+            <p className="text-sm text-gray-400 mt-1 flex items-center gap-1.5">
+              <span>{codeToFlag(listing.country_code)}</span>
+              <span>{listing.country}</span>
+              {listing.country_code && (
+                <span className="text-[10px] font-bold text-gray-400 border border-gray-200 rounded px-1.5 py-0.5">
+                  {listing.country_code}
+                </span>
+              )}
+            </p>
+          )}
+
+          {listing.rent && listing.currency && (
+            <p className="text-3xl font-black text-orange-600 mt-4">
+              {Number(listing.rent).toLocaleString()} {listing.currency}
+              <span className="text-base font-normal text-gray-400 ml-1">{t.perMonth}</span>
+            </p>
+          )}
+        </div>
+
+        {/* ── Details grid ─────────────────────────────────────────────────── */}
+        <div className="mx-4 mt-4 bg-white rounded-3xl shadow-md p-5">
+          <div className="grid grid-cols-2 divide-x divide-y divide-gray-100">
+            {listing.house_type && (
+              <div className="flex flex-col items-center gap-1.5 p-3 text-center">
+                <span className="text-2xl">🏠</span>
+                <span className="text-xs text-gray-400">{t.houseTypeCaption}</span>
+                <span className="text-sm font-bold text-gray-800">{houseTypeLabel(t, listing.house_type)}</span>
               </div>
-              <div className="flex items-center gap-2 mt-1 text-sm text-gray-500 flex-wrap">
-                {genderEmoji && <span>{genderEmoji}</span>}
-                {profile.country && <span>· {profile.country}</span>}
+            )}
+            {listing.rooms && (
+              <div className="flex flex-col items-center gap-1.5 p-3 text-center">
+                <span className="text-2xl">🛏️</span>
+                <span className="text-xs text-gray-400">{t.roomsCaption}</span>
+                <span className="text-sm font-bold text-gray-800">{listing.rooms} {t.roomsSuffix}</span>
+              </div>
+            )}
+            {listing.elevator != null && (
+              <div className="flex flex-col items-center gap-1.5 p-3 text-center">
+                <span className="text-2xl">🛗</span>
+                <span className="text-xs text-gray-400">{t.elevatorCaption}</span>
+                <span className="text-sm font-bold text-gray-800">{listing.elevator ? t.elevatorOwnerOn : t.elevatorOwnerOff}</span>
+              </div>
+            )}
+            {listing.furnished != null && (
+              <div className="flex flex-col items-center gap-1.5 p-3 text-center">
+                <span className="text-2xl">🪑</span>
+                <span className="text-xs text-gray-400">{t.furnishedCaption}</span>
+                <span className="text-sm font-bold text-gray-800">{listing.furnished ? t.furnishedOwnerOn : t.furnishedOwnerOff}</span>
+              </div>
+            )}
+            {listing.parking != null && (
+              <div className="flex flex-col items-center gap-1.5 p-3 text-center">
+                <span className="text-2xl">🚗</span>
+                <span className="text-xs text-gray-400">{t.parkingCaption}</span>
+                <span className="text-sm font-bold text-gray-800">{listing.parking ? t.parkingOwnerOn : t.parkingOwnerOff}</span>
+              </div>
+            )}
+            {listing.smoking != null && (
+              <div className="flex flex-col items-center gap-1.5 p-3 text-center">
+                <span className="text-2xl">🚬</span>
+                <span className="text-xs text-gray-400">{t.smokingCaption}</span>
+                <span className="text-sm font-bold text-gray-800">{listing.smoking ? t.smokingOwnerOn : t.smokingOwnerOff}</span>
+              </div>
+            )}
+            {listing.current_residents > 0 && (
+              <div className="flex flex-col items-center gap-1.5 p-3 text-center">
+                <span className="text-2xl">👥</span>
+                <span className="text-xs text-gray-400">{t.residentsCaption}</span>
+                <span className="text-sm font-bold text-gray-800">{listing.current_residents} {t.residentsSuffix}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ── About card ───────────────────────────────────────────────────── */}
+        {listing.description && (
+          <div className="mx-4 mt-4 bg-white rounded-3xl shadow-md p-5">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 text-sm flex-shrink-0">
+                📝
+              </span>
+              <h3 className="font-bold text-gray-800">{t.description}</h3>
+            </div>
+            <p className="text-gray-600 text-sm leading-relaxed">{listing.description}</p>
+          </div>
+        )}
+
+        {/* ── Profile card (real data only — no fake ratings/verification) ──── */}
+        {profile && (
+          <div className="mx-4 mt-4 bg-white rounded-3xl shadow-md p-5">
+            <div className="flex items-center gap-3">
+              {profile.avatar_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={profile.avatar_url}
+                  alt={profile.display_name ?? ""}
+                  className="w-16 h-16 rounded-full object-cover flex-shrink-0"
+                />
+              ) : (
+                <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center text-2xl font-bold text-emerald-600 flex-shrink-0">
+                  {(profile.display_name ?? "?")[0]?.toUpperCase()}
+                </div>
+              )}
+              <div className="min-w-0">
+                <p className="font-bold text-gray-900 truncate">{profile.display_name ?? "—"}</p>
+                <div className="flex items-center gap-1.5 mt-0.5 text-sm text-gray-500 flex-wrap">
+                  {genderEmoji && <span>{genderEmoji}</span>}
+                  {profile.country && <span>{profile.country}</span>}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Description */}
-      {listing.description && (
-        <div className="mx-4 mt-4 bg-gray-50 rounded-2xl p-4">
-          <h3 className="font-bold mb-2 text-gray-800">📝 {t.description}</h3>
-          <p className="text-gray-600 text-sm leading-relaxed">{listing.description}</p>
-        </div>
-      )}
-
+        )}
       </>
       )}
 
