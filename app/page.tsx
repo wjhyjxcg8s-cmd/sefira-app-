@@ -1693,6 +1693,11 @@ export default function Home() {
     }
   }, []);
 
+  // ── Safety net: never let a stale overflow lock survive into this page ────
+  useEffect(() => {
+    document.body.style.overflow = "";
+  }, []);
+
   // ── Lock body scroll when profile drawer is open ──────────────────────────
   useEffect(() => {
     document.body.style.overflow = profileMenuOpen ? "hidden" : "";
@@ -3507,7 +3512,7 @@ export default function Home() {
           </p>
           <div
             className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 overscroll-x-contain"
-            style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch", touchAction: "pan-x", overscrollBehaviorX: "contain" } as React.CSSProperties}
+            style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch", touchAction: "pan-x pan-y", overscrollBehaviorX: "contain" } as React.CSSProperties}
           >
             {weeklyStories.map((story, idx) => (
               <button
