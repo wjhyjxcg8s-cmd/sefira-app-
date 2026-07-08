@@ -43,6 +43,21 @@ const labels: Record<Lang, Record<string, string>> = {
     residentsCaption: "Mevcut Sakin", roomsSuffix: "oda", residentsSuffix: "kişi yaşıyor",
     houseTypeApartment: "Daire", houseTypeVilla: "Villa", houseTypeResidence: "Rezidans",
     houseTypeDormitory: "Yurt", houseTypeIndependent: "Müstakil Ev",
+    genderMale: "Erkek", genderFemale: "Kadın", genderAny: "Farketmez",
+    occWorking: "Çalışıyor", occStudent: "Öğrenci",
+    occAdjWorking: "çalışan", occAdjStudent: "öğrenci",
+    quietCaption: "Sessizlik", quietYes: "Sessiz ortam istiyor", quietAny: "Fark etmez",
+    petsCaption: "Evcil Hayvan", petsOk: "Evcil hayvan olabilir", petsNo: "Evcil hayvan istemiyor",
+    cleanlinessCaption: "Temizlik", cleanlinessYes: "Temizliğe önem veriyor", cleanlinessAny: "Fark etmez",
+    summaryTitle: "Özet",
+    summaryAgeOcc: "{age} yaşında, {occ} bir kişi.",
+    summaryAgeOnly: "{age} yaşında.",
+    summaryOccOnly: "{occ} bir kişi.",
+    summaryLocationRoom: "{city}'da {room} arıyor.",
+    summaryRoomOnly: "{room} arıyor.",
+    roomPhrasePrivate: "özel oda", roomPhraseAny: "oda",
+    summaryBudget: "Aylık bütçesi maksimum {budget}.",
+    summaryRoommatePref: "Ev arkadaşı tercihi: {pref}.",
   },
   en: {
     contact: "Send Message",
@@ -72,6 +87,21 @@ const labels: Record<Lang, Record<string, string>> = {
     residentsCaption: "Current Residents", roomsSuffix: "rooms", residentsSuffix: "residents",
     houseTypeApartment: "Apartment", houseTypeVilla: "Villa", houseTypeResidence: "Residence",
     houseTypeDormitory: "Dormitory", houseTypeIndependent: "Independent House",
+    genderMale: "Male", genderFemale: "Female", genderAny: "No preference",
+    occWorking: "Working", occStudent: "Student",
+    occAdjWorking: "working", occAdjStudent: "a student",
+    quietCaption: "Quiet", quietYes: "Wants a quiet place", quietAny: "No preference",
+    petsCaption: "Pets", petsOk: "Pets welcome", petsNo: "No pets",
+    cleanlinessCaption: "Cleanliness", cleanlinessYes: "Values cleanliness", cleanlinessAny: "No preference",
+    summaryTitle: "Summary",
+    summaryAgeOcc: "{age} years old, {occ}.",
+    summaryAgeOnly: "{age} years old.",
+    summaryOccOnly: "{occ}.",
+    summaryLocationRoom: "Looking for {room} in {city}.",
+    summaryRoomOnly: "Looking for {room}.",
+    roomPhrasePrivate: "a private room", roomPhraseAny: "a room",
+    summaryBudget: "Monthly budget up to {budget}.",
+    summaryRoommatePref: "Roommate preference: {pref}.",
   },
   fa: {
     contact: "ارسال پیام",
@@ -101,6 +131,21 @@ const labels: Record<Lang, Record<string, string>> = {
     residentsCaption: "ساکنان فعلی", roomsSuffix: "اتاق", residentsSuffix: "نفر ساکن",
     houseTypeApartment: "آپارتمان", houseTypeVilla: "ویلا", houseTypeResidence: "رزیدانس",
     houseTypeDormitory: "خوابگاه", houseTypeIndependent: "خانه مستقل",
+    genderMale: "مرد", genderFemale: "زن", genderAny: "مهم نیست",
+    occWorking: "شاغل", occStudent: "دانشجو",
+    occAdjWorking: "شاغل", occAdjStudent: "دانشجو",
+    quietCaption: "آرامش", quietYes: "به دنبال محیط آرام است", quietAny: "مهم نیست",
+    petsCaption: "حیوان خانگی", petsOk: "حیوان خانگی مشکلی ندارد", petsNo: "حیوان خانگی نمی‌خواهد",
+    cleanlinessCaption: "نظافت", cleanlinessYes: "به نظافت اهمیت می‌دهد", cleanlinessAny: "مهم نیست",
+    summaryTitle: "خلاصه",
+    summaryAgeOcc: "{age} ساله و {occ}.",
+    summaryAgeOnly: "{age} ساله.",
+    summaryOccOnly: "{occ}.",
+    summaryLocationRoom: "در {city} به دنبال {room} است.",
+    summaryRoomOnly: "به دنبال {room} است.",
+    roomPhrasePrivate: "اتاق خصوصی", roomPhraseAny: "اتاق",
+    summaryBudget: "بودجه ماهانه حداکثر {budget}.",
+    summaryRoommatePref: "ترجیح هم‌خانه: {pref}.",
   },
   ar: {
     contact: "إرسال رسالة",
@@ -130,6 +175,21 @@ const labels: Record<Lang, Record<string, string>> = {
     residentsCaption: "السكان الحاليون", roomsSuffix: "غرفة", residentsSuffix: "ساكن",
     houseTypeApartment: "شقة", houseTypeVilla: "فيلا", houseTypeResidence: "ريزيدنس",
     houseTypeDormitory: "سكن طلابي", houseTypeIndependent: "بيت مستقل",
+    genderMale: "ذكر", genderFemale: "أنثى", genderAny: "لا يهم",
+    occWorking: "يعمل", occStudent: "طالب",
+    occAdjWorking: "يعمل", occAdjStudent: "طالب",
+    quietCaption: "الهدوء", quietYes: "يبحث عن مكان هادئ", quietAny: "لا يهم",
+    petsCaption: "الحيوانات الأليفة", petsOk: "الحيوانات الأليفة مقبولة", petsNo: "لا يريد حيوانات أليفة",
+    cleanlinessCaption: "النظافة", cleanlinessYes: "يهتم بالنظافة", cleanlinessAny: "لا يهم",
+    summaryTitle: "ملخص",
+    summaryAgeOcc: "{age} سنة و{occ}.",
+    summaryAgeOnly: "{age} سنة.",
+    summaryOccOnly: "{occ}.",
+    summaryLocationRoom: "يبحث عن {room} في {city}.",
+    summaryRoomOnly: "يبحث عن {room}.",
+    roomPhrasePrivate: "غرفة خاصة", roomPhraseAny: "غرفة",
+    summaryBudget: "الميزانية الشهرية حتى {budget}.",
+    summaryRoommatePref: "تفضيل شريك السكن: {pref}.",
   },
   de: {
     contact: "Nachricht senden",
@@ -159,6 +219,21 @@ const labels: Record<Lang, Record<string, string>> = {
     residentsCaption: "Aktuelle Bewohner", roomsSuffix: "Zimmer", residentsSuffix: "Bewohner",
     houseTypeApartment: "Wohnung", houseTypeVilla: "Villa", houseTypeResidence: "Residenz",
     houseTypeDormitory: "Wohnheim", houseTypeIndependent: "Einfamilienhaus",
+    genderMale: "Männlich", genderFemale: "Weiblich", genderAny: "Egal",
+    occWorking: "Berufstätig", occStudent: "Student",
+    occAdjWorking: "berufstätig", occAdjStudent: "Student",
+    quietCaption: "Ruhe", quietYes: "Wünscht ruhige Umgebung", quietAny: "Egal",
+    petsCaption: "Haustiere", petsOk: "Haustiere willkommen", petsNo: "Keine Haustiere",
+    cleanlinessCaption: "Sauberkeit", cleanlinessYes: "Legt Wert auf Sauberkeit", cleanlinessAny: "Egal",
+    summaryTitle: "Zusammenfassung",
+    summaryAgeOcc: "{age} Jahre alt und {occ}.",
+    summaryAgeOnly: "{age} Jahre alt.",
+    summaryOccOnly: "{occ}.",
+    summaryLocationRoom: "Sucht {room} in {city}.",
+    summaryRoomOnly: "Sucht {room}.",
+    roomPhrasePrivate: "ein Privatzimmer", roomPhraseAny: "ein Zimmer",
+    summaryBudget: "Monatliches Budget bis zu {budget}.",
+    summaryRoommatePref: "Mitbewohner-Präferenz: {pref}.",
   },
   ru: {
     contact: "Отправить сообщение",
@@ -188,6 +263,21 @@ const labels: Record<Lang, Record<string, string>> = {
     residentsCaption: "Текущие жильцы", roomsSuffix: "комнат", residentsSuffix: "жильцов",
     houseTypeApartment: "Квартира", houseTypeVilla: "Вилла", houseTypeResidence: "Резиденция",
     houseTypeDormitory: "Общежитие", houseTypeIndependent: "Частный дом",
+    genderMale: "Мужской", genderFemale: "Женский", genderAny: "Не важно",
+    occWorking: "Работает", occStudent: "Студент",
+    occAdjWorking: "работает", occAdjStudent: "студент",
+    quietCaption: "Тишина", quietYes: "Хочет тихое место", quietAny: "Не важно",
+    petsCaption: "Животные", petsOk: "Можно с животными", petsNo: "Без животных",
+    cleanlinessCaption: "Чистота", cleanlinessYes: "Важна чистота", cleanlinessAny: "Не важно",
+    summaryTitle: "Сводка",
+    summaryAgeOcc: "{age} лет, {occ}.",
+    summaryAgeOnly: "{age} лет.",
+    summaryOccOnly: "{occ}.",
+    summaryLocationRoom: "Ищет {room} в городе {city}.",
+    summaryRoomOnly: "Ищет {room}.",
+    roomPhrasePrivate: "отдельную комнату", roomPhraseAny: "комнату",
+    summaryBudget: "Ежемесячный бюджет до {budget}.",
+    summaryRoommatePref: "Предпочтение соседа: {pref}.",
   },
 };
 
@@ -220,6 +310,60 @@ function houseTypeLabel(t: Record<string, string>, houseType: string | null): st
     independent: t.houseTypeIndependent,
   };
   return map[houseType] ?? houseType;
+}
+
+// seeker_gender / preferred_roommate_gender are stored as raw enum strings ("male"/"female"/"any") —
+// always translate through this map instead of rendering them directly.
+function genderLabel(t: Record<string, string>, value: string | null): string | null {
+  if (!value) return null;
+  const map: Record<string, string> = { male: t.genderMale, female: t.genderFemale, any: t.genderAny };
+  return map[value] ?? value;
+}
+
+// occupation is a fixed dropdown ("working"/"student"), not free text — same rule applies.
+function occupationLabel(t: Record<string, string>, value: string | null): string | null {
+  if (!value) return null;
+  const map: Record<string, string> = { working: t.occWorking, student: t.occStudent };
+  return map[value] ?? value;
+}
+
+function occupationAdjective(t: Record<string, string>, value: string | null): string | null {
+  if (!value) return null;
+  const map: Record<string, string> = { working: t.occAdjWorking, student: t.occAdjStudent };
+  return map[value] ?? value;
+}
+
+// Composes the seeker "Summary" sentence from whatever real fields are populated, skipping the rest.
+function buildSeekerSummary(t: Record<string, string>, listing: any): string {
+  const clauses: string[] = [];
+
+  const occAdj = occupationAdjective(t, listing.occupation);
+  if (listing.seeker_age && occAdj) {
+    clauses.push(t.summaryAgeOcc.replace("{age}", String(listing.seeker_age)).replace("{occ}", occAdj));
+  } else if (listing.seeker_age) {
+    clauses.push(t.summaryAgeOnly.replace("{age}", String(listing.seeker_age)));
+  } else if (occAdj) {
+    clauses.push(t.summaryOccOnly.replace("{occ}", occAdj));
+  }
+
+  const room = listing.private_room_required ? t.roomPhrasePrivate : t.roomPhraseAny;
+  if (listing.city) {
+    clauses.push(t.summaryLocationRoom.replace("{city}", listing.city).replace("{room}", room));
+  } else {
+    clauses.push(t.summaryRoomOnly.replace("{room}", room));
+  }
+
+  if (listing.max_budget && listing.currency) {
+    const budget = `${Number(listing.max_budget).toLocaleString()} ${listing.currency}`;
+    clauses.push(t.summaryBudget.replace("{budget}", budget));
+  }
+
+  const pref = genderLabel(t, listing.preferred_roommate_gender);
+  if (pref) {
+    clauses.push(t.summaryRoommatePref.replace("{pref}", pref));
+  }
+
+  return clauses.join(" ");
 }
 
 export default function ListingDetailPage() {
@@ -370,6 +514,8 @@ export default function ListingDetailPage() {
     profile?.gender === "male" || profile?.gender === "erkek" ? "👨"
     : profile?.gender === "female" || profile?.gender === "kadın" || profile?.gender === "kadin" ? "👩"
     : null;
+
+  const seekerSummary = isSeeker ? buildSeekerSummary(t, listing) : "";
 
   return (
     <div className="min-h-screen bg-gray-50 pb-32" dir={isRtl ? "rtl" : "ltr"}>
@@ -590,8 +736,8 @@ export default function ListingDetailPage() {
                     <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
                     <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                   </svg>
-                  <span className="text-xs text-gray-400">{t.genderPref}</span>
-                  <span className="text-sm font-bold text-gray-800">{listing.seeker_gender}</span>
+                  <span className="text-xs text-gray-400">{t.gender}</span>
+                  <span className="text-sm font-bold text-gray-800">{genderLabel(t, listing.seeker_gender)}</span>
                 </div>
               )}
               {listing.seeker_age && (
@@ -613,11 +759,90 @@ export default function ListingDetailPage() {
                     <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
                   </svg>
                   <span className="text-xs text-gray-400">{t.occupation}</span>
-                  <span className="text-sm font-bold text-gray-800">{listing.occupation}</span>
+                  <span className="text-sm font-bold text-gray-800">{occupationLabel(t, listing.occupation)}</span>
                 </div>
               )}
             </div>
           </div>
+
+          {/* ── Preferences card ─────────────────────────────────────────────── */}
+          {(listing.preferred_roommate_gender || listing.smoking != null || listing.quiet_important != null || listing.pets_ok != null || listing.cleanliness_important != null) && (
+            <div className="bg-white rounded-3xl shadow-sm p-5">
+              <h3 className="font-bold text-gray-800 mb-4">{t.preferences}</h3>
+              <div className="grid grid-cols-3 gap-y-4 gap-x-2">
+                {listing.preferred_roommate_gender && (
+                  <div className="flex flex-col items-center gap-1.5 text-center">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-stone-400">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                    <span className="text-xs text-gray-400">{t.genderPref}</span>
+                    <span className="text-sm font-bold text-gray-800">{genderLabel(t, listing.preferred_roommate_gender)}</span>
+                  </div>
+                )}
+                {listing.smoking != null && (
+                  <div className="flex flex-col items-center gap-1.5 text-center">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-stone-400">
+                      <rect x="3" y="15" width="14" height="4" rx="1" />
+                      <rect x="17" y="15" width="4" height="4" rx="1" />
+                      <path d="M6 11c1-2-1-3 0-5" />
+                      <path d="M10 11c1-2-1-3 0-5" />
+                    </svg>
+                    <span className="text-xs text-gray-400">{t.smokingCaption}</span>
+                    <span className="text-sm font-bold text-gray-800">{listing.smoking ? t.smokingSeekerOn : t.smokingSeekerOff}</span>
+                  </div>
+                )}
+                {listing.quiet_important != null && (
+                  <div className="flex flex-col items-center gap-1.5 text-center">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-stone-400">
+                      <path d="M11 5 6 9H3v6h3l5 4V5z" />
+                      <line x1="16" y1="9" x2="21" y2="14" />
+                      <line x1="21" y1="9" x2="16" y2="14" />
+                    </svg>
+                    <span className="text-xs text-gray-400">{t.quietCaption}</span>
+                    <span className="text-sm font-bold text-gray-800">{listing.quiet_important ? t.quietYes : t.quietAny}</span>
+                  </div>
+                )}
+                {listing.pets_ok != null && (
+                  <div className="flex flex-col items-center gap-1.5 text-center">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-stone-400">
+                      <circle cx="8" cy="8" r="2" />
+                      <circle cx="14" cy="7" r="2" />
+                      <circle cx="18" cy="11" r="2" />
+                      <circle cx="5" cy="12" r="2" />
+                      <path d="M12 21c-3 0-6-2-6-5 0-2 2-4 6-4s6 2 6 4c0 3-3 5-6 5z" />
+                    </svg>
+                    <span className="text-xs text-gray-400">{t.petsCaption}</span>
+                    <span className="text-sm font-bold text-gray-800">{listing.pets_ok ? t.petsOk : t.petsNo}</span>
+                  </div>
+                )}
+                {listing.cleanliness_important != null && (
+                  <div className="flex flex-col items-center gap-1.5 text-center">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-stone-400">
+                      <path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.5 2.5M16.5 16.5L19 19M19 5l-2.5 2.5M7.5 16.5L5 19" />
+                    </svg>
+                    <span className="text-xs text-gray-400">{t.cleanlinessCaption}</span>
+                    <span className="text-sm font-bold text-gray-800">{listing.cleanliness_important ? t.cleanlinessYes : t.cleanlinessAny}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* ── Summary card — a natural-language recap composed from real fields only ── */}
+          {seekerSummary && (
+            <div className="bg-orange-50/50 rounded-2xl p-5">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-7 h-7 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 text-sm flex-shrink-0">
+                  📋
+                </span>
+                <h3 className="font-bold text-gray-800">{t.summaryTitle}</h3>
+              </div>
+              <p className="text-gray-600 text-sm leading-relaxed">{seekerSummary}</p>
+            </div>
+          )}
 
           {/* ── About card ───────────────────────────────────────────────────── */}
           {listing.about_text && (
