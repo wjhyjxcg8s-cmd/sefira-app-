@@ -201,12 +201,13 @@ export default function ListingDetailPage() {
 
         // Step 2: fetch profile separately — failure is non-fatal
         if (listingData.user_id) {
-          const { data: profileData } = await supabase
+          const { data: profileData, error: profileErr } = await supabase
             .from('profiles_public')
             .select('user_id, display_name, avatar_url, gender, birth_date, country, created_at')
             .eq('user_id', listingData.user_id)
-            .single();
+            .maybeSingle();
 
+          if (profileErr) console.log("Profile fetch error:", profileErr);
           setProfile(profileData);
         }
       }
