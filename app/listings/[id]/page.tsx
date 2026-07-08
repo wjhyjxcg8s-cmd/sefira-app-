@@ -26,6 +26,13 @@ const labels: Record<Lang, Record<string, string>> = {
     ownerBadge: "Ev Sahibi",
     tenantBadge: "Kiracı",
     perMonth: "/ ay",
+    elevatorOwnerOn: "Asansör var", elevatorOwnerOff: "Asansör yok", elevatorSeekerOn: "Asansör istiyor",
+    furnishedOwnerOn: "Eşyalı", furnishedOwnerOff: "Eşyasız", furnishedSeekerOn: "Eşyalı istiyor",
+    parkingOwnerOn: "Otopark var", parkingOwnerOff: "Otopark yok", parkingSeekerOn: "Otopark istiyor",
+    smokingOwnerOn: "Sigara serbest", smokingOwnerOff: "Sigara yasak",
+    smokingSeekerOn: "Sigara içilebilir yer arıyor", smokingSeekerOff: "Sigara içilmeyen yer istiyor",
+    budget: "Bütçe", ageLabel: "Yaş", gender: "Cinsiyet", occupation: "Meslek",
+    wantsPrivateRoom: "Özel oda istiyor", maxPrefix: "Maks",
   },
   en: {
     contact: "Send Message",
@@ -39,6 +46,13 @@ const labels: Record<Lang, Record<string, string>> = {
     ownerBadge: "Host",
     tenantBadge: "Tenant",
     perMonth: "/ mo",
+    elevatorOwnerOn: "Has elevator", elevatorOwnerOff: "No elevator", elevatorSeekerOn: "Wants elevator",
+    furnishedOwnerOn: "Furnished", furnishedOwnerOff: "Unfurnished", furnishedSeekerOn: "Wants furnished",
+    parkingOwnerOn: "Has parking", parkingOwnerOff: "No parking", parkingSeekerOn: "Wants parking",
+    smokingOwnerOn: "Smoking allowed", smokingOwnerOff: "No smoking",
+    smokingSeekerOn: "Ok with smoking", smokingSeekerOff: "Wants non-smoking place",
+    budget: "Budget", ageLabel: "Age", gender: "Gender", occupation: "Occupation",
+    wantsPrivateRoom: "Wants private room", maxPrefix: "Max",
   },
   fa: {
     contact: "ارسال پیام",
@@ -52,6 +66,13 @@ const labels: Record<Lang, Record<string, string>> = {
     ownerBadge: "صاحب‌خانه",
     tenantBadge: "مستأجر",
     perMonth: "/ ماه",
+    elevatorOwnerOn: "دارای آسانسور", elevatorOwnerOff: "بدون آسانسور", elevatorSeekerOn: "آسانسور داشته باشد",
+    furnishedOwnerOn: "مبله", furnishedOwnerOff: "بدون مبلمان", furnishedSeekerOn: "مبله باشد",
+    parkingOwnerOn: "دارای پارکینگ", parkingOwnerOff: "بدون پارکینگ", parkingSeekerOn: "پارکینگ داشته باشد",
+    smokingOwnerOn: "سیگار آزاد", smokingOwnerOff: "سیگار ممنوع",
+    smokingSeekerOn: "با سیگار مشکلی ندارد", smokingSeekerOff: "محیط بدون سیگار می‌خواهد",
+    budget: "بودجه", ageLabel: "سن", gender: "جنسیت", occupation: "شغل",
+    wantsPrivateRoom: "اتاق خصوصی می‌خواهد", maxPrefix: "حداکثر",
   },
   ar: {
     contact: "إرسال رسالة",
@@ -65,6 +86,13 @@ const labels: Record<Lang, Record<string, string>> = {
     ownerBadge: "صاحب المنزل",
     tenantBadge: "مستأجر",
     perMonth: "/ شهر",
+    elevatorOwnerOn: "يوجد مصعد", elevatorOwnerOff: "لا يوجد مصعد", elevatorSeekerOn: "يريد مصعداً",
+    furnishedOwnerOn: "مفروش", furnishedOwnerOff: "غير مفروش", furnishedSeekerOn: "يريد مفروشاً",
+    parkingOwnerOn: "يوجد موقف", parkingOwnerOff: "لا يوجد موقف", parkingSeekerOn: "يريد موقفاً",
+    smokingOwnerOn: "التدخين مسموح", smokingOwnerOff: "ممنوع التدخين",
+    smokingSeekerOn: "لا مانع من التدخين", smokingSeekerOff: "يريد مكاناً خالياً من التدخين",
+    budget: "الميزانية", ageLabel: "العمر", gender: "الجنس", occupation: "المهنة",
+    wantsPrivateRoom: "يريد غرفة خاصة", maxPrefix: "الحد الأقصى",
   },
   de: {
     contact: "Nachricht senden",
@@ -78,6 +106,13 @@ const labels: Record<Lang, Record<string, string>> = {
     ownerBadge: "Vermieter",
     tenantBadge: "Mieter",
     perMonth: "/ Mo.",
+    elevatorOwnerOn: "Mit Aufzug", elevatorOwnerOff: "Kein Aufzug", elevatorSeekerOn: "Möchte Aufzug",
+    furnishedOwnerOn: "Möbliert", furnishedOwnerOff: "Unmöbliert", furnishedSeekerOn: "Möchte möbliert",
+    parkingOwnerOn: "Mit Parkplatz", parkingOwnerOff: "Kein Parkplatz", parkingSeekerOn: "Möchte Parkplatz",
+    smokingOwnerOn: "Rauchen erlaubt", smokingOwnerOff: "Rauchen verboten",
+    smokingSeekerOn: "Raucher ok", smokingSeekerOff: "Möchte Nichtraucher-Unterkunft",
+    budget: "Budget", ageLabel: "Alter", gender: "Geschlecht", occupation: "Beruf",
+    wantsPrivateRoom: "Möchte Privatzimmer", maxPrefix: "Max",
   },
   ru: {
     contact: "Отправить сообщение",
@@ -91,6 +126,13 @@ const labels: Record<Lang, Record<string, string>> = {
     ownerBadge: "Арендодатель",
     tenantBadge: "Арендатор",
     perMonth: "/ мес.",
+    elevatorOwnerOn: "Есть лифт", elevatorOwnerOff: "Без лифта", elevatorSeekerOn: "Хочет лифт",
+    furnishedOwnerOn: "С мебелью", furnishedOwnerOff: "Без мебели", furnishedSeekerOn: "Хочет с мебелью",
+    parkingOwnerOn: "Есть парковка", parkingOwnerOff: "Нет парковки", parkingSeekerOn: "Хочет парковку",
+    smokingOwnerOn: "Курение разрешено", smokingOwnerOff: "Курение запрещено",
+    smokingSeekerOn: "Курение допустимо", smokingSeekerOff: "Хочет место для некурящих",
+    budget: "Бюджет", ageLabel: "Возраст", gender: "Пол", occupation: "Профессия",
+    wantsPrivateRoom: "Хочет отдельную комнату", maxPrefix: "Макс",
   },
 };
 
@@ -185,6 +227,7 @@ export default function ListingDetailPage() {
   const isLoggedIn = !!currentUserId;
   const isOwner = isLoggedIn && listing && currentUserId === listing.user_id;
   const photos: string[] = listing?.photos ?? [];
+  const isSeeker = listing?.type === "needs_place";
 
   function handleSendMessage() {
     router.push(`/messages?userId=${listing.user_id}&listingId=${listing.id}`);
@@ -274,6 +317,15 @@ export default function ListingDetailPage() {
             </div>
           )}
         </div>
+      ) : profile?.avatar_url ? (
+        <div className="aspect-video w-full bg-gradient-to-br from-orange-50 to-amber-50 flex items-center justify-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={profile.avatar_url}
+            alt={profile.display_name ?? ""}
+            className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
+          />
+        </div>
       ) : (
         <div className="aspect-video w-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-16 h-16 text-stone-400">
@@ -300,9 +352,17 @@ export default function ListingDetailPage() {
           <p className="text-sm text-gray-400 mt-0.5">{listing.country_code}</p>
         )}
 
-        {listing.rent && listing.currency && (
+        {!isSeeker && listing.rent && listing.currency && (
           <p className="text-3xl font-black text-orange-600 mt-3">
             {Number(listing.rent).toLocaleString()} {listing.currency}
+            <span className="text-base font-normal text-gray-400 ml-1">{t.perMonth}</span>
+          </p>
+        )}
+
+        {isSeeker && listing.max_budget && listing.currency && (
+          <p className="text-3xl font-black text-orange-600 mt-3">
+            <span className="text-base font-normal text-gray-400 mr-1">{t.maxPrefix}</span>
+            {Number(listing.max_budget).toLocaleString()} {listing.currency}
             <span className="text-base font-normal text-gray-400 ml-1">{t.perMonth}</span>
           </p>
         )}
@@ -320,28 +380,32 @@ export default function ListingDetailPage() {
               <span>{listing.rooms} oda</span>
             </div>
           )}
-          {listing.parking != null && (
+          {listing.parking != null && (isSeeker ? listing.parking === true : true) && (
             <div className="flex items-center gap-2">
               <span>🚗</span>
-              <span>{listing.parking ? "Otopark var" : "Otopark yok"}</span>
+              <span>{isSeeker ? t.parkingSeekerOn : (listing.parking ? t.parkingOwnerOn : t.parkingOwnerOff)}</span>
             </div>
           )}
-          {listing.elevator != null && (
+          {listing.elevator != null && (isSeeker ? listing.elevator === true : true) && (
             <div className="flex items-center gap-2">
               <span>🛗</span>
-              <span>{listing.elevator ? "Asansör var" : "Asansör yok"}</span>
+              <span>{isSeeker ? t.elevatorSeekerOn : (listing.elevator ? t.elevatorOwnerOn : t.elevatorOwnerOff)}</span>
             </div>
           )}
-          {listing.furnished != null && (
+          {listing.furnished != null && (isSeeker ? listing.furnished === true : true) && (
             <div className="flex items-center gap-2">
               <span>🪑</span>
-              <span>{listing.furnished ? "Eşyalı" : "Eşyasız"}</span>
+              <span>{isSeeker ? t.furnishedSeekerOn : (listing.furnished ? t.furnishedOwnerOn : t.furnishedOwnerOff)}</span>
             </div>
           )}
           {listing.smoking != null && (
             <div className="flex items-center gap-2">
               <span>🚬</span>
-              <span>{listing.smoking ? "Sigara serbest" : "Sigara yasak"}</span>
+              <span>
+                {isSeeker
+                  ? (listing.smoking ? t.smokingSeekerOn : t.smokingSeekerOff)
+                  : (listing.smoking ? t.smokingOwnerOn : t.smokingOwnerOff)}
+              </span>
             </div>
           )}
         </div>
@@ -401,22 +465,40 @@ export default function ListingDetailPage() {
         </div>
       )}
 
-      {/* Preferences */}
-      {(listing.preferred_gender || listing.preferred_occupation) && (
+      {/* Seeker details */}
+      {isSeeker && (listing.max_budget || listing.seeker_age || listing.seeker_gender || listing.occupation || listing.private_room_required || listing.about_text) && (
         <div className="mx-4 mt-4 bg-white rounded-2xl shadow-md p-4">
           <h3 className="font-bold mb-3 text-gray-800">✨ {t.preferences}</h3>
           <div className="flex gap-2 flex-wrap">
-            {listing.preferred_gender && (
-              <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-sm">
-                👤 {listing.preferred_gender}
+            {listing.max_budget && listing.currency && (
+              <span className="bg-orange-50 text-orange-600 px-3 py-1 rounded-full text-sm">
+                💰 {t.budget}: {Number(listing.max_budget).toLocaleString()} {listing.currency}
               </span>
             )}
-            {listing.preferred_occupation && (
+            {listing.seeker_age && (
+              <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-sm">
+                🎂 {t.ageLabel}: {listing.seeker_age}
+              </span>
+            )}
+            {listing.seeker_gender && (
+              <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-sm">
+                👤 {t.gender}: {listing.seeker_gender}
+              </span>
+            )}
+            {listing.occupation && (
               <span className="bg-purple-50 text-purple-600 px-3 py-1 rounded-full text-sm">
-                💼 {listing.preferred_occupation}
+                💼 {t.occupation}: {listing.occupation}
+              </span>
+            )}
+            {listing.private_room_required && (
+              <span className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-sm">
+                🚪 {t.wantsPrivateRoom}
               </span>
             )}
           </div>
+          {listing.about_text && (
+            <p className="text-gray-600 text-sm leading-relaxed mt-3">{listing.about_text}</p>
+          )}
         </div>
       )}
 
