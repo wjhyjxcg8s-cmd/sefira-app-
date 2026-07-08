@@ -781,7 +781,7 @@ function CreateCommercialListingPage() {
     if (!description.trim() || description.trim().length < 20) {
       newErrors.description = "Açıklama en az 20 karakter olmalıdır.";
     }
-    if (photos.length < 1) {
+    if (modeParam === "owner" && photos.length < 1) {
       newErrors.photos = "En az 1 fotoğraf yüklemelisiniz.";
     }
     if (newErrors.description || newErrors.photos) {
@@ -804,7 +804,8 @@ function CreateCommercialListingPage() {
       }
 
       // 2. Photos were already uploaded (NSFW-checked + compressed) during crop-save
-      const photoUrls = photos;
+      // Seekers have no property to photograph — never submit photos for them
+      const photoUrls = modeParam === "owner" ? photos : [];
 
       // 3. Insert listing row
       const payload: Record<string, unknown> = {
@@ -1294,7 +1295,8 @@ function CreateCommercialListingPage() {
                   )}
                 </div>
 
-                {/* Photos */}
+                {/* Photos — owners only; seekers have no property to photograph */}
+                {modeParam === "owner" && (
                 <div ref={photosRef} className={`p-5 ${errors.photos && photos.length === 0 ? "border-2 border-red-400 rounded-2xl" : ""}`}>
                   <div className="flex items-center justify-between mb-1">
                     <label className="text-sm font-semibold text-stone-700">{t.photosLabel}</label>
@@ -1352,6 +1354,7 @@ function CreateCommercialListingPage() {
                     <p className="mt-3 text-xs text-rose-500">{errors.photos}</p>
                   )}
                 </div>
+                )}
               </div>
 
               <div className="flex gap-3 mt-8">
