@@ -533,7 +533,7 @@ export default function ListingDetailPage() {
 
         <div className="px-4 -mt-12 relative z-10 space-y-4">
           {/* ── Info card ──────────────────────────────────────────────────── */}
-          <div className="bg-white rounded-3xl shadow-sm p-5 text-center">
+          <div className="bg-white rounded-3xl shadow-sm px-5 pb-5 pt-20 text-center">
             <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold px-3 py-1.5 rounded-full mb-3">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
                 <circle cx="11" cy="11" r="8" />
