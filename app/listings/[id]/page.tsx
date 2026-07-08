@@ -136,21 +136,6 @@ const labels: Record<Lang, Record<string, string>> = {
   },
 };
 
-function formatDate(dateStr: string, lang: Lang): string {
-  try {
-    return new Date(dateStr).toLocaleDateString(
-      lang === "tr" ? "tr-TR" :
-      lang === "fa" ? "fa-IR" :
-      lang === "ar" ? "ar-SA" :
-      lang === "de" ? "de-DE" :
-      lang === "ru" ? "ru-RU" : "en-US",
-      { year: "numeric", month: "long" }
-    );
-  } catch {
-    return dateStr;
-  }
-}
-
 export default function ListingDetailPage() {
   const router = useRouter();
   const params = useParams();
@@ -193,7 +178,7 @@ export default function ListingDetailPage() {
         if (listingData.user_id) {
           const { data: profileData, error: profileErr } = await supabase
             .from('profiles_public')
-            .select('user_id, display_name, avatar_url, gender, country, created_at')
+            .select('user_id, display_name, avatar_url, gender, country')
             .eq('user_id', listingData.user_id)
             .maybeSingle();
 
@@ -436,11 +421,6 @@ export default function ListingDetailPage() {
                 {genderEmoji && <span>{genderEmoji}</span>}
                 {profile.country && <span>· {profile.country}</span>}
               </div>
-              {profile.created_at && (
-                <p className="text-xs text-gray-400 mt-0.5">
-                  {t.memberSince} {formatDate(profile.created_at, lang)}
-                </p>
-              )}
             </div>
           </div>
         </div>
