@@ -196,6 +196,20 @@ function codeToFlag(code: string): string {
   return String.fromCodePoint(...[...code.toUpperCase()].map((c) => 0x1f1e6 - 65 + c.charCodeAt(0)));
 }
 
+// The stored country string is whatever language the poster typed it in at creation time —
+// always re-derive from country_code in the viewer's current language instead of trusting it.
+function localizedCountryName(countryCode: string | null | undefined, fallback: string | null | undefined, lang: string): string | null {
+  if (countryCode && /^[A-Za-z]{2}$/.test(countryCode)) {
+    try {
+      const name = new Intl.DisplayNames([lang], { type: "region" }).of(countryCode.toUpperCase());
+      if (name) return name;
+    } catch {
+      // unsupported locale/code — fall back to stored value below
+    }
+  }
+  return fallback ?? null;
+}
+
 function houseTypeLabel(t: Record<string, string>, houseType: string | null): string | null {
   if (!houseType) return null;
   const map: Record<string, string> = {
@@ -501,20 +515,16 @@ export default function ListingDetailPage() {
         </div>
 
         <div className="flex justify-center -mt-16 relative z-20">
-          <div className="relative">
-            <div
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full bg-orange-200/40 blur-3xl z-0"
-              aria-hidden="true"
-            />
+          <div className="relative w-32 h-32">
             {profile?.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={profile.avatar_url}
                 alt={profile.display_name ?? ""}
-                className="relative z-10 w-32 h-32 rounded-full object-cover border-4 border-white ring-4 ring-orange-50 shadow-2xl"
+                className="relative z-10 w-full h-full rounded-full object-cover border-4 border-white shadow-2xl"
               />
             ) : (
-              <div className="relative z-10 w-32 h-32 rounded-full bg-gradient-to-br from-orange-400 to-amber-400 flex items-center justify-center text-5xl font-black text-white border-4 border-white ring-4 ring-orange-50 shadow-2xl">
+              <div className="relative z-10 w-full h-full rounded-full bg-gradient-to-br from-orange-400 to-amber-400 flex items-center justify-center text-5xl font-black text-white border-4 border-white shadow-2xl">
                 {(profile?.display_name ?? "?")[0]?.toUpperCase() ?? "?"}
               </div>
             )}
@@ -539,7 +549,10 @@ export default function ListingDetailPage() {
             {listing.country && (
               <p className="text-sm text-gray-400 mt-1 flex items-center justify-center gap-1.5">
                 <span>{codeToFlag(listing.country_code)}</span>
-                <span>{listing.country}{listing.country_code ? ` (${listing.country_code})` : ""}</span>
+                <span>
+                  {localizedCountryName(listing.country_code, listing.country, lang)}
+                  {listing.country_code ? ` (${listing.country_code})` : ""}
+                </span>
               </p>
             )}
 
@@ -715,7 +728,7 @@ export default function ListingDetailPage() {
           {listing.country && (
             <p className="text-sm text-gray-400 mt-1 flex items-center gap-1.5">
               <span>{codeToFlag(listing.country_code)}</span>
-              <span>{listing.country}</span>
+              <span>{localizedCountryName(listing.country_code, listing.country, lang)}</span>
               {listing.country_code && (
                 <span className="text-[10px] font-bold text-gray-400 border border-gray-200 rounded px-1.5 py-0.5">
                   {listing.country_code}
