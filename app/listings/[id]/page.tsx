@@ -437,66 +437,91 @@ export default function ListingDetailPage() {
       {isSeeker ? (
       <>
         {/* ── Seeker hero ─────────────────────────────────────────────────── */}
-        <div className="relative min-h-56 overflow-hidden bg-gradient-to-b from-orange-50 via-orange-50/40 to-white">
+        <div className="relative min-h-[260px] overflow-hidden bg-gradient-to-b from-orange-100 via-amber-50 to-white">
           <svg
             className="absolute inset-0 w-full h-full pointer-events-none"
-            viewBox="0 0 400 224"
+            viewBox="0 0 400 260"
             preserveAspectRatio="xMidYMid slice"
             aria-hidden="true"
           >
-            <g fill="none" stroke="#fed7aa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.55">
-              {/* location pin */}
-              <path d="M200 24c-30 0-54 24-54 54 0 40 54 88 54 88s54-48 54-88c0-30-24-54-54-54z" />
-              <circle cx="200" cy="78" r="18" />
+            {/* back layer — full-width skyline, grounds the illustration */}
+            <g fill="none" stroke="#fb923c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.25">
+              <path d="M0 260 L0 232 L22 232 L22 212 L46 212 L46 226 L70 226 L70 198 L96 198 L96 220 L122 220 L122 206 L146 206 L146 230 L172 230 L172 202 L198 202 L198 216 L222 216 L222 192 L248 192 L248 218 L272 218 L272 202 L298 202 L298 226 L322 226 L322 208 L348 208 L348 224 L372 224 L372 210 L400 210 L400 260" />
+              <rect x="28" y="218" width="8" height="8" />
+              <rect x="102" y="205" width="8" height="8" />
+              <rect x="178" y="212" width="8" height="8" />
+              <rect x="228" y="200" width="8" height="8" />
+              <rect x="304" y="212" width="8" height="8" />
+              <rect x="354" y="214" width="8" height="8" />
+            </g>
 
-              {/* houses — bottom-left cluster */}
-              <rect x="18" y="172" width="52" height="38" rx="2" />
-              <path d="M12 172 L44 146 L76 172" />
-              <rect x="34" y="188" width="10" height="10" />
-              <rect x="74" y="188" width="34" height="22" rx="2" />
-              <path d="M70 188 L91 168 L112 188" />
+            {/* mid layer — landmark towers + trees */}
+            <g fill="none" stroke="#fdba74" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.4">
+              <rect x="52" y="150" width="34" height="80" rx="2" />
+              <line x1="69" y1="150" x2="69" y2="136" />
+              <rect x="61" y="164" width="8" height="8" />
+              <rect x="61" y="184" width="8" height="8" />
 
-              {/* houses — bottom-right cluster */}
-              <rect x="308" y="160" width="58" height="50" rx="2" />
-              <path d="M302 160 L337 130 L372 160" />
-              <rect x="322" y="176" width="12" height="12" />
-              <rect x="344" y="176" width="12" height="12" />
-              <rect x="362" y="188" width="30" height="22" rx="2" />
-              <path d="M358 188 L377 168 L396 188" />
+              <rect x="308" y="158" width="34" height="72" rx="2" />
+              <line x1="325" y1="158" x2="325" y2="144" />
+              <rect x="317" y="172" width="8" height="8" />
+              <rect x="317" y="192" width="8" height="8" />
 
-              {/* magnifying glass */}
-              <circle cx="336" cy="58" r="17" />
-              <line x1="348" y1="70" x2="366" y2="88" />
+              <circle cx="140" cy="214" r="13" />
+              <line x1="140" y1="227" x2="140" y2="246" />
+              <circle cx="256" cy="208" r="11" />
+              <line x1="256" y1="219" x2="256" y2="240" />
+            </g>
 
-              {/* clouds */}
-              <path d="M44 34a8 8 0 0 1 15-4 9 9 0 0 1 16 3 7 7 0 0 1-2 14H42a7 7 0 0 1 2-13z" />
-              <path d="M300 22a6 6 0 0 1 11-3 7 7 0 0 1 12 2 5 5 0 0 1-1 10h-19a5 5 0 0 1-3-9z" />
+            {/* floating layer — pin, clouds, magnifier, route */}
+            <g fill="none" stroke="#fb923c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.5">
+              <path d="M200 26c-34 0-61 27-61 61 0 46 61 100 61 100s61-54 61-100c0-34-27-61-61-61z" />
+              <circle cx="200" cy="87" r="20" />
 
-              {/* dotted route */}
-              <path d="M200 158c40 18 78 4 110-70" strokeDasharray="1 8" opacity="0.7" />
+              <circle cx="332" cy="52" r="19" />
+              <line x1="345" y1="65" x2="367" y2="87" />
+
+              <path d="M32 32a7 7 0 0 1 13-4 8 8 0 0 1 14 3 6 6 0 0 1-2 12H34a6 6 0 0 1-2-11z" />
+              <path d="M100 16a6 6 0 0 1 11-3 7 7 0 0 1 12 2 5 5 0 0 1-1 10H98a5 5 0 0 1-2-9z" />
+              <path d="M282 18a6 6 0 0 1 11-3 7 7 0 0 1 12 2 5 5 0 0 1-1 10h-19a5 5 0 0 1-3-9z" />
+              <path d="M348 40a5 5 0 0 1 9-2 6 6 0 0 1 10 2 4 4 0 0 1-1 8h-15a4 4 0 0 1-3-8z" />
+
+              <path d="M92 196c38-26 88-10 108 18s66 18 96-38" strokeDasharray="1 8" opacity="0.7" />
+            </g>
+
+            {/* sparkle accents */}
+            <g fill="#fb923c" opacity="0.4">
+              <circle cx="128" cy="58" r="2.5" />
+              <circle cx="252" cy="42" r="2.5" />
+              <circle cx="62" cy="80" r="2" />
+              <circle cx="360" cy="110" r="2.5" />
+              <circle cx="170" cy="188" r="2" />
             </g>
           </svg>
         </div>
 
-        <div className="flex justify-center -mt-14 relative z-10">
+        <div className="flex justify-center -mt-16 relative z-20">
           <div className="relative">
-            <div className="absolute inset-0 rounded-full bg-orange-200/50 blur-xl scale-110" aria-hidden="true" />
+            <div
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-orange-200/40 blur-3xl"
+              aria-hidden="true"
+            />
             {profile?.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={profile.avatar_url}
                 alt={profile.display_name ?? ""}
-                className="relative w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl"
+                className="relative w-32 h-32 rounded-full object-cover border-4 border-white ring-4 ring-orange-100 shadow-2xl"
               />
             ) : (
-              <div className="relative w-28 h-28 rounded-full bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center text-4xl font-black text-white border-4 border-white shadow-xl">
+              <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-orange-400 to-amber-400 flex items-center justify-center text-5xl font-black text-white border-4 border-white ring-4 ring-orange-100 shadow-2xl">
                 {(profile?.display_name ?? "?")[0]?.toUpperCase() ?? "?"}
               </div>
             )}
           </div>
         </div>
 
-        <div className="px-4 mt-4 space-y-4">
+        <div className="px-4 -mt-12 relative z-10 space-y-4">
           {/* ── Info card ──────────────────────────────────────────────────── */}
           <div className="bg-white rounded-3xl shadow-sm p-5 text-center">
             <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold px-3 py-1.5 rounded-full mb-3">

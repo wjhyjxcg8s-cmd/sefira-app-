@@ -53,7 +53,9 @@
       "Bash(tail -60 /tmp/nextdev3.log)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" --max-time 30 http://localhost:3100/listings/1)",
       "Bash(tail -20 /tmp/nextdev3.log)",
-      "Bash(taskkill //PID 20644 //F)"
+      "Bash(taskkill //PID 20644 //F)",
+      "Bash(tail -20 /tmp/nextdev4.log)",
+      "Bash(taskkill //PID 2768 //F)"
     ]
   }
 }
