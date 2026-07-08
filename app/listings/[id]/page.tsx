@@ -203,7 +203,7 @@ export default function ListingDetailPage() {
         if (listingData.user_id) {
           const { data: profileData, error: profileErr } = await supabase
             .from('profiles_public')
-            .select('user_id, display_name, avatar_url, gender, birth_date, country, created_at')
+            .select('user_id, display_name, avatar_url, gender, country, created_at')
             .eq('user_id', listingData.user_id)
             .maybeSingle();
 
