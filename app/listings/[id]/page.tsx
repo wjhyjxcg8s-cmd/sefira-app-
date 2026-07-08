@@ -33,6 +33,8 @@ const labels: Record<Lang, Record<string, string>> = {
     smokingSeekerOn: "Sigara içilebilir yer arıyor", smokingSeekerOff: "Sigara içilmeyen yer istiyor",
     budget: "Bütçe", ageLabel: "Yaş", gender: "Cinsiyet", occupation: "Meslek",
     wantsPrivateRoom: "Özel oda istiyor", maxPrefix: "Maks",
+    seekerBadge: "Ev Arıyor", roomType: "Oda Tipi", privateRoomYes: "Özel Oda", privateRoomAny: "Fark Etmez",
+    genderPref: "Ev Arkadaşı Tercihi", aboutTitle: "İstek Hakkında",
   },
   en: {
     contact: "Send Message",
@@ -53,6 +55,8 @@ const labels: Record<Lang, Record<string, string>> = {
     smokingSeekerOn: "Ok with smoking", smokingSeekerOff: "Wants non-smoking place",
     budget: "Budget", ageLabel: "Age", gender: "Gender", occupation: "Occupation",
     wantsPrivateRoom: "Wants private room", maxPrefix: "Max",
+    seekerBadge: "Seeker", roomType: "Room Type", privateRoomYes: "Private Room", privateRoomAny: "Doesn't matter",
+    genderPref: "Roommate Preference", aboutTitle: "About the Request",
   },
   fa: {
     contact: "ارسال پیام",
@@ -73,6 +77,8 @@ const labels: Record<Lang, Record<string, string>> = {
     smokingSeekerOn: "با سیگار مشکلی ندارد", smokingSeekerOff: "محیط بدون سیگار می‌خواهد",
     budget: "بودجه", ageLabel: "سن", gender: "جنسیت", occupation: "شغل",
     wantsPrivateRoom: "اتاق خصوصی می‌خواهد", maxPrefix: "حداکثر",
+    seekerBadge: "دنبال فضا", roomType: "نوع فضا", privateRoomYes: "اتاق خصوصی", privateRoomAny: "مهم نیست",
+    genderPref: "ترجیح هم‌خانه", aboutTitle: "درباره درخواست",
   },
   ar: {
     contact: "إرسال رسالة",
@@ -93,6 +99,8 @@ const labels: Record<Lang, Record<string, string>> = {
     smokingSeekerOn: "لا مانع من التدخين", smokingSeekerOff: "يريد مكاناً خالياً من التدخين",
     budget: "الميزانية", ageLabel: "العمر", gender: "الجنس", occupation: "المهنة",
     wantsPrivateRoom: "يريد غرفة خاصة", maxPrefix: "الحد الأقصى",
+    seekerBadge: "يبحث عن سكن", roomType: "نوع الغرفة", privateRoomYes: "غرفة خاصة", privateRoomAny: "لا يهم",
+    genderPref: "تفضيل شريك السكن", aboutTitle: "عن الطلب",
   },
   de: {
     contact: "Nachricht senden",
@@ -113,6 +121,8 @@ const labels: Record<Lang, Record<string, string>> = {
     smokingSeekerOn: "Raucher ok", smokingSeekerOff: "Möchte Nichtraucher-Unterkunft",
     budget: "Budget", ageLabel: "Alter", gender: "Geschlecht", occupation: "Beruf",
     wantsPrivateRoom: "Möchte Privatzimmer", maxPrefix: "Max",
+    seekerBadge: "Suchend", roomType: "Zimmerart", privateRoomYes: "Privatzimmer", privateRoomAny: "Egal",
+    genderPref: "Mitbewohner-Präferenz", aboutTitle: "Über die Anfrage",
   },
   ru: {
     contact: "Отправить сообщение",
@@ -133,8 +143,15 @@ const labels: Record<Lang, Record<string, string>> = {
     smokingSeekerOn: "Курение допустимо", smokingSeekerOff: "Хочет место для некурящих",
     budget: "Бюджет", ageLabel: "Возраст", gender: "Пол", occupation: "Профессия",
     wantsPrivateRoom: "Хочет отдельную комнату", maxPrefix: "Макс",
+    seekerBadge: "Ищет жильё", roomType: "Тип комнаты", privateRoomYes: "Отдельная комната", privateRoomAny: "Неважно",
+    genderPref: "Предпочтение соседа", aboutTitle: "О запросе",
   },
 };
+
+function codeToFlag(code: string): string {
+  if (!code || !/^[A-Za-z]{2}$/.test(code)) return "🌍";
+  return String.fromCodePoint(...[...code.toUpperCase()].map((c) => 0x1f1e6 - 65 + c.charCodeAt(0)));
+}
 
 export default function ListingDetailPage() {
   const router = useRouter();
@@ -264,6 +281,153 @@ export default function ListingDetailPage() {
         </button>
       </div>
 
+      {isSeeker ? (
+      <>
+        {/* ── Seeker hero ─────────────────────────────────────────────────── */}
+        <div
+          className="relative h-40 overflow-hidden"
+          style={{ background: "linear-gradient(180deg, #fff7ed 0%, #fffbeb 60%, #ffffff 100%)" }}
+        >
+          <svg
+            className="absolute inset-0 w-full h-full"
+            viewBox="0 0 400 180"
+            preserveAspectRatio="xMidYMid slice"
+            style={{ opacity: 0.12 }}
+            aria-hidden="true"
+          >
+            <rect x="15" y="110" width="45" height="40" fill="#f97316" />
+            <path d="M10 110 L37.5 85 L65 110 Z" fill="#f97316" />
+            <rect x="330" y="90" width="50" height="60" fill="#f97316" />
+            <path d="M324 90 L355 60 L386 90 Z" fill="#f97316" />
+            <rect x="290" y="130" width="30" height="20" fill="#f97316" />
+            <path d="M286 130 L305 115 L324 130 Z" fill="#f97316" />
+            <path d="M200 30c-16 0-29 13-29 29 0 21 29 55 29 55s29-34 29-55c0-16-13-29-29-29z" fill="#f97316" />
+            <circle cx="200" cy="59" r="11" fill="#fff7ed" />
+            <circle cx="100" cy="45" r="16" fill="none" stroke="#f97316" strokeWidth="5" />
+            <line x1="112" y1="57" x2="126" y2="71" stroke="#f97316" strokeWidth="5" strokeLinecap="round" />
+          </svg>
+        </div>
+
+        <div className="flex justify-center -mt-14 relative z-10">
+          {profile?.avatar_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={profile.avatar_url}
+              alt={profile.display_name ?? ""}
+              className="w-28 h-28 rounded-full object-cover border-4 border-white shadow-lg"
+            />
+          ) : (
+            <div className="w-28 h-28 rounded-full bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center text-4xl font-black text-white border-4 border-white shadow-lg">
+              {(profile?.display_name ?? "?")[0]?.toUpperCase() ?? "?"}
+            </div>
+          )}
+        </div>
+
+        {/* ── Info card ────────────────────────────────────────────────────── */}
+        <div className="mx-4 mt-3 bg-white rounded-3xl shadow-md p-5 text-center">
+          <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold px-3 py-1.5 rounded-full mb-3">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            {t.seekerBadge}
+          </span>
+
+          <h1 className="text-xl font-black text-gray-900">
+            {listing.city ?? ""}{listing.district ? ` / ${listing.district}` : ""}
+          </h1>
+
+          {listing.country && (
+            <p className="text-sm text-gray-400 mt-1 flex items-center justify-center gap-1.5">
+              <span>{codeToFlag(listing.country_code)}</span>
+              <span>{listing.country}{listing.country_code ? ` (${listing.country_code})` : ""}</span>
+            </p>
+          )}
+
+          {listing.max_budget && listing.currency && (
+            <p className="text-3xl font-black text-orange-600 mt-4">
+              <span className="text-base font-normal text-gray-400 mr-1">{t.maxPrefix}</span>
+              {Number(listing.max_budget).toLocaleString()} {listing.currency}
+              <span className="text-base font-normal text-gray-400 ml-1">{t.perMonth}</span>
+            </p>
+          )}
+        </div>
+
+        {/* ── Detail cards ─────────────────────────────────────────────────── */}
+        <div className="mx-4 mt-4 bg-white rounded-3xl shadow-md p-5">
+          <div className="grid grid-cols-2 divide-x divide-y divide-gray-100">
+            <div className="flex flex-col items-center gap-1.5 p-3 text-center">
+              <span className="text-2xl">🚪</span>
+              <span className="text-xs text-gray-400">{t.roomType}</span>
+              <span className="text-sm font-bold text-gray-800">
+                {listing.private_room_required ? t.privateRoomYes : t.privateRoomAny}
+              </span>
+            </div>
+            {listing.seeker_gender && (
+              <div className="flex flex-col items-center gap-1.5 p-3 text-center">
+                <span className="text-2xl">👤</span>
+                <span className="text-xs text-gray-400">{t.genderPref}</span>
+                <span className="text-sm font-bold text-gray-800">{listing.seeker_gender}</span>
+              </div>
+            )}
+            {listing.seeker_age && (
+              <div className="flex flex-col items-center gap-1.5 p-3 text-center">
+                <span className="text-2xl">🎂</span>
+                <span className="text-xs text-gray-400">{t.ageLabel}</span>
+                <span className="text-sm font-bold text-gray-800">{listing.seeker_age}</span>
+              </div>
+            )}
+            {listing.occupation && (
+              <div className="flex flex-col items-center gap-1.5 p-3 text-center">
+                <span className="text-2xl">💼</span>
+                <span className="text-xs text-gray-400">{t.occupation}</span>
+                <span className="text-sm font-bold text-gray-800">{listing.occupation}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ── About card ───────────────────────────────────────────────────── */}
+        {listing.about_text && (
+          <div className="mx-4 mt-4 bg-white rounded-3xl shadow-md p-5">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-7 h-7 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 text-sm flex-shrink-0">
+                ℹ️
+              </span>
+              <h3 className="font-bold text-gray-800">{t.aboutTitle}</h3>
+            </div>
+            <p className="text-gray-600 text-sm leading-relaxed">{listing.about_text}</p>
+          </div>
+        )}
+
+        {/* ── Profile card (real data only — no fake ratings/verification/dates) ── */}
+        {profile && (
+          <div className="mx-4 mt-4 bg-white rounded-3xl shadow-md p-5">
+            <div className="flex items-center gap-3">
+              {profile.avatar_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={profile.avatar_url}
+                  alt={profile.display_name ?? ""}
+                  className="w-14 h-14 rounded-full object-cover flex-shrink-0"
+                />
+              ) : (
+                <div className="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center text-xl font-bold text-orange-600 flex-shrink-0">
+                  {(profile.display_name ?? "?")[0]?.toUpperCase()}
+                </div>
+              )}
+              <div className="min-w-0">
+                <p className="font-bold text-gray-900 truncate">{profile.display_name ?? "—"}</p>
+                {profile.country && (
+                  <p className="text-sm text-gray-500 mt-0.5">{profile.country}</p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </>
+      ) : (
+      <>
       {/* Photo gallery */}
       {photos.length > 0 ? (
         <div className="bg-black">
@@ -434,41 +598,7 @@ export default function ListingDetailPage() {
         </div>
       )}
 
-      {/* Seeker details */}
-      {isSeeker && (listing.max_budget || listing.seeker_age || listing.seeker_gender || listing.occupation || listing.private_room_required || listing.about_text) && (
-        <div className="mx-4 mt-4 bg-white rounded-2xl shadow-md p-4">
-          <h3 className="font-bold mb-3 text-gray-800">✨ {t.preferences}</h3>
-          <div className="flex gap-2 flex-wrap">
-            {listing.max_budget && listing.currency && (
-              <span className="bg-orange-50 text-orange-600 px-3 py-1 rounded-full text-sm">
-                💰 {t.budget}: {Number(listing.max_budget).toLocaleString()} {listing.currency}
-              </span>
-            )}
-            {listing.seeker_age && (
-              <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-sm">
-                🎂 {t.ageLabel}: {listing.seeker_age}
-              </span>
-            )}
-            {listing.seeker_gender && (
-              <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-sm">
-                👤 {t.gender}: {listing.seeker_gender}
-              </span>
-            )}
-            {listing.occupation && (
-              <span className="bg-purple-50 text-purple-600 px-3 py-1 rounded-full text-sm">
-                💼 {t.occupation}: {listing.occupation}
-              </span>
-            )}
-            {listing.private_room_required && (
-              <span className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-sm">
-                🚪 {t.wantsPrivateRoom}
-              </span>
-            )}
-          </div>
-          {listing.about_text && (
-            <p className="text-gray-600 text-sm leading-relaxed mt-3">{listing.about_text}</p>
-          )}
-        </div>
+      </>
       )}
 
       {/* Fixed contact button */}
