@@ -503,7 +503,7 @@ export default function ListingDetailPage() {
         <div className="flex justify-center -mt-16 relative z-20">
           <div className="relative">
             <div
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-orange-200/40 blur-3xl"
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full bg-orange-200/40 blur-3xl z-0"
               aria-hidden="true"
             />
             {profile?.avatar_url ? (
@@ -511,10 +511,10 @@ export default function ListingDetailPage() {
               <img
                 src={profile.avatar_url}
                 alt={profile.display_name ?? ""}
-                className="relative w-32 h-32 rounded-full object-cover border-4 border-white ring-4 ring-orange-100 shadow-2xl"
+                className="relative z-10 w-32 h-32 rounded-full object-cover border-4 border-white ring-4 ring-orange-50 shadow-2xl"
               />
             ) : (
-              <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-orange-400 to-amber-400 flex items-center justify-center text-5xl font-black text-white border-4 border-white ring-4 ring-orange-100 shadow-2xl">
+              <div className="relative z-10 w-32 h-32 rounded-full bg-gradient-to-br from-orange-400 to-amber-400 flex items-center justify-center text-5xl font-black text-white border-4 border-white ring-4 ring-orange-50 shadow-2xl">
                 {(profile?.display_name ?? "?")[0]?.toUpperCase() ?? "?"}
               </div>
             )}
