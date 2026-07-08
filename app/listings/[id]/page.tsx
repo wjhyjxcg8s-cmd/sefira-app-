@@ -37,6 +37,7 @@ const labels: Record<Lang, Record<string, string>> = {
     seekerBadge: "Ev Arıyor", roomType: "Oda Tipi", privateRoomYes: "Özel Oda", privateRoomAny: "Fark Etmez",
     genderPref: "Ev Arkadaşı Tercihi", aboutTitle: "İstek Hakkında",
     home: "Ana Sayfa", share: "Paylaş", linkCopied: "Link kopyalandı",
+    linkToCopy: "Kopyalamak için bağlantı", close: "Kapat",
     houseTypeCaption: "Ev Tipi", roomsCaption: "Oda Sayısı", elevatorCaption: "Asansör",
     furnishedCaption: "Eşya Durumu", parkingCaption: "Otopark", smokingCaption: "Sigara",
     residentsCaption: "Mevcut Sakin", roomsSuffix: "oda", residentsSuffix: "kişi yaşıyor",
@@ -65,6 +66,7 @@ const labels: Record<Lang, Record<string, string>> = {
     seekerBadge: "Seeker", roomType: "Room Type", privateRoomYes: "Private Room", privateRoomAny: "Doesn't matter",
     genderPref: "Roommate Preference", aboutTitle: "About the Request",
     home: "Home", share: "Share", linkCopied: "Link copied",
+    linkToCopy: "Link to copy", close: "Close",
     houseTypeCaption: "House Type", roomsCaption: "Rooms", elevatorCaption: "Elevator",
     furnishedCaption: "Furnishing", parkingCaption: "Parking", smokingCaption: "Smoking",
     residentsCaption: "Current Residents", roomsSuffix: "rooms", residentsSuffix: "residents",
@@ -93,6 +95,7 @@ const labels: Record<Lang, Record<string, string>> = {
     seekerBadge: "دنبال فضا", roomType: "نوع فضا", privateRoomYes: "اتاق خصوصی", privateRoomAny: "مهم نیست",
     genderPref: "ترجیح هم‌خانه", aboutTitle: "درباره درخواست",
     home: "خانه", share: "اشتراک‌گذاری", linkCopied: "لینک کپی شد",
+    linkToCopy: "لینک برای کپی کردن", close: "بستن",
     houseTypeCaption: "نوع خانه", roomsCaption: "تعداد اتاق", elevatorCaption: "آسانسور",
     furnishedCaption: "وضعیت مبلمان", parkingCaption: "پارکینگ", smokingCaption: "سیگار",
     residentsCaption: "ساکنان فعلی", roomsSuffix: "اتاق", residentsSuffix: "نفر ساکن",
@@ -121,6 +124,7 @@ const labels: Record<Lang, Record<string, string>> = {
     seekerBadge: "يبحث عن سكن", roomType: "نوع الغرفة", privateRoomYes: "غرفة خاصة", privateRoomAny: "لا يهم",
     genderPref: "تفضيل شريك السكن", aboutTitle: "عن الطلب",
     home: "الرئيسية", share: "مشاركة", linkCopied: "تم نسخ الرابط",
+    linkToCopy: "رابط للنسخ", close: "إغلاق",
     houseTypeCaption: "نوع المسكن", roomsCaption: "عدد الغرف", elevatorCaption: "المصعد",
     furnishedCaption: "التأثيث", parkingCaption: "موقف السيارات", smokingCaption: "التدخين",
     residentsCaption: "السكان الحاليون", roomsSuffix: "غرفة", residentsSuffix: "ساكن",
@@ -149,6 +153,7 @@ const labels: Record<Lang, Record<string, string>> = {
     seekerBadge: "Suchend", roomType: "Zimmerart", privateRoomYes: "Privatzimmer", privateRoomAny: "Egal",
     genderPref: "Mitbewohner-Präferenz", aboutTitle: "Über die Anfrage",
     home: "Startseite", share: "Teilen", linkCopied: "Link kopiert",
+    linkToCopy: "Link zum Kopieren", close: "Schließen",
     houseTypeCaption: "Haustyp", roomsCaption: "Zimmer", elevatorCaption: "Aufzug",
     furnishedCaption: "Möblierung", parkingCaption: "Parkplatz", smokingCaption: "Rauchen",
     residentsCaption: "Aktuelle Bewohner", roomsSuffix: "Zimmer", residentsSuffix: "Bewohner",
@@ -177,6 +182,7 @@ const labels: Record<Lang, Record<string, string>> = {
     seekerBadge: "Ищет жильё", roomType: "Тип комнаты", privateRoomYes: "Отдельная комната", privateRoomAny: "Неважно",
     genderPref: "Предпочтение соседа", aboutTitle: "О запросе",
     home: "Главная", share: "Поделиться", linkCopied: "Ссылка скопирована",
+    linkToCopy: "Ссылка для копирования", close: "Закрыть",
     houseTypeCaption: "Тип жилья", roomsCaption: "Комнат", elevatorCaption: "Лифт",
     furnishedCaption: "Мебель", parkingCaption: "Парковка", smokingCaption: "Курение",
     residentsCaption: "Текущие жильцы", roomsSuffix: "комнат", residentsSuffix: "жильцов",
@@ -214,6 +220,7 @@ export default function ListingDetailPage() {
   const [activePhoto, setActivePhoto] = useState(0);
   const [showAuth, setShowAuth] = useState(false);
   const [showCopyToast, setShowCopyToast] = useState(false);
+  const [shareUrlModal, setShareUrlModal] = useState<string | null>(null);
   const { lang } = useLang();
 
   useEffect(() => {
@@ -277,15 +284,49 @@ export default function ListingDetailPage() {
     router.push(`/messages?userId=${listing.user_id}&listingId=${listing.id}`);
   }
 
-  function handleShare() {
+  function showToast() {
+    setShowCopyToast(true);
+    setTimeout(() => setShowCopyToast(false), 2000);
+  }
+
+  async function handleShare() {
     const url = window.location.href;
     const title = listing?.city ?? "Sefira";
+    const shareData = { title, text: `${title} - Sefira`, url };
+
     if (navigator.share) {
-      navigator.share({ title, text: `${title} - Sefira`, url }).catch(() => {});
-    } else {
-      navigator.clipboard.writeText(url);
-      setShowCopyToast(true);
-      setTimeout(() => setShowCopyToast(false), 2000);
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch {
+        // user cancelled or share failed — fall through to copy fallbacks
+      }
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(url);
+        showToast();
+        return;
+      } catch {
+        // fall through to legacy copy
+      }
+    }
+
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = url;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      showToast();
+      return;
+    } catch {
+      setShareUrlModal(url);
     }
   }
 
@@ -342,15 +383,54 @@ export default function ListingDetailPage() {
         <button
           onClick={handleShare}
           aria-label={t.share}
-          className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 text-lg"
+          className="group w-10 h-10 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-stone-700 transition-colors hover:bg-orange-50 hover:border-orange-300 active:scale-95"
         >
-          📤
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="w-[18px] h-[18px] group-hover:text-orange-500 transition-colors"
+          >
+            <circle cx="18" cy="5" r="3" />
+            <circle cx="6" cy="12" r="3" />
+            <circle cx="18" cy="19" r="3" />
+            <line x1="8.6" y1="10.5" x2="15.4" y2="6.5" />
+            <line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
+          </svg>
         </button>
       </div>
 
       {showCopyToast && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-full shadow-lg">
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-full shadow-lg animate-[fadeIn_0.2s_ease-out]">
           {t.linkCopied}
+        </div>
+      )}
+
+      {shareUrlModal && (
+        <div
+          className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-6"
+          onClick={() => setShareUrlModal(null)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-xl p-5 w-full max-w-sm"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="text-sm font-semibold text-gray-700 mb-2">{t.linkToCopy}</p>
+            <p
+              className="text-sm text-gray-600 bg-gray-50 border border-gray-200 rounded-lg p-3 break-all select-all"
+            >
+              {shareUrlModal}
+            </p>
+            <button
+              onClick={() => setShareUrlModal(null)}
+              className="mt-4 w-full py-2.5 rounded-xl bg-gray-100 text-gray-700 font-semibold text-sm"
+            >
+              {t.close}
+            </button>
+          </div>
         </div>
       )}
 
