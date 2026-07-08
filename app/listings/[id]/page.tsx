@@ -437,147 +437,189 @@ export default function ListingDetailPage() {
       {isSeeker ? (
       <>
         {/* ── Seeker hero ─────────────────────────────────────────────────── */}
-        <div
-          className="relative h-40 overflow-hidden"
-          style={{ background: "linear-gradient(180deg, #fff7ed 0%, #fffbeb 60%, #ffffff 100%)" }}
-        >
+        <div className="relative min-h-56 overflow-hidden bg-gradient-to-b from-orange-50 via-orange-50/40 to-white">
           <svg
-            className="absolute inset-0 w-full h-full"
-            viewBox="0 0 400 180"
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            viewBox="0 0 400 224"
             preserveAspectRatio="xMidYMid slice"
-            style={{ opacity: 0.12 }}
             aria-hidden="true"
           >
-            <rect x="15" y="110" width="45" height="40" fill="#f97316" />
-            <path d="M10 110 L37.5 85 L65 110 Z" fill="#f97316" />
-            <rect x="330" y="90" width="50" height="60" fill="#f97316" />
-            <path d="M324 90 L355 60 L386 90 Z" fill="#f97316" />
-            <rect x="290" y="130" width="30" height="20" fill="#f97316" />
-            <path d="M286 130 L305 115 L324 130 Z" fill="#f97316" />
-            <path d="M200 30c-16 0-29 13-29 29 0 21 29 55 29 55s29-34 29-55c0-16-13-29-29-29z" fill="#f97316" />
-            <circle cx="200" cy="59" r="11" fill="#fff7ed" />
-            <circle cx="100" cy="45" r="16" fill="none" stroke="#f97316" strokeWidth="5" />
-            <line x1="112" y1="57" x2="126" y2="71" stroke="#f97316" strokeWidth="5" strokeLinecap="round" />
+            <g fill="none" stroke="#fed7aa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.55">
+              {/* location pin */}
+              <path d="M200 24c-30 0-54 24-54 54 0 40 54 88 54 88s54-48 54-88c0-30-24-54-54-54z" />
+              <circle cx="200" cy="78" r="18" />
+
+              {/* houses — bottom-left cluster */}
+              <rect x="18" y="172" width="52" height="38" rx="2" />
+              <path d="M12 172 L44 146 L76 172" />
+              <rect x="34" y="188" width="10" height="10" />
+              <rect x="74" y="188" width="34" height="22" rx="2" />
+              <path d="M70 188 L91 168 L112 188" />
+
+              {/* houses — bottom-right cluster */}
+              <rect x="308" y="160" width="58" height="50" rx="2" />
+              <path d="M302 160 L337 130 L372 160" />
+              <rect x="322" y="176" width="12" height="12" />
+              <rect x="344" y="176" width="12" height="12" />
+              <rect x="362" y="188" width="30" height="22" rx="2" />
+              <path d="M358 188 L377 168 L396 188" />
+
+              {/* magnifying glass */}
+              <circle cx="336" cy="58" r="17" />
+              <line x1="348" y1="70" x2="366" y2="88" />
+
+              {/* clouds */}
+              <path d="M44 34a8 8 0 0 1 15-4 9 9 0 0 1 16 3 7 7 0 0 1-2 14H42a7 7 0 0 1 2-13z" />
+              <path d="M300 22a6 6 0 0 1 11-3 7 7 0 0 1 12 2 5 5 0 0 1-1 10h-19a5 5 0 0 1-3-9z" />
+
+              {/* dotted route */}
+              <path d="M200 158c40 18 78 4 110-70" strokeDasharray="1 8" opacity="0.7" />
+            </g>
           </svg>
         </div>
 
         <div className="flex justify-center -mt-14 relative z-10">
-          {profile?.avatar_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={profile.avatar_url}
-              alt={profile.display_name ?? ""}
-              className="w-28 h-28 rounded-full object-cover border-4 border-white shadow-lg"
-            />
-          ) : (
-            <div className="w-28 h-28 rounded-full bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center text-4xl font-black text-white border-4 border-white shadow-lg">
-              {(profile?.display_name ?? "?")[0]?.toUpperCase() ?? "?"}
-            </div>
-          )}
-        </div>
-
-        {/* ── Info card ────────────────────────────────────────────────────── */}
-        <div className="mx-4 mt-3 bg-white rounded-3xl shadow-md p-5 text-center">
-          <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold px-3 py-1.5 rounded-full mb-3">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-            {t.seekerBadge}
-          </span>
-
-          <h1 className="text-xl font-black text-gray-900">
-            {listing.city ?? ""}{listing.district ? ` / ${listing.district}` : ""}
-          </h1>
-
-          {listing.country && (
-            <p className="text-sm text-gray-400 mt-1 flex items-center justify-center gap-1.5">
-              <span>{codeToFlag(listing.country_code)}</span>
-              <span>{listing.country}{listing.country_code ? ` (${listing.country_code})` : ""}</span>
-            </p>
-          )}
-
-          {listing.max_budget && listing.currency && (
-            <p className="text-3xl font-black text-orange-600 mt-4">
-              <span className="text-base font-normal text-gray-400 mr-1">{t.maxPrefix}</span>
-              {Number(listing.max_budget).toLocaleString()} {listing.currency}
-              <span className="text-base font-normal text-gray-400 ml-1">{t.perMonth}</span>
-            </p>
-          )}
-        </div>
-
-        {/* ── Detail cards ─────────────────────────────────────────────────── */}
-        <div className="mx-4 mt-4 bg-white rounded-3xl shadow-md p-5">
-          <div className="grid grid-cols-2 divide-x divide-y divide-gray-100">
-            <div className="flex flex-col items-center gap-1.5 p-3 text-center">
-              <span className="text-2xl">🚪</span>
-              <span className="text-xs text-gray-400">{t.roomType}</span>
-              <span className="text-sm font-bold text-gray-800">
-                {listing.private_room_required ? t.privateRoomYes : t.privateRoomAny}
-              </span>
-            </div>
-            {listing.seeker_gender && (
-              <div className="flex flex-col items-center gap-1.5 p-3 text-center">
-                <span className="text-2xl">👤</span>
-                <span className="text-xs text-gray-400">{t.genderPref}</span>
-                <span className="text-sm font-bold text-gray-800">{listing.seeker_gender}</span>
-              </div>
-            )}
-            {listing.seeker_age && (
-              <div className="flex flex-col items-center gap-1.5 p-3 text-center">
-                <span className="text-2xl">🎂</span>
-                <span className="text-xs text-gray-400">{t.ageLabel}</span>
-                <span className="text-sm font-bold text-gray-800">{listing.seeker_age}</span>
-              </div>
-            )}
-            {listing.occupation && (
-              <div className="flex flex-col items-center gap-1.5 p-3 text-center">
-                <span className="text-2xl">💼</span>
-                <span className="text-xs text-gray-400">{t.occupation}</span>
-                <span className="text-sm font-bold text-gray-800">{listing.occupation}</span>
+          <div className="relative">
+            <div className="absolute inset-0 rounded-full bg-orange-200/50 blur-xl scale-110" aria-hidden="true" />
+            {profile?.avatar_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={profile.avatar_url}
+                alt={profile.display_name ?? ""}
+                className="relative w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl"
+              />
+            ) : (
+              <div className="relative w-28 h-28 rounded-full bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center text-4xl font-black text-white border-4 border-white shadow-xl">
+                {(profile?.display_name ?? "?")[0]?.toUpperCase() ?? "?"}
               </div>
             )}
           </div>
         </div>
 
-        {/* ── About card ───────────────────────────────────────────────────── */}
-        {listing.about_text && (
-          <div className="mx-4 mt-4 bg-white rounded-3xl shadow-md p-5">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-7 h-7 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 text-sm flex-shrink-0">
-                ℹ️
-              </span>
-              <h3 className="font-bold text-gray-800">{t.aboutTitle}</h3>
-            </div>
-            <p className="text-gray-600 text-sm leading-relaxed">{listing.about_text}</p>
-          </div>
-        )}
+        <div className="px-4 mt-4 space-y-4">
+          {/* ── Info card ──────────────────────────────────────────────────── */}
+          <div className="bg-white rounded-3xl shadow-sm p-5 text-center">
+            <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold px-3 py-1.5 rounded-full mb-3">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              {t.seekerBadge}
+            </span>
 
-        {/* ── Profile card (real data only — no fake ratings/verification/dates) ── */}
-        {profile && (
-          <div className="mx-4 mt-4 bg-white rounded-3xl shadow-md p-5">
-            <div className="flex items-center gap-3">
-              {profile.avatar_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={profile.avatar_url}
-                  alt={profile.display_name ?? ""}
-                  className="w-14 h-14 rounded-full object-cover flex-shrink-0"
-                />
-              ) : (
-                <div className="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center text-xl font-bold text-orange-600 flex-shrink-0">
-                  {(profile.display_name ?? "?")[0]?.toUpperCase()}
+            <h1 className="text-xl font-black text-gray-900">
+              {listing.city ?? ""}{listing.district ? ` / ${listing.district}` : ""}
+            </h1>
+
+            {listing.country && (
+              <p className="text-sm text-gray-400 mt-1 flex items-center justify-center gap-1.5">
+                <span>{codeToFlag(listing.country_code)}</span>
+                <span>{listing.country}{listing.country_code ? ` (${listing.country_code})` : ""}</span>
+              </p>
+            )}
+
+            {listing.max_budget && listing.currency && (
+              <span className="inline-flex items-center gap-2 bg-orange-50 border border-orange-100 text-orange-600 text-sm font-bold px-4 py-2 rounded-full mt-4">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 flex-shrink-0">
+                  <path d="M19 7H5a2 2 0 00-2 2v8a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2z" />
+                  <path d="M16 13h2" />
+                </svg>
+                <span className="font-normal text-gray-400">{t.maxPrefix}</span>
+                {Number(listing.max_budget).toLocaleString()} {listing.currency}
+                <span className="font-normal text-gray-400">{t.perMonth}</span>
+              </span>
+            )}
+          </div>
+
+          {/* ── Detail cards ─────────────────────────────────────────────────── */}
+          <div className="bg-white rounded-3xl shadow-sm p-5">
+            <div className="flex divide-x divide-gray-100">
+              <div className="flex-1 flex flex-col items-center gap-1.5 px-2 text-center">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-stone-400">
+                  <path d="M3 10.5L12 3l9 7.5" />
+                  <path d="M5 9.5V20a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1V9.5" />
+                </svg>
+                <span className="text-xs text-gray-400">{t.roomType}</span>
+                <span className="text-sm font-bold text-gray-800">
+                  {listing.private_room_required ? t.privateRoomYes : t.privateRoomAny}
+                </span>
+              </div>
+              {listing.seeker_gender && (
+                <div className="flex-1 flex flex-col items-center gap-1.5 px-2 text-center">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-stone-400">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
+                  <span className="text-xs text-gray-400">{t.genderPref}</span>
+                  <span className="text-sm font-bold text-gray-800">{listing.seeker_gender}</span>
                 </div>
               )}
-              <div className="min-w-0">
-                <p className="font-bold text-gray-900 truncate">{profile.display_name ?? "—"}</p>
-                {profile.country && (
-                  <p className="text-sm text-gray-500 mt-0.5">{profile.country}</p>
-                )}
-              </div>
+              {listing.seeker_age && (
+                <div className="flex-1 flex flex-col items-center gap-1.5 px-2 text-center">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-stone-400">
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                  <span className="text-xs text-gray-400">{t.ageLabel}</span>
+                  <span className="text-sm font-bold text-gray-800">{listing.seeker_age}</span>
+                </div>
+              )}
+              {listing.occupation && (
+                <div className="flex-1 flex flex-col items-center gap-1.5 px-2 text-center">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-stone-400">
+                    <rect x="2" y="7" width="20" height="14" rx="2" />
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                  </svg>
+                  <span className="text-xs text-gray-400">{t.occupation}</span>
+                  <span className="text-sm font-bold text-gray-800">{listing.occupation}</span>
+                </div>
+              )}
             </div>
           </div>
-        )}
+
+          {/* ── About card ───────────────────────────────────────────────────── */}
+          {listing.about_text && (
+            <div className="bg-white rounded-3xl shadow-sm p-5">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-7 h-7 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 text-sm flex-shrink-0">
+                  ℹ️
+                </span>
+                <h3 className="font-bold text-gray-800">{t.aboutTitle}</h3>
+              </div>
+              <p className="text-gray-600 text-sm leading-relaxed">{listing.about_text}</p>
+            </div>
+          )}
+
+          {/* ── Profile card (real data only — no fake ratings/verification/dates) ── */}
+          {profile && (
+            <div className="bg-white rounded-3xl shadow-sm p-5">
+              <div className="flex items-center gap-3">
+                {profile.avatar_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={profile.avatar_url}
+                    alt={profile.display_name ?? ""}
+                    className="w-14 h-14 rounded-full object-cover flex-shrink-0"
+                  />
+                ) : (
+                  <div className="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center text-xl font-bold text-orange-600 flex-shrink-0">
+                    {(profile.display_name ?? "?")[0]?.toUpperCase()}
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <p className="font-bold text-gray-900 truncate">{profile.display_name ?? "—"}</p>
+                  {profile.country && (
+                    <p className="text-sm text-gray-500 mt-0.5">{profile.country}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </>
       ) : (
       <>
