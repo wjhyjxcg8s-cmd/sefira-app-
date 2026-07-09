@@ -2961,7 +2961,7 @@ export default function Home() {
             </AnimatedGradientText>
 
             {/* Subtitle */}
-            <p className="text-gray-500 text-base mt-3 leading-relaxed max-w-xl">
+            <p className="text-gray-500 text-base mt-3 mb-4 leading-relaxed max-w-xl">
               {t.heroP}
             </p>
 
@@ -2971,40 +2971,43 @@ export default function Home() {
               {wizardMode === null ? (
                 <>
                   {/* CTA buttons */}
-                  <div className="flex flex-col space-y-4 px-4 my-3">
+                  <div className="flex flex-col space-y-3.5 px-4 my-3">
                     {/* Card 1 — Landlord */}
                     <motion.button
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
-                      whileTap={{ scale: 0.97 }}
-                      whileHover={{ y: -4 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=has_place'); }}
-                      className="group w-full relative overflow-hidden rounded-2xl min-h-[120px] flex items-center shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 text-left"
+                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-left min-h-[116px] flex items-center cursor-pointer"
                     >
-                      <Image src="/card-owner-home.webp" alt="" fill className={`object-cover ${isRtl ? "object-left" : "object-right"} z-0 transition-transform duration-500 group-hover:scale-105`} />
-                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white/95 via-white/75 to-white/10`} />
-                      <div className={`absolute top-0 bottom-0 w-1 bg-gradient-to-b from-orange-500 to-amber-500 ${isRtl ? "right-0 rounded-r-2xl" : "left-0 rounded-l-2xl"}`} />
+                      <Image
+                        src="/card-owner-home.webp"
+                        alt=""
+                        fill
+                        className={`object-cover ${isRtl ? "object-[25%_center]" : "object-[75%_center]"} z-0 transition-transform duration-700 ease-out motion-safe:group-hover:scale-[1.04]`}
+                      />
+                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white via-white/85 via-55% to-white/5`} />
+                      <div className={`absolute inset-y-0 w-1 bg-gradient-to-b from-orange-500 to-amber-500 ${isRtl ? "right-0" : "left-0"}`} />
 
-                      <div className="relative z-10 flex items-center gap-3 pl-5 pr-4 py-5 w-full">
-                        <div className="w-12 h-12 rounded-xl bg-white/90 backdrop-blur-sm shadow-sm flex items-center justify-center text-2xl shrink-0">
+                      <div className="relative z-10 flex items-center gap-3.5 p-4 sm:p-5 w-full">
+                        <div className="w-[52px] h-[52px] shrink-0 rounded-xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-stone-100 flex items-center justify-center text-[26px]">
                           🏡
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <span className="inline-block bg-orange-100 text-orange-700 text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full whitespace-nowrap">
+                          <span className="inline-flex bg-orange-100 text-orange-700 text-[10px] font-bold tracking-wider uppercase px-2 py-[3px] rounded-md whitespace-nowrap">
                             {t.landlordBadge}
                           </span>
-                          <p className="text-stone-800 font-bold text-[15px] sm:text-base leading-snug mt-1.5">
+                          <p className="mt-1.5 text-[15px] sm:text-base font-bold text-stone-900 leading-tight">
                             {t.optionSeekingTitle}
                           </p>
-                          <p className="text-stone-500 text-xs leading-snug mt-0.5">
+                          <p className="mt-0.5 text-xs text-stone-500 leading-snug">
                             {t.landlordSubtext}
                           </p>
                         </div>
 
-                        <div className={`w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 transition ${isRtl ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>
-                          <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${isRtl ? "rotate-180" : ""}`}>
+                        <div className={`shrink-0 w-10 h-10 rounded-full bg-white shadow-md ring-1 ring-stone-100 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
+                          <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 ${isRtl ? "rotate-180" : ""}`}>
                             <path d="M5 12h14M13 6l6 6-6 6" />
                           </svg>
                         </div>
@@ -3016,34 +3019,37 @@ export default function Home() {
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.25 }}
-                      whileTap={{ scale: 0.97 }}
-                      whileHover={{ y: -4 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=needs_place'); }}
-                      className="group w-full relative overflow-hidden rounded-2xl min-h-[120px] flex items-center shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 text-left"
+                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-left min-h-[116px] flex items-center cursor-pointer"
                     >
-                      <Image src="/card-seeker-home.webp" alt="" fill className={`object-cover ${isRtl ? "object-left" : "object-right"} z-0 transition-transform duration-500 group-hover:scale-105`} />
-                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white/95 via-white/75 to-white/10`} />
-                      <div className={`absolute top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-indigo-500 ${isRtl ? "right-0 rounded-r-2xl" : "left-0 rounded-l-2xl"}`} />
+                      <Image
+                        src="/card-seeker-home.webp"
+                        alt=""
+                        fill
+                        className={`object-cover ${isRtl ? "object-[25%_center]" : "object-[75%_center]"} z-0 transition-transform duration-700 ease-out motion-safe:group-hover:scale-[1.04]`}
+                      />
+                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white via-white/85 via-55% to-white/5`} />
+                      <div className={`absolute inset-y-0 w-1 bg-gradient-to-b from-blue-500 to-indigo-500 ${isRtl ? "right-0" : "left-0"}`} />
 
-                      <div className="relative z-10 flex items-center gap-3 pl-5 pr-4 py-5 w-full">
-                        <div className="w-12 h-12 rounded-xl bg-white/90 backdrop-blur-sm shadow-sm flex items-center justify-center text-2xl shrink-0">
+                      <div className="relative z-10 flex items-center gap-3.5 p-4 sm:p-5 w-full">
+                        <div className="w-[52px] h-[52px] shrink-0 rounded-xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-stone-100 flex items-center justify-center text-[26px]">
                           🔍
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <span className="inline-block bg-blue-100 text-blue-700 text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full whitespace-nowrap">
+                          <span className="inline-flex bg-blue-100 text-blue-700 text-[10px] font-bold tracking-wider uppercase px-2 py-[3px] rounded-md whitespace-nowrap">
                             {t.tenantBadge}
                           </span>
-                          <p className="text-stone-800 font-bold text-[15px] sm:text-base leading-snug mt-1.5">
+                          <p className="mt-1.5 text-[15px] sm:text-base font-bold text-stone-900 leading-tight">
                             {t.optionOfferingTitle}
                           </p>
-                          <p className="text-stone-500 text-xs leading-snug mt-0.5">
+                          <p className="mt-0.5 text-xs text-stone-500 leading-snug">
                             {t.tenantSubtext}
                           </p>
                         </div>
 
-                        <div className={`w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 transition ${isRtl ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>
-                          <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${isRtl ? "rotate-180" : ""}`}>
+                        <div className={`shrink-0 w-10 h-10 rounded-full bg-white shadow-md ring-1 ring-stone-100 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
+                          <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 ${isRtl ? "rotate-180" : ""}`}>
                             <path d="M5 12h14M13 6l6 6-6 6" />
                           </svg>
                         </div>
@@ -3055,34 +3061,37 @@ export default function Home() {
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.4 }}
-                      whileTap={{ scale: 0.97 }}
-                      whileHover={{ y: -4 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('owner'); setShowCommercialModal(true); }}
-                      className="group w-full relative overflow-hidden rounded-2xl min-h-[120px] flex items-center shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 text-left"
+                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-left min-h-[116px] flex items-center cursor-pointer"
                     >
-                      <Image src="/card-owner-commercial.webp" alt="" fill className={`object-cover ${isRtl ? "object-left" : "object-right"} z-0 transition-transform duration-500 group-hover:scale-105`} />
-                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white/95 via-white/75 to-white/10`} />
-                      <div className={`absolute top-0 bottom-0 w-1 bg-gradient-to-b from-emerald-500 to-green-500 ${isRtl ? "right-0 rounded-r-2xl" : "left-0 rounded-l-2xl"}`} />
+                      <Image
+                        src="/card-owner-commercial.webp"
+                        alt=""
+                        fill
+                        className={`object-cover ${isRtl ? "object-[25%_center]" : "object-[75%_center]"} z-0 transition-transform duration-700 ease-out motion-safe:group-hover:scale-[1.04]`}
+                      />
+                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white via-white/85 via-55% to-white/5`} />
+                      <div className={`absolute inset-y-0 w-1 bg-gradient-to-b from-emerald-500 to-green-500 ${isRtl ? "right-0" : "left-0"}`} />
 
-                      <div className="relative z-10 flex items-center gap-3 pl-5 pr-4 py-5 w-full">
-                        <div className="w-12 h-12 rounded-xl bg-white/90 backdrop-blur-sm shadow-sm flex items-center justify-center text-2xl shrink-0">
+                      <div className="relative z-10 flex items-center gap-3.5 p-4 sm:p-5 w-full">
+                        <div className="w-[52px] h-[52px] shrink-0 rounded-xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-stone-100 flex items-center justify-center text-[26px]">
                           🏢
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <span className="inline-block bg-emerald-100 text-emerald-700 text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full whitespace-nowrap">
+                          <span className="inline-flex bg-emerald-100 text-emerald-700 text-[10px] font-bold tracking-wider uppercase px-2 py-[3px] rounded-md whitespace-nowrap">
                             {t.commercialOwnerBadge}
                           </span>
-                          <p className="text-stone-800 font-bold text-[15px] sm:text-base leading-snug mt-1.5">
+                          <p className="mt-1.5 text-[15px] sm:text-base font-bold text-stone-900 leading-tight">
                             {t.commercialOwnerTitle}
                           </p>
-                          <p className="text-stone-500 text-xs leading-snug mt-0.5">
+                          <p className="mt-0.5 text-xs text-stone-500 leading-snug">
                             {t.commercialOwnerSubtitle}
                           </p>
                         </div>
 
-                        <div className={`w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 transition ${isRtl ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>
-                          <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${isRtl ? "rotate-180" : ""}`}>
+                        <div className={`shrink-0 w-10 h-10 rounded-full bg-white shadow-md ring-1 ring-stone-100 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
+                          <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 ${isRtl ? "rotate-180" : ""}`}>
                             <path d="M5 12h14M13 6l6 6-6 6" />
                           </svg>
                         </div>
@@ -3094,34 +3103,37 @@ export default function Home() {
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.55 }}
-                      whileTap={{ scale: 0.97 }}
-                      whileHover={{ y: -4 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('seeker'); setShowCommercialModal(true); }}
-                      className="group w-full relative overflow-hidden rounded-2xl min-h-[120px] flex items-center shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 text-left"
+                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-left min-h-[116px] flex items-center cursor-pointer"
                     >
-                      <Image src="/card-seeker-commercial.webp" alt="" fill className={`object-cover ${isRtl ? "object-left" : "object-right"} z-0 transition-transform duration-500 group-hover:scale-105`} />
-                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white/95 via-white/75 to-white/10`} />
-                      <div className={`absolute top-0 bottom-0 w-1 bg-gradient-to-b from-teal-500 to-cyan-500 ${isRtl ? "right-0 rounded-r-2xl" : "left-0 rounded-l-2xl"}`} />
+                      <Image
+                        src="/card-seeker-commercial.webp"
+                        alt=""
+                        fill
+                        className={`object-cover ${isRtl ? "object-[25%_center]" : "object-[75%_center]"} z-0 transition-transform duration-700 ease-out motion-safe:group-hover:scale-[1.04]`}
+                      />
+                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white via-white/85 via-55% to-white/5`} />
+                      <div className={`absolute inset-y-0 w-1 bg-gradient-to-b from-teal-500 to-cyan-500 ${isRtl ? "right-0" : "left-0"}`} />
 
-                      <div className="relative z-10 flex items-center gap-3 pl-5 pr-4 py-5 w-full">
-                        <div className="w-12 h-12 rounded-xl bg-white/90 backdrop-blur-sm shadow-sm flex items-center justify-center text-2xl shrink-0">
+                      <div className="relative z-10 flex items-center gap-3.5 p-4 sm:p-5 w-full">
+                        <div className="w-[52px] h-[52px] shrink-0 rounded-xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-stone-100 flex items-center justify-center text-[26px]">
                           🔍
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <span className="inline-block bg-teal-100 text-teal-700 text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full whitespace-nowrap">
+                          <span className="inline-flex bg-teal-100 text-teal-700 text-[10px] font-bold tracking-wider uppercase px-2 py-[3px] rounded-md whitespace-nowrap">
                             {t.commercialSeekerBadge}
                           </span>
-                          <p className="text-stone-800 font-bold text-[15px] sm:text-base leading-snug mt-1.5">
+                          <p className="mt-1.5 text-[15px] sm:text-base font-bold text-stone-900 leading-tight">
                             {t.commercialSeekerTitle}
                           </p>
-                          <p className="text-stone-500 text-xs leading-snug mt-0.5">
+                          <p className="mt-0.5 text-xs text-stone-500 leading-snug">
                             {t.commercialSeekerSubtitle}
                           </p>
                         </div>
 
-                        <div className={`w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 transition ${isRtl ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>
-                          <svg viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${isRtl ? "rotate-180" : ""}`}>
+                        <div className={`shrink-0 w-10 h-10 rounded-full bg-white shadow-md ring-1 ring-stone-100 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
+                          <svg viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 ${isRtl ? "rotate-180" : ""}`}>
                             <path d="M5 12h14M13 6l6 6-6 6" />
                           </svg>
                         </div>
