@@ -521,7 +521,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
               : "bg-gradient-to-r from-white/95 via-white/70 to-transparent"
           }`}
         />
-        <div className="absolute inset-x-0 bottom-0 h-20 sm:h-24 bg-gradient-to-b from-transparent to-white pointer-events-none" />
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-b from-transparent to-white pointer-events-none" />
 
         <div
           className="relative z-10 h-full flex flex-col justify-center max-w-[75%] sm:max-w-[50%] px-6 py-6"
@@ -564,9 +564,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
         </div>
       </div>
 
-      <div className="relative z-10 -mt-6 bg-white rounded-t-[2rem] px-5 pt-5">
-
-      <div className="w-10 h-1 bg-stone-200 rounded-full mx-auto mb-3" />
+      <div className="bg-white px-5 pt-2 pb-6">
 
       {/* City filter badge */}
       {filterCity && (
