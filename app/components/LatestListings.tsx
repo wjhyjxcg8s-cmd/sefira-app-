@@ -504,9 +504,9 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
   const hero = heroText[lang as Lang] ?? heroText.tr;
 
   return (
-    <section className="max-w-7xl mx-auto mt-6 mb-0">
+    <section className="max-w-7xl mx-auto mt-4 mb-0">
       {/* Hero header */}
-      <div className="relative overflow-hidden min-h-[200px] sm:min-h-[240px] rounded-b-[2.5rem]">
+      <div className="relative overflow-hidden min-h-[200px] sm:min-h-[240px]">
         <Image
           src="/son-ilanlar-hero.webp"
           alt=""
@@ -563,7 +563,9 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
         </div>
       </div>
 
-      <div className="relative -mt-4 bg-white rounded-t-3xl px-5 pt-6">
+      <div className="relative z-10 -mt-6 bg-white rounded-t-[2rem] px-5 pt-5">
+
+      <div className="w-10 h-1 bg-stone-200 rounded-full mx-auto mb-3" />
 
       {/* City filter badge */}
       {filterCity && (
