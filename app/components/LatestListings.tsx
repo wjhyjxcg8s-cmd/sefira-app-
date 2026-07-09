@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseClient = createClient(
@@ -326,22 +327,22 @@ const allCountries = [
   {code:'ZW',flag:'🇿🇼',name:'Zimbabve'},
 ];
 
-const subtitles: Record<Lang, string> = {
-  tr: "Dünyanın her yerinden en son ilanlar",
-  en: "Latest listings from around the world",
-  fa: "آخرین آگهی‌ها از سراسر جهان",
-  ar: "أحدث الإعلانات من حول العالم",
-  de: "Neueste Anzeigen aus aller Welt",
-  ru: "Последние объявления со всего мира",
+const heroText: Record<Lang, { l1: string; l2: string; sub: string }> = {
+  tr: { l1: "Dünyanın her yerinden", l2: "en son ilanlar", sub: "İhtiyacın olan alanı kolayca bul." },
+  en: { l1: "From all around the world", l2: "the latest listings", sub: "Easily find the space you need." },
+  fa: { l1: "از سراسر جهان", l2: "جدیدترین آگهی‌ها", sub: "فضای موردنیازت را به‌راحتی پیدا کن." },
+  ar: { l1: "من جميع أنحاء العالم", l2: "أحدث الإعلانات", sub: "اعثر بسهولة على المساحة التي تحتاجها." },
+  de: { l1: "Aus der ganzen Welt", l2: "die neuesten Anzeigen", sub: "Finde ganz einfach den Raum, den du brauchst." },
+  ru: { l1: "Со всего мира", l2: "самые свежие объявления", sub: "Легко найдите нужное пространство." },
 };
 
-const titles: Record<Lang, string> = {
-  tr: "Son İlanlar",
-  en: "Latest Listings",
-  fa: "آخرین آگهی‌ها",
-  ar: "أحدث الإعلانات",
-  de: "Neueste Anzeigen",
-  ru: "Последние объявления",
+const heroSearchPlaceholder: Record<Lang, string> = {
+  tr: "Nerede arıyorsun?",
+  en: "Where are you looking?",
+  fa: "کجا دنبالش می‌گردی؟",
+  ar: "أين تبحث؟",
+  de: "Wo suchst du?",
+  ru: "Где вы ищете?",
 };
 
 const categoryTabs: { key: "all" | "residential" | "commercial"; icon: string; label: Record<Lang, string> }[] = [
@@ -508,12 +509,55 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
   const restEntries = countries.filter((c) => c.code !== 'all' && !priorityCodes.includes(c.code));
   const orderedCountries = [allEntry, ...priorityEntries, ...restEntries];
 
+  const isRTL = lang === "ar" || lang === "fa";
+  const hero = heroText[lang as Lang] ?? heroText.tr;
+  const heroPlaceholder = heroSearchPlaceholder[lang as Lang] ?? heroSearchPlaceholder.tr;
+
   return (
-    <section className="max-w-7xl mx-auto px-5 mt-6 mb-0">
-      <div className="flex flex-col items-center mb-6">
-        <h2 className="text-2xl font-black text-gray-900">{titles[lang as Lang]}</h2>
-        <p className="text-sm text-gray-400 mt-1">{subtitles[lang as Lang]}</p>
+    <section className="max-w-7xl mx-auto mt-6 mb-0">
+      {/* Hero header */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-orange-50 via-amber-50/70 to-white min-h-[320px] rounded-b-[2.5rem] px-5 pt-8 pb-10">
+        <div
+          className={`absolute bottom-0 w-[55%] sm:w-[45%] h-full pointer-events-none ${isRTL ? "left-0" : "right-0"}`}
+        >
+          <div
+            className={`absolute inset-0 ${
+              isRTL
+                ? "bg-gradient-to-l from-transparent via-transparent to-amber-50"
+                : "bg-gradient-to-r from-transparent via-transparent to-amber-50"
+            } z-10`}
+          />
+          <Image
+            src="/son-ilanlar-hero.webp"
+            alt=""
+            fill
+            priority
+            className={`object-contain object-bottom ${isRTL ? "scale-x-[-1]" : ""}`}
+          />
+        </div>
+
+        <div
+          className="relative z-10 max-w-[55%]"
+          dir={isRTL ? "rtl" : "ltr"}
+          style={{ textAlign: isRTL ? "right" : "left" }}
+        >
+          <p className="text-2xl text-stone-800">{hero.l1}</p>
+          <p className="text-3xl font-extrabold text-stone-900">{hero.l2}</p>
+          <p className="text-sm text-stone-500 mt-2">{hero.sub}</p>
+
+          <div className="mt-5 bg-white rounded-full shadow-md px-4 py-3 flex items-center gap-3 cursor-pointer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5 text-stone-400 shrink-0">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+            <span className="text-stone-400 text-sm flex-1 truncate">{heroPlaceholder}</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5 text-orange-500 shrink-0">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m9 12h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0H13.5m-9-6h9.75m-9.75 0a1.5 1.5 0 003 0m-3 0a1.5 1.5 0 013 0m9.75 0H21" />
+            </svg>
+          </div>
+        </div>
       </div>
+
+      <div className="relative -mt-6 bg-white rounded-t-3xl px-5 pt-6">
 
       {/* City filter badge */}
       {filterCity && (
@@ -778,6 +822,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
         </div>
       )}
 
+      </div>
     </section>
   );
 }
