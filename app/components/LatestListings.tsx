@@ -535,20 +535,30 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
 
           {/* Category filter tabs */}
           <div className="flex gap-2 overflow-x-auto scrollbar-hide mt-4">
-            {categoryTabs.map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => { setSonIlanlarCategory(tab.key); onClearFilter?.(); }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-all ${
-                  sonIlanlarCategory === tab.key
-                    ? "bg-gray-900 text-white shadow-md"
-                    : "bg-white text-gray-600 border border-gray-200 hover:border-orange-300"
-                }`}
-              >
-                <span className="text-lg">{tab.icon}</span>
-                <span>{tab.label[lang as Lang] ?? tab.label.tr}</span>
-              </button>
-            ))}
+            {categoryTabs.filter((tab) => tab.key !== "all").map((tab) => {
+              const isActive = sonIlanlarCategory === tab.key;
+              const activeGradient =
+                tab.key === "residential"
+                  ? "bg-gradient-to-r from-orange-500 to-amber-500"
+                  : "bg-gradient-to-r from-emerald-500 to-teal-500";
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => {
+                    setSonIlanlarCategory(isActive ? "all" : tab.key);
+                    onClearFilter?.();
+                  }}
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-full whitespace-nowrap font-semibold transition-all duration-200 active:scale-95 ${
+                    isActive
+                      ? `${activeGradient} text-white shadow-lg scale-105 border border-transparent`
+                      : "bg-white/80 backdrop-blur border border-stone-200 text-stone-700 shadow-sm hover:border-orange-300"
+                  }`}
+                >
+                  <span className="text-lg">{tab.icon}</span>
+                  <span>{tab.label[lang as Lang] ?? tab.label.tr}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
