@@ -2971,14 +2971,14 @@ export default function Home() {
               {wizardMode === null ? (
                 <>
                   {/* CTA buttons */}
-                  <div className="flex flex-col space-y-3.5 px-4 my-3">
+                  <div className="flex flex-col space-y-4 -mx-9 px-2.5 my-3">
                     {/* Card 1 — Landlord */}
                     <motion.button
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=has_place'); }}
-                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-left min-h-[116px] flex items-center cursor-pointer"
+                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-left min-h-[150px] flex items-center cursor-pointer"
                     >
                       <Image
                         src="/card-owner-home.webp"
@@ -2989,24 +2989,24 @@ export default function Home() {
                       <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white via-white/85 via-55% to-white/5`} />
                       <div className={`absolute inset-y-0 w-1 bg-gradient-to-b from-orange-500 to-amber-500 ${isRtl ? "right-0" : "left-0"}`} />
 
-                      <div className="relative z-10 flex items-center gap-3.5 p-4 sm:p-5 w-full">
-                        <div className="w-[52px] h-[52px] shrink-0 rounded-xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-stone-100 flex items-center justify-center text-[26px]">
+                      <div className="relative z-10 flex items-center gap-4 p-5 w-full">
+                        <div className="w-16 h-16 shrink-0 rounded-xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-stone-100 flex items-center justify-center text-[32px]">
                           🏡
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <span className="inline-flex bg-orange-100 text-orange-700 text-[10px] font-bold tracking-wider uppercase px-2 py-[3px] rounded-md whitespace-nowrap">
+                          <span className="inline-flex bg-orange-100 text-orange-700 text-[11px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-md whitespace-nowrap">
                             {t.landlordBadge}
                           </span>
-                          <p className="mt-1.5 text-[15px] sm:text-base font-bold text-stone-900 leading-tight">
+                          <p className="mt-1.5 text-[17px] sm:text-lg font-bold text-stone-900 leading-tight">
                             {t.optionSeekingTitle}
                           </p>
-                          <p className="mt-0.5 text-xs text-stone-500 leading-snug">
+                          <p className="mt-0.5 text-[13px] text-stone-500 leading-snug">
                             {t.landlordSubtext}
                           </p>
                         </div>
 
-                        <div className={`shrink-0 w-10 h-10 rounded-full bg-white shadow-md ring-1 ring-stone-100 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
+                        <div className={`shrink-0 w-12 h-12 rounded-full bg-white shadow-md ring-1 ring-stone-100 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
                           <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 ${isRtl ? "rotate-180" : ""}`}>
                             <path d="M5 12h14M13 6l6 6-6 6" />
                           </svg>
@@ -3020,7 +3020,7 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.25 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=needs_place'); }}
-                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-left min-h-[116px] flex items-center cursor-pointer"
+                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-left min-h-[150px] flex items-center cursor-pointer"
                     >
                       <Image
                         src="/card-seeker-home.webp"
@@ -3031,24 +3031,24 @@ export default function Home() {
                       <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white via-white/85 via-55% to-white/5`} />
                       <div className={`absolute inset-y-0 w-1 bg-gradient-to-b from-blue-500 to-indigo-500 ${isRtl ? "right-0" : "left-0"}`} />
 
-                      <div className="relative z-10 flex items-center gap-3.5 p-4 sm:p-5 w-full">
-                        <div className="w-[52px] h-[52px] shrink-0 rounded-xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-stone-100 flex items-center justify-center text-[26px]">
+                      <div className="relative z-10 flex items-center gap-4 p-5 w-full">
+                        <div className="w-16 h-16 shrink-0 rounded-xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-stone-100 flex items-center justify-center text-[32px]">
                           🔍
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <span className="inline-flex bg-blue-100 text-blue-700 text-[10px] font-bold tracking-wider uppercase px-2 py-[3px] rounded-md whitespace-nowrap">
+                          <span className="inline-flex bg-blue-100 text-blue-700 text-[11px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-md whitespace-nowrap">
                             {t.tenantBadge}
                           </span>
-                          <p className="mt-1.5 text-[15px] sm:text-base font-bold text-stone-900 leading-tight">
+                          <p className="mt-1.5 text-[17px] sm:text-lg font-bold text-stone-900 leading-tight">
                             {t.optionOfferingTitle}
                           </p>
-                          <p className="mt-0.5 text-xs text-stone-500 leading-snug">
+                          <p className="mt-0.5 text-[13px] text-stone-500 leading-snug">
                             {t.tenantSubtext}
                           </p>
                         </div>
 
-                        <div className={`shrink-0 w-10 h-10 rounded-full bg-white shadow-md ring-1 ring-stone-100 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
+                        <div className={`shrink-0 w-12 h-12 rounded-full bg-white shadow-md ring-1 ring-stone-100 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
                           <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 ${isRtl ? "rotate-180" : ""}`}>
                             <path d="M5 12h14M13 6l6 6-6 6" />
                           </svg>
@@ -3062,7 +3062,7 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.4 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('owner'); setShowCommercialModal(true); }}
-                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-left min-h-[116px] flex items-center cursor-pointer"
+                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-left min-h-[150px] flex items-center cursor-pointer"
                     >
                       <Image
                         src="/card-owner-commercial.webp"
@@ -3073,24 +3073,24 @@ export default function Home() {
                       <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white via-white/85 via-55% to-white/5`} />
                       <div className={`absolute inset-y-0 w-1 bg-gradient-to-b from-emerald-500 to-green-500 ${isRtl ? "right-0" : "left-0"}`} />
 
-                      <div className="relative z-10 flex items-center gap-3.5 p-4 sm:p-5 w-full">
-                        <div className="w-[52px] h-[52px] shrink-0 rounded-xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-stone-100 flex items-center justify-center text-[26px]">
+                      <div className="relative z-10 flex items-center gap-4 p-5 w-full">
+                        <div className="w-16 h-16 shrink-0 rounded-xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-stone-100 flex items-center justify-center text-[32px]">
                           🏢
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <span className="inline-flex bg-emerald-100 text-emerald-700 text-[10px] font-bold tracking-wider uppercase px-2 py-[3px] rounded-md whitespace-nowrap">
+                          <span className="inline-flex bg-emerald-100 text-emerald-700 text-[11px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-md whitespace-nowrap">
                             {t.commercialOwnerBadge}
                           </span>
-                          <p className="mt-1.5 text-[15px] sm:text-base font-bold text-stone-900 leading-tight">
+                          <p className="mt-1.5 text-[17px] sm:text-lg font-bold text-stone-900 leading-tight">
                             {t.commercialOwnerTitle}
                           </p>
-                          <p className="mt-0.5 text-xs text-stone-500 leading-snug">
+                          <p className="mt-0.5 text-[13px] text-stone-500 leading-snug">
                             {t.commercialOwnerSubtitle}
                           </p>
                         </div>
 
-                        <div className={`shrink-0 w-10 h-10 rounded-full bg-white shadow-md ring-1 ring-stone-100 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
+                        <div className={`shrink-0 w-12 h-12 rounded-full bg-white shadow-md ring-1 ring-stone-100 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
                           <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 ${isRtl ? "rotate-180" : ""}`}>
                             <path d="M5 12h14M13 6l6 6-6 6" />
                           </svg>
@@ -3104,7 +3104,7 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.55 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('seeker'); setShowCommercialModal(true); }}
-                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-left min-h-[116px] flex items-center cursor-pointer"
+                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-left min-h-[150px] flex items-center cursor-pointer"
                     >
                       <Image
                         src="/card-seeker-commercial.webp"
@@ -3115,24 +3115,24 @@ export default function Home() {
                       <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white via-white/85 via-55% to-white/5`} />
                       <div className={`absolute inset-y-0 w-1 bg-gradient-to-b from-teal-500 to-cyan-500 ${isRtl ? "right-0" : "left-0"}`} />
 
-                      <div className="relative z-10 flex items-center gap-3.5 p-4 sm:p-5 w-full">
-                        <div className="w-[52px] h-[52px] shrink-0 rounded-xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-stone-100 flex items-center justify-center text-[26px]">
+                      <div className="relative z-10 flex items-center gap-4 p-5 w-full">
+                        <div className="w-16 h-16 shrink-0 rounded-xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-stone-100 flex items-center justify-center text-[32px]">
                           🔍
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <span className="inline-flex bg-teal-100 text-teal-700 text-[10px] font-bold tracking-wider uppercase px-2 py-[3px] rounded-md whitespace-nowrap">
+                          <span className="inline-flex bg-teal-100 text-teal-700 text-[11px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-md whitespace-nowrap">
                             {t.commercialSeekerBadge}
                           </span>
-                          <p className="mt-1.5 text-[15px] sm:text-base font-bold text-stone-900 leading-tight">
+                          <p className="mt-1.5 text-[17px] sm:text-lg font-bold text-stone-900 leading-tight">
                             {t.commercialSeekerTitle}
                           </p>
-                          <p className="mt-0.5 text-xs text-stone-500 leading-snug">
+                          <p className="mt-0.5 text-[13px] text-stone-500 leading-snug">
                             {t.commercialSeekerSubtitle}
                           </p>
                         </div>
 
-                        <div className={`shrink-0 w-10 h-10 rounded-full bg-white shadow-md ring-1 ring-stone-100 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
+                        <div className={`shrink-0 w-12 h-12 rounded-full bg-white shadow-md ring-1 ring-stone-100 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
                           <svg viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 ${isRtl ? "rotate-180" : ""}`}>
                             <path d="M5 12h14M13 6l6 6-6 6" />
                           </svg>
