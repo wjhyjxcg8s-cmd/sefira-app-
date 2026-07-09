@@ -463,10 +463,6 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
     if (filterCity) setSonIlanlarCategory("all");
   }, [filterCity]);
 
-  useEffect(() => {
-    if (sonIlanlarCategory !== 'all') setSelectedCountry('all');
-  }, [sonIlanlarCategory]);
-
   const listings = useMemo(() => {
     let base = filterCity
       ? allListings
@@ -590,32 +586,30 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
         </>
       )}
 
-      {/* Country selector — only when viewing all categories */}
-      {sonIlanlarCategory === 'all' && (
-        <div className="mb-6">
-          <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 pb-2">
-            <div className="flex gap-2 w-max">
-              {orderedCountries.map((country) => (
-                <button
-                  key={country.code}
-                  onClick={() => setSelectedCountry(country.code)}
-                  className={`rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200 whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
-                    selectedCountry === country.code
-                      ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md scale-105"
-                      : "bg-white border border-stone-200 text-stone-700 hover:border-orange-300 hover:text-orange-500"
-                  }`}
-                >
-                  <span>{country.flag}</span>
-                  <span>{country.name[lang as Lang] ?? country.name.tr}</span>
-                </button>
-              ))}
-            </div>
+      {/* Country selector */}
+      <div className="mb-6">
+        <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 pb-2">
+          <div className="flex gap-2 w-max">
+            {orderedCountries.map((country) => (
+              <button
+                key={country.code}
+                onClick={() => setSelectedCountry(country.code)}
+                className={`rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200 whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
+                  selectedCountry === country.code
+                    ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md scale-105"
+                    : "bg-white border border-stone-200 text-stone-700 hover:border-orange-300 hover:text-orange-500"
+                }`}
+              >
+                <span>{country.flag}</span>
+                <span>{country.name[lang as Lang] ?? country.name.tr}</span>
+              </button>
+            ))}
           </div>
-          {selectedCountry !== 'all' && (
-            <p className="text-xs text-stone-400 mt-1">{listings.length} ilan</p>
-          )}
         </div>
-      )}
+        {selectedCountry !== 'all' && (
+          <p className="text-xs text-stone-400 mt-1">{listings.length} ilan</p>
+        )}
+      </div>
 
       {loading ? (
         <div className="grid grid-cols-3 gap-3">
