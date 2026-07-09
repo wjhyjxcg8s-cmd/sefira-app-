@@ -2979,6 +2979,7 @@ export default function Home() {
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=has_place'); }}
                       className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-left min-h-[150px] flex items-center cursor-pointer"
+                      dir={isRtl ? "rtl" : "ltr"}
                     >
                       <Image
                         src="/card-owner-home.webp"
@@ -3021,6 +3022,7 @@ export default function Home() {
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.25 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=needs_place'); }}
                       className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-left min-h-[150px] flex items-center cursor-pointer"
+                      dir={isRtl ? "rtl" : "ltr"}
                     >
                       <Image
                         src="/card-seeker-home.webp"
@@ -3063,6 +3065,7 @@ export default function Home() {
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.4 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('owner'); setShowCommercialModal(true); }}
                       className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-left min-h-[150px] flex items-center cursor-pointer"
+                      dir={isRtl ? "rtl" : "ltr"}
                     >
                       <Image
                         src="/card-owner-commercial.webp"
@@ -3105,6 +3108,7 @@ export default function Home() {
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.55 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('seeker'); setShowCommercialModal(true); }}
                       className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-left min-h-[150px] flex items-center cursor-pointer"
+                      dir={isRtl ? "rtl" : "ltr"}
                     >
                       <Image
                         src="/card-seeker-commercial.webp"
