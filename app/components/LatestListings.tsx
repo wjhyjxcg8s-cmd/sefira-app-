@@ -506,13 +506,13 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
   return (
     <section className="max-w-7xl mx-auto mt-6 mb-0">
       {/* Hero header */}
-      <div className="relative overflow-hidden min-h-[280px] sm:min-h-[340px] rounded-b-[2.5rem]">
+      <div className="relative overflow-hidden min-h-[200px] sm:min-h-[240px] rounded-b-[2.5rem]">
         <Image
           src="/son-ilanlar-hero.webp"
           alt=""
           fill
           priority
-          className={`object-cover object-center ${isRTL ? "scale-x-[-1]" : ""}`}
+          className={`object-cover object-[80%_center] ${isRTL ? "scale-x-[-1]" : ""}`}
         />
         <div
           className={`absolute inset-0 ${
@@ -523,19 +523,37 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
         />
 
         <div
-          className="relative z-10 h-full flex flex-col justify-center max-w-[75%] sm:max-w-[50%] px-6 py-10"
+          className="relative z-10 h-full flex flex-col justify-center max-w-[75%] sm:max-w-[50%] px-6 py-6"
           dir={isRTL ? "rtl" : "ltr"}
           style={{ textAlign: isRTL ? "right" : "left" }}
         >
-          <p className="text-2xl sm:text-3xl text-stone-700">{hero.l1}</p>
-          <p className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
+          <p className="text-lg sm:text-xl text-stone-700">{hero.l1}</p>
+          <p className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
             {hero.l2}
           </p>
-          <p className="text-sm text-stone-500 mt-3 max-w-xs">{hero.sub}</p>
+          <p className="text-xs sm:text-sm text-stone-500 mt-1 max-w-xs">{hero.sub}</p>
+
+          {/* Category filter tabs */}
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide mt-4">
+            {categoryTabs.map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => { setSonIlanlarCategory(tab.key); onClearFilter?.(); }}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-all ${
+                  sonIlanlarCategory === tab.key
+                    ? "bg-gray-900 text-white shadow-md"
+                    : "bg-white text-gray-600 border border-gray-200 hover:border-orange-300"
+                }`}
+              >
+                <span className="text-lg">{tab.icon}</span>
+                <span>{tab.label[lang as Lang] ?? tab.label.tr}</span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className="relative -mt-6 bg-white rounded-t-3xl px-5 pt-6">
+      <div className="relative -mt-4 bg-white rounded-t-3xl px-5 pt-6">
 
       {/* City filter badge */}
       {filterCity && (
@@ -559,24 +577,6 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
           </button>
         </>
       )}
-
-      {/* Category filter tabs */}
-      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide mb-6">
-        {categoryTabs.map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => { setSonIlanlarCategory(tab.key); onClearFilter?.(); }}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-all ${
-              sonIlanlarCategory === tab.key
-                ? "bg-gray-900 text-white shadow-md"
-                : "bg-white text-gray-600 border border-gray-200 hover:border-orange-300"
-            }`}
-          >
-            <span className="text-lg">{tab.icon}</span>
-            <span>{tab.label[lang as Lang] ?? tab.label.tr}</span>
-          </button>
-        ))}
-      </div>
 
       {/* Country selector — only when viewing all categories */}
       {sonIlanlarCategory === 'all' && (
