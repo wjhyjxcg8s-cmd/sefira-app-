@@ -2985,9 +2985,9 @@ export default function Home() {
                         src="/card-owner-home.webp"
                         alt=""
                         fill
-                        className={`object-cover ${isRtl ? "object-[25%_center]" : "object-[75%_center]"} z-0 transition-transform duration-700 ease-out motion-safe:group-hover:scale-[1.04]`}
+                        className={`object-cover object-[75%_center] z-0 transition-transform duration-700 ease-out ${isRtl ? "scale-x-[-1] motion-safe:group-hover:scale-x-[-1.04] motion-safe:group-hover:scale-y-[1.04]" : "motion-safe:group-hover:scale-[1.04]"}`}
                       />
-                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white via-white/85 via-55% to-white/5`} />
+                      <div className={isRtl ? "absolute inset-0 bg-gradient-to-l from-white via-white/85 to-white/5" : "absolute inset-0 bg-gradient-to-r from-white via-white/85 to-white/5"} />
                       <div className={`absolute inset-y-0 w-1 bg-gradient-to-b from-orange-500 to-amber-500 ${isRtl ? "right-0" : "left-0"}`} />
 
                       <div className="relative z-10 flex items-center gap-4 p-5 w-full">
@@ -3028,9 +3028,9 @@ export default function Home() {
                         src="/card-seeker-home.webp"
                         alt=""
                         fill
-                        className={`object-cover ${isRtl ? "object-[25%_center]" : "object-[75%_center]"} z-0 transition-transform duration-700 ease-out motion-safe:group-hover:scale-[1.04]`}
+                        className={`object-cover object-[75%_center] z-0 transition-transform duration-700 ease-out ${isRtl ? "scale-x-[-1] motion-safe:group-hover:scale-x-[-1.04] motion-safe:group-hover:scale-y-[1.04]" : "motion-safe:group-hover:scale-[1.04]"}`}
                       />
-                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white via-white/85 via-55% to-white/5`} />
+                      <div className={isRtl ? "absolute inset-0 bg-gradient-to-l from-white via-white/85 to-white/5" : "absolute inset-0 bg-gradient-to-r from-white via-white/85 to-white/5"} />
                       <div className={`absolute inset-y-0 w-1 bg-gradient-to-b from-blue-500 to-indigo-500 ${isRtl ? "right-0" : "left-0"}`} />
 
                       <div className="relative z-10 flex items-center gap-4 p-5 w-full">
@@ -3071,9 +3071,9 @@ export default function Home() {
                         src="/card-owner-commercial.webp"
                         alt=""
                         fill
-                        className={`object-cover ${isRtl ? "object-[25%_center]" : "object-[75%_center]"} z-0 transition-transform duration-700 ease-out motion-safe:group-hover:scale-[1.04]`}
+                        className={`object-cover object-[75%_center] z-0 transition-transform duration-700 ease-out ${isRtl ? "scale-x-[-1] motion-safe:group-hover:scale-x-[-1.04] motion-safe:group-hover:scale-y-[1.04]" : "motion-safe:group-hover:scale-[1.04]"}`}
                       />
-                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white via-white/85 via-55% to-white/5`} />
+                      <div className={isRtl ? "absolute inset-0 bg-gradient-to-l from-white via-white/85 to-white/5" : "absolute inset-0 bg-gradient-to-r from-white via-white/85 to-white/5"} />
                       <div className={`absolute inset-y-0 w-1 bg-gradient-to-b from-emerald-500 to-green-500 ${isRtl ? "right-0" : "left-0"}`} />
 
                       <div className="relative z-10 flex items-center gap-4 p-5 w-full">
@@ -3114,9 +3114,9 @@ export default function Home() {
                         src="/card-seeker-commercial.webp"
                         alt=""
                         fill
-                        className={`object-cover ${isRtl ? "object-[25%_center]" : "object-[75%_center]"} z-0 transition-transform duration-700 ease-out motion-safe:group-hover:scale-[1.04]`}
+                        className={`object-cover object-[75%_center] z-0 transition-transform duration-700 ease-out ${isRtl ? "scale-x-[-1] motion-safe:group-hover:scale-x-[-1.04] motion-safe:group-hover:scale-y-[1.04]" : "motion-safe:group-hover:scale-[1.04]"}`}
                       />
-                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white via-white/85 via-55% to-white/5`} />
+                      <div className={isRtl ? "absolute inset-0 bg-gradient-to-l from-white via-white/85 to-white/5" : "absolute inset-0 bg-gradient-to-r from-white via-white/85 to-white/5"} />
                       <div className={`absolute inset-y-0 w-1 bg-gradient-to-b from-teal-500 to-cyan-500 ${isRtl ? "right-0" : "left-0"}`} />
 
                       <div className="relative z-10 flex items-center gap-4 p-5 w-full">
