@@ -113,16 +113,19 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
   const t = texts[currentLang as keyof typeof texts] || texts.tr
 
   useEffect(() => {
-    if (sessionStorage.getItem('welcome_popup_shown')) return
+    // TEMP: disabled for design testing — RESTORE BEFORE LAUNCH
+    // if (sessionStorage.getItem('welcome_popup_shown')) return
 
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession()
-      if (session) return
+      // TEMP: disabled for design testing — RESTORE BEFORE LAUNCH
+      // if (session) return
 
       const timer = setTimeout(() => {
         setShow(true)
-        sessionStorage.setItem('welcome_popup_shown', 'true')
-      }, 5000)
+        // TEMP: disabled for design testing — RESTORE BEFORE LAUNCH
+        // sessionStorage.setItem('welcome_popup_shown', 'true')
+      }, 1000)
 
       return () => clearTimeout(timer)
     }
