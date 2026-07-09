@@ -64,7 +64,8 @@
       "Bash(taskkill //PID 24004 //F)",
       "Bash(grep -c 'className={\\\\`object-cover \\\\${isRtl ? \"object-\\\\[25%_center\\\\]\" : \"object-\\\\[75%_center\\\\]\"} z-0 transition-transform duration-700 ease-out motion-safe:group-hover:scale-\\\\[1.04\\\\]\\\\`}' app/page.tsx)",
       "Bash(grep -c 'className={\\\\`absolute inset-0 \\\\${isRtl ? \"bg-gradient-to-l\" : \"bg-gradient-to-r\"} from-white via-white/85 via-55% to-white/5\\\\`}' app/page.tsx)",
-      "Bash(node -e \"const s=require\\('fs'\\).statSync\\('public/welcome-popup-bg.webp'\\); console.log\\(s.size\\)\")"
+      "Bash(node -e \"const s=require\\('fs'\\).statSync\\('public/welcome-popup-bg.webp'\\); console.log\\(s.size\\)\")",
+      "Bash(git checkout *)"
     ]
   }
 }
