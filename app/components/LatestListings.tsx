@@ -521,6 +521,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
               : "bg-gradient-to-r from-white/95 via-white/70 to-transparent"
           }`}
         />
+        <div className="absolute inset-x-0 bottom-0 h-20 sm:h-24 bg-gradient-to-b from-transparent to-white pointer-events-none" />
 
         <div
           className="relative z-10 h-full flex flex-col justify-center max-w-[75%] sm:max-w-[50%] px-6 py-6"
