@@ -504,7 +504,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
   const hero = heroText[lang as Lang] ?? heroText.tr;
 
   return (
-    <section className="max-w-7xl mx-auto mt-4 mb-0">
+    <section className="max-w-7xl mx-auto mt-2 mb-0">
       {/* Hero header */}
       <div className="relative overflow-hidden min-h-[200px] sm:min-h-[240px]">
         <Image
@@ -522,6 +522,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
           }`}
         />
         <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-b from-transparent to-white pointer-events-none" />
+        <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-stone-50 to-transparent pointer-events-none z-[1]" />
 
         <div
           className="relative z-10 h-full flex flex-col justify-center max-w-[75%] sm:max-w-[50%] px-6 py-6"

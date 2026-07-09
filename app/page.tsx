@@ -3680,7 +3680,7 @@ export default function Home() {
 
       {/* ── SMART RECOMMENDATIONS ─────────────────────────────────────────────── */}
       {smartRecs.length > 0 && (
-        <section className="py-10 bg-white border-b border-stone-100">
+        <section className="pt-10 pb-2 bg-white border-b border-stone-100">
           {/* Header */}
           <div className="max-w-2xl mx-auto px-4 mb-5 flex items-end justify-between">
             <div>
