@@ -2978,7 +2978,7 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=has_place'); }}
-                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-left min-h-[150px] flex items-center cursor-pointer"
+                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-start min-h-[150px] flex items-center cursor-pointer"
                       dir={isRtl ? "rtl" : "ltr"}
                     >
                       <Image
@@ -3007,7 +3007,7 @@ export default function Home() {
                           </p>
                         </div>
 
-                        <div className={`shrink-0 w-12 h-12 rounded-full bg-white shadow-md ring-1 ring-stone-100 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
+                        <div className={`shrink-0 w-12 h-12 rounded-full bg-white/95 backdrop-blur-sm shadow-lg ring-1 ring-stone-200 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
                           <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 ${isRtl ? "rotate-180" : ""}`}>
                             <path d="M5 12h14M13 6l6 6-6 6" />
                           </svg>
@@ -3021,7 +3021,7 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.25 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=needs_place'); }}
-                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-left min-h-[150px] flex items-center cursor-pointer"
+                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-start min-h-[150px] flex items-center cursor-pointer"
                       dir={isRtl ? "rtl" : "ltr"}
                     >
                       <Image
@@ -3050,7 +3050,7 @@ export default function Home() {
                           </p>
                         </div>
 
-                        <div className={`shrink-0 w-12 h-12 rounded-full bg-white shadow-md ring-1 ring-stone-100 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
+                        <div className={`shrink-0 w-12 h-12 rounded-full bg-white/95 backdrop-blur-sm shadow-lg ring-1 ring-stone-200 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
                           <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 ${isRtl ? "rotate-180" : ""}`}>
                             <path d="M5 12h14M13 6l6 6-6 6" />
                           </svg>
@@ -3064,7 +3064,7 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.4 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('owner'); setShowCommercialModal(true); }}
-                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-left min-h-[150px] flex items-center cursor-pointer"
+                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-start min-h-[150px] flex items-center cursor-pointer"
                       dir={isRtl ? "rtl" : "ltr"}
                     >
                       <Image
@@ -3093,7 +3093,7 @@ export default function Home() {
                           </p>
                         </div>
 
-                        <div className={`shrink-0 w-12 h-12 rounded-full bg-white shadow-md ring-1 ring-stone-100 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
+                        <div className={`shrink-0 w-12 h-12 rounded-full bg-white/95 backdrop-blur-sm shadow-lg ring-1 ring-stone-200 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
                           <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 ${isRtl ? "rotate-180" : ""}`}>
                             <path d="M5 12h14M13 6l6 6-6 6" />
                           </svg>
@@ -3107,7 +3107,7 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.55 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('seeker'); setShowCommercialModal(true); }}
-                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-left min-h-[150px] flex items-center cursor-pointer"
+                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-start min-h-[150px] flex items-center cursor-pointer"
                       dir={isRtl ? "rtl" : "ltr"}
                     >
                       <Image
@@ -3136,7 +3136,7 @@ export default function Home() {
                           </p>
                         </div>
 
-                        <div className={`shrink-0 w-12 h-12 rounded-full bg-white shadow-md ring-1 ring-stone-100 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
+                        <div className={`shrink-0 w-12 h-12 rounded-full bg-white/95 backdrop-blur-sm shadow-lg ring-1 ring-stone-200 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
                           <svg viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 ${isRtl ? "rotate-180" : ""}`}>
                             <path d="M5 12h14M13 6l6 6-6 6" />
                           </svg>
