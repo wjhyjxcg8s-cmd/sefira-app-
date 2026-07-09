@@ -1980,6 +1980,7 @@ export default function Home() {
   const [selectedCity, setSelectedCity] = useState("");
   const [loadingCities, setLoadingCities] = useState(false);
   const { lang, setLang } = useLang();
+  const isRtl = lang === "fa" || lang === "ar";
   const commercialTypeOptions = commercialTypeOptionsByLang[lang] ?? commercialTypeOptionsByLang.tr;
 
   // ── Smart Recommendations ─────────────────────────────────────────────────
@@ -2979,38 +2980,34 @@ export default function Home() {
                       whileTap={{ scale: 0.97 }}
                       whileHover={{ y: -4 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=has_place'); }}
-                      className="w-full relative overflow-hidden rounded-3xl p-[17px] text-left shadow-[0_12px_40px_-12px_rgba(249,115,22,0.6)] active:scale-[0.98] transition-transform"
-                      style={{ background: 'linear-gradient(135deg,#F97316 0%,#ea580c 55%,#c2410c 100%)' }}
+                      className="group w-full relative overflow-hidden rounded-2xl min-h-[110px] flex items-center shadow-sm hover:shadow-md transition text-left"
                     >
-                      <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/15 rounded-full blur-xl" />
-                      <div className="absolute right-8 bottom-2 w-20 h-20 bg-white/10 rounded-full blur-md" />
+                      <Image src="/card-owner-home.webp" alt="" fill className={`object-cover ${isRtl ? "object-left" : "object-right"} z-0`} />
+                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white via-white/85 to-transparent`} />
+                      <div className={`absolute top-0 bottom-0 w-1.5 bg-gradient-to-b from-orange-500 to-amber-500 ${isRtl ? "right-0 rounded-r-2xl" : "left-0 rounded-l-2xl"}`} />
 
-                      <div className="relative z-10 flex items-center gap-4">
-                        <motion.div
-                          animate={{ y: [0, -6, 0] }}
-                          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                          className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-4xl shrink-0 shadow-inner"
-                        >
+                      <div className="relative z-10 flex items-center gap-4 pl-5 pr-4 py-4 w-full">
+                        <div className="w-14 h-14 rounded-xl bg-white shadow-sm flex items-center justify-center text-3xl shrink-0">
                           🏡
-                        </motion.div>
+                        </div>
 
                         <div className="flex-1 min-w-0">
-                          <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2 py-0.5 rounded-full mb-2 tracking-wide">
+                          <span className="inline-block bg-orange-100 text-orange-700 text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">
                             🔑 {t.landlordBadge}
                           </span>
-                          <p className="text-white font-black text-base leading-snug">
+                          <p className="text-stone-800 font-bold text-base sm:text-lg leading-snug mt-1.5">
                             {t.optionSeekingTitle}
                           </p>
-                          <p className="text-white/80 text-[13px] mt-1 font-medium">
+                          <p className="text-stone-500 text-xs sm:text-sm mt-0.5">
                             {t.landlordSubtext}
                           </p>
                         </div>
 
-                        <motion.span
-                          animate={{ x: [0, 6, 0] }}
-                          transition={{ duration: 1.4, repeat: Infinity }}
-                          className="text-white text-2xl shrink-0"
-                        >→</motion.span>
+                        <div className={`w-11 h-11 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 transition ${isRtl ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>
+                          <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${isRtl ? "rotate-180" : ""}`}>
+                            <path d="M5 12h14M13 6l6 6-6 6" />
+                          </svg>
+                        </div>
                       </div>
                     </motion.button>
 
@@ -3022,38 +3019,34 @@ export default function Home() {
                       whileTap={{ scale: 0.97 }}
                       whileHover={{ y: -4 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=needs_place'); }}
-                      className="w-full relative overflow-hidden rounded-3xl p-[17px] text-left shadow-[0_12px_40px_-12px_rgba(79,70,229,0.6)] active:scale-[0.98] transition-transform"
-                      style={{ background: 'linear-gradient(135deg,#7C8CF8 0%,#5B6EE8 55%,#4F46E5 100%)' }}
+                      className="group w-full relative overflow-hidden rounded-2xl min-h-[110px] flex items-center shadow-sm hover:shadow-md transition text-left"
                     >
-                      <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/15 rounded-full blur-xl" />
-                      <div className="absolute right-8 bottom-2 w-20 h-20 bg-white/10 rounded-full blur-md" />
+                      <Image src="/card-seeker-home.webp" alt="" fill className={`object-cover ${isRtl ? "object-left" : "object-right"} z-0`} />
+                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white via-white/85 to-transparent`} />
+                      <div className={`absolute top-0 bottom-0 w-1.5 bg-gradient-to-b from-blue-500 to-indigo-500 ${isRtl ? "right-0 rounded-r-2xl" : "left-0 rounded-l-2xl"}`} />
 
-                      <div className="relative z-10 flex items-center gap-4">
-                        <motion.div
-                          animate={{ y: [0, -6, 0] }}
-                          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
-                          className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-4xl shrink-0 shadow-inner"
-                        >
+                      <div className="relative z-10 flex items-center gap-4 pl-5 pr-4 py-4 w-full">
+                        <div className="w-14 h-14 rounded-xl bg-white shadow-sm flex items-center justify-center text-3xl shrink-0">
                           🔍
-                        </motion.div>
+                        </div>
 
                         <div className="flex-1 min-w-0">
-                          <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2 py-0.5 rounded-full mb-2 tracking-wide">
+                          <span className="inline-block bg-blue-100 text-blue-700 text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">
                             🎒 {t.tenantBadge}
                           </span>
-                          <p className="text-white font-black text-base leading-snug">
+                          <p className="text-stone-800 font-bold text-base sm:text-lg leading-snug mt-1.5">
                             {t.optionOfferingTitle}
                           </p>
-                          <p className="text-white/80 text-[13px] mt-1 font-medium">
+                          <p className="text-stone-500 text-xs sm:text-sm mt-0.5">
                             {t.tenantSubtext}
                           </p>
                         </div>
 
-                        <motion.span
-                          animate={{ x: [0, 6, 0] }}
-                          transition={{ duration: 1.4, repeat: Infinity, delay: 0.3 }}
-                          className="text-white text-2xl shrink-0"
-                        >→</motion.span>
+                        <div className={`w-11 h-11 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 transition ${isRtl ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>
+                          <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${isRtl ? "rotate-180" : ""}`}>
+                            <path d="M5 12h14M13 6l6 6-6 6" />
+                          </svg>
+                        </div>
                       </div>
                     </motion.button>
 
@@ -3065,38 +3058,34 @@ export default function Home() {
                       whileTap={{ scale: 0.97 }}
                       whileHover={{ y: -4 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('owner'); setShowCommercialModal(true); }}
-                      className="w-full relative overflow-hidden rounded-3xl p-[17px] text-left shadow-[0_12px_40px_-12px_rgba(16,185,129,0.6)] active:scale-[0.98] transition-transform"
-                      style={{ background: 'linear-gradient(135deg,#34D399 0%,#10B981 55%,#047857 100%)' }}
+                      className="group w-full relative overflow-hidden rounded-2xl min-h-[110px] flex items-center shadow-sm hover:shadow-md transition text-left"
                     >
-                      <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/15 rounded-full blur-xl" />
-                      <div className="absolute right-8 bottom-2 w-20 h-20 bg-white/10 rounded-full blur-md" />
+                      <Image src="/card-owner-commercial.webp" alt="" fill className={`object-cover ${isRtl ? "object-left" : "object-right"} z-0`} />
+                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white via-white/85 to-transparent`} />
+                      <div className={`absolute top-0 bottom-0 w-1.5 bg-gradient-to-b from-emerald-500 to-green-500 ${isRtl ? "right-0 rounded-r-2xl" : "left-0 rounded-l-2xl"}`} />
 
-                      <div className="relative z-10 flex items-center gap-4">
-                        <motion.div
-                          animate={{ y: [0, -6, 0] }}
-                          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
-                          className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-4xl shrink-0 shadow-inner"
-                        >
+                      <div className="relative z-10 flex items-center gap-4 pl-5 pr-4 py-4 w-full">
+                        <div className="w-14 h-14 rounded-xl bg-white shadow-sm flex items-center justify-center text-3xl shrink-0">
                           🏢
-                        </motion.div>
+                        </div>
 
                         <div className="flex-1 min-w-0">
-                          <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2 py-0.5 rounded-full mb-2 tracking-wide">
+                          <span className="inline-block bg-emerald-100 text-emerald-700 text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">
                             🏢 {t.commercialOwnerBadge}
                           </span>
-                          <p className="text-white font-black text-base leading-snug">
+                          <p className="text-stone-800 font-bold text-base sm:text-lg leading-snug mt-1.5">
                             {t.commercialOwnerTitle}
                           </p>
-                          <p className="text-white/80 text-[13px] mt-1 font-medium">
+                          <p className="text-stone-500 text-xs sm:text-sm mt-0.5">
                             {t.commercialOwnerSubtitle}
                           </p>
                         </div>
 
-                        <motion.span
-                          animate={{ x: [0, 6, 0] }}
-                          transition={{ duration: 1.4, repeat: Infinity, delay: 0.5 }}
-                          className="text-white text-2xl shrink-0"
-                        >→</motion.span>
+                        <div className={`w-11 h-11 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 transition ${isRtl ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>
+                          <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${isRtl ? "rotate-180" : ""}`}>
+                            <path d="M5 12h14M13 6l6 6-6 6" />
+                          </svg>
+                        </div>
                       </div>
                     </motion.button>
 
@@ -3108,38 +3097,34 @@ export default function Home() {
                       whileTap={{ scale: 0.97 }}
                       whileHover={{ y: -4 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('seeker'); setShowCommercialModal(true); }}
-                      className="w-full relative overflow-hidden rounded-3xl p-[17px] text-left shadow-[0_12px_40px_-12px_rgba(13,148,136,0.6)] active:scale-[0.98] transition-transform"
-                      style={{ background: 'linear-gradient(135deg,#2DD4BF 0%,#0D9488 55%,#115E59 100%)' }}
+                      className="group w-full relative overflow-hidden rounded-2xl min-h-[110px] flex items-center shadow-sm hover:shadow-md transition text-left"
                     >
-                      <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/15 rounded-full blur-xl" />
-                      <div className="absolute right-8 bottom-2 w-20 h-20 bg-white/10 rounded-full blur-md" />
+                      <Image src="/card-seeker-commercial.webp" alt="" fill className={`object-cover ${isRtl ? "object-left" : "object-right"} z-0`} />
+                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white via-white/85 to-transparent`} />
+                      <div className={`absolute top-0 bottom-0 w-1.5 bg-gradient-to-b from-teal-500 to-cyan-500 ${isRtl ? "right-0 rounded-r-2xl" : "left-0 rounded-l-2xl"}`} />
 
-                      <div className="relative z-10 flex items-center gap-4">
-                        <motion.div
-                          animate={{ y: [0, -6, 0] }}
-                          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
-                          className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-4xl shrink-0 shadow-inner"
-                        >
+                      <div className="relative z-10 flex items-center gap-4 pl-5 pr-4 py-4 w-full">
+                        <div className="w-14 h-14 rounded-xl bg-white shadow-sm flex items-center justify-center text-3xl shrink-0">
                           🔍
-                        </motion.div>
+                        </div>
 
                         <div className="flex-1 min-w-0">
-                          <span className="inline-block bg-white/25 backdrop-blur-sm text-white text-[11px] font-bold px-2 py-0.5 rounded-full mb-2 tracking-wide">
+                          <span className="inline-block bg-teal-100 text-teal-700 text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">
                             🔍 {t.commercialSeekerBadge}
                           </span>
-                          <p className="text-white font-black text-base leading-snug">
+                          <p className="text-stone-800 font-bold text-base sm:text-lg leading-snug mt-1.5">
                             {t.commercialSeekerTitle}
                           </p>
-                          <p className="text-white/80 text-[13px] mt-1 font-medium">
+                          <p className="text-stone-500 text-xs sm:text-sm mt-0.5">
                             {t.commercialSeekerSubtitle}
                           </p>
                         </div>
 
-                        <motion.span
-                          animate={{ x: [0, 6, 0] }}
-                          transition={{ duration: 1.4, repeat: Infinity, delay: 0.7 }}
-                          className="text-white text-2xl shrink-0"
-                        >→</motion.span>
+                        <div className={`w-11 h-11 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 transition ${isRtl ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>
+                          <svg viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${isRtl ? "rotate-180" : ""}`}>
+                            <path d="M5 12h14M13 6l6 6-6 6" />
+                          </svg>
+                        </div>
                       </div>
                     </motion.button>
                   </div>
