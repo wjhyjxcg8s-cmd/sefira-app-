@@ -2971,7 +2971,7 @@ export default function Home() {
               {wizardMode === null ? (
                 <>
                   {/* CTA buttons */}
-                  <div className="flex flex-col gap-3 max-w-md mx-auto px-4 my-3">
+                  <div className="flex flex-col space-y-4 px-4 my-3">
                     {/* Card 1 — Landlord */}
                     <motion.button
                       initial={{ opacity: 0, y: 30 }}
@@ -2980,30 +2980,30 @@ export default function Home() {
                       whileTap={{ scale: 0.97 }}
                       whileHover={{ y: -4 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=has_place'); }}
-                      className="group w-full relative overflow-hidden rounded-2xl min-h-[110px] flex items-center shadow-sm hover:shadow-md transition text-left"
+                      className="group w-full relative overflow-hidden rounded-2xl min-h-[120px] flex items-center shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 text-left"
                     >
-                      <Image src="/card-owner-home.webp" alt="" fill className={`object-cover ${isRtl ? "object-left" : "object-right"} z-0`} />
-                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white via-white/85 to-transparent`} />
-                      <div className={`absolute top-0 bottom-0 w-1.5 bg-gradient-to-b from-orange-500 to-amber-500 ${isRtl ? "right-0 rounded-r-2xl" : "left-0 rounded-l-2xl"}`} />
+                      <Image src="/card-owner-home.webp" alt="" fill className={`object-cover ${isRtl ? "object-left" : "object-right"} z-0 transition-transform duration-500 group-hover:scale-105`} />
+                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white/95 via-white/75 to-white/10`} />
+                      <div className={`absolute top-0 bottom-0 w-1 bg-gradient-to-b from-orange-500 to-amber-500 ${isRtl ? "right-0 rounded-r-2xl" : "left-0 rounded-l-2xl"}`} />
 
-                      <div className="relative z-10 flex items-center gap-4 pl-5 pr-4 py-4 w-full">
-                        <div className="w-14 h-14 rounded-xl bg-white shadow-sm flex items-center justify-center text-3xl shrink-0">
+                      <div className="relative z-10 flex items-center gap-3 pl-5 pr-4 py-5 w-full">
+                        <div className="w-12 h-12 rounded-xl bg-white/90 backdrop-blur-sm shadow-sm flex items-center justify-center text-2xl shrink-0">
                           🏡
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <span className="inline-block bg-orange-100 text-orange-700 text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">
-                            🔑 {t.landlordBadge}
+                          <span className="inline-block bg-orange-100 text-orange-700 text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full whitespace-nowrap">
+                            {t.landlordBadge}
                           </span>
-                          <p className="text-stone-800 font-bold text-base sm:text-lg leading-snug mt-1.5">
+                          <p className="text-stone-800 font-bold text-[15px] sm:text-base leading-snug mt-1.5">
                             {t.optionSeekingTitle}
                           </p>
-                          <p className="text-stone-500 text-xs sm:text-sm mt-0.5">
+                          <p className="text-stone-500 text-xs leading-snug mt-0.5">
                             {t.landlordSubtext}
                           </p>
                         </div>
 
-                        <div className={`w-11 h-11 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 transition ${isRtl ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>
+                        <div className={`w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 transition ${isRtl ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>
                           <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${isRtl ? "rotate-180" : ""}`}>
                             <path d="M5 12h14M13 6l6 6-6 6" />
                           </svg>
@@ -3019,30 +3019,30 @@ export default function Home() {
                       whileTap={{ scale: 0.97 }}
                       whileHover={{ y: -4 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=needs_place'); }}
-                      className="group w-full relative overflow-hidden rounded-2xl min-h-[110px] flex items-center shadow-sm hover:shadow-md transition text-left"
+                      className="group w-full relative overflow-hidden rounded-2xl min-h-[120px] flex items-center shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 text-left"
                     >
-                      <Image src="/card-seeker-home.webp" alt="" fill className={`object-cover ${isRtl ? "object-left" : "object-right"} z-0`} />
-                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white via-white/85 to-transparent`} />
-                      <div className={`absolute top-0 bottom-0 w-1.5 bg-gradient-to-b from-blue-500 to-indigo-500 ${isRtl ? "right-0 rounded-r-2xl" : "left-0 rounded-l-2xl"}`} />
+                      <Image src="/card-seeker-home.webp" alt="" fill className={`object-cover ${isRtl ? "object-left" : "object-right"} z-0 transition-transform duration-500 group-hover:scale-105`} />
+                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white/95 via-white/75 to-white/10`} />
+                      <div className={`absolute top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-indigo-500 ${isRtl ? "right-0 rounded-r-2xl" : "left-0 rounded-l-2xl"}`} />
 
-                      <div className="relative z-10 flex items-center gap-4 pl-5 pr-4 py-4 w-full">
-                        <div className="w-14 h-14 rounded-xl bg-white shadow-sm flex items-center justify-center text-3xl shrink-0">
+                      <div className="relative z-10 flex items-center gap-3 pl-5 pr-4 py-5 w-full">
+                        <div className="w-12 h-12 rounded-xl bg-white/90 backdrop-blur-sm shadow-sm flex items-center justify-center text-2xl shrink-0">
                           🔍
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <span className="inline-block bg-blue-100 text-blue-700 text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">
-                            🎒 {t.tenantBadge}
+                          <span className="inline-block bg-blue-100 text-blue-700 text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full whitespace-nowrap">
+                            {t.tenantBadge}
                           </span>
-                          <p className="text-stone-800 font-bold text-base sm:text-lg leading-snug mt-1.5">
+                          <p className="text-stone-800 font-bold text-[15px] sm:text-base leading-snug mt-1.5">
                             {t.optionOfferingTitle}
                           </p>
-                          <p className="text-stone-500 text-xs sm:text-sm mt-0.5">
+                          <p className="text-stone-500 text-xs leading-snug mt-0.5">
                             {t.tenantSubtext}
                           </p>
                         </div>
 
-                        <div className={`w-11 h-11 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 transition ${isRtl ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>
+                        <div className={`w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 transition ${isRtl ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>
                           <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${isRtl ? "rotate-180" : ""}`}>
                             <path d="M5 12h14M13 6l6 6-6 6" />
                           </svg>
@@ -3058,30 +3058,30 @@ export default function Home() {
                       whileTap={{ scale: 0.97 }}
                       whileHover={{ y: -4 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('owner'); setShowCommercialModal(true); }}
-                      className="group w-full relative overflow-hidden rounded-2xl min-h-[110px] flex items-center shadow-sm hover:shadow-md transition text-left"
+                      className="group w-full relative overflow-hidden rounded-2xl min-h-[120px] flex items-center shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 text-left"
                     >
-                      <Image src="/card-owner-commercial.webp" alt="" fill className={`object-cover ${isRtl ? "object-left" : "object-right"} z-0`} />
-                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white via-white/85 to-transparent`} />
-                      <div className={`absolute top-0 bottom-0 w-1.5 bg-gradient-to-b from-emerald-500 to-green-500 ${isRtl ? "right-0 rounded-r-2xl" : "left-0 rounded-l-2xl"}`} />
+                      <Image src="/card-owner-commercial.webp" alt="" fill className={`object-cover ${isRtl ? "object-left" : "object-right"} z-0 transition-transform duration-500 group-hover:scale-105`} />
+                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white/95 via-white/75 to-white/10`} />
+                      <div className={`absolute top-0 bottom-0 w-1 bg-gradient-to-b from-emerald-500 to-green-500 ${isRtl ? "right-0 rounded-r-2xl" : "left-0 rounded-l-2xl"}`} />
 
-                      <div className="relative z-10 flex items-center gap-4 pl-5 pr-4 py-4 w-full">
-                        <div className="w-14 h-14 rounded-xl bg-white shadow-sm flex items-center justify-center text-3xl shrink-0">
+                      <div className="relative z-10 flex items-center gap-3 pl-5 pr-4 py-5 w-full">
+                        <div className="w-12 h-12 rounded-xl bg-white/90 backdrop-blur-sm shadow-sm flex items-center justify-center text-2xl shrink-0">
                           🏢
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <span className="inline-block bg-emerald-100 text-emerald-700 text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">
-                            🏢 {t.commercialOwnerBadge}
+                          <span className="inline-block bg-emerald-100 text-emerald-700 text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full whitespace-nowrap">
+                            {t.commercialOwnerBadge}
                           </span>
-                          <p className="text-stone-800 font-bold text-base sm:text-lg leading-snug mt-1.5">
+                          <p className="text-stone-800 font-bold text-[15px] sm:text-base leading-snug mt-1.5">
                             {t.commercialOwnerTitle}
                           </p>
-                          <p className="text-stone-500 text-xs sm:text-sm mt-0.5">
+                          <p className="text-stone-500 text-xs leading-snug mt-0.5">
                             {t.commercialOwnerSubtitle}
                           </p>
                         </div>
 
-                        <div className={`w-11 h-11 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 transition ${isRtl ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>
+                        <div className={`w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 transition ${isRtl ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>
                           <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${isRtl ? "rotate-180" : ""}`}>
                             <path d="M5 12h14M13 6l6 6-6 6" />
                           </svg>
@@ -3097,30 +3097,30 @@ export default function Home() {
                       whileTap={{ scale: 0.97 }}
                       whileHover={{ y: -4 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('seeker'); setShowCommercialModal(true); }}
-                      className="group w-full relative overflow-hidden rounded-2xl min-h-[110px] flex items-center shadow-sm hover:shadow-md transition text-left"
+                      className="group w-full relative overflow-hidden rounded-2xl min-h-[120px] flex items-center shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 text-left"
                     >
-                      <Image src="/card-seeker-commercial.webp" alt="" fill className={`object-cover ${isRtl ? "object-left" : "object-right"} z-0`} />
-                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white via-white/85 to-transparent`} />
-                      <div className={`absolute top-0 bottom-0 w-1.5 bg-gradient-to-b from-teal-500 to-cyan-500 ${isRtl ? "right-0 rounded-r-2xl" : "left-0 rounded-l-2xl"}`} />
+                      <Image src="/card-seeker-commercial.webp" alt="" fill className={`object-cover ${isRtl ? "object-left" : "object-right"} z-0 transition-transform duration-500 group-hover:scale-105`} />
+                      <div className={`absolute inset-0 ${isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white/95 via-white/75 to-white/10`} />
+                      <div className={`absolute top-0 bottom-0 w-1 bg-gradient-to-b from-teal-500 to-cyan-500 ${isRtl ? "right-0 rounded-r-2xl" : "left-0 rounded-l-2xl"}`} />
 
-                      <div className="relative z-10 flex items-center gap-4 pl-5 pr-4 py-4 w-full">
-                        <div className="w-14 h-14 rounded-xl bg-white shadow-sm flex items-center justify-center text-3xl shrink-0">
+                      <div className="relative z-10 flex items-center gap-3 pl-5 pr-4 py-5 w-full">
+                        <div className="w-12 h-12 rounded-xl bg-white/90 backdrop-blur-sm shadow-sm flex items-center justify-center text-2xl shrink-0">
                           🔍
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <span className="inline-block bg-teal-100 text-teal-700 text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">
-                            🔍 {t.commercialSeekerBadge}
+                          <span className="inline-block bg-teal-100 text-teal-700 text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full whitespace-nowrap">
+                            {t.commercialSeekerBadge}
                           </span>
-                          <p className="text-stone-800 font-bold text-base sm:text-lg leading-snug mt-1.5">
+                          <p className="text-stone-800 font-bold text-[15px] sm:text-base leading-snug mt-1.5">
                             {t.commercialSeekerTitle}
                           </p>
-                          <p className="text-stone-500 text-xs sm:text-sm mt-0.5">
+                          <p className="text-stone-500 text-xs leading-snug mt-0.5">
                             {t.commercialSeekerSubtitle}
                           </p>
                         </div>
 
-                        <div className={`w-11 h-11 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 transition ${isRtl ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>
+                        <div className={`w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 transition ${isRtl ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>
                           <svg viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-5 h-5 ${isRtl ? "rotate-180" : ""}`}>
                             <path d="M5 12h14M13 6l6 6-6 6" />
                           </svg>
