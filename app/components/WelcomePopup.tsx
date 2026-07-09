@@ -1,5 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
+import { motion } from 'framer-motion'
 import { supabase } from '@/app/lib/supabase'
 
 const languages = [
@@ -150,210 +152,86 @@ export default function WelcomePopup({ lang = 'tr' }: { lang?: string }) {
 
   const isRTL = currentLang === 'fa' || currentLang === 'ar'
 
+  const [firstWord, ...restWords] = t.title.split(' ')
+  const restOfTitle = restWords.join(' ')
+
   return (
-    <>
-      {/* Backdrop + centered layout */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-5">
+      {/* Backdrop */}
       <div
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={handleClose}
-        style={{
-          position: 'fixed', inset: 0,
-          background: 'rgba(0,0,0,0.6)',
-          backdropFilter: 'blur(4px)',
-          zIndex: 9998,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '16px',
-          animation: 'fadeIn 0.3s ease',
-        }}
-      >
+      />
 
       {/* Popup card */}
-      <div
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
         onClick={e => e.stopPropagation()}
-        style={{
-          background: '#FFF8F0',
-          borderRadius: '12px',
-          padding: '16px',
-          zIndex: 9999,
-          width: '100%',
-          maxWidth: '384px',
-          maxHeight: '85vh',
-          overflowY: 'auto',
-          boxShadow: '0 8px 40px rgba(0,0,0,0.25)',
-          animation: 'scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
-          direction: isRTL ? 'rtl' : 'ltr',
-          textAlign: isRTL ? 'right' : 'left',
-        }}
+        className="relative w-full max-w-sm rounded-[2rem] overflow-hidden shadow-2xl bg-white"
       >
-
-        {/* Language selector */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '6px',
-          marginBottom: '8px',
-          flexWrap: 'wrap',
-        }}>
-          {languages.map(l => (
-            <button
-              key={l.code}
-              onClick={() => handleLangChange(l.code)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '3px',
-                padding: '4px 8px',
-                borderRadius: '50px',
-                border: currentLang === l.code ? '2px solid #F97316' : '2px solid #eee',
-                background: currentLang === l.code ? '#ffedd5' : 'white',
-                cursor: 'pointer',
-                fontSize: '12px',
-                fontWeight: currentLang === l.code ? '700' : '500',
-                color: currentLang === l.code ? '#F97316' : '#666',
-                transition: 'all 0.2s ease',
-              }}
-            >
-              <span style={{ fontSize: '14px' }}>{l.flag}</span>
-              <span>{l.label}</span>
-            </button>
-          ))}
+        {/* Background image */}
+        <div className="relative w-full h-52">
+          <Image
+            src="/welcome-popup-bg.webp"
+            alt=""
+            fill
+            className="object-cover object-top"
+            priority
+          />
         </div>
 
-        {/* Handle bar */}
-        <div style={{
-          width: '32px', height: '3px',
-          background: '#e0e0e0', borderRadius: '2px',
-          margin: '4px auto 8px',
-        }} />
-
-        {/* Hero decoration */}
-        <div style={{
-          fontSize: '28px',
-          lineHeight: 1,
-          marginBottom: '6px',
-          textAlign: 'center',
-        }}>
-          🏠✨
-        </div>
-
-        {/* Badge */}
-        <div style={{
-          display: 'inline-block',
-          background: 'linear-gradient(135deg, #F97316, #fb923c)',
-          color: 'white',
-          padding: '3px 12px',
-          borderRadius: '50px',
-          fontSize: '12px',
-          fontWeight: '700',
-          marginBottom: '6px',
-        }}>
-          {t.badge}
-        </div>
-
-        {/* Title */}
-        <h2 style={{
-          fontSize: '20px', fontWeight: '900',
-          color: '#1a1a1a', margin: '0 0 4px',
-          lineHeight: 1.25,
-        }}>
-          {t.title}
-        </h2>
-
-        {/* Subtitle */}
-        <p style={{
-          fontSize: '13px', color: '#666',
-          margin: '0 0 8px', lineHeight: 1.5,
-        }}>
-          {t.subtitle}
-        </p>
-
-        {/* Benefits */}
-        <div style={{ marginBottom: '10px' }}>
-          {t.benefits.map((b, i) => (
-            <div key={i} style={{
-              fontSize: '13px', color: '#333',
-              padding: '3px 0', fontWeight: '500',
-            }}>
-              {b}
-            </div>
-          ))}
-        </div>
-
-        {/* CTA Button */}
-        <button
-          onClick={handleRegister}
-          style={{
-            width: '100%',
-            background: 'linear-gradient(135deg, #F97316, #ea580c)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '10px',
-            padding: '10px',
-            fontSize: '14px',
-            fontWeight: '800',
-            cursor: 'pointer',
-            marginBottom: '8px',
-            animation: 'ctaPulse 2s infinite',
-            transition: 'transform 0.1s',
-          }}
-          onMouseDown={e => e.currentTarget.style.transform = 'scale(0.97)'}
-          onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
-        >
-          {t.cta}
-        </button>
-
-        {/* Login link */}
-        <button
-          onClick={handleLogin}
-          style={{
-            width: '100%',
-            background: 'transparent',
-            border: '2px solid #F97316',
-            borderRadius: '10px',
-            padding: '8px',
-            fontSize: '13px',
-            fontWeight: '600',
-            color: '#F97316',
-            cursor: 'pointer',
-            marginBottom: '6px',
-          }}
-        >
-          {t.login}
-        </button>
-
-        {/* Close */}
+        {/* Close button */}
         <button
           onClick={handleClose}
-          style={{
-            width: '100%',
-            background: 'transparent',
-            border: 'none',
-            color: '#999',
-            fontSize: '13px',
-            cursor: 'pointer',
-            padding: '4px',
-          }}
+          aria-label={t.close}
+          className={`absolute top-3 ${isRTL ? 'left-3' : 'right-3'} w-9 h-9 rounded-full bg-white/90 backdrop-blur shadow-md flex items-center justify-center text-stone-600 hover:bg-white transition-colors`}
         >
-          {t.close}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
         </button>
-      </div>
-      </div>
 
-      <style>{`
-        @keyframes scaleIn {
-          from { transform: scale(0.85); opacity: 0; }
-          to { transform: scale(1); opacity: 1; }
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes ctaPulse {
-          0%, 100% { box-shadow: 0 4px 20px rgba(249,115,22,0.4); }
-          50%       { box-shadow: 0 4px 35px rgba(249,115,22,0.7); }
-        }
-      `}</style>
-    </>
+        {/* Text content */}
+        <div dir={isRTL ? 'rtl' : 'ltr'} className="flex flex-col items-center text-center px-6 pt-4 pb-7">
+          <h2 className="text-3xl font-extrabold leading-tight">
+            <span className="text-stone-900">{firstWord}</span>
+            {restOfTitle ? (
+              <>
+                {' '}
+                <span className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
+                  {restOfTitle}
+                </span>
+              </>
+            ) : null}
+          </h2>
+
+          <div className="flex items-center gap-2 my-3">
+            <span className="w-8 h-px bg-stone-200" />
+            <span className="text-xs">❤️</span>
+            <span className="w-8 h-px bg-stone-200" />
+          </div>
+
+          <p className="text-sm text-stone-500 leading-relaxed max-w-[260px]">
+            {t.subtitle}
+          </p>
+
+          <button
+            onClick={handleRegister}
+            className="mt-5 rounded-full px-8 py-3 bg-gradient-to-r from-orange-500 to-purple-500 text-white font-bold shadow-lg shadow-orange-500/25 hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all"
+          >
+            {t.cta}
+          </button>
+
+          <button
+            onClick={handleLogin}
+            className="mt-3 text-sm font-semibold text-stone-500 hover:text-orange-600 transition-colors"
+          >
+            {t.login}
+          </button>
+        </div>
+      </motion.div>
+    </div>
   )
 }
