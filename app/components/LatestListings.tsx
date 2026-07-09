@@ -336,15 +336,6 @@ const heroText: Record<Lang, { l1: string; l2: string; sub: string }> = {
   ru: { l1: "Со всего мира", l2: "самые свежие объявления", sub: "Легко найдите нужное пространство." },
 };
 
-const heroSearchPlaceholder: Record<Lang, string> = {
-  tr: "Nerede arıyorsun?",
-  en: "Where are you looking?",
-  fa: "کجا دنبالش می‌گردی؟",
-  ar: "أين تبحث؟",
-  de: "Wo suchst du?",
-  ru: "Где вы ищете?",
-};
-
 const categoryTabs: { key: "all" | "residential" | "commercial"; icon: string; label: Record<Lang, string> }[] = [
   { key: "all", icon: "🌐", label: { tr: "Tümü", en: "All", fa: "همه", ar: "الكل", de: "Alle", ru: "Все" } },
   { key: "residential", icon: "🏠", label: { tr: "Konut", en: "Residential", fa: "مسکونی", ar: "سكني", de: "Wohnen", ru: "Жильё" } },
@@ -511,49 +502,36 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
 
   const isRTL = lang === "ar" || lang === "fa";
   const hero = heroText[lang as Lang] ?? heroText.tr;
-  const heroPlaceholder = heroSearchPlaceholder[lang as Lang] ?? heroSearchPlaceholder.tr;
 
   return (
     <section className="max-w-7xl mx-auto mt-6 mb-0">
       {/* Hero header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-orange-50 via-amber-50/70 to-white min-h-[320px] rounded-b-[2.5rem] px-5 pt-8 pb-10">
+      <div className="relative overflow-hidden min-h-[280px] sm:min-h-[340px] rounded-b-[2.5rem]">
+        <Image
+          src="/son-ilanlar-hero.webp"
+          alt=""
+          fill
+          priority
+          className={`object-cover object-center ${isRTL ? "scale-x-[-1]" : ""}`}
+        />
         <div
-          className={`absolute bottom-0 w-[55%] sm:w-[45%] h-full pointer-events-none ${isRTL ? "left-0" : "right-0"}`}
-        >
-          <div
-            className={`absolute inset-0 ${
-              isRTL
-                ? "bg-gradient-to-l from-transparent via-transparent to-amber-50"
-                : "bg-gradient-to-r from-transparent via-transparent to-amber-50"
-            } z-10`}
-          />
-          <Image
-            src="/son-ilanlar-hero.webp"
-            alt=""
-            fill
-            priority
-            className={`object-contain object-bottom ${isRTL ? "scale-x-[-1]" : ""}`}
-          />
-        </div>
+          className={`absolute inset-0 ${
+            isRTL
+              ? "bg-gradient-to-l from-white/95 via-white/70 to-transparent"
+              : "bg-gradient-to-r from-white/95 via-white/70 to-transparent"
+          }`}
+        />
 
         <div
-          className="relative z-10 max-w-[55%]"
+          className="relative z-10 h-full flex flex-col justify-center max-w-[75%] sm:max-w-[50%] px-6 py-10"
           dir={isRTL ? "rtl" : "ltr"}
           style={{ textAlign: isRTL ? "right" : "left" }}
         >
-          <p className="text-2xl text-stone-800">{hero.l1}</p>
-          <p className="text-3xl font-extrabold text-stone-900">{hero.l2}</p>
-          <p className="text-sm text-stone-500 mt-2">{hero.sub}</p>
-
-          <div className="mt-5 bg-white rounded-full shadow-md px-4 py-3 flex items-center gap-3 cursor-pointer">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5 text-stone-400 shrink-0">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-            </svg>
-            <span className="text-stone-400 text-sm flex-1 truncate">{heroPlaceholder}</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5 text-orange-500 shrink-0">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m9 12h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0H13.5m-9-6h9.75m-9.75 0a1.5 1.5 0 003 0m-3 0a1.5 1.5 0 013 0m9.75 0H21" />
-            </svg>
-          </div>
+          <p className="text-2xl sm:text-3xl text-stone-700">{hero.l1}</p>
+          <p className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
+            {hero.l2}
+          </p>
+          <p className="text-sm text-stone-500 mt-3 max-w-xs">{hero.sub}</p>
         </div>
       </div>
 
