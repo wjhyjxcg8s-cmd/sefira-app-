@@ -65,7 +65,19 @@
       "Bash(grep -c 'className={\\\\`object-cover \\\\${isRtl ? \"object-\\\\[25%_center\\\\]\" : \"object-\\\\[75%_center\\\\]\"} z-0 transition-transform duration-700 ease-out motion-safe:group-hover:scale-\\\\[1.04\\\\]\\\\`}' app/page.tsx)",
       "Bash(grep -c 'className={\\\\`absolute inset-0 \\\\${isRtl ? \"bg-gradient-to-l\" : \"bg-gradient-to-r\"} from-white via-white/85 via-55% to-white/5\\\\`}' app/page.tsx)",
       "Bash(node -e \"const s=require\\('fs'\\).statSync\\('public/welcome-popup-bg.webp'\\); console.log\\(s.size\\)\")",
-      "Bash(git checkout *)"
+      "Bash(git checkout *)",
+      "Bash(npx eslint *)",
+      "Bash(npm i *)",
+      "Bash(npx playwright *)",
+      "Bash(curl -sf http://localhost:3000)",
+      "Bash(node \"C:/Users/pascal/AppData/Local/Temp/claude/e--sef-ra-web-sefira-app/87c135d9-0985-4180-8701-151eb3a9ad86/scratchpad/verify-popup.js\")",
+      "Bash(cp \"C:/Users/pascal/AppData/Local/Temp/claude/e--sef-ra-web-sefira-app/87c135d9-0985-4180-8701-151eb3a9ad86/scratchpad/verify-popup.js\" \"e:/sefıra-web/sefira-app/verify-popup.tmp.js\")",
+      "Bash(node verify-popup.tmp.js)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(taskkill //PID 3128 //F)",
+      "Bash(taskkill //PID 28124 //F)",
+      "Bash(rm -f verify-popup.tmp.js verify-popup-ar.tmp.js)",
+      "Bash(taskkill //PID 28076 //F)"
     ]
   }
 }
