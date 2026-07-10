@@ -87,7 +87,10 @@
       "Bash(node verify-v3.tmp.js)",
       "Bash(node verify-debug.tmp.js)",
       "Bash(rm -f verify-v3.tmp.js verify-v3-ar.tmp.js verify-debug.tmp.js)",
-      "Bash(taskkill //PID 27656 //F)"
+      "Bash(taskkill //PID 27656 //F)",
+      "Bash(taskkill //PID 28116 //F)",
+      "Bash(node verify-layout.tmp.js)",
+      "Bash(rm -f verify-layout.tmp.js verify-layout-ar.tmp.js)"
     ]
   }
 }

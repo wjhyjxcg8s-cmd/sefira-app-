@@ -8,48 +8,48 @@ import { useLang } from '@/app/lib/LangContext'
 
 const texts = {
   tr: {
-    titlePart1: 'Hoş Geldiniz',
-    titlePart2: '!',
+    titleDark: 'Hoş',
+    titleGradient: 'Geldiniz!',
     subtitleLine1: 'Burada olmana çok sevindik.',
     subtitleLine2: 'Yeni paylaşımlı alanın seni bekliyor ✨',
     close: 'Kapat',
     thanks: 'Teşekkürler!',
   },
   en: {
-    titlePart1: 'Welcome',
-    titlePart2: '!',
+    titleDark: '',
+    titleGradient: 'Welcome!',
     subtitleLine1: "So glad you're here.",
     subtitleLine2: 'Your next shared space is waiting for you ✨',
     close: 'Close',
     thanks: 'Thanks!',
   },
   fa: {
-    titlePart1: 'خوش آمدید',
-    titlePart2: '!',
+    titleDark: '',
+    titleGradient: 'خوش آمدید!',
     subtitleLine1: 'خیلی خوشحالیم که اینجایی.',
     subtitleLine2: 'فضای اشتراکی بعدی‌ات منتظرته ✨',
     close: 'بستن',
     thanks: 'ممنون!',
   },
   ar: {
-    titlePart1: 'مرحباً',
-    titlePart2: '!',
+    titleDark: '',
+    titleGradient: 'مرحباً!',
     subtitleLine1: 'يسعدنا حقاً وجودك معنا.',
     subtitleLine2: 'مساحتك المشتركة القادمة بانتظارك ✨',
     close: 'إغلاق',
     thanks: 'شكراً!',
   },
   de: {
-    titlePart1: 'Willkommen',
-    titlePart2: '!',
+    titleDark: '',
+    titleGradient: 'Willkommen!',
     subtitleLine1: 'Schön, dass du hier bist.',
     subtitleLine2: 'Dein nächster gemeinsamer Raum wartet auf dich ✨',
     close: 'Schließen',
     thanks: 'Danke!',
   },
   ru: {
-    titlePart1: 'Добро пожаловать',
-    titlePart2: '!',
+    titleDark: 'Добро',
+    titleGradient: 'пожаловать!',
     subtitleLine1: 'Как здорово, что ты здесь.',
     subtitleLine2: 'Твоё новое общее пространство уже ждёт ✨',
     close: 'Закрыть',
@@ -120,45 +120,51 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
         >
           <motion.div
             dir={isRTL ? 'rtl' : 'ltr'}
-            className="relative w-full max-w-md aspect-[1346/1168] rounded-3xl overflow-hidden shadow-2xl border border-white/60"
+            className="relative w-[92vw] max-w-md max-h-[85vh] rounded-3xl overflow-hidden shadow-2xl border border-white/60 bg-white"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           >
-            <Image
-              src="/welcome-popup-bg.webp"
-              alt=""
-              fill
-              priority
-              className="object-cover"
-            />
+            <div className="relative w-full h-[38vh] max-h-64 min-h-[170px]">
+              <Image
+                src="/welcome-popup-bg.webp"
+                alt=""
+                fill
+                priority
+                className="object-cover object-[70%_35%]"
+              />
 
-            <button
-              onClick={handleClose}
-              aria-label={t.close}
-              className="absolute top-3 right-3 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/80 backdrop-blur shadow-md active:scale-95 transition"
-            >
-              <X className="h-4 w-4 text-slate-700" />
-            </button>
+              <button
+                onClick={handleClose}
+                aria-label={t.close}
+                className="absolute top-3 right-3 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/80 backdrop-blur shadow-md active:scale-95 transition"
+              >
+                <X className="h-4 w-4 text-slate-700" />
+              </button>
 
-            <div className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-white via-white/85 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
+            </div>
 
-            <div className="absolute inset-x-0 bottom-0 px-6 pb-6 text-center">
-              <h2 className="text-3xl font-extrabold leading-tight">
-                <span style={{ color: '#1e293b' }}>{t.titlePart1}</span>
+            <div className="relative bg-white px-6 pb-7 pt-2 text-center">
+              <h2 className="text-4xl font-extrabold leading-tight">
+                {t.titleDark && (
+                  <>
+                    <span className="text-slate-800">{t.titleDark}</span>{' '}
+                  </>
+                )}
                 <span className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 bg-clip-text text-transparent">
-                  {t.titlePart2}
+                  {t.titleGradient}
                 </span>
               </h2>
 
               <div className="flex items-center justify-center gap-2 my-3">
                 <span className="h-px w-10 bg-gradient-to-r from-transparent to-orange-400" />
-                <span className="text-pink-500 text-sm">♥</span>
+                <span className="text-pink-500 text-base">♥</span>
                 <span className="h-px w-10 bg-gradient-to-l from-transparent to-purple-500" />
               </div>
 
-              <p className="text-sm leading-relaxed text-slate-600">
+              <p className="text-[15px] leading-relaxed text-slate-500">
                 {t.subtitleLine1}
                 <br />
                 {t.subtitleLine2}
@@ -166,7 +172,7 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
 
               <button
                 onClick={handleConfirm}
-                className="mt-5 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-orange-500 to-purple-600 px-8 py-3 font-bold text-white shadow-lg shadow-pink-500/40 active:scale-95 transition"
+                className="mt-5 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-orange-500 to-purple-600 px-8 py-3.5 text-base font-bold text-white shadow-lg shadow-pink-500/40 active:scale-95 transition"
               >
                 {isRTL ? (
                   <>
@@ -176,7 +182,7 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
                       transition={{ duration: 0.35 }}
                       className="flex"
                     >
-                      <Heart className="h-4 w-4 fill-white text-white" />
+                      <Heart className="h-5 w-5 fill-white text-white" />
                     </motion.span>
                   </>
                 ) : (
@@ -186,7 +192,7 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
                       transition={{ duration: 0.35 }}
                       className="flex"
                     >
-                      <Heart className="h-4 w-4 fill-white text-white" />
+                      <Heart className="h-5 w-5 fill-white text-white" />
                     </motion.span>
                     <span>{t.thanks}</span>
                   </>
