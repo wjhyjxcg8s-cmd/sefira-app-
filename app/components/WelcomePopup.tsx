@@ -66,28 +66,47 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
   const t = texts[currentLang] || texts.tr
 
   useEffect(() => {
-    // TODO: restore before public launch — full trigger logic (just-logged-in flag + once-per-session guard)
-    // const justLoggedIn = sessionStorage.getItem('sefira_just_logged_in')
-    // if (justLoggedIn) sessionStorage.removeItem('sefira_just_logged_in')
-    // if (sessionStorage.getItem('welcome_popup_shown')) return
-    // const reveal = () => {
-    //   setShow(true)
-    //   sessionStorage.setItem('welcome_popup_shown', 'true')
-    // }
-    // if (justLoggedIn) {
-    //   timer = setTimeout(reveal, 1500)
-    // } else {
-    //   supabase.auth.getSession().then(({ data: { session } }) => {
-    //     if (session) timer = setTimeout(reveal, 5000)
-    //   })
-    // }
+    const WELCOME_COOLDOWN_MS = 60 * 60 * 1000
 
-    // Temporary test mode: show on every homepage load/refresh for any logged-in user, ~1.5s after mount
     let timer: ReturnType<typeof setTimeout> | undefined
+
+    let justLoggedIn = false
+    try {
+      justLoggedIn = sessionStorage.getItem('sefira_just_logged_in') === '1'
+      if (justLoggedIn) sessionStorage.removeItem('sefira_just_logged_in')
+    } catch {
+      // Safari private mode / storage unavailable — fall through as not-just-logged-in
+    }
+
+    const reveal = () => {
+      setShow(true)
+      try {
+        localStorage.setItem('sefira_welcome_last_shown', String(Date.now()))
+      } catch {
+        // Safari private mode / storage unavailable
+      }
+    }
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) return
-      timer = setTimeout(() => setShow(true), 1500)
+
+      if (justLoggedIn) {
+        timer = setTimeout(reveal, 1500)
+        return
+      }
+
+      let eligible = true
+      try {
+        const lastShownRaw = localStorage.getItem('sefira_welcome_last_shown')
+        if (lastShownRaw !== null) {
+          const lastShown = Number(lastShownRaw)
+          eligible = Number.isNaN(lastShown) || Date.now() - lastShown >= WELCOME_COOLDOWN_MS
+        }
+      } catch {
+        eligible = true
+      }
+
+      if (eligible) timer = setTimeout(reveal, 1500)
     })
 
     return () => clearTimeout(timer)

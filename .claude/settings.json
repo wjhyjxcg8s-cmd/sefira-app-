@@ -90,7 +90,10 @@
       "Bash(taskkill //PID 27656 //F)",
       "Bash(taskkill //PID 28116 //F)",
       "Bash(node verify-layout.tmp.js)",
-      "Bash(rm -f verify-layout.tmp.js verify-layout-ar.tmp.js)"
+      "Bash(rm -f verify-layout.tmp.js verify-layout-ar.tmp.js)",
+      "Bash(node verify-cooldown.tmp.js)",
+      "Bash(node verify-debug2.tmp.js)",
+      "Bash(rm -f verify-cooldown.tmp.js verify-debug2.tmp.js)"
     ]
   }
 }
