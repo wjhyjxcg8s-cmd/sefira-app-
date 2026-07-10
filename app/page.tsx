@@ -1795,31 +1795,12 @@ export default function Home() {
           if (Object.values(missing).some(Boolean)) {
             setOnboardingMissing(missing);
             setShowOnboarding(true);
-            setShowWelcomeToast(false);
           }
         });
     }, 10000);
     return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
-
-  // ── Welcome modal ─────────────────────────────────────────────────────────
-  const [showWelcomeToast, setShowWelcomeToast] = useState(false);
-  const prevUserRef = useRef<typeof user | undefined>(undefined);
-  useEffect(() => {
-    if (prevUserRef.current === undefined) { prevUserRef.current = user; return; }
-    if (!prevUserRef.current && user) {
-      const lastShown = localStorage.getItem("sefira-last-welcome");
-      const now = Date.now();
-      if (!lastShown || now - parseInt(lastShown) > 3_600_000) {
-        setShowWelcomeToast(true);
-        localStorage.setItem("sefira-last-welcome", now.toString());
-      }
-      prevUserRef.current = user;
-      return;
-    }
-    prevUserRef.current = user;
-  }, [user]);
 
   // ── Profile avatar fetch ──────────────────────────────────────────────────
   useEffect(() => {
@@ -4094,13 +4075,8 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* ── WELCOME MODAL ─────────────────────────────────────────────────────── */}
+      {/* ── Shared animation keyframes (used by the stay message popup below) ──── */}
       <style>{`
-        @keyframes sefira-welcome-in {
-          0%   { opacity: 0; transform: scale(0.88) translateY(24px); }
-          60%  { opacity: 1; transform: scale(1.03) translateY(-4px);  }
-          100% { opacity: 1; transform: scale(1)    translateY(0);     }
-        }
         @keyframes sefira-shimmer {
           0%   { background-position: 200% center; }
           100% { background-position: -200% center; }
@@ -4108,10 +4084,6 @@ export default function Home() {
         @keyframes sefira-float {
           0%, 100% { transform: translateY(0px);   }
           50%       { transform: translateY(-6px);  }
-        }
-        @keyframes sefira-backdrop-in {
-          from { opacity: 0; }
-          to   { opacity: 1; }
         }
       `}</style>
 
@@ -4178,98 +4150,6 @@ export default function Home() {
                 aria-label="Close"
               >
                 ❤️
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showWelcomeToast && (
-        <div
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4"
-          style={{ background: "rgba(15,10,30,0.72)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", animation: "sefira-backdrop-in 0.3s ease forwards" }}
-          onClick={() => setShowWelcomeToast(false)}
-          role="dialog"
-          aria-modal="true"
-          aria-label={lang === "tr" ? "Hoş Geldiniz" : "Welcome"}
-        >
-          {/* Card — stop backdrop click propagating through */}
-          <div
-            className="relative w-full max-w-[480px] overflow-hidden rounded-3xl select-none"
-            style={{
-              animation: "sefira-welcome-in 0.55s cubic-bezier(0.34,1.56,0.64,1) forwards",
-              background: "linear-gradient(145deg, #F97316 0%, #f59e0b 30%, #ec4899 65%, #8b5cf6 100%)",
-              boxShadow: "0 32px 80px -12px rgba(236,72,153,0.55), 0 16px 40px -8px rgba(139,92,246,0.45), 0 4px 16px rgba(0,0,0,0.3)",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Shimmer overlay */}
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.18) 50%, transparent 60%)",
-                backgroundSize: "200% auto",
-                animation: "sefira-shimmer 3.5s linear infinite",
-              }}
-            />
-
-            {/* Soft inner glow blobs */}
-            <div className="absolute -top-10 -left-10 w-40 h-40 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-
-            {/* Brand image */}
-            <div className="relative w-full h-[140px] sm:h-[180px] overflow-hidden rounded-t-3xl flex-shrink-0">
-              <img
-                src="/images/sefira-welcome.jpg"
-                alt="Sefira Welcome"
-                className="w-full h-full object-cover"
-                onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
-              />
-              {/* Gradient fade into card background */}
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{ background: "linear-gradient(to bottom, transparent 40%, rgba(249,115,22,0.55) 75%, rgba(139,92,246,0.85) 100%)" }}
-              />
-            </div>
-
-            {/* Content */}
-            <div className="relative px-5 sm:px-8 pt-5 sm:pt-6 pb-6 sm:pb-8 flex flex-col items-center text-center">
-
-              {/* Floating emoji */}
-              <div
-                className="text-5xl sm:text-6xl mb-4 sm:mb-5 leading-none"
-                style={{ animation: "sefira-float 3s ease-in-out infinite" }}
-              >
-                🏠✨
-              </div>
-
-              {/* Title */}
-              <h2 className="text-xl sm:text-2xl font-black text-white mb-3 drop-shadow-sm tracking-tight">
-                {lang === "tr" ? "Hoş Geldiniz!" : lang === "fa" ? "خوش آمدید! 🏠✨" : lang === "ar" ? "أهلاً بك! 🏠✨" : "Welcome Home!"}
-              </h2>
-
-              {/* Body */}
-              <p className="text-white/90 text-sm leading-relaxed font-medium max-w-[240px] sm:max-w-[260px]">
-                {lang === "tr"
-                  ? "Sizi aramızda görmekten çok mutluyuz. Harika bir gün geçirmenizi diliyoruz! 🌟"
-                  : lang === "fa"
-                  ? "از اینکه به ما پیوستید خوشحالیم. روز خوبی داشته باشید! 🌟"
-                  : lang === "ar"
-                  ? "يسعدنا وجودك معنا. نتمنى لك يوماً رائعاً! 🌟"
-                  : "We are so happy to have you here. Wishing you a wonderful day! 🌟"}
-              </p>
-
-              {/* Close button */}
-              <button
-                onClick={() => setShowWelcomeToast(false)}
-                aria-label="Close"
-                className="mt-6 sm:mt-8 group flex items-center gap-2 bg-white/15 hover:bg-white/25 border border-white/25 hover:border-white/50 text-white text-sm font-bold px-6 py-3 rounded-2xl transition-all duration-200 active:scale-95 shadow-lg shadow-black/10 hover:shadow-white/10"
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 group-hover:rotate-90 transition-transform duration-200">
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-                {lang === "tr" ? "Kapat" : lang === "fa" ? "بستن" : lang === "ar" ? "إغلاق" : "Close"}
               </button>
             </div>
           </div>
