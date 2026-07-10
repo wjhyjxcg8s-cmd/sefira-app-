@@ -82,7 +82,12 @@
       "Bash(node verify-trigger.tmp.js)",
       "Bash(node verify-shot.tmp.js)",
       "Bash(rm -f verify-trigger.tmp.js verify-shot.tmp.js)",
-      "Bash(taskkill //PID 24240 //F)"
+      "Bash(taskkill //PID 24240 //F)",
+      "Bash(taskkill //PID 25952 //F)",
+      "Bash(node verify-v3.tmp.js)",
+      "Bash(node verify-debug.tmp.js)",
+      "Bash(rm -f verify-v3.tmp.js verify-v3-ar.tmp.js verify-debug.tmp.js)",
+      "Bash(taskkill //PID 27656 //F)"
     ]
   }
 }
