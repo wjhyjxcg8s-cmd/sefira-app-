@@ -59,21 +59,27 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
   const t = texts[currentLang] || texts.tr
 
   useEffect(() => {
+    const justLoggedIn = sessionStorage.getItem('sefira_just_logged_in')
+    if (justLoggedIn) sessionStorage.removeItem('sefira_just_logged_in')
+
     if (sessionStorage.getItem('welcome_popup_shown')) return
 
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session) return
-
-      const timer = setTimeout(() => {
-        setShow(true)
-        sessionStorage.setItem('welcome_popup_shown', 'true')
-      }, 5000)
-
-      return () => clearTimeout(timer)
+    const reveal = () => {
+      setShow(true)
+      sessionStorage.setItem('welcome_popup_shown', 'true')
     }
 
-    checkAuth()
+    let timer: ReturnType<typeof setTimeout> | undefined
+
+    if (justLoggedIn) {
+      timer = setTimeout(reveal, 1500)
+    } else {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session) timer = setTimeout(reveal, 5000)
+      })
+    }
+
+    return () => clearTimeout(timer)
   }, [])
 
   useEffect(() => {

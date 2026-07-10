@@ -192,7 +192,9 @@ export default function AuthModal({ lang, onClose, initialTab = "login" }: AuthM
       if (error) {
         setError(error);
       } else {
+        sessionStorage.setItem("sefira_just_logged_in", "1");
         onClose();
+        window.location.href = "/";
       }
     } else {
       // Check if this email is banned before allowing registration

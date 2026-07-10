@@ -77,7 +77,12 @@
       "Bash(taskkill //PID 3128 //F)",
       "Bash(taskkill //PID 28124 //F)",
       "Bash(rm -f verify-popup.tmp.js verify-popup-ar.tmp.js)",
-      "Bash(taskkill //PID 28076 //F)"
+      "Bash(taskkill //PID 28076 //F)",
+      "Bash(taskkill //PID 7016 //F)",
+      "Bash(node verify-trigger.tmp.js)",
+      "Bash(node verify-shot.tmp.js)",
+      "Bash(rm -f verify-trigger.tmp.js verify-shot.tmp.js)",
+      "Bash(taskkill //PID 24240 //F)"
     ]
   }
 }
