@@ -110,7 +110,8 @@
       "Bash(rm -f verify-locdata.tmp.js verify-statefallback.tmp.js verify-screenshot.tmp.js verify-scroll.tmp.js verify-scroll2.tmp.js)",
       "Bash(node verify-badge.tmp.js)",
       "Bash(rm -f verify-badge.tmp.js)",
-      "Bash(taskkill //PID 12684 //F)"
+      "Bash(taskkill //PID 12684 //F)",
+      "Bash(taskkill //PID 4828 //F)"
     ]
   }
 }

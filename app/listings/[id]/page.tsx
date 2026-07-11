@@ -6,6 +6,8 @@ import { useLang } from "@/app/lib/LangContext";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import AuthModal from "@/app/components/AuthModal";
 import { createClient } from "@supabase/supabase-js";
+import { getListingSide, getCommercialBadgeLabel } from "@/app/lib/listingBadge";
+import { COMMERCIAL_TYPE_BY_SLUG, COMMERCIAL_AMENITY_LABELS, COMMERCIAL_AMENITY_ICONS } from "@/app/lib/commercialTypes";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -38,6 +40,7 @@ const labels: Record<Lang, Record<string, string>> = {
     genderPref: "Ev Arkadaşı Tercihi", aboutTitle: "Kullanıcı kendini şöyle anlatıyor:",
     home: "Ana Sayfa", share: "Paylaş", linkCopied: "Link kopyalandı",
     linkToCopy: "Kopyalamak için bağlantı", close: "Kapat",
+    spaceTypeCaption: "Alan Türü", sqmCaption: "Metrekare",
     houseTypeCaption: "Ev Tipi", roomsCaption: "Oda Sayısı", elevatorCaption: "Asansör",
     furnishedCaption: "Eşya Durumu", parkingCaption: "Otopark", smokingCaption: "Sigara",
     residentsCaption: "Mevcut Sakin", roomsSuffix: "oda", residentsSuffix: "kişi yaşıyor",
@@ -82,6 +85,7 @@ const labels: Record<Lang, Record<string, string>> = {
     genderPref: "Roommate Preference", aboutTitle: "The user describes themselves as:",
     home: "Home", share: "Share", linkCopied: "Link copied",
     linkToCopy: "Link to copy", close: "Close",
+    spaceTypeCaption: "Space Type", sqmCaption: "Square Meters",
     houseTypeCaption: "House Type", roomsCaption: "Rooms", elevatorCaption: "Elevator",
     furnishedCaption: "Furnishing", parkingCaption: "Parking", smokingCaption: "Smoking",
     residentsCaption: "Current Residents", roomsSuffix: "rooms", residentsSuffix: "residents",
@@ -126,6 +130,7 @@ const labels: Record<Lang, Record<string, string>> = {
     genderPref: "ترجیح هم‌خانه", aboutTitle: "کاربر در مورد خودش اینطور توضیح می‌دهد:",
     home: "خانه", share: "اشتراک‌گذاری", linkCopied: "لینک کپی شد",
     linkToCopy: "لینک برای کپی کردن", close: "بستن",
+    spaceTypeCaption: "نوع فضا", sqmCaption: "متراژ",
     houseTypeCaption: "نوع خانه", roomsCaption: "تعداد اتاق", elevatorCaption: "آسانسور",
     furnishedCaption: "وضعیت مبلمان", parkingCaption: "پارکینگ", smokingCaption: "سیگار",
     residentsCaption: "ساکنان فعلی", roomsSuffix: "اتاق", residentsSuffix: "نفر ساکن",
@@ -170,6 +175,7 @@ const labels: Record<Lang, Record<string, string>> = {
     genderPref: "تفضيل شريك السكن", aboutTitle: "يصف المستخدم نفسه كالتالي:",
     home: "الرئيسية", share: "مشاركة", linkCopied: "تم نسخ الرابط",
     linkToCopy: "رابط للنسخ", close: "إغلاق",
+    spaceTypeCaption: "نوع المساحة", sqmCaption: "المساحة (م²)",
     houseTypeCaption: "نوع المسكن", roomsCaption: "عدد الغرف", elevatorCaption: "المصعد",
     furnishedCaption: "التأثيث", parkingCaption: "موقف السيارات", smokingCaption: "التدخين",
     residentsCaption: "السكان الحاليون", roomsSuffix: "غرفة", residentsSuffix: "ساكن",
@@ -214,6 +220,7 @@ const labels: Record<Lang, Record<string, string>> = {
     genderPref: "Mitbewohner-Präferenz", aboutTitle: "Der Nutzer beschreibt sich so:",
     home: "Startseite", share: "Teilen", linkCopied: "Link kopiert",
     linkToCopy: "Link zum Kopieren", close: "Schließen",
+    spaceTypeCaption: "Flächentyp", sqmCaption: "Quadratmeter",
     houseTypeCaption: "Haustyp", roomsCaption: "Zimmer", elevatorCaption: "Aufzug",
     furnishedCaption: "Möblierung", parkingCaption: "Parkplatz", smokingCaption: "Rauchen",
     residentsCaption: "Aktuelle Bewohner", roomsSuffix: "Zimmer", residentsSuffix: "Bewohner",
@@ -258,6 +265,7 @@ const labels: Record<Lang, Record<string, string>> = {
     genderPref: "Предпочтение соседа", aboutTitle: "Пользователь описывает себя так:",
     home: "Главная", share: "Поделиться", linkCopied: "Ссылка скопирована",
     linkToCopy: "Ссылка для копирования", close: "Закрыть",
+    spaceTypeCaption: "Тип помещения", sqmCaption: "Площадь (м²)",
     houseTypeCaption: "Тип жилья", roomsCaption: "Комнат", elevatorCaption: "Лифт",
     furnishedCaption: "Мебель", parkingCaption: "Парковка", smokingCaption: "Курение",
     residentsCaption: "Текущие жильцы", roomsSuffix: "комнат", residentsSuffix: "жильцов",
@@ -331,6 +339,46 @@ function occupationAdjective(t: Record<string, string>, value: string | null): s
   if (!value) return null;
   const map: Record<string, string> = { working: t.occAdjWorking, student: t.occAdjStudent };
   return map[value] ?? value;
+}
+
+// Commercial listings store none of the residential fields (house_type/rooms/elevator/
+// furnished/parking/smoking/current_residents) — create-commercial-listing's insert
+// payload only ever writes commercial_type, square_meters, and an amenities string[].
+// Renders as grid items so it drops into either hero's existing grid-cols-2 wrapper.
+interface CommercialListingFields {
+  commercial_type: string | null;
+  square_meters: number | null;
+  amenities: string[] | null;
+}
+
+function CommercialDetailFields({ listing, t, lang }: { listing: CommercialListingFields; t: Record<string, string>; lang: Lang }) {
+  const type = listing.commercial_type ? COMMERCIAL_TYPE_BY_SLUG[listing.commercial_type] : null;
+  const amenities: string[] = Array.isArray(listing.amenities) ? listing.amenities : [];
+
+  return (
+    <>
+      {type && (
+        <div className="flex flex-col items-center gap-1.5 p-3 text-center">
+          <span className="text-2xl">{type.emoji}</span>
+          <span className="text-xs text-gray-400">{t.spaceTypeCaption}</span>
+          <span className="text-sm font-bold text-gray-800">{type.label[lang]}</span>
+        </div>
+      )}
+      {listing.square_meters != null && (
+        <div className="flex flex-col items-center gap-1.5 p-3 text-center">
+          <span className="text-2xl">📐</span>
+          <span className="text-xs text-gray-400">{t.sqmCaption}</span>
+          <span className="text-sm font-bold text-gray-800">{listing.square_meters} m²</span>
+        </div>
+      )}
+      {amenities.map((key) => (
+        <div key={key} className="flex flex-col items-center gap-1.5 p-3 text-center">
+          <span className="text-2xl">{COMMERCIAL_AMENITY_ICONS[key] ?? "✓"}</span>
+          <span className="text-sm font-bold text-gray-800">{COMMERCIAL_AMENITY_LABELS[key]?.[lang] ?? key}</span>
+        </div>
+      ))}
+    </>
+  );
 }
 
 // Composes the seeker "Summary" sentence from whatever real fields are populated, skipping the rest.
@@ -436,7 +484,11 @@ export default function ListingDetailPage() {
   const isLoggedIn = !!currentUserId;
   const isOwner = isLoggedIn && listing && currentUserId === listing.user_id;
   const photos: string[] = listing?.photos ?? [];
-  const isSeeker = listing?.type === "needs_place";
+  const isCommercial = listing?.listing_category === "commercial";
+  // Residential listings store the side as a string in `type`; commercial listings
+  // never populate `type` — they use has_place/needs_place booleans instead. Checking
+  // `type` alone (the old code) always fell through to the owner branch for commercial.
+  const isSeeker = listing ? getListingSide(listing) === "needs_place" : false;
 
   function handleSendMessage() {
     router.push(`/messages?userId=${listing.user_id}&listingId=${listing.id}`);
@@ -515,7 +567,10 @@ export default function ListingDetailPage() {
     : profile?.gender === "female" || profile?.gender === "kadın" || profile?.gender === "kadin" ? "👩"
     : null;
 
-  const seekerSummary = isSeeker ? buildSeekerSummary(t, listing) : "";
+  // buildSeekerSummary is phrased for residential ("looking for a room in X") — commercial
+  // seekers have none of the fields it reads (seeker_age/occupation/private_room_required),
+  // so it would only ever produce a nonsensical residential-flavored sentence for them.
+  const seekerSummary = isSeeker && !isCommercial ? buildSeekerSummary(t, listing) : "";
 
   return (
     <div className="min-h-screen bg-gray-50 pb-32" dir={isRtl ? "rtl" : "ltr"}>
@@ -685,7 +740,7 @@ export default function ListingDetailPage() {
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
-              {t.seekerBadge}
+              {isCommercial ? getCommercialBadgeLabel("needs_place", lang) : t.seekerBadge}
             </span>
 
             <h1 className="text-xl font-black text-gray-900">
@@ -716,6 +771,13 @@ export default function ListingDetailPage() {
           </div>
 
           {/* ── Detail cards ─────────────────────────────────────────────────── */}
+          {isCommercial ? (
+            <div className="bg-white rounded-3xl shadow-sm p-5">
+              <div className="grid grid-cols-2 divide-x divide-y divide-gray-100">
+                <CommercialDetailFields listing={listing} t={t} lang={lang} />
+              </div>
+            </div>
+          ) : (
           <div className="bg-white rounded-3xl shadow-sm p-5">
             <div className="flex divide-x divide-gray-100">
               <div className="flex-1 flex flex-col items-center gap-1.5 px-2 text-center">
@@ -764,9 +826,10 @@ export default function ListingDetailPage() {
               )}
             </div>
           </div>
+          )}
 
-          {/* ── Preferences card ─────────────────────────────────────────────── */}
-          {(listing.preferred_roommate_gender || listing.smoking != null || listing.quiet_important != null || listing.pets_ok != null || listing.cleanliness_important != null) && (
+          {/* ── Preferences card (residential seeker preferences only) ─────────── */}
+          {!isCommercial && (listing.preferred_roommate_gender || listing.smoking != null || listing.quiet_important != null || listing.pets_ok != null || listing.cleanliness_important != null) && (
             <div className="bg-white rounded-3xl shadow-sm p-5">
               <h3 className="font-bold text-gray-800 mb-4">{t.preferences}</h3>
               <div className="grid grid-cols-3 gap-y-4 gap-x-2">
@@ -844,16 +907,16 @@ export default function ListingDetailPage() {
             </div>
           )}
 
-          {/* ── About card ───────────────────────────────────────────────────── */}
-          {listing.about_text && (
+          {/* ── About card (residential: about_text; commercial: description) ──── */}
+          {(isCommercial ? listing.description : listing.about_text) && (
             <div className="bg-white rounded-3xl shadow-sm p-5">
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-7 h-7 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 text-sm flex-shrink-0">
                   ℹ️
                 </span>
-                <h3 className="font-bold text-gray-800">{t.aboutTitle}</h3>
+                <h3 className="font-bold text-gray-800">{isCommercial ? t.description : t.aboutTitle}</h3>
               </div>
-              <p className="text-gray-600 text-sm leading-relaxed">{listing.about_text}</p>
+              <p className="text-gray-600 text-sm leading-relaxed">{isCommercial ? listing.description : listing.about_text}</p>
             </div>
           )}
 
@@ -943,7 +1006,7 @@ export default function ListingDetailPage() {
               <path d="M3 10.5L12 3l9 7.5" />
               <path d="M5 9.5V20a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1V9.5" />
             </svg>
-            {t.ownerBadge}
+            {isCommercial ? getCommercialBadgeLabel("has_place", lang) : t.ownerBadge}
           </span>
 
           <h1 className="text-xl font-black text-gray-900">
@@ -973,54 +1036,60 @@ export default function ListingDetailPage() {
         {/* ── Details grid ─────────────────────────────────────────────────── */}
         <div className="mx-4 mt-4 bg-white rounded-3xl shadow-md p-5">
           <div className="grid grid-cols-2 divide-x divide-y divide-gray-100">
-            {listing.house_type && (
-              <div className="flex flex-col items-center gap-1.5 p-3 text-center">
-                <span className="text-2xl">🏠</span>
-                <span className="text-xs text-gray-400">{t.houseTypeCaption}</span>
-                <span className="text-sm font-bold text-gray-800">{houseTypeLabel(t, listing.house_type)}</span>
-              </div>
-            )}
-            {listing.rooms && (
-              <div className="flex flex-col items-center gap-1.5 p-3 text-center">
-                <span className="text-2xl">🛏️</span>
-                <span className="text-xs text-gray-400">{t.roomsCaption}</span>
-                <span className="text-sm font-bold text-gray-800">{listing.rooms} {t.roomsSuffix}</span>
-              </div>
-            )}
-            {listing.elevator != null && (
-              <div className="flex flex-col items-center gap-1.5 p-3 text-center">
-                <span className="text-2xl">🛗</span>
-                <span className="text-xs text-gray-400">{t.elevatorCaption}</span>
-                <span className="text-sm font-bold text-gray-800">{listing.elevator ? t.elevatorOwnerOn : t.elevatorOwnerOff}</span>
-              </div>
-            )}
-            {listing.furnished != null && (
-              <div className="flex flex-col items-center gap-1.5 p-3 text-center">
-                <span className="text-2xl">🪑</span>
-                <span className="text-xs text-gray-400">{t.furnishedCaption}</span>
-                <span className="text-sm font-bold text-gray-800">{listing.furnished ? t.furnishedOwnerOn : t.furnishedOwnerOff}</span>
-              </div>
-            )}
-            {listing.parking != null && (
-              <div className="flex flex-col items-center gap-1.5 p-3 text-center">
-                <span className="text-2xl">🚗</span>
-                <span className="text-xs text-gray-400">{t.parkingCaption}</span>
-                <span className="text-sm font-bold text-gray-800">{listing.parking ? t.parkingOwnerOn : t.parkingOwnerOff}</span>
-              </div>
-            )}
-            {listing.smoking != null && (
-              <div className="flex flex-col items-center gap-1.5 p-3 text-center">
-                <span className="text-2xl">🚬</span>
-                <span className="text-xs text-gray-400">{t.smokingCaption}</span>
-                <span className="text-sm font-bold text-gray-800">{listing.smoking ? t.smokingOwnerOn : t.smokingOwnerOff}</span>
-              </div>
-            )}
-            {listing.current_residents > 0 && (
-              <div className="flex flex-col items-center gap-1.5 p-3 text-center">
-                <span className="text-2xl">👥</span>
-                <span className="text-xs text-gray-400">{t.residentsCaption}</span>
-                <span className="text-sm font-bold text-gray-800">{listing.current_residents} {t.residentsSuffix}</span>
-              </div>
+            {isCommercial ? (
+              <CommercialDetailFields listing={listing} t={t} lang={lang} />
+            ) : (
+              <>
+                {listing.house_type && (
+                  <div className="flex flex-col items-center gap-1.5 p-3 text-center">
+                    <span className="text-2xl">🏠</span>
+                    <span className="text-xs text-gray-400">{t.houseTypeCaption}</span>
+                    <span className="text-sm font-bold text-gray-800">{houseTypeLabel(t, listing.house_type)}</span>
+                  </div>
+                )}
+                {listing.rooms && (
+                  <div className="flex flex-col items-center gap-1.5 p-3 text-center">
+                    <span className="text-2xl">🛏️</span>
+                    <span className="text-xs text-gray-400">{t.roomsCaption}</span>
+                    <span className="text-sm font-bold text-gray-800">{listing.rooms} {t.roomsSuffix}</span>
+                  </div>
+                )}
+                {listing.elevator != null && (
+                  <div className="flex flex-col items-center gap-1.5 p-3 text-center">
+                    <span className="text-2xl">🛗</span>
+                    <span className="text-xs text-gray-400">{t.elevatorCaption}</span>
+                    <span className="text-sm font-bold text-gray-800">{listing.elevator ? t.elevatorOwnerOn : t.elevatorOwnerOff}</span>
+                  </div>
+                )}
+                {listing.furnished != null && (
+                  <div className="flex flex-col items-center gap-1.5 p-3 text-center">
+                    <span className="text-2xl">🪑</span>
+                    <span className="text-xs text-gray-400">{t.furnishedCaption}</span>
+                    <span className="text-sm font-bold text-gray-800">{listing.furnished ? t.furnishedOwnerOn : t.furnishedOwnerOff}</span>
+                  </div>
+                )}
+                {listing.parking != null && (
+                  <div className="flex flex-col items-center gap-1.5 p-3 text-center">
+                    <span className="text-2xl">🚗</span>
+                    <span className="text-xs text-gray-400">{t.parkingCaption}</span>
+                    <span className="text-sm font-bold text-gray-800">{listing.parking ? t.parkingOwnerOn : t.parkingOwnerOff}</span>
+                  </div>
+                )}
+                {listing.smoking != null && (
+                  <div className="flex flex-col items-center gap-1.5 p-3 text-center">
+                    <span className="text-2xl">🚬</span>
+                    <span className="text-xs text-gray-400">{t.smokingCaption}</span>
+                    <span className="text-sm font-bold text-gray-800">{listing.smoking ? t.smokingOwnerOn : t.smokingOwnerOff}</span>
+                  </div>
+                )}
+                {listing.current_residents > 0 && (
+                  <div className="flex flex-col items-center gap-1.5 p-3 text-center">
+                    <span className="text-2xl">👥</span>
+                    <span className="text-xs text-gray-400">{t.residentsCaption}</span>
+                    <span className="text-sm font-bold text-gray-800">{listing.current_residents} {t.residentsSuffix}</span>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

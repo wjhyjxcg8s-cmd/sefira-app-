@@ -420,12 +420,37 @@ const listingTypeTrans: Record<string, Record<string, string>> = {
   needs_place: { tr: "Kiracı", en: "Tenant", fa: "مستأجر", ar: "مستأجر", de: "Mieter", ru: "Арендатор" }
 }
 
+// Reused by both the category toggle and the country chip below — same sessionStorage
+// pattern as the scroll-restoration keys (sefira-scroll / homeScrollPosition), so a
+// back-navigation from a listing lands on the exact filtered view the user left.
+function readPersistedFilter<T extends string>(key: string, fallback: T, valid?: readonly T[]): T {
+  try {
+    const saved = sessionStorage.getItem(key);
+    if (saved && (!valid || (valid as readonly string[]).includes(saved))) return saved as T;
+  } catch {
+    // sessionStorage unavailable (privacy mode etc.) — fall back silently
+  }
+  return fallback;
+}
+
 export default function LatestListings({ lang, filterCity, onClearFilter }: LatestListingsProps) {
   const router = useRouter();
   const [allListings, setAllListings] = useState<any[]>([]);
-  const [sonIlanlarCategory, setSonIlanlarCategory] = useState<'all' | 'residential' | 'commercial'>('all');
-  const [selectedCountry, setSelectedCountry] = useState<string>('all');
+  const [sonIlanlarCategory, setSonIlanlarCategory] = useState<'all' | 'residential' | 'commercial'>(
+    () => readPersistedFilter('sefira-listings-category', 'all', ['all', 'residential', 'commercial'] as const)
+  );
+  const [selectedCountry, setSelectedCountry] = useState<string>(
+    () => readPersistedFilter('sefira-listings-country', 'all')
+  );
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    try { sessionStorage.setItem('sefira-listings-category', sonIlanlarCategory); } catch { /* ignore */ }
+  }, [sonIlanlarCategory]);
+
+  useEffect(() => {
+    try { sessionStorage.setItem('sefira-listings-country', selectedCountry); } catch { /* ignore */ }
+  }, [selectedCountry]);
 
   useEffect(() => {
     async function fetchListings() {

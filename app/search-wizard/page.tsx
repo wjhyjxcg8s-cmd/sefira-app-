@@ -19,6 +19,7 @@ import {
   type StateOption,
 } from "@/app/lib/locationData";
 import { getListingSide, getCommercialBadgeLabel, COMMERCIAL_BADGE_CLASS } from "@/app/lib/listingBadge";
+import { COMMERCIAL_TYPES, COMMERCIAL_TYPE_BY_SLUG } from "@/app/lib/commercialTypes";
 
 type Lang = "tr" | "en" | "fa" | "ar" | "de" | "ru";
 type WizardCategory = "residential" | "commercial";
@@ -42,27 +43,7 @@ function filterSuggestions(list: string[], query: string): string[] {
   return [...starts, ...includes];
 }
 
-// 14 commercial space types — slugs match the `commercial_type` values written by
-// /commercial-type-select and /create-commercial-listing, so search filtering lines up.
-const COMMERCIAL_TYPES: { slug: string; emoji: string; label: Record<Lang, string> }[] = [
-  { slug: "ofis", emoji: "🏢", label: { tr: "Ofis", en: "Office", fa: "آفیس", ar: "مكتب", de: "Büro", ru: "Офис" } },
-  { slug: "dukkan", emoji: "🏪", label: { tr: "Dükkan", en: "Shop", fa: "دکان", ar: "محل تجاري", de: "Laden", ru: "Магазин" } },
-  { slug: "berber-koltugu", emoji: "💈", label: { tr: "Berber Koltuğu", en: "Barber Chair", fa: "صندلی آرایشگاه", ar: "كرسي حلاقة", de: "Friseurstuhl", ru: "Кресло парикмахера" } },
-  { slug: "atolye", emoji: "🔧", label: { tr: "Atölye", en: "Workshop", fa: "کارگاه", ar: "ورشة", de: "Werkstatt", ru: "Мастерская" } },
-  { slug: "depo", emoji: "📦", label: { tr: "Depo", en: "Warehouse", fa: "انبار", ar: "مستودع", de: "Lager", ru: "Склад" } },
-  { slug: "mutfak", emoji: "🍳", label: { tr: "Mutfak", en: "Kitchen", fa: "آشپزخانه", ar: "مطبخ", de: "Küche", ru: "Кухня" } },
-  { slug: "icerik-studyosu", emoji: "🎬", label: { tr: "İçerik Stüdyosu", en: "Content Studio", fa: "استودیو تولید محتوا", ar: "استوديو المحتوى", de: "Content-Studio", ru: "Студия контента" } },
-  { slug: "egitim-sinifi", emoji: "📚", label: { tr: "Eğitim Sınıfı", en: "Training Room", fa: "کلاس آموزشی", ar: "قاعة تدريب", de: "Schulungsraum", ru: "Учебный класс" } },
-  { slug: "otopark", emoji: "🚗", label: { tr: "Otopark", en: "Parking", fa: "پارکینگ", ar: "موقف سيارات", de: "Parkplatz", ru: "Парковка" } },
-  { slug: "ticari-adres", emoji: "📮", label: { tr: "Ticari Adres", en: "Business Address", fa: "آدرس تجاری", ar: "عنوان تجاري", de: "Geschäftsadresse", ru: "Бизнес-адрес" } },
-  { slug: "kuafor-guzellik-salonu", emoji: "💇", label: { tr: "Kuaför / Güzellik Salonu", en: "Hair / Beauty Salon", fa: "آرایشگاه / سالن زیبایی", ar: "صالون تجميل", de: "Friseursalon", ru: "Салон красоты" } },
-  { slug: "muayenehane-klinik", emoji: "🏥", label: { tr: "Muayenehane / Klinik", en: "Clinic / Doctor's Office", fa: "مطب / کلینیک", ar: "عيادة / كلينيك", de: "Praxis / Klinik", ru: "Клиника / Кабинет врача" } },
-  { slug: "spor-alani", emoji: "🏋️", label: { tr: "Spor Alanı", en: "Sports Facility", fa: "فضای ورزشی", ar: "مرفق رياضي", de: "Sportstätte", ru: "Спортивный объект" } },
-  { slug: "etkinlik-salonu", emoji: "🎪", label: { tr: "Etkinlik Salonu", en: "Event Hall", fa: "سالن مراسمات", ar: "قاعة الفعاليات", de: "Veranstaltungssaal", ru: "Зал мероприятий" } },
-];
-
-const COMMERCIAL_TYPE_BY_SLUG: Record<string, { emoji: string; label: Record<Lang, string> }> =
-  Object.fromEntries(COMMERCIAL_TYPES.map((c) => [c.slug, { emoji: c.emoji, label: c.label }]));
+// 14 commercial space types — shared with the listing detail page and create-commercial-listing.
 
 const T: Record<Lang, {
   step1Title: string; residential: string; commercial: string;
