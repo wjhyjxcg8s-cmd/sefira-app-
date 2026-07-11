@@ -18,6 +18,7 @@ import {
   loadCitiesOfState,
   type StateOption,
 } from "@/app/lib/locationData";
+import { getListingSide, getCommercialBadgeLabel, COMMERCIAL_BADGE_CLASS } from "@/app/lib/listingBadge";
 
 type Lang = "tr" | "en" | "fa" | "ar" | "de" | "ru";
 type WizardCategory = "residential" | "commercial";
@@ -212,13 +213,14 @@ interface Listing {
 }
 
 function ListingCard({
-  listing, lang, isRtl, onClick, onMessage,
+  listing, lang, onClick, onMessage,
 }: {
-  listing: Listing; lang: Lang; isRtl: boolean; onClick: () => void; onMessage: () => void;
+  listing: Listing; lang: Lang; onClick: () => void; onMessage: () => void;
 }) {
   const t = T[lang] ?? T.tr;
-  const isHasPlace = listing.type === "has_place" || listing.has_place === true;
-  const isNeedsPlace = listing.type === "needs_place" || listing.needs_place === true;
+  const side = getListingSide(listing);
+  const isHasPlace = side === "has_place";
+  const isNeedsPlace = side === "needs_place";
   const isCommercial = listing.listing_category === "commercial";
   const commercialType = listing.commercial_type ? COMMERCIAL_TYPE_BY_SLUG[listing.commercial_type] : null;
 
@@ -241,22 +243,24 @@ function ListingCard({
             </svg>
           </div>
         )}
-        {(isHasPlace || isNeedsPlace) && (
-          <span
-            className={`absolute top-2 text-white text-xs px-2 py-1 rounded-full font-medium ${isRtl ? "right-2" : "left-2"} ${isHasPlace ? "bg-emerald-500" : "bg-blue-500"}`}
-          >
-            {isHasPlace ? "🏠" : "🔍"} {listingTypeTrans[isHasPlace ? "has_place" : "needs_place"][lang]}
-          </span>
-        )}
+        {side && (() => {
+          const label = isCommercial ? getCommercialBadgeLabel(side, lang) : listingTypeTrans[side][lang];
+          const colorClass = isCommercial ? COMMERCIAL_BADGE_CLASS[side] : isHasPlace ? "bg-emerald-500" : "bg-blue-500";
+          return (
+            <span className={`absolute top-2 start-2 text-white text-xs px-2 py-1 rounded-full font-medium ${colorClass}`}>
+              {isHasPlace ? "🏠" : "🔍"} {label}
+            </span>
+          );
+        })()}
         {isCommercial && commercialType && (
-          <span className={`absolute bottom-2 text-white text-xs px-2 py-1 rounded-full font-medium bg-stone-800/70 ${isRtl ? "left-2" : "right-2"}`}>
+          <span className="absolute bottom-2 end-2 text-white text-xs px-2 py-1 rounded-full font-medium bg-stone-800/70">
             {commercialType.emoji} {commercialType.label[lang]}
           </span>
         )}
         <button
           onClick={(e) => { e.stopPropagation(); onMessage(); }}
           aria-label={t.messageBtn}
-          className={`absolute bottom-2 flex items-center gap-1 bg-white/90 backdrop-blur text-orange-600 text-xs font-bold px-2.5 py-1.5 rounded-full shadow active:scale-95 transition ${isRtl ? "right-2" : "left-2"}`}
+          className="absolute bottom-2 start-2 flex items-center gap-1 bg-white/90 backdrop-blur text-orange-600 text-xs font-bold px-2.5 py-1.5 rounded-full shadow active:scale-95 transition"
         >
           💬 {t.messageBtn}
         </button>
@@ -876,7 +880,6 @@ export default function SearchWizardPage() {
                   key={listing.id}
                   listing={listing}
                   lang={lang as Lang}
-                  isRtl={isRtl}
                   onClick={() => router.push(`/listings/${listing.id}`)}
                   onMessage={() => router.push(`/messages?userId=${listing.user_id}&listingId=${listing.id}`)}
                 />

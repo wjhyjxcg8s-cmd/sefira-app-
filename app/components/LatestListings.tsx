@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
+import { getListingSide, getCommercialBadgeLabel, COMMERCIAL_BADGE_CLASS } from "@/app/lib/listingBadge";
 
 const supabaseClient = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -431,7 +432,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
       setLoading(true);
       const { data, error } = await supabaseClient
         .from("listings")
-        .select("id, type, city, district, neighborhood, rent, currency, photos, house_type, rooms, smoking, furnished, elevator, current_residents, user_id, country_code, country, max_budget, seeker_age, seeker_gender, occupation, private_room_required, about_text, listing_category")
+        .select("id, type, city, district, neighborhood, rent, currency, photos, house_type, rooms, smoking, furnished, elevator, current_residents, user_id, country_code, country, max_budget, seeker_age, seeker_gender, occupation, private_room_required, about_text, listing_category, has_place, needs_place")
         .eq("is_deleted", false)
         .order("created_at", { ascending: false })
         .limit(50);
@@ -681,9 +682,22 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                     </svg>
                   </div>
                 )}
-                <span className={`absolute top-2 left-2 text-white text-xs px-2 py-1 rounded-full font-medium ${listing.type === "has_place" ? "bg-emerald-500" : "bg-blue-500"}`}>
-                  {listingTypeTrans[listing.type]?.[lang] || listingTypeTrans[listing.type]?.["tr"] || listing.type}
-                </span>
+                {(() => {
+                  const side = getListingSide(listing);
+                  if (!side) return null;
+                  const isCommercial = listing.listing_category === "commercial";
+                  const label = isCommercial
+                    ? getCommercialBadgeLabel(side, lang as Lang)
+                    : listingTypeTrans[side]?.[lang] || listingTypeTrans[side]?.["tr"];
+                  const colorClass = isCommercial
+                    ? COMMERCIAL_BADGE_CLASS[side]
+                    : side === "has_place" ? "bg-emerald-500" : "bg-blue-500";
+                  return (
+                    <span className={`absolute top-2 start-2 text-white text-xs px-2 py-1 rounded-full font-medium ${colorClass}`}>
+                      {label}
+                    </span>
+                  );
+                })()}
               </div>
 
               <div className="p-4">

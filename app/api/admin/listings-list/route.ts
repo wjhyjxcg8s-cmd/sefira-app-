@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
 
   const { data, error } = await supabaseAdmin
     .from('listings')
-    .select('id, city, district, country_code, type, house_type, rooms, rent, currency, photos, is_deleted, created_at, user_id')
+    .select('id, city, district, country_code, type, house_type, rooms, rent, currency, photos, is_deleted, created_at, user_id, listing_category, has_place, needs_place')
     .order('created_at', { ascending: false })
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ listings: data || [] })

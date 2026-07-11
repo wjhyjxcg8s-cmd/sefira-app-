@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
+import { getListingSide, COMMERCIAL_BADGE_LABELS } from "@/app/lib/listingBadge";
 const ADMIN_EMAIL = "supportsefira@gmail.com";
 
 interface Listing {
@@ -19,6 +20,9 @@ interface Listing {
   user_id: string;
   created_at: string;
   is_deleted: boolean;
+  listing_category: string | null;
+  has_place: boolean | null;
+  needs_place: boolean | null;
 }
 
 function formatDate(d: string) {
@@ -204,15 +208,28 @@ export default function AdminListingsPage() {
                         )}
                       </div>
                       <div className="flex items-center gap-2 mt-1 flex-wrap">
-                        <span
-                          className="px-2 py-0.5 rounded-md text-xs font-medium"
-                          style={{
-                            backgroundColor: l.type === "has_place" ? "#f0fdf4" : "#eff6ff",
-                            color: l.type === "has_place" ? "#16a34a" : "#2563eb",
-                          }}
-                        >
-                          {l.type === "has_place" ? "Ev Sahibi" : l.type === "needs_place" ? "Kiracı" : l.type ?? "—"}
-                        </span>
+                        {(() => {
+                          const side = getListingSide(l);
+                          if (!side) return (
+                            <span className="px-2 py-0.5 rounded-md text-xs font-medium" style={{ backgroundColor: "#f3f4f6", color: "#6b7280" }}>—</span>
+                          );
+                          const isCommercial = l.listing_category === "commercial";
+                          const label = isCommercial
+                            ? COMMERCIAL_BADGE_LABELS[side].tr
+                            : side === "has_place" ? "Ev Sahibi" : "Kiracı";
+                          const colors = isCommercial
+                            ? side === "has_place"
+                              ? { backgroundColor: "#f0fdfa", color: "#0d9488" } // teal (commercial owner)
+                              : { backgroundColor: "#eef2ff", color: "#4f46e5" } // indigo (commercial seeker)
+                            : side === "has_place"
+                              ? { backgroundColor: "#f0fdf4", color: "#16a34a" } // green (residential owner)
+                              : { backgroundColor: "#eff6ff", color: "#2563eb" }; // blue (residential seeker)
+                          return (
+                            <span className="px-2 py-0.5 rounded-md text-xs font-medium" style={colors}>
+                              {label}
+                            </span>
+                          );
+                        })()}
                         {l.house_type && (
                           <span className="text-xs text-gray-400">{l.house_type}</span>
                         )}

@@ -107,7 +107,10 @@
       "Bash(node verify-locdata.tmp.js)",
       "Bash(curl -s \"http://localhost:3000/api/states?country=QA\")",
       "Bash(curl -s \"http://localhost:3000/api/cities-of-state?country=QA&state=DA\")",
-      "Bash(rm -f verify-locdata.tmp.js verify-statefallback.tmp.js verify-screenshot.tmp.js verify-scroll.tmp.js verify-scroll2.tmp.js)"
+      "Bash(rm -f verify-locdata.tmp.js verify-statefallback.tmp.js verify-screenshot.tmp.js verify-scroll.tmp.js verify-scroll2.tmp.js)",
+      "Bash(node verify-badge.tmp.js)",
+      "Bash(rm -f verify-badge.tmp.js)",
+      "Bash(taskkill //PID 12684 //F)"
     ]
   }
 }

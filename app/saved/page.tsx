@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 import { useLang } from "@/app/lib/LangContext";
+import { getListingSide, getCommercialBadgeLabel, COMMERCIAL_BADGE_CLASS } from "@/app/lib/listingBadge";
 
 type Lang = "tr" | "en" | "fa" | "ar" | "de" | "ru";
 
@@ -90,6 +91,9 @@ interface SavedListing {
   seeker_age: string | null;
   occupation: string | null;
   user_id: string | null;
+  listing_category: string | null;
+  has_place: boolean | null;
+  needs_place: boolean | null;
 }
 
 function countryFlag(code: string | null) {
@@ -122,14 +126,14 @@ export default function SavedPage() {
 
     supabase
       .from("listings")
-      .select("id, type, city, country_code, rent, max_budget, currency, photos, house_type, rooms, seeker_age, occupation, user_id")
+      .select("id, type, city, country_code, rent, max_budget, currency, photos, house_type, rooms, seeker_age, occupation, user_id, listing_category, has_place, needs_place")
       .in("id", ids)
       .then(async ({ data }) => {
         const fetched = (data as SavedListing[]) ?? [];
         setListings(fetched);
 
         const needsPlaceUserIds = fetched
-          .filter((item) => item.type === "needs_place")
+          .filter((item) => getListingSide(item) === "needs_place")
           .map((item) => item.user_id)
           .filter(Boolean) as string[];
 
@@ -159,8 +163,10 @@ export default function SavedPage() {
     try { localStorage.setItem("sefira-saved", JSON.stringify(next)); } catch { /* ignore */ }
   }
 
+  const isRtl = l === "fa" || l === "ar";
+
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="min-h-screen bg-stone-50" dir={isRtl ? "rtl" : "ltr"}>
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white shadow-sm px-4 py-3 flex items-center gap-3">
         <button
@@ -204,7 +210,7 @@ export default function SavedPage() {
           <div className="grid grid-cols-2 gap-3">
             {listings.map((listing) => {
               const avatarUrl =
-                listing.type === "needs_place" && listing.user_id
+                getListingSide(listing) === "needs_place" && listing.user_id
                   ? avatarMap[listing.user_id]
                   : null;
 
@@ -237,9 +243,22 @@ export default function SavedPage() {
                     )}
 
                     {/* Type badge */}
-                    <span className={`absolute top-2 left-2 text-white text-xs px-2 py-1 rounded-full font-medium ${listing.type === "has_place" ? "bg-emerald-500" : "bg-blue-500"}`}>
-                      {listingTypeTrans[listing.type]?.[lang] || listing.type}
-                    </span>
+                    {(() => {
+                      const side = getListingSide(listing);
+                      if (!side) return null;
+                      const isCommercial = listing.listing_category === "commercial";
+                      const label = isCommercial
+                        ? getCommercialBadgeLabel(side, lang as "tr" | "en" | "fa" | "ar" | "de" | "ru")
+                        : listingTypeTrans[side]?.[lang] || side;
+                      const colorClass = isCommercial
+                        ? COMMERCIAL_BADGE_CLASS[side]
+                        : side === "has_place" ? "bg-emerald-500" : "bg-blue-500";
+                      return (
+                        <span className={`absolute top-2 start-2 text-white text-xs px-2 py-1 rounded-full font-medium ${colorClass}`}>
+                          {label}
+                        </span>
+                      );
+                    })()}
 
                     {/* Remove button */}
                     <button
