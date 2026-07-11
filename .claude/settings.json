@@ -93,7 +93,21 @@
       "Bash(rm -f verify-layout.tmp.js verify-layout-ar.tmp.js)",
       "Bash(node verify-cooldown.tmp.js)",
       "Bash(node verify-debug2.tmp.js)",
-      "Bash(rm -f verify-cooldown.tmp.js verify-debug2.tmp.js)"
+      "Bash(rm -f verify-cooldown.tmp.js verify-debug2.tmp.js)",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(JSON.stringify\\({dev:p.devDependencies, dep:p.dependencies}, null, 1\\)\\)\")",
+      "Bash(node -e \"console.log\\(require\\('./package.json'\\).type\\)\")",
+      "Bash(node \"C:/Users/pascal/AppData/Local/Temp/claude/e--sef-ra-web-sefira-app/87c135d9-0985-4180-8701-151eb3a9ad86/scratchpad/test-tiers.js\")",
+      "Bash(taskkill //PID 24768 //F)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" --max-time 60 http://localhost:3000/search-wizard)",
+      "Bash(node verify-wizard.tmp.js)",
+      "Bash(rm -f verify-wizard.tmp.js)",
+      "Bash(taskkill //PID 16520 //F)",
+      "Bash(awk '/^const allCountries/{start=NR} start && /^\\\\];/{print start\"-\"NR; exit}' app/components/LatestListings.tsx)",
+      "Bash(awk 'NR>=138 && NR<=327' app/components/LatestListings.tsx)",
+      "Bash(node verify-locdata.tmp.js)",
+      "Bash(curl -s \"http://localhost:3000/api/states?country=QA\")",
+      "Bash(curl -s \"http://localhost:3000/api/cities-of-state?country=QA&state=DA\")",
+      "Bash(rm -f verify-locdata.tmp.js verify-statefallback.tmp.js verify-screenshot.tmp.js verify-scroll.tmp.js verify-scroll2.tmp.js)"
     ]
   }
 }
