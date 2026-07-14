@@ -163,7 +163,7 @@ export default function SavedListingsPage() {
         </div>
       </nav>
 
-      <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
+      <div className="pt-24 pb-36 md:pb-16 px-5 max-w-2xl mx-auto">
         {/* Back to home */}
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block mb-5">
           <Link href="/" className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">

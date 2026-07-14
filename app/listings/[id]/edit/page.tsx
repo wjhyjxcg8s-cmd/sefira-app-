@@ -624,7 +624,7 @@ export default function EditListingPage() {
         </div>
       </nav>
 
-      <div className="pt-24 pb-32 px-5 max-w-2xl mx-auto">
+      <div className="pt-24 pb-56 md:pb-32 px-5 max-w-2xl mx-auto">
         {/* Back button */}
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block mb-5">
           <Link
@@ -868,8 +868,8 @@ export default function EditListingPage() {
         </div>
       </div>
 
-      {/* Sticky save button */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 px-4 py-3 bg-white/95 backdrop-blur-xl border-t border-stone-200">
+      {/* Sticky save button — sits above the mobile bottom nav bar (h-16 + safe area) */}
+      <div className="fixed bottom-[calc(4rem+env(safe-area-inset-bottom))] md:bottom-0 left-0 right-0 z-40 px-4 py-3 bg-white/95 backdrop-blur-xl border-t border-stone-200">
         <div className="max-w-2xl mx-auto">
           <motion.button
             whileTap={{ scale: 0.97 }}

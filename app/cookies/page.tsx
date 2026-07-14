@@ -405,7 +405,7 @@ export default function CookiesPage() {
   return (
     <div className="min-h-screen bg-white">
       <div
-        className={`max-w-2xl mx-auto px-4 py-8 ${isRtl ? "text-right" : "text-left"}`}
+        className={`max-w-2xl mx-auto px-4 pt-8 pb-24 md:pb-8 ${isRtl ? "text-right" : "text-left"}`}
         dir={isRtl ? "rtl" : "ltr"}
       >
         <Link

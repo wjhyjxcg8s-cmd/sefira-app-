@@ -1014,7 +1014,7 @@ function MessagesPageContent() {
     : false;
 
   return (
-    <div className="flex flex-col h-screen bg-[#fefaf5]" dir={isFa ? "rtl" : "ltr"}>
+    <div className="flex flex-col h-[calc(100vh-4rem-env(safe-area-inset-bottom))] md:h-screen bg-[#fefaf5]" dir={isFa ? "rtl" : "ltr"}>
       <style>{`
         @keyframes slideUpSheet {
           from { transform: translateY(100%); }

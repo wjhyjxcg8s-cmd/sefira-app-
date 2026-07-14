@@ -1841,7 +1841,7 @@ function CreateListingPage() {
     return (
       <div dir={dir} className="min-h-screen bg-stone-50">
         <Navbar />
-        <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
+        <div className="pt-24 pb-36 md:pb-16 px-5 max-w-2xl mx-auto">
           <div className="inline-block mb-5">
             <Link href="/" className="flex items-center gap-2 bg-orange-500 hover:bg-orange-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md transition-colors duration-200">
               <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -1946,7 +1946,7 @@ function CreateListingPage() {
     return (
       <div dir={dir} className="min-h-screen bg-stone-50">
         <Navbar />
-        <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
+        <div className="pt-24 pb-36 md:pb-16 px-5 max-w-2xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
             <button
               onClick={goBack}
@@ -2384,7 +2384,7 @@ function CreateListingPage() {
     return (
       <div dir={dir} className="min-h-screen bg-stone-50">
         <Navbar />
-        <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
+        <div className="pt-24 pb-36 md:pb-16 px-5 max-w-2xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
             <button
               onClick={goBack}
@@ -2883,7 +2883,7 @@ function CreateListingPage() {
     return (
       <div dir={dir} className="min-h-screen bg-stone-50">
         <Navbar />
-        <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
+        <div className="pt-24 pb-36 md:pb-16 px-5 max-w-2xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
             <button
               onClick={goBack}
@@ -3236,7 +3236,7 @@ function CreateListingPage() {
     return (
       <div dir={dir} className="min-h-screen bg-stone-50">
         <Navbar />
-        <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
+        <div className="pt-24 pb-36 md:pb-16 px-5 max-w-2xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
             <button
               onClick={goBack}

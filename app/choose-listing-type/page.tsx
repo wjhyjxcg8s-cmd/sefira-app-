@@ -207,7 +207,7 @@ export default function ChooseListingTypePage() {
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
-                className="px-4 py-6 flex flex-col gap-4"
+                className="px-4 pt-6 pb-24 md:pb-6 flex flex-col gap-4"
               >
                 {/* Card 1 — Residential */}
                 <motion.button
@@ -279,7 +279,7 @@ export default function ChooseListingTypePage() {
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
-                className="px-4 py-6 flex flex-col gap-4"
+                className="px-4 pt-6 pb-24 md:pb-6 flex flex-col gap-4"
               >
                 {/* Option A — commercial space owner */}
                 <motion.button

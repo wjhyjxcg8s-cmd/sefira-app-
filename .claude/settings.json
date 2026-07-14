@@ -111,7 +111,8 @@
       "Bash(node verify-badge.tmp.js)",
       "Bash(rm -f verify-badge.tmp.js)",
       "Bash(taskkill //PID 12684 //F)",
-      "Bash(taskkill //PID 4828 //F)"
+      "Bash(taskkill //PID 4828 //F)",
+      "Bash(awk 'NR==2547,NR==2895 {next} {print}' app/page.tsx)"
     ]
   }
 }

@@ -100,7 +100,7 @@ export default function SupportChat() {
   if (!userId) return <div style={{padding:'20px'}}>Please login first</div>
 
   return (
-    <div style={{display:'flex',flexDirection:'column',height:'100vh',background:'#f0ebe4'}}>
+    <div className="h-[calc(100vh-4rem-env(safe-area-inset-bottom))] md:h-screen" style={{display:'flex',flexDirection:'column',background:'#f0ebe4'}}>
       <div style={{padding:'16px',background:'#F97316',color:'white',fontWeight:'bold',fontSize:'18px',display:'flex',alignItems:'center',position:'relative'}}>
         <button
           onClick={() => router.push('/')}

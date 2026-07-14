@@ -590,7 +590,7 @@ export default function SearchWizardPage() {
       </div>
 
       {screen !== "results" ? (
-        <div className="px-5 py-8 max-w-md mx-auto">
+        <div className="px-5 pt-8 pb-24 md:pb-8 max-w-md mx-auto">
           <div key={screen} className="wizard-screen">
             {/* Step 1 — Category */}
             {screen === "category" && (
@@ -830,7 +830,7 @@ export default function SearchWizardPage() {
           </div>
         </div>
       ) : (
-        <div className="px-4 py-6 max-w-6xl mx-auto">
+        <div className="px-4 pt-6 pb-24 md:pb-6 max-w-6xl mx-auto">
           <h1 className="text-xl font-black text-gray-900 mb-1">{t.resultsTitle}</h1>
           <p className="text-sm text-gray-400 mb-6">
             {codeToFlag(countryCode)} {locationBreadcrumb}

@@ -421,7 +421,7 @@ function CommercialTypeSelectContent() {
       </div>
 
       {/* Options grid */}
-      <div className="flex-1 overflow-y-auto p-5 pb-8 grid grid-cols-2 gap-3 content-start">
+      <div className="flex-1 overflow-y-auto p-5 pb-24 md:pb-8 grid grid-cols-2 gap-3 content-start">
         {commercialTypeOptions.map((opt) => (
           <button
             key={opt.slug}

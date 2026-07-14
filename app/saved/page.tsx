@@ -185,7 +185,7 @@ export default function SavedPage() {
         )}
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-5">
+      <div className="max-w-2xl mx-auto px-4 pt-5 pb-24 md:pb-5">
         {loading ? (
           <div className="grid grid-cols-2 gap-3">
             {[1, 2, 3, 4].map((i) => (

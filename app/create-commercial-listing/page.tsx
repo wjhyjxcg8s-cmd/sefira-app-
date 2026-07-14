@@ -902,7 +902,7 @@ function CreateCommercialListingPage() {
         </div>
       </nav>
 
-      <div className="pt-24 pb-16 px-5 max-w-2xl mx-auto">
+      <div className="pt-24 pb-36 md:pb-16 px-5 max-w-2xl mx-auto">
         {/* ── Progress bar ─────────────────────────────────────────────── */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">

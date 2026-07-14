@@ -260,7 +260,7 @@ export default function MyReviewsPage() {
         </div>
       </nav>
 
-      <div className="pt-24 pb-24 px-5 max-w-2xl mx-auto">
+      <div className="pt-24 pb-36 md:pb-24 px-5 max-w-2xl mx-auto">
         {/* Back to home */}
         <Link href="/" dir="ltr" className="inline-flex items-center gap-1.5 mb-5 text-sm font-semibold text-stone-500 hover:text-stone-800 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-lg transition-colors">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4 flex-shrink-0">

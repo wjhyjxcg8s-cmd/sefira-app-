@@ -573,7 +573,7 @@ export default function ListingDetailPage() {
   const seekerSummary = isSeeker && !isCommercial ? buildSeekerSummary(t, listing) : "";
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-32" dir={isRtl ? "rtl" : "ltr"}>
+    <div className="min-h-screen bg-gray-50 pb-56 md:pb-32" dir={isRtl ? "rtl" : "ltr"}>
       {/* Header */}
       <div className="flex items-center justify-between p-4 bg-white sticky top-0 z-10 border-b border-gray-100">
         <div className="flex items-center gap-2">
@@ -619,7 +619,7 @@ export default function ListingDetailPage() {
       </div>
 
       {showCopyToast && (
-        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-full shadow-lg animate-[fadeIn_0.2s_ease-out]">
+        <div className="fixed bottom-44 md:bottom-24 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-full shadow-lg animate-[fadeIn_0.2s_ease-out]">
           {t.linkCopied}
         </div>
       )}
@@ -1136,8 +1136,8 @@ export default function ListingDetailPage() {
       </>
       )}
 
-      {/* Fixed contact button */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100 shadow-lg z-20">
+      {/* Fixed contact button — sits above the mobile bottom nav bar (h-16 + safe area) */}
+      <div className="fixed bottom-[calc(4rem+env(safe-area-inset-bottom))] md:bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100 shadow-lg z-20">
         {listing.is_deleted ? (
           <button disabled className="w-full py-4 rounded-2xl bg-gray-100 text-gray-400 font-bold text-lg cursor-not-allowed">
             Bu ilan kaldırıldı
