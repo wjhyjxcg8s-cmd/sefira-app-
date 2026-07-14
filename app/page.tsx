@@ -67,6 +67,7 @@ const translations = {
     quickLocationLabel: "Konum seç",
     quickCategoryLabel: "Kategori",
     quickFilterLabel: "Filtrele",
+    promoVideoHeading: "Sefira ile tanışın",
     // ── Wizard ──
     wizardTitle: "Ne arıyorsunuz?",
     optionSeekingTitle: "Evim Var",
@@ -219,6 +220,7 @@ const translations = {
     quickLocationLabel: "Choose location",
     quickCategoryLabel: "Category",
     quickFilterLabel: "Filter",
+    promoVideoHeading: "Meet Sefira",
     // ── Wizard ──
     wizardTitle: "What are you looking for?",
     optionSeekingTitle: "I Have a Place",
@@ -371,6 +373,7 @@ const translations = {
     quickLocationLabel: "انتخاب موقعیت",
     quickCategoryLabel: "دسته‌بندی",
     quickFilterLabel: "فیلتر",
+    promoVideoHeading: "با سفیرا آشنا شوید",
     // ── Wizard ──
     wizardTitle: "دنبال چه می‌گردید؟",
     optionSeekingTitle: "خونه دارم",
@@ -523,6 +526,7 @@ const translations = {
     quickLocationLabel: "Ort wählen",
     quickCategoryLabel: "Kategorie",
     quickFilterLabel: "Filtern",
+    promoVideoHeading: "Lerne Sefira kennen",
     wizardTitle: "Was suchen Sie?",
     optionSeekingTitle: "Ich Habe ein Zimmer",
     optionSeekingSubtitle: "Ich habe ein Zimmer und suche einen guten Mitbewohner",
@@ -675,6 +679,7 @@ const translations = {
     quickLocationLabel: "اختر الموقع",
     quickCategoryLabel: "الفئة",
     quickFilterLabel: "تصفية",
+    promoVideoHeading: "تعرّف على سفيرا",
     // ── Wizard ──
     wizardTitle: "ماذا تبحث عن؟",
     optionSeekingTitle: "لدي غرفة",
@@ -827,6 +832,7 @@ const translations = {
     quickLocationLabel: "Выбрать локацию",
     quickCategoryLabel: "Категория",
     quickFilterLabel: "Фильтр",
+    promoVideoHeading: "Познакомьтесь с Sefira",
     wizardTitle: "Что вы ищете?",
     optionSeekingTitle: "У Меня Есть Комната",
     optionSeekingSubtitle: "У меня есть комната, ищу хорошего соседа",
@@ -1627,6 +1633,8 @@ export default function Home() {
   const currencyMenuRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
   const [notifOpen, setNotifOpen] = useState(false);
+  const promoVideoSectionRef = useRef<HTMLDivElement>(null);
+  const [promoVideoInView, setPromoVideoInView] = useState(false);
   const [notifications, setNotifications] = useState<NotifItem[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [msgNotifications, setMsgNotifications] = useState<MsgNotifItem[]>([]);
@@ -1678,6 +1686,23 @@ export default function Home() {
     const onScroll = () => setScrolled(window.scrollY > 24);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // ── Promo video: only mount once scrolled near it ──────────────────────────
+  useEffect(() => {
+    const node = promoVideoSectionRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setPromoVideoInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
   }, []);
 
   // ── Restore scroll position after back-navigation from a listing ──────────
@@ -3026,6 +3051,29 @@ export default function Home() {
         </div>
 
       </div>
+
+      {/* ── PROMO VIDEO ───────────────────────────────────────────────────────── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-5 mt-2 pb-4">
+        <p className="text-sm font-bold text-stone-800 mb-3 sm:mb-4">
+          {t.promoVideoHeading}
+        </p>
+        <div ref={promoVideoSectionRef} className="relative w-full aspect-video overflow-hidden rounded-3xl shadow-lg">
+          {promoVideoInView ? (
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="none"
+              poster="/hero-bg.webp"
+              src="https://ceetzophaybywfuhezhv.supabase.co/storage/v1/object/public/media/IMG_1365.MP4"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          ) : (
+            <Image src="/hero-bg.webp" alt="" fill className="object-cover" />
+          )}
+        </div>
+      </section>
 
       {/* ── WEEKLY STORIES ────────────────────────────────────────────────────── */}
       {weeklyStories.length > 0 && (
