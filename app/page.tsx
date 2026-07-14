@@ -2574,7 +2574,7 @@ export default function Home() {
       </nav>
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
-      <div className="min-h-screen w-full px-4 pb-4 pt-10 overflow-hidden relative bg-stone-50">
+      <div className="w-full px-4 pt-10 overflow-hidden relative bg-white">
 
         {/* Decorative blur circles */}
         <div className="absolute w-96 h-96 rounded-full bg-orange-50 blur-3xl opacity-60 -top-20 -right-20 pointer-events-none" />
@@ -2589,32 +2589,41 @@ export default function Home() {
             className="flex w-full flex-col"
           >
 
-            {/* ── COMPACT HERO ─────────────────────────────────────────────── */}
-            <div className="mb-2" dir={isRtl ? "rtl" : "ltr"}>
-              <p className="text-sm text-slate-500">{t.heroGreeting}</p>
-              <h1 className="mt-1 leading-tight">
-                <span className="block text-3xl font-extrabold text-slate-900">{t.heroCompactLine1}</span>
-                <span className="block text-3xl font-extrabold text-orange-500">{t.heroCompactLine2}</span>
-              </h1>
-              <p className="mt-2 text-sm text-slate-500">{t.heroCompactSub}</p>
-            </div>
+            {/* ── HERO ILLUSTRATION (full-bleed, text overlaid) ─────────────── */}
+            <div className="relative left-1/2 w-screen -translate-x-1/2">
+              <div className="relative aspect-[4/3] w-full">
+                <Image
+                  src="/hero-illustration.webp"
+                  alt=""
+                  fill
+                  priority
+                  sizes="100vw"
+                  className="object-cover object-[center_60%]"
+                />
 
-            {/* ── HERO ILLUSTRATION ─────────────────────────────────────────── */}
-            <div className="relative -mx-5 aspect-[16/9]">
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,white_50%,transparent_78%)]" />
-              <Image
-                src="/hero-illustration.webp"
-                alt=""
-                width={1536}
-                height={1024}
-                priority
-                sizes="(min-width: 672px) 672px, 100vw"
-                className="relative h-full w-full object-contain"
-              />
+                {/* Soft white fade behind the text for contrast */}
+                <div
+                  className="pointer-events-none absolute inset-0"
+                  style={{
+                    background: isRtl
+                      ? "radial-gradient(ellipse at top right, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0) 55%)"
+                      : "radial-gradient(ellipse at top left, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0) 55%)",
+                  }}
+                />
+
+                <div className="absolute top-0 start-0 z-10 max-w-[75%] p-5" dir={isRtl ? "rtl" : "ltr"}>
+                  <p className="text-sm text-slate-500">{t.heroGreeting}</p>
+                  <h1 className="mt-1 leading-tight">
+                    <span className="block text-4xl font-extrabold leading-tight text-slate-900">{t.heroCompactLine1}</span>
+                    <span className="block text-4xl font-extrabold leading-tight text-orange-500">{t.heroCompactLine2}</span>
+                  </h1>
+                  <p className="mt-2 text-sm text-slate-500">{t.heroCompactSub}</p>
+                </div>
+              </div>
             </div>
 
             {/* ── SEARCH BAR ───────────────────────────────────────────────── */}
-            <div className="relative z-10 -mt-6 w-full rounded-3xl bg-white p-2 shadow-lg shadow-slate-200/60">
+            <div className="relative z-10 -mt-8 w-full rounded-3xl bg-white p-2 shadow-lg shadow-slate-200/60">
               <button
                 onClick={() => router.push("/search")}
                 className="flex w-full items-center gap-3 rounded-2xl p-2 text-start transition-transform duration-200 active:scale-[0.98]"
@@ -3055,6 +3064,9 @@ export default function Home() {
           </motion.div>
 
         </div>
+
+        {/* Transition from the hero's white zone to the page's stone-50 */}
+        <div className="h-8 w-full bg-gradient-to-b from-white to-stone-50" />
 
       </div>
 
