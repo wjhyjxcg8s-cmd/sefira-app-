@@ -2589,41 +2589,36 @@ export default function Home() {
             className="flex w-full flex-col"
           >
 
-            {/* ── HERO ILLUSTRATION (full-bleed, text overlaid) ─────────────── */}
-            <div className="relative left-1/2 w-screen -translate-x-1/2">
-              <div className="relative aspect-[4/3] w-full">
-                <Image
-                  src="/hero-illustration.webp"
-                  alt=""
-                  fill
-                  priority
-                  sizes="100vw"
-                  className="object-cover object-[center_60%]"
-                />
+            {/* ── HERO: text + illustration ─────────────────────────────────── */}
+            <div className="flex flex-col md:flex-row md:items-center md:gap-8">
 
-                {/* Soft white fade behind the text for contrast */}
-                <div
-                  className="pointer-events-none absolute inset-0"
-                  style={{
-                    background: isRtl
-                      ? "radial-gradient(ellipse at top right, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0) 55%)"
-                      : "radial-gradient(ellipse at top left, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0) 55%)",
-                  }}
-                />
+              {/* Text block */}
+              <div className="px-5 pt-4 md:w-[45%] md:shrink-0 md:px-0 md:pt-0" dir={isRtl ? "rtl" : "ltr"}>
+                <p className="text-sm text-slate-500">{t.heroGreeting}</p>
+                <h1 className="mt-1">
+                  <span className="block text-[32px] font-extrabold leading-[1.15] text-slate-900">{t.heroCompactLine1}</span>
+                  <span className="block text-[32px] font-extrabold leading-[1.15] text-orange-500">{t.heroCompactLine2}</span>
+                </h1>
+                <p className="mt-2 text-sm text-slate-500">{t.heroCompactSub}</p>
+              </div>
 
-                <div className="absolute top-0 start-0 z-10 max-w-[75%] p-5" dir={isRtl ? "rtl" : "ltr"}>
-                  <p className="text-sm text-slate-500">{t.heroGreeting}</p>
-                  <h1 className="mt-1 leading-tight">
-                    <span className="block text-4xl font-extrabold leading-tight text-slate-900">{t.heroCompactLine1}</span>
-                    <span className="block text-4xl font-extrabold leading-tight text-orange-500">{t.heroCompactLine2}</span>
-                  </h1>
-                  <p className="mt-2 text-sm text-slate-500">{t.heroCompactSub}</p>
+              {/* Illustration — full-bleed on mobile, contained column on desktop */}
+              <div className="relative left-1/2 -mt-2 w-screen -translate-x-1/2 md:left-auto md:mt-0 md:w-[55%] md:shrink-0 md:translate-x-0">
+                <div className="relative aspect-[16/10] w-full md:aspect-[4/3]">
+                  <Image
+                    src="/hero-illustration.webp"
+                    alt=""
+                    fill
+                    priority
+                    sizes="(min-width: 768px) 55vw, 100vw"
+                    className="object-cover object-center"
+                  />
                 </div>
               </div>
             </div>
 
             {/* ── SEARCH BAR ───────────────────────────────────────────────── */}
-            <div className="relative z-10 -mt-8 w-full rounded-3xl bg-white p-2 shadow-lg shadow-slate-200/60">
+            <div className="relative z-10 -mt-10 mx-5 rounded-3xl bg-white p-2 shadow-lg shadow-slate-200/60 md:mx-0 md:mt-6">
               <button
                 onClick={() => router.push("/search")}
                 className="flex w-full items-center gap-3 rounded-2xl p-2 text-start transition-transform duration-200 active:scale-[0.98]"
@@ -2677,27 +2672,25 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=has_place'); }}
-                      className="group relative min-h-[180px] overflow-hidden rounded-3xl bg-orange-50 p-5 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group flex min-h-[210px] flex-col gap-2 rounded-3xl bg-orange-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
-                      <div className="pe-16">
-                        <span className="inline-flex rounded-md bg-orange-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-orange-700">
-                          {t.landlordBadge}
-                        </span>
-                        <p className="mt-2.5 line-clamp-2 text-base font-bold leading-tight text-stone-900">
-                          {t.optionSeekingTitle}
-                        </p>
-                        <p className="mt-0.5 line-clamp-1 text-xs leading-snug text-stone-500">
-                          {t.landlordSubtext}
-                        </p>
-                      </div>
+                      <span className="self-start rounded-md bg-orange-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-orange-700">
+                        {t.landlordBadge}
+                      </span>
+                      <p className="text-lg font-extrabold leading-snug text-stone-900">
+                        {t.optionSeekingTitle}
+                      </p>
+                      <p className="line-clamp-1 text-xs text-slate-500">
+                        {t.landlordSubtext}
+                      </p>
                       <Image
                         src="/card-owner-home.webp"
                         alt=""
                         width={200}
                         height={200}
-                        className={`absolute bottom-3 end-3 max-h-16 w-[42%] max-w-[104px] object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
+                        className={`my-1 h-20 object-contain mx-auto ${isRtl ? "scale-x-[-1]" : ""}`}
                       />
-                      <span className="absolute bottom-3 start-3 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-md">
+                      <span className="mt-auto flex h-9 w-9 items-center justify-center self-end rounded-full bg-white shadow-md">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
                           <path d="M5 12h14M13 6l6 6-6 6" />
                         </svg>
@@ -2710,27 +2703,25 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.18 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=needs_place'); }}
-                      className="group relative min-h-[180px] overflow-hidden rounded-3xl bg-blue-50 p-5 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group flex min-h-[210px] flex-col gap-2 rounded-3xl bg-blue-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
-                      <div className="pe-16">
-                        <span className="inline-flex rounded-md bg-blue-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-700">
-                          {t.tenantBadge}
-                        </span>
-                        <p className="mt-2.5 line-clamp-2 text-base font-bold leading-tight text-stone-900">
-                          {t.optionOfferingTitle}
-                        </p>
-                        <p className="mt-0.5 line-clamp-1 text-xs leading-snug text-stone-500">
-                          {t.tenantSubtext}
-                        </p>
-                      </div>
+                      <span className="self-start rounded-md bg-blue-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-700">
+                        {t.tenantBadge}
+                      </span>
+                      <p className="text-lg font-extrabold leading-snug text-stone-900">
+                        {t.optionOfferingTitle}
+                      </p>
+                      <p className="line-clamp-1 text-xs text-slate-500">
+                        {t.tenantSubtext}
+                      </p>
                       <Image
                         src="/card-seeker-home.webp"
                         alt=""
                         width={200}
                         height={200}
-                        className={`absolute bottom-3 end-3 max-h-16 w-[42%] max-w-[104px] object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
+                        className={`my-1 h-20 object-contain mx-auto ${isRtl ? "scale-x-[-1]" : ""}`}
                       />
-                      <span className="absolute bottom-3 start-3 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-md">
+                      <span className="mt-auto flex h-9 w-9 items-center justify-center self-end rounded-full bg-white shadow-md">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
                           <path d="M5 12h14M13 6l6 6-6 6" />
                         </svg>
@@ -2743,27 +2734,25 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.26 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('owner'); setShowCommercialModal(true); }}
-                      className="group relative min-h-[180px] overflow-hidden rounded-3xl bg-emerald-50 p-5 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group flex min-h-[210px] flex-col gap-2 rounded-3xl bg-emerald-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
-                      <div className="pe-16">
-                        <span className="inline-flex rounded-md bg-emerald-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700">
-                          {t.commercialOwnerBadge}
-                        </span>
-                        <p className="mt-2.5 line-clamp-2 text-base font-bold leading-tight text-stone-900">
-                          {t.commercialOwnerTitle}
-                        </p>
-                        <p className="mt-0.5 line-clamp-1 text-xs leading-snug text-stone-500">
-                          {t.commercialOwnerSubtitle}
-                        </p>
-                      </div>
+                      <span className="self-start rounded-md bg-emerald-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700">
+                        {t.commercialOwnerBadge}
+                      </span>
+                      <p className="text-lg font-extrabold leading-snug text-stone-900">
+                        {t.commercialOwnerTitle}
+                      </p>
+                      <p className="line-clamp-1 text-xs text-slate-500">
+                        {t.commercialOwnerSubtitle}
+                      </p>
                       <Image
                         src="/card-owner-commercial.webp"
                         alt=""
                         width={200}
                         height={200}
-                        className={`absolute bottom-3 end-3 max-h-16 w-[42%] max-w-[104px] object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
+                        className={`my-1 h-20 object-contain mx-auto ${isRtl ? "scale-x-[-1]" : ""}`}
                       />
-                      <span className="absolute bottom-3 start-3 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-md">
+                      <span className="mt-auto flex h-9 w-9 items-center justify-center self-end rounded-full bg-white shadow-md">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
                           <path d="M5 12h14M13 6l6 6-6 6" />
                         </svg>
@@ -2776,27 +2765,25 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.34 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('seeker'); setShowCommercialModal(true); }}
-                      className="group relative min-h-[180px] overflow-hidden rounded-3xl bg-teal-50 p-5 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group flex min-h-[210px] flex-col gap-2 rounded-3xl bg-teal-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
-                      <div className="pe-16">
-                        <span className="inline-flex rounded-md bg-teal-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-teal-700">
-                          {t.commercialSeekerBadge}
-                        </span>
-                        <p className="mt-2.5 line-clamp-2 text-base font-bold leading-tight text-stone-900">
-                          {t.commercialSeekerTitle}
-                        </p>
-                        <p className="mt-0.5 line-clamp-1 text-xs leading-snug text-stone-500">
-                          {t.commercialSeekerSubtitle}
-                        </p>
-                      </div>
+                      <span className="self-start rounded-md bg-teal-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-teal-700">
+                        {t.commercialSeekerBadge}
+                      </span>
+                      <p className="text-lg font-extrabold leading-snug text-stone-900">
+                        {t.commercialSeekerTitle}
+                      </p>
+                      <p className="line-clamp-1 text-xs text-slate-500">
+                        {t.commercialSeekerSubtitle}
+                      </p>
                       <Image
                         src="/card-seeker-commercial.webp"
                         alt=""
                         width={200}
                         height={200}
-                        className={`absolute bottom-3 end-3 max-h-16 w-[42%] max-w-[104px] object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
+                        className={`my-1 h-20 object-contain mx-auto ${isRtl ? "scale-x-[-1]" : ""}`}
                       />
-                      <span className="absolute bottom-3 start-3 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-md">
+                      <span className="mt-auto flex h-9 w-9 items-center justify-center self-end rounded-full bg-white shadow-md">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
                           <path d="M5 12h14M13 6l6 6-6 6" />
                         </svg>
