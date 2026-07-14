@@ -2576,10 +2576,6 @@ export default function Home() {
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
       <div className="w-full px-4 pt-10 overflow-hidden relative bg-white">
 
-        {/* Decorative blur circles */}
-        <div className="absolute w-96 h-96 rounded-full bg-orange-50 blur-3xl opacity-60 -top-20 -right-20 pointer-events-none" />
-        <div className="absolute w-72 h-72 rounded-full bg-blue-50 blur-3xl opacity-40 bottom-0 -left-10 pointer-events-none" />
-
         <div className="relative z-10 max-w-2xl mx-auto px-5 pt-8 pb-8 w-full">
 
           <motion.div
@@ -2593,7 +2589,7 @@ export default function Home() {
             <div className="flex flex-col md:flex-row md:items-center md:gap-8">
 
               {/* Text block */}
-              <div className="px-5 pt-4 md:w-[45%] md:shrink-0 md:px-0 md:pt-0" dir={isRtl ? "rtl" : "ltr"}>
+              <div className="px-5 pt-4 pb-3 md:w-[45%] md:shrink-0 md:px-0 md:pt-0" dir={isRtl ? "rtl" : "ltr"}>
                 <p className="text-sm text-slate-500">{t.heroGreeting}</p>
                 <h1 className="mt-1">
                   <span className="block text-[32px] font-extrabold leading-[1.15] text-slate-900">{t.heroCompactLine1}</span>
@@ -2603,7 +2599,7 @@ export default function Home() {
               </div>
 
               {/* Illustration — full-bleed on mobile, contained column on desktop */}
-              <div className="relative left-1/2 -mt-2 w-screen -translate-x-1/2 md:left-auto md:mt-0 md:w-[55%] md:shrink-0 md:translate-x-0">
+              <div className="relative left-1/2 w-screen -translate-x-1/2 md:left-auto md:w-[55%] md:shrink-0 md:translate-x-0">
                 <div className="relative aspect-[16/10] w-full md:aspect-[4/3]">
                   <Image
                     src="/hero-illustration.webp"
@@ -2618,40 +2614,40 @@ export default function Home() {
             </div>
 
             {/* ── SEARCH BAR ───────────────────────────────────────────────── */}
-            <div className="relative z-10 -mt-10 mx-5 rounded-3xl bg-white p-2 shadow-lg shadow-slate-200/60 md:mx-0 md:mt-6">
+            <div className="relative z-10 -mt-10 mx-5 rounded-[28px] bg-white p-3 shadow-xl shadow-slate-200/70 md:mx-0 md:mt-6">
               <button
                 onClick={() => router.push("/search")}
-                className="flex w-full items-center gap-3 rounded-2xl p-2 text-start transition-transform duration-200 active:scale-[0.98]"
+                className="flex w-full min-h-[56px] items-center gap-3 rounded-2xl px-1 text-start transition-transform duration-200 active:scale-[0.98]"
                 dir={isRtl ? "rtl" : "ltr"}
               >
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-orange-500 text-white">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-orange-500 text-white">
                   <Search className="h-5 w-5" />
                 </span>
-                <span className="min-w-0 flex-1 truncate text-sm text-slate-400">
+                <span className="min-w-0 flex-1 truncate text-base text-slate-400">
                   {t.heroSearchPlaceholder}
                 </span>
               </button>
 
-              <div className="mt-1 flex items-center border-t border-slate-100 pt-1" dir={isRtl ? "rtl" : "ltr"}>
+              <div className="my-2 border-t border-slate-100" />
+
+              <div className="flex h-11" dir={isRtl ? "rtl" : "ltr"}>
                 <button
                   onClick={() => router.push("/search-wizard")}
-                  className="flex flex-1 items-center justify-center gap-1.5 py-2 text-sm text-slate-600"
+                  className="flex flex-1 items-center justify-center gap-1.5 text-[13px] font-medium text-slate-600"
                 >
                   <MapPin className="h-4 w-4" />
                   <span className="truncate">{t.quickLocationLabel}</span>
                 </button>
-                <span className="h-4 w-px shrink-0 bg-slate-200" />
                 <button
                   onClick={() => router.push("/search-wizard")}
-                  className="flex flex-1 items-center justify-center gap-1.5 py-2 text-sm text-slate-600"
+                  className="flex flex-1 items-center justify-center gap-1.5 border-s border-slate-100 text-[13px] font-medium text-slate-600"
                 >
                   <LayoutGrid className="h-4 w-4" />
                   <span className="truncate">{t.quickCategoryLabel}</span>
                 </button>
-                <span className="h-4 w-px shrink-0 bg-slate-200" />
                 <button
                   onClick={() => router.push("/search")}
-                  className="flex flex-1 items-center justify-center gap-1.5 py-2 text-sm text-slate-600"
+                  className="flex flex-1 items-center justify-center gap-1.5 border-s border-slate-100 text-[13px] font-medium text-slate-600"
                 >
                   <SlidersHorizontal className="h-4 w-4" />
                   <span className="truncate">{t.quickFilterLabel}</span>
