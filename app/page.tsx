@@ -2590,25 +2590,31 @@ export default function Home() {
           >
 
             {/* ── COMPACT HERO ─────────────────────────────────────────────── */}
-            <div className="mb-6 flex w-full items-center gap-4" dir={isRtl ? "rtl" : "ltr"}>
-              <div className="min-w-0 flex-1">
-                <p className="text-sm text-slate-500">{t.heroGreeting}</p>
-                <h1 className="mt-1 leading-tight">
-                  <span className="block text-3xl font-extrabold text-slate-900">{t.heroCompactLine1}</span>
-                  <span className="block text-3xl font-extrabold text-orange-500">{t.heroCompactLine2}</span>
-                </h1>
-                <p className="mt-2 text-sm text-slate-500">{t.heroCompactSub}</p>
-              </div>
+            <div className="mb-2" dir={isRtl ? "rtl" : "ltr"}>
+              <p className="text-sm text-slate-500">{t.heroGreeting}</p>
+              <h1 className="mt-1 leading-tight">
+                <span className="block text-3xl font-extrabold text-slate-900">{t.heroCompactLine1}</span>
+                <span className="block text-3xl font-extrabold text-orange-500">{t.heroCompactLine2}</span>
+              </h1>
+              <p className="mt-2 text-sm text-slate-500">{t.heroCompactSub}</p>
+            </div>
 
-              <div className="w-[38%] shrink-0">
-                <div className="relative aspect-[3/4] overflow-hidden rounded-3xl shadow-lg shadow-slate-200/60">
-                  <Image src="/hero-bg.webp" alt="" fill className="object-cover" />
-                </div>
-              </div>
+            {/* ── HERO ILLUSTRATION ─────────────────────────────────────────── */}
+            <div className="relative -mx-5 aspect-[16/9]">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,white_50%,transparent_78%)]" />
+              <Image
+                src="/hero-illustration.webp"
+                alt=""
+                width={1536}
+                height={1024}
+                priority
+                sizes="(min-width: 672px) 672px, 100vw"
+                className="relative h-full w-full object-contain"
+              />
             </div>
 
             {/* ── SEARCH BAR ───────────────────────────────────────────────── */}
-            <div className="mb-6 w-full rounded-3xl bg-white p-2 shadow-lg shadow-slate-200/60">
+            <div className="relative z-10 -mt-6 w-full rounded-3xl bg-white p-2 shadow-lg shadow-slate-200/60">
               <button
                 onClick={() => router.push("/search")}
                 className="flex w-full items-center gap-3 rounded-2xl p-2 text-start transition-transform duration-200 active:scale-[0.98]"
@@ -2665,13 +2671,13 @@ export default function Home() {
                       className="group relative min-h-[180px] overflow-hidden rounded-3xl bg-orange-50 p-5 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
                       <div className="pe-16">
-                        <span className="inline-flex rounded-md bg-orange-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-orange-700">
+                        <span className="inline-flex rounded-md bg-orange-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-orange-700">
                           {t.landlordBadge}
                         </span>
-                        <p className="mt-2.5 truncate text-lg font-bold leading-tight text-stone-900">
+                        <p className="mt-2.5 line-clamp-2 text-base font-bold leading-tight text-stone-900">
                           {t.optionSeekingTitle}
                         </p>
-                        <p className="mt-0.5 truncate text-[13px] leading-snug text-stone-500">
+                        <p className="mt-0.5 line-clamp-1 text-xs leading-snug text-stone-500">
                           {t.landlordSubtext}
                         </p>
                       </div>
@@ -2680,7 +2686,7 @@ export default function Home() {
                         alt=""
                         width={200}
                         height={200}
-                        className={`absolute bottom-3 end-3 h-16 w-[42%] max-w-[104px] object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
+                        className={`absolute bottom-3 end-3 max-h-16 w-[42%] max-w-[104px] object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
                       />
                       <span className="absolute bottom-3 start-3 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-md">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
@@ -2698,13 +2704,13 @@ export default function Home() {
                       className="group relative min-h-[180px] overflow-hidden rounded-3xl bg-blue-50 p-5 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
                       <div className="pe-16">
-                        <span className="inline-flex rounded-md bg-blue-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-blue-700">
+                        <span className="inline-flex rounded-md bg-blue-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-700">
                           {t.tenantBadge}
                         </span>
-                        <p className="mt-2.5 truncate text-lg font-bold leading-tight text-stone-900">
+                        <p className="mt-2.5 line-clamp-2 text-base font-bold leading-tight text-stone-900">
                           {t.optionOfferingTitle}
                         </p>
-                        <p className="mt-0.5 truncate text-[13px] leading-snug text-stone-500">
+                        <p className="mt-0.5 line-clamp-1 text-xs leading-snug text-stone-500">
                           {t.tenantSubtext}
                         </p>
                       </div>
@@ -2713,7 +2719,7 @@ export default function Home() {
                         alt=""
                         width={200}
                         height={200}
-                        className={`absolute bottom-3 end-3 h-16 w-[42%] max-w-[104px] object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
+                        className={`absolute bottom-3 end-3 max-h-16 w-[42%] max-w-[104px] object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
                       />
                       <span className="absolute bottom-3 start-3 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-md">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
@@ -2731,13 +2737,13 @@ export default function Home() {
                       className="group relative min-h-[180px] overflow-hidden rounded-3xl bg-emerald-50 p-5 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
                       <div className="pe-16">
-                        <span className="inline-flex rounded-md bg-emerald-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-700">
+                        <span className="inline-flex rounded-md bg-emerald-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700">
                           {t.commercialOwnerBadge}
                         </span>
-                        <p className="mt-2.5 truncate text-lg font-bold leading-tight text-stone-900">
+                        <p className="mt-2.5 line-clamp-2 text-base font-bold leading-tight text-stone-900">
                           {t.commercialOwnerTitle}
                         </p>
-                        <p className="mt-0.5 truncate text-[13px] leading-snug text-stone-500">
+                        <p className="mt-0.5 line-clamp-1 text-xs leading-snug text-stone-500">
                           {t.commercialOwnerSubtitle}
                         </p>
                       </div>
@@ -2746,7 +2752,7 @@ export default function Home() {
                         alt=""
                         width={200}
                         height={200}
-                        className={`absolute bottom-3 end-3 h-16 w-[42%] max-w-[104px] object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
+                        className={`absolute bottom-3 end-3 max-h-16 w-[42%] max-w-[104px] object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
                       />
                       <span className="absolute bottom-3 start-3 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-md">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
@@ -2764,13 +2770,13 @@ export default function Home() {
                       className="group relative min-h-[180px] overflow-hidden rounded-3xl bg-teal-50 p-5 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
                       <div className="pe-16">
-                        <span className="inline-flex rounded-md bg-teal-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-teal-700">
+                        <span className="inline-flex rounded-md bg-teal-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-teal-700">
                           {t.commercialSeekerBadge}
                         </span>
-                        <p className="mt-2.5 truncate text-lg font-bold leading-tight text-stone-900">
+                        <p className="mt-2.5 line-clamp-2 text-base font-bold leading-tight text-stone-900">
                           {t.commercialSeekerTitle}
                         </p>
-                        <p className="mt-0.5 truncate text-[13px] leading-snug text-stone-500">
+                        <p className="mt-0.5 line-clamp-1 text-xs leading-snug text-stone-500">
                           {t.commercialSeekerSubtitle}
                         </p>
                       </div>
@@ -2779,7 +2785,7 @@ export default function Home() {
                         alt=""
                         width={200}
                         height={200}
-                        className={`absolute bottom-3 end-3 h-16 w-[42%] max-w-[104px] object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
+                        className={`absolute bottom-3 end-3 max-h-16 w-[42%] max-w-[104px] object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
                       />
                       <span className="absolute bottom-3 start-3 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-md">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
