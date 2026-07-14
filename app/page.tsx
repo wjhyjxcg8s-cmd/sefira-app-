@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import WelcomePopup from "@/app/components/WelcomePopup";
-
-import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
+import { Search, MapPin, LayoutGrid, SlidersHorizontal } from "lucide-react";
 
 import LatestListings from "@/app/components/LatestListings";
 import PopularCities from "@/app/components/PopularCities";
@@ -59,11 +58,20 @@ const translations = {
     heroLine2: "",
     heroLine3: "",
     heroP: "Evinizi, ofisinizi veya ticari alanınızı güvenle paylaşın ya da ihtiyacınız olan alanı kolayca bulun.",
+    // ── Compact hero ──
+    heroGreeting: "Merhaba 👋",
+    heroCompactLine1: "Aradığın alanı",
+    heroCompactLine2: "bul veya paylaş",
+    heroCompactSub: "İster ev, ister ofis, ister dükkan…",
+    heroSearchPlaceholder: "Ev, oda, ofis veya dükkan ara…",
+    quickLocationLabel: "Konum seç",
+    quickCategoryLabel: "Kategori",
+    quickFilterLabel: "Filtrele",
     // ── Wizard ──
     wizardTitle: "Ne arıyorsunuz?",
-    optionSeekingTitle: "Evim var, iyi bir ev arkadaşı arıyorum",
+    optionSeekingTitle: "Evim Var",
     optionSeekingSubtitle: "Evim var, iyi bir ev arkadaşı arıyorum",
-    optionOfferingTitle: "Evim yok, oda veya ev arıyorum (ev arkadaşı)",
+    optionOfferingTitle: "Ev Arıyorum",
     optionOfferingSubtitle: "Evim yok, oda veya ev arıyorum (ev arkadaşı)",
     genderStep: "Tercih Edilen Cinsiyet",
     genderStepSub: "Tercih edilen cinsiyet",
@@ -169,10 +177,10 @@ const translations = {
     landlordSubtext: "Güvenli housemate bul",
     tenantSubtext: "İdeal evinizi bul",
     commercialOwnerBadge: "TİCARİ ALAN SAHİBİ",
-    commercialOwnerTitle: "Ticari paylaşım alanım var, paylaşmak istiyorum",
+    commercialOwnerTitle: "Ticari Alanım Var",
     commercialOwnerSubtitle: "Alanınızı doğru kişiyle paylaşın",
     commercialSeekerBadge: "TİCARİ ALAN ARAYAN",
-    commercialSeekerTitle: "Ticari paylaşım alanı arıyorum",
+    commercialSeekerTitle: "Ticari Alan Arıyorum",
     commercialSeekerSubtitle: "Size uygun ticari alanı bulun",
     commercialModalTitleOwner: "Mekan türünü seçin",
     commercialModalTitleSeeker: "Aradığınız mekan türünü seçin",
@@ -202,11 +210,20 @@ const translations = {
     heroLine2: "",
     heroLine3: "",
     heroP: "Share your home, office or commercial space with confidence — or easily find the space you need.",
+    // ── Compact hero ──
+    heroGreeting: "Hey there 👋",
+    heroCompactLine1: "Find your space",
+    heroCompactLine2: "or share it",
+    heroCompactSub: "Whether it's a home, office, or shop…",
+    heroSearchPlaceholder: "Search for a home, room, office or shop…",
+    quickLocationLabel: "Choose location",
+    quickCategoryLabel: "Category",
+    quickFilterLabel: "Filter",
     // ── Wizard ──
     wizardTitle: "What are you looking for?",
-    optionSeekingTitle: "I have a place and I'm looking for a good roommate",
+    optionSeekingTitle: "I Have a Place",
     optionSeekingSubtitle: "I have a place and I'm looking for a good roommate",
-    optionOfferingTitle: "I need a place – looking for a room or apartment",
+    optionOfferingTitle: "Looking for a Place",
     optionOfferingSubtitle: "I need a place – looking for a room or apartment",
     genderStep: "Preferred Housemate Gender",
     genderStepSub: "Preferred gender",
@@ -312,10 +329,10 @@ const translations = {
     landlordSubtext: "Find a verified roommate",
     tenantSubtext: "Find your ideal home",
     commercialOwnerBadge: "COMMERCIAL SPACE OWNER",
-    commercialOwnerTitle: "I have a commercial space to share",
+    commercialOwnerTitle: "I Have a Space",
     commercialOwnerSubtitle: "Share your space with the right person",
     commercialSeekerBadge: "LOOKING FOR COMMERCIAL SPACE",
-    commercialSeekerTitle: "I'm looking for a commercial space",
+    commercialSeekerTitle: "Looking for a Space",
     commercialSeekerSubtitle: "Find the right space for you",
     commercialModalTitleOwner: "Select space type",
     commercialModalTitleSeeker: "Select the space you're looking for",
@@ -345,11 +362,20 @@ const translations = {
     heroLine2: "",
     heroLine3: "",
     heroP: "خانه، آفیس یا فضای تجاری خود را با اطمینان به اشتراک بگذارید یا فضای مورد نیازتان را به راحتی پیدا کنید.",
+    // ── Compact hero ──
+    heroGreeting: "سلام 👋",
+    heroCompactLine1: "فضای موردنظرت",
+    heroCompactLine2: "پیدا کن یا اشتراک بذار",
+    heroCompactSub: "چه خونه، چه دفتر، چه مغازه…",
+    heroSearchPlaceholder: "جستجوی خونه، اتاق، دفتر یا مغازه…",
+    quickLocationLabel: "انتخاب موقعیت",
+    quickCategoryLabel: "دسته‌بندی",
+    quickFilterLabel: "فیلتر",
     // ── Wizard ──
     wizardTitle: "دنبال چه می‌گردید؟",
-    optionSeekingTitle: "خونه یا اتاق دارم و دنبال هم‌خونه خوب می‌گردم",
+    optionSeekingTitle: "خونه دارم",
     optionSeekingSubtitle: "خونه یا اتاق دارم و دنبال هم‌خونه خوب می‌گردم",
-    optionOfferingTitle: "خونه ندارم، دنبال خونه یا اتاق می‌گردم (هم‌خونه)",
+    optionOfferingTitle: "دنبال خونه‌ام",
     optionOfferingSubtitle: "خونه ندارم، دنبال خونه یا اتاق می‌گردم (هم‌خونه)",
     genderStep: "جنسیت مورد نظر هم‌خانه",
     genderStepSub: "جنسیت مورد نظر",
@@ -455,10 +481,10 @@ const translations = {
     landlordSubtext: "هم‌خانه معتبر پیدا کن",
     tenantSubtext: "خانه ایده‌آلت را بیاب",
     commercialOwnerBadge: "صاحب فضای تجاری",
-    commercialOwnerTitle: "فضای تجاری دارم، می‌خواهم به اشتراک بگذارم",
+    commercialOwnerTitle: "فضای تجاری دارم",
     commercialOwnerSubtitle: "فضای خود را با فرد مناسب به اشتراک بگذارید",
     commercialSeekerBadge: "دنبال فضای تجاری",
-    commercialSeekerTitle: "دنبال فضای تجاری مشترک می‌گردم",
+    commercialSeekerTitle: "دنبال فضای تجاری‌ام",
     commercialSeekerSubtitle: "فضای مناسب خود را پیدا کنید",
     commercialModalTitleOwner: "نوع مکان را انتخاب کنید",
     commercialModalTitleSeeker: "نوع مکان مورد نظر را انتخاب کنید",
@@ -488,10 +514,19 @@ const translations = {
     heroLine2: "",
     heroLine3: "",
     heroP: "Teilen Sie Ihr Zuhause, Büro oder Ihre Gewerbefläche sicher — oder finden Sie ganz einfach den Raum, den Sie suchen.",
+    // ── Compact hero ──
+    heroGreeting: "Hallo 👋",
+    heroCompactLine1: "Finde deinen Raum",
+    heroCompactLine2: "oder teile ihn",
+    heroCompactSub: "Ob Zuhause, Büro oder Laden…",
+    heroSearchPlaceholder: "Wohnung, Zimmer, Büro oder Laden suchen…",
+    quickLocationLabel: "Ort wählen",
+    quickCategoryLabel: "Kategorie",
+    quickFilterLabel: "Filtern",
     wizardTitle: "Was suchen Sie?",
-    optionSeekingTitle: "Ich habe ein Zimmer und suche einen guten Mitbewohner",
+    optionSeekingTitle: "Ich Habe ein Zimmer",
     optionSeekingSubtitle: "Ich habe ein Zimmer und suche einen guten Mitbewohner",
-    optionOfferingTitle: "Ich suche ein Zimmer oder eine Wohnung",
+    optionOfferingTitle: "Ich Suche ein Zimmer",
     optionOfferingSubtitle: "Ich suche ein Zimmer oder eine Wohnung",
     genderStep: "Bevorzugtes Geschlecht des Mitbewohners",
     genderStepSub: "Bevorzugtes Geschlecht",
@@ -597,10 +632,10 @@ const translations = {
     landlordSubtext: "Mitbewohner finden",
     tenantSubtext: "Traumzuhause finden",
     commercialOwnerBadge: "GEWERBERAUM-EIGENTÜMER",
-    commercialOwnerTitle: "Ich habe einen Gewerberaum zum Teilen",
+    commercialOwnerTitle: "Ich Habe Gewerberaum",
     commercialOwnerSubtitle: "Teilen Sie Ihren Raum mit der richtigen Person",
     commercialSeekerBadge: "GEWERBERAUM GESUCHT",
-    commercialSeekerTitle: "Ich suche einen gemeinsamen Gewerberaum",
+    commercialSeekerTitle: "Ich Suche Gewerberaum",
     commercialSeekerSubtitle: "Finden Sie den richtigen Raum für Sie",
     commercialModalTitleOwner: "Raumtyp auswählen",
     commercialModalTitleSeeker: "Gesuchten Raumtyp auswählen",
@@ -631,11 +666,20 @@ const translations = {
     heroLine2: "",
     heroLine3: "",
     heroP: "شارك منزلك أو مكتبك أو مساحتك التجارية بثقة، أو ابحث بسهولة عن المساحة التي تحتاجها.",
+    // ── Compact hero ──
+    heroGreeting: "مرحبًا 👋",
+    heroCompactLine1: "مساحتك المثالية",
+    heroCompactLine2: "ابحث عنها أو شاركها",
+    heroCompactSub: "سواء منزل، مكتب، أو محل…",
+    heroSearchPlaceholder: "ابحث عن منزل أو غرفة أو مكتب أو محل…",
+    quickLocationLabel: "اختر الموقع",
+    quickCategoryLabel: "الفئة",
+    quickFilterLabel: "تصفية",
     // ── Wizard ──
     wizardTitle: "ماذا تبحث عن؟",
-    optionSeekingTitle: "لدي غرفة وأبحث عن شريك سكن جيد",
+    optionSeekingTitle: "لدي غرفة",
     optionSeekingSubtitle: "لدي غرفة وأبحث عن شريك سكن جيد",
-    optionOfferingTitle: "لا أملك غرفة، أبحث عن منزل أو غرفة",
+    optionOfferingTitle: "أبحث عن غرفة",
     optionOfferingSubtitle: "لا أملك غرفة، أبحث عن منزل أو غرفة",
     genderStep: "الجنس المفضَّل لشريك السكن",
     genderStepSub: "الجنس المفضَّل",
@@ -741,10 +785,10 @@ const translations = {
     landlordSubtext: "ابحث عن شريك سكن موثَّق",
     tenantSubtext: "ابحث عن منزلك المثالي",
     commercialOwnerBadge: "صاحب مساحة تجارية",
-    commercialOwnerTitle: "لدي مساحة تجارية أريد مشاركتها",
+    commercialOwnerTitle: "لدي مساحة تجارية",
     commercialOwnerSubtitle: "شارك مساحتك مع الشخص المناسب",
     commercialSeekerBadge: "أبحث عن مساحة تجارية",
-    commercialSeekerTitle: "أبحث عن مساحة تجارية مشتركة",
+    commercialSeekerTitle: "أبحث عن مساحة تجارية",
     commercialSeekerSubtitle: "اعثر على المساحة المناسبة لك",
     commercialModalTitleOwner: "اختر نوع المكان",
     commercialModalTitleSeeker: "اختر نوع المكان الذي تبحث عنه",
@@ -774,10 +818,19 @@ const translations = {
     heroLine2: "",
     heroLine3: "",
     heroP: "Делитесь своим домом, офисом или коммерческим пространством уверенно — или легко найдите нужное вам место.",
+    // ── Compact hero ──
+    heroGreeting: "Привет 👋",
+    heroCompactLine1: "Найди пространство",
+    heroCompactLine2: "или поделись своим",
+    heroCompactSub: "Дом, офис или магазин — не важно…",
+    heroSearchPlaceholder: "Искать дом, комнату, офис или магазин…",
+    quickLocationLabel: "Выбрать локацию",
+    quickCategoryLabel: "Категория",
+    quickFilterLabel: "Фильтр",
     wizardTitle: "Что вы ищете?",
-    optionSeekingTitle: "У меня есть комната, ищу хорошего соседа",
+    optionSeekingTitle: "У Меня Есть Комната",
     optionSeekingSubtitle: "У меня есть комната, ищу хорошего соседа",
-    optionOfferingTitle: "Ищу комнату или квартиру",
+    optionOfferingTitle: "Ищу Комнату",
     optionOfferingSubtitle: "Ищу комнату или квартиру",
     genderStep: "Предпочтение по полу",
     genderStepSub: "Какой пол соседа вы предпочитаете?",
@@ -883,10 +936,10 @@ const translations = {
     landlordSubtext: "Найди проверенного соседа",
     tenantSubtext: "Найди своё идеальное жильё",
     commercialOwnerBadge: "ВЛАДЕЛЕЦ КОММЕРЧЕСКОЙ ПЛОЩАДИ",
-    commercialOwnerTitle: "У меня есть коммерческая площадь для совместного использования",
+    commercialOwnerTitle: "Есть Площадь",
     commercialOwnerSubtitle: "Поделитесь площадью с подходящим человеком",
     commercialSeekerBadge: "ИЩУ КОММЕРЧЕСКУЮ ПЛОЩАДЬ",
-    commercialSeekerTitle: "Ищу коммерческую площадь для совместного использования",
+    commercialSeekerTitle: "Ищу Площадь",
     commercialSeekerSubtitle: "Найдите подходящую площадь для себя",
     commercialModalTitleOwner: "Выберите тип помещения",
     commercialModalTitleSeeker: "Выберите тип помещения, которое ищете",
@@ -1573,7 +1626,6 @@ export default function Home() {
   const langMenuRef = useRef<HTMLDivElement>(null);
   const currencyMenuRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifications, setNotifications] = useState<NotifItem[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -1620,48 +1672,6 @@ export default function Home() {
     const { outcome } = await (pwaPrompt as BeforeInstallPromptEvent).userChoice;
     if (outcome === "accepted") dismissPwaBanner();
   }
-
-  // ── Hero video: resume on tab focus ──────────────────────────────────────
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        video.play().catch(() => {});
-      }
-    };
-    const handleFocus = () => {
-      video.play().catch(() => {});
-    };
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('focus', handleFocus);
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('focus', handleFocus);
-    };
-  }, []);
-
-  // ── Hero badge counting animation ─────────────────────────────────────────
-  const [countUsers, setCountUsers] = useState(0);
-  const [countStars, setCountStars] = useState(0);
-  useEffect(() => {
-    const duration = 2000;
-    const start = performance.now();
-    function tick(now: number) {
-      const elapsed = now - start;
-      const t = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - t, 3);
-      setCountUsers(Math.floor(eased * 127));
-      setCountStars(parseFloat((eased * 4.9).toFixed(1)));
-      if (t < 1) requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-  }, []);
-
-  // ── Hero scroll parallax ──────────────────────────────────────────────────
-  const { scrollY } = useScroll();
-  const badgeTopParallax = useTransform(scrollY, [0, 600], [0, -20]);
-  const badgeBottomParallax = useTransform(scrollY, [0, 600], [0, 18]);
 
   // ── Scroll detection ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -2203,12 +2213,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900 overflow-x-hidden" dir={lang === "fa" || lang === "ar" ? "rtl" : "ltr"}>
-      <style>{`
-        @keyframes sefira-kenburns {
-          0% { transform: scale(1); }
-          100% { transform: scale(1.06); }
-        }
-      `}</style>
 
       {/* ── NAVBAR ────────────────────────────────────────────────────────────── */}
       <nav
@@ -2551,210 +2555,212 @@ export default function Home() {
         <div className="absolute w-96 h-96 rounded-full bg-orange-50 blur-3xl opacity-60 -top-20 -right-20 pointer-events-none" />
         <div className="absolute w-72 h-72 rounded-full bg-blue-50 blur-3xl opacity-40 bottom-0 -left-10 pointer-events-none" />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-5 pt-10 pb-8 md:grid md:grid-cols-2 gap-8 items-center w-full">
+        <div className="relative z-10 max-w-2xl mx-auto px-5 pt-8 pb-8 w-full">
 
-          {/* ── LEFT: Typography + Wizard ───────────────────────────────────── */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
-            className="flex flex-col items-start"
+            className="flex w-full flex-col"
           >
 
-            {/* Pill badge */}
-            <span className="inline-flex items-center bg-orange-50 border border-orange-200 text-orange-600 text-xs font-medium px-3 py-1 rounded-full">
-              {({ tr: "Alan Paylaşım Platformu", en: "Space Sharing Platform", fa: "پلتفرم اشتراک‌گذاری فضا", ar: "منصة مشاركة المساحات", de: "Plattform für Raumteilung", ru: "Платформа совместного использования" } as Record<string, string>)[lang] ?? "Space Sharing Platform"}
-            </span>
+            {/* ── COMPACT HERO ─────────────────────────────────────────────── */}
+            <div className="mb-6 flex w-full items-center gap-4" dir={isRtl ? "rtl" : "ltr"}>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm text-slate-500">{t.heroGreeting}</p>
+                <h1 className="mt-1 leading-tight">
+                  <span className="block text-3xl font-extrabold text-slate-900">{t.heroCompactLine1}</span>
+                  <span className="block text-3xl font-extrabold text-orange-500">{t.heroCompactLine2}</span>
+                </h1>
+                <p className="mt-2 text-sm text-slate-500">{t.heroCompactSub}</p>
+              </div>
 
-            {/* Headline */}
-            <AnimatedGradientText className="text-2xl font-bold px-6 py-2 mt-2">
-              <span className="animate-gradient bg-gradient-to-r from-orange-600 via-amber-500 to-orange-700 bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent [--bg-size:300%]">
-                {t.heroLine1} {t.heroLine2} {t.heroLine3}
-              </span>
-            </AnimatedGradientText>
+              <div className="w-[38%] shrink-0">
+                <div className="relative aspect-[3/4] overflow-hidden rounded-3xl shadow-lg shadow-slate-200/60">
+                  <Image src="/hero-bg.webp" alt="" fill className="object-cover" />
+                </div>
+              </div>
+            </div>
 
-            {/* Subtitle */}
-            <p className="text-gray-500 text-base mt-3 mb-4 leading-relaxed max-w-xl">
-              {t.heroP}
-            </p>
+            {/* ── SEARCH BAR ───────────────────────────────────────────────── */}
+            <div className="mb-6 w-full rounded-3xl bg-white p-2 shadow-lg shadow-slate-200/60">
+              <button
+                onClick={() => router.push("/search")}
+                className="flex w-full items-center gap-3 rounded-2xl p-2 text-start transition-transform duration-200 active:scale-[0.98]"
+                dir={isRtl ? "rtl" : "ltr"}
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-orange-500 text-white">
+                  <Search className="h-5 w-5" />
+                </span>
+                <span className="min-w-0 flex-1 truncate text-sm text-slate-400">
+                  {t.heroSearchPlaceholder}
+                </span>
+              </button>
+
+              <div className="mt-1 flex items-center border-t border-slate-100 pt-1" dir={isRtl ? "rtl" : "ltr"}>
+                <button
+                  onClick={() => router.push("/search-wizard")}
+                  className="flex flex-1 items-center justify-center gap-1.5 py-2 text-sm text-slate-600"
+                >
+                  <MapPin className="h-4 w-4" />
+                  <span className="truncate">{t.quickLocationLabel}</span>
+                </button>
+                <span className="h-4 w-px shrink-0 bg-slate-200" />
+                <button
+                  onClick={() => router.push("/search-wizard")}
+                  className="flex flex-1 items-center justify-center gap-1.5 py-2 text-sm text-slate-600"
+                >
+                  <LayoutGrid className="h-4 w-4" />
+                  <span className="truncate">{t.quickCategoryLabel}</span>
+                </button>
+                <span className="h-4 w-px shrink-0 bg-slate-200" />
+                <button
+                  onClick={() => router.push("/search")}
+                  className="flex flex-1 items-center justify-center gap-1.5 py-2 text-sm text-slate-600"
+                >
+                  <SlidersHorizontal className="h-4 w-4" />
+                  <span className="truncate">{t.quickFilterLabel}</span>
+                </button>
+              </div>
+            </div>
 
             {/* ── SEARCH WIZARD ─────────────────────────────────────────────── */}
             <div className="w-full mt-3">
 
               {wizardMode === null ? (
                 <>
-                  {/* CTA buttons */}
-                  <div className="flex flex-col space-y-4 -mx-9 px-2.5 my-3">
+                  {/* Intent cards — 2×2 grid */}
+                  <div className="grid grid-cols-2 gap-4" dir={isRtl ? "rtl" : "ltr"}>
                     {/* Card 1 — Landlord */}
                     <motion.button
-                      initial={{ opacity: 0, y: 30 }}
+                      initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=has_place'); }}
-                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-start min-h-[150px] flex items-center cursor-pointer"
-                      dir={isRtl ? "rtl" : "ltr"}
+                      className="group relative min-h-[180px] overflow-hidden rounded-3xl bg-orange-50 p-5 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
+                      <div className="pe-16">
+                        <span className="inline-flex rounded-md bg-orange-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-orange-700">
+                          {t.landlordBadge}
+                        </span>
+                        <p className="mt-2.5 truncate text-lg font-bold leading-tight text-stone-900">
+                          {t.optionSeekingTitle}
+                        </p>
+                        <p className="mt-0.5 truncate text-[13px] leading-snug text-stone-500">
+                          {t.landlordSubtext}
+                        </p>
+                      </div>
                       <Image
                         src="/card-owner-home.webp"
                         alt=""
-                        fill
-                        className={`object-cover object-[75%_center] z-0 transition-transform duration-700 ease-out ${isRtl ? "scale-x-[-1] motion-safe:group-hover:scale-x-[-1.04] motion-safe:group-hover:scale-y-[1.04]" : "motion-safe:group-hover:scale-[1.04]"}`}
+                        width={200}
+                        height={200}
+                        className={`absolute bottom-3 end-3 h-16 w-[42%] max-w-[104px] object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
                       />
-                      <div className={isRtl ? "absolute inset-0 bg-gradient-to-l from-white via-white/85 to-white/5" : "absolute inset-0 bg-gradient-to-r from-white via-white/85 to-white/5"} />
-                      <div className={`absolute inset-y-0 w-1 bg-gradient-to-b from-orange-500 to-amber-500 ${isRtl ? "right-0" : "left-0"}`} />
-
-                      <div className="relative z-10 flex items-center gap-4 p-5 w-full">
-                        <div className="w-16 h-16 shrink-0 rounded-xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-stone-100 flex items-center justify-center text-[32px]">
-                          🏡
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                          <span className="inline-flex bg-orange-100 text-orange-700 text-[11px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-md whitespace-nowrap">
-                            {t.landlordBadge}
-                          </span>
-                          <p className="mt-1.5 text-[17px] sm:text-lg font-bold text-stone-900 leading-tight">
-                            {t.optionSeekingTitle}
-                          </p>
-                          <p className="mt-0.5 text-[13px] text-stone-500 leading-snug">
-                            {t.landlordSubtext}
-                          </p>
-                        </div>
-
-                        <div className={`shrink-0 w-12 h-12 rounded-full bg-white/95 backdrop-blur-sm shadow-lg ring-1 ring-stone-200 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
-                          <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 ${isRtl ? "rotate-180" : ""}`}>
-                            <path d="M5 12h14M13 6l6 6-6 6" />
-                          </svg>
-                        </div>
-                      </div>
+                      <span className="absolute bottom-3 start-3 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-md">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
+                          <path d="M5 12h14M13 6l6 6-6 6" />
+                        </svg>
+                      </span>
                     </motion.button>
 
                     {/* Card 2 — Tenant */}
                     <motion.button
-                      initial={{ opacity: 0, y: 30 }}
+                      initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.25 }}
+                      transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.18 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=needs_place'); }}
-                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-start min-h-[150px] flex items-center cursor-pointer"
-                      dir={isRtl ? "rtl" : "ltr"}
+                      className="group relative min-h-[180px] overflow-hidden rounded-3xl bg-blue-50 p-5 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
+                      <div className="pe-16">
+                        <span className="inline-flex rounded-md bg-blue-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-blue-700">
+                          {t.tenantBadge}
+                        </span>
+                        <p className="mt-2.5 truncate text-lg font-bold leading-tight text-stone-900">
+                          {t.optionOfferingTitle}
+                        </p>
+                        <p className="mt-0.5 truncate text-[13px] leading-snug text-stone-500">
+                          {t.tenantSubtext}
+                        </p>
+                      </div>
                       <Image
                         src="/card-seeker-home.webp"
                         alt=""
-                        fill
-                        className={`object-cover object-[75%_center] z-0 transition-transform duration-700 ease-out ${isRtl ? "scale-x-[-1] motion-safe:group-hover:scale-x-[-1.04] motion-safe:group-hover:scale-y-[1.04]" : "motion-safe:group-hover:scale-[1.04]"}`}
+                        width={200}
+                        height={200}
+                        className={`absolute bottom-3 end-3 h-16 w-[42%] max-w-[104px] object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
                       />
-                      <div className={isRtl ? "absolute inset-0 bg-gradient-to-l from-white via-white/85 to-white/5" : "absolute inset-0 bg-gradient-to-r from-white via-white/85 to-white/5"} />
-                      <div className={`absolute inset-y-0 w-1 bg-gradient-to-b from-blue-500 to-indigo-500 ${isRtl ? "right-0" : "left-0"}`} />
-
-                      <div className="relative z-10 flex items-center gap-4 p-5 w-full">
-                        <div className="w-16 h-16 shrink-0 rounded-xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-stone-100 flex items-center justify-center text-[32px]">
-                          🔍
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                          <span className="inline-flex bg-blue-100 text-blue-700 text-[11px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-md whitespace-nowrap">
-                            {t.tenantBadge}
-                          </span>
-                          <p className="mt-1.5 text-[17px] sm:text-lg font-bold text-stone-900 leading-tight">
-                            {t.optionOfferingTitle}
-                          </p>
-                          <p className="mt-0.5 text-[13px] text-stone-500 leading-snug">
-                            {t.tenantSubtext}
-                          </p>
-                        </div>
-
-                        <div className={`shrink-0 w-12 h-12 rounded-full bg-white/95 backdrop-blur-sm shadow-lg ring-1 ring-stone-200 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
-                          <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 ${isRtl ? "rotate-180" : ""}`}>
-                            <path d="M5 12h14M13 6l6 6-6 6" />
-                          </svg>
-                        </div>
-                      </div>
+                      <span className="absolute bottom-3 start-3 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-md">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
+                          <path d="M5 12h14M13 6l6 6-6 6" />
+                        </svg>
+                      </span>
                     </motion.button>
 
                     {/* Card 3 — Commercial space owner */}
                     <motion.button
-                      initial={{ opacity: 0, y: 30 }}
+                      initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.4 }}
+                      transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.26 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('owner'); setShowCommercialModal(true); }}
-                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-start min-h-[150px] flex items-center cursor-pointer"
-                      dir={isRtl ? "rtl" : "ltr"}
+                      className="group relative min-h-[180px] overflow-hidden rounded-3xl bg-emerald-50 p-5 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
+                      <div className="pe-16">
+                        <span className="inline-flex rounded-md bg-emerald-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-700">
+                          {t.commercialOwnerBadge}
+                        </span>
+                        <p className="mt-2.5 truncate text-lg font-bold leading-tight text-stone-900">
+                          {t.commercialOwnerTitle}
+                        </p>
+                        <p className="mt-0.5 truncate text-[13px] leading-snug text-stone-500">
+                          {t.commercialOwnerSubtitle}
+                        </p>
+                      </div>
                       <Image
                         src="/card-owner-commercial.webp"
                         alt=""
-                        fill
-                        className={`object-cover object-[75%_center] z-0 transition-transform duration-700 ease-out ${isRtl ? "scale-x-[-1] motion-safe:group-hover:scale-x-[-1.04] motion-safe:group-hover:scale-y-[1.04]" : "motion-safe:group-hover:scale-[1.04]"}`}
+                        width={200}
+                        height={200}
+                        className={`absolute bottom-3 end-3 h-16 w-[42%] max-w-[104px] object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
                       />
-                      <div className={isRtl ? "absolute inset-0 bg-gradient-to-l from-white via-white/85 to-white/5" : "absolute inset-0 bg-gradient-to-r from-white via-white/85 to-white/5"} />
-                      <div className={`absolute inset-y-0 w-1 bg-gradient-to-b from-emerald-500 to-green-500 ${isRtl ? "right-0" : "left-0"}`} />
-
-                      <div className="relative z-10 flex items-center gap-4 p-5 w-full">
-                        <div className="w-16 h-16 shrink-0 rounded-xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-stone-100 flex items-center justify-center text-[32px]">
-                          🏢
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                          <span className="inline-flex bg-emerald-100 text-emerald-700 text-[11px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-md whitespace-nowrap">
-                            {t.commercialOwnerBadge}
-                          </span>
-                          <p className="mt-1.5 text-[17px] sm:text-lg font-bold text-stone-900 leading-tight">
-                            {t.commercialOwnerTitle}
-                          </p>
-                          <p className="mt-0.5 text-[13px] text-stone-500 leading-snug">
-                            {t.commercialOwnerSubtitle}
-                          </p>
-                        </div>
-
-                        <div className={`shrink-0 w-12 h-12 rounded-full bg-white/95 backdrop-blur-sm shadow-lg ring-1 ring-stone-200 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
-                          <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 ${isRtl ? "rotate-180" : ""}`}>
-                            <path d="M5 12h14M13 6l6 6-6 6" />
-                          </svg>
-                        </div>
-                      </div>
+                      <span className="absolute bottom-3 start-3 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-md">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
+                          <path d="M5 12h14M13 6l6 6-6 6" />
+                        </svg>
+                      </span>
                     </motion.button>
 
                     {/* Card 4 — Commercial space seeker */}
                     <motion.button
-                      initial={{ opacity: 0, y: 30 }}
+                      initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.55 }}
+                      transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.34 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('seeker'); setShowCommercialModal(true); }}
-                      className="group relative w-full overflow-hidden rounded-2xl bg-white ring-1 ring-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all duration-200 text-start min-h-[150px] flex items-center cursor-pointer"
-                      dir={isRtl ? "rtl" : "ltr"}
+                      className="group relative min-h-[180px] overflow-hidden rounded-3xl bg-teal-50 p-5 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
+                      <div className="pe-16">
+                        <span className="inline-flex rounded-md bg-teal-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-teal-700">
+                          {t.commercialSeekerBadge}
+                        </span>
+                        <p className="mt-2.5 truncate text-lg font-bold leading-tight text-stone-900">
+                          {t.commercialSeekerTitle}
+                        </p>
+                        <p className="mt-0.5 truncate text-[13px] leading-snug text-stone-500">
+                          {t.commercialSeekerSubtitle}
+                        </p>
+                      </div>
                       <Image
                         src="/card-seeker-commercial.webp"
                         alt=""
-                        fill
-                        className={`object-cover object-[75%_center] z-0 transition-transform duration-700 ease-out ${isRtl ? "scale-x-[-1] motion-safe:group-hover:scale-x-[-1.04] motion-safe:group-hover:scale-y-[1.04]" : "motion-safe:group-hover:scale-[1.04]"}`}
+                        width={200}
+                        height={200}
+                        className={`absolute bottom-3 end-3 h-16 w-[42%] max-w-[104px] object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
                       />
-                      <div className={isRtl ? "absolute inset-0 bg-gradient-to-l from-white via-white/85 to-white/5" : "absolute inset-0 bg-gradient-to-r from-white via-white/85 to-white/5"} />
-                      <div className={`absolute inset-y-0 w-1 bg-gradient-to-b from-teal-500 to-cyan-500 ${isRtl ? "right-0" : "left-0"}`} />
-
-                      <div className="relative z-10 flex items-center gap-4 p-5 w-full">
-                        <div className="w-16 h-16 shrink-0 rounded-xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-stone-100 flex items-center justify-center text-[32px]">
-                          🔍
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                          <span className="inline-flex bg-teal-100 text-teal-700 text-[11px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-md whitespace-nowrap">
-                            {t.commercialSeekerBadge}
-                          </span>
-                          <p className="mt-1.5 text-[17px] sm:text-lg font-bold text-stone-900 leading-tight">
-                            {t.commercialSeekerTitle}
-                          </p>
-                          <p className="mt-0.5 text-[13px] text-stone-500 leading-snug">
-                            {t.commercialSeekerSubtitle}
-                          </p>
-                        </div>
-
-                        <div className={`shrink-0 w-12 h-12 rounded-full bg-white/95 backdrop-blur-sm shadow-lg ring-1 ring-stone-200 flex items-center justify-center transition-transform ${isRtl ? "motion-safe:group-hover:-translate-x-0.5" : "motion-safe:group-hover:translate-x-0.5"}`}>
-                          <svg viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 ${isRtl ? "rotate-180" : ""}`}>
-                            <path d="M5 12h14M13 6l6 6-6 6" />
-                          </svg>
-                        </div>
-                      </div>
+                      <span className="absolute bottom-3 start-3 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-md">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
+                          <path d="M5 12h14M13 6l6 6-6 6" />
+                        </svg>
+                      </span>
                     </motion.button>
                   </div>
                 </>
@@ -3015,103 +3021,6 @@ export default function Home() {
               </svg>
               {t.ilanVer}
             </button>
-          </motion.div>
-
-          {/* ── RIGHT: Sefira promo video ──────────────────────────────────── */}
-          <motion.div
-            initial="hidden"
-            animate="show"
-            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.15, delayChildren: 0.1 } } }}
-            className="relative flex items-center justify-center py-8 order-first md:order-last"
-          >
-            <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="relative mx-auto max-w-xs"
-            >
-              {/* Background glow */}
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-300 via-pink-300 to-purple-300 rounded-3xl blur-2xl opacity-40 scale-110" />
-
-              {/* Video with shimmer border + particles */}
-              <motion.div
-                variants={{ hidden: { opacity: 0, y: 24, scale: 0.96 }, show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 110, damping: 18 } } }}
-                whileHover={{ scale: 1.03 }}
-                className="relative"
-              >
-                {/* Static border wrapper */}
-                <div style={{ position: 'relative', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', border: '2px solid #f97316' }}>
-                  {/* Inner video container */}
-                  <div style={{ position: 'relative', borderRadius: '21px', overflow: 'hidden', height: '400px' }}>
-                    <video
-                      ref={videoRef}
-                      src="https://ceetzophaybywfuhezhv.supabase.co/storage/v1/object/public/media/IMG_1365.MP4"
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      preload="none"
-                      poster="/hero-bg.webp"
-                      className="w-full h-full object-cover"
-                      style={{ animation: 'sefira-kenburns 5s ease-in-out alternate infinite' }}
-                    />
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Floating badge top-left */}
-              <motion.div
-                variants={{ hidden: { opacity: 0, y: 24, scale: 0.96 }, show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 110, damping: 18 } } }}
-                whileTap={{ scale: 0.94 }}
-                style={{ y: badgeTopParallax }}
-                className="absolute -top-4 -left-4"
-              >
-                <motion.div
-                  animate={{ y: [0, -7, 0] }}
-                  transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-                  className="bg-white rounded-2xl shadow-xl px-3 py-2 flex items-center gap-2 border border-orange-100"
-                >
-                  <div className="w-8 h-8 bg-green-500 rounded-xl flex items-center justify-center text-white text-sm">✓</div>
-                  <div>
-                    <p className="text-xs font-black text-gray-900">{countUsers}K+</p>
-                    <p className="text-[10px] text-gray-400">Verified Users</p>
-                  </div>
-                </motion.div>
-              </motion.div>
-
-              {/* Floating badge bottom-right */}
-              <motion.div
-                variants={{ hidden: { opacity: 0, y: 24, scale: 0.96 }, show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 110, damping: 18 } } }}
-                whileTap={{ scale: 0.94 }}
-                style={{ y: badgeBottomParallax }}
-                className="absolute -bottom-4 -right-4"
-              >
-                <motion.div
-                  animate={{ y: [0, -7, 0] }}
-                  transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut' }}
-                  className="bg-white rounded-2xl shadow-xl px-3 py-2 flex items-center gap-2 border border-orange-100"
-                >
-                  <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-pink-500 rounded-xl flex items-center justify-center text-white text-sm">⭐</div>
-                  <div>
-                    <p className="text-xs font-black text-gray-900">{countStars.toFixed(1)} Stars</p>
-                    <p className="text-[10px] text-gray-400">12K+ Reviews</p>
-                  </div>
-                </motion.div>
-              </motion.div>
-
-              {/* Decorative dots */}
-              <motion.div
-                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="absolute top-1/4 -right-3 w-3 h-3 bg-orange-400 rounded-full"
-              />
-              <motion.div
-                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 2, repeat: Infinity, delay: 1 }}
-                className="absolute bottom-1/4 -left-3 w-2 h-2 bg-pink-400 rounded-full"
-              />
-            </motion.div>
           </motion.div>
 
         </div>
