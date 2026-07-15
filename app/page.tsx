@@ -366,8 +366,8 @@ const translations = {
     heroP: "خانه، آفیس یا فضای تجاری خود را با اطمینان به اشتراک بگذارید یا فضای مورد نیازتان را به راحتی پیدا کنید.",
     // ── Compact hero ──
     heroGreeting: "سلام 👋",
-    heroCompactLine1: "فضای موردنظرت",
-    heroCompactLine2: "پیدا کن یا اشتراک بذار",
+    heroCompactLine1: "فضا",
+    heroCompactLine2: "پیدا کن یا به اشتراک بگذار",
     heroCompactSub: "چه خونه، چه دفتر، چه مغازه…",
     heroSearchPlaceholder: "جستجوی خونه، اتاق، دفتر یا مغازه…",
     quickLocationLabel: "انتخاب موقعیت",
@@ -519,8 +519,8 @@ const translations = {
     heroP: "Teilen Sie Ihr Zuhause, Büro oder Ihre Gewerbefläche sicher — oder finden Sie ganz einfach den Raum, den Sie suchen.",
     // ── Compact hero ──
     heroGreeting: "Hallo 👋",
-    heroCompactLine1: "Finde deinen Raum",
-    heroCompactLine2: "oder teile ihn",
+    heroCompactLine1: "Raum finden",
+    heroCompactLine2: "oder teilen",
     heroCompactSub: "Ob Zuhause, Büro oder Laden…",
     heroSearchPlaceholder: "Wohnung, Zimmer, Büro oder Laden suchen…",
     quickLocationLabel: "Ort wählen",
@@ -672,8 +672,8 @@ const translations = {
     heroP: "شارك منزلك أو مكتبك أو مساحتك التجارية بثقة، أو ابحث بسهولة عن المساحة التي تحتاجها.",
     // ── Compact hero ──
     heroGreeting: "مرحبًا 👋",
-    heroCompactLine1: "مساحتك المثالية",
-    heroCompactLine2: "ابحث عنها أو شاركها",
+    heroCompactLine1: "جد مساحتك",
+    heroCompactLine2: "أو شاركها",
     heroCompactSub: "سواء منزل، مكتب، أو محل…",
     heroSearchPlaceholder: "ابحث عن منزل أو غرفة أو مكتب أو محل…",
     quickLocationLabel: "اختر الموقع",
@@ -825,8 +825,8 @@ const translations = {
     heroP: "Делитесь своим домом, офисом или коммерческим пространством уверенно — или легко найдите нужное вам место.",
     // ── Compact hero ──
     heroGreeting: "Привет 👋",
-    heroCompactLine1: "Найди пространство",
-    heroCompactLine2: "или поделись своим",
+    heroCompactLine1: "Пространство",
+    heroCompactLine2: "найди или сдай",
     heroCompactSub: "Дом, офис или магазин — не важно…",
     heroSearchPlaceholder: "Искать дом, комнату, офис или магазин…",
     quickLocationLabel: "Выбрать локацию",
@@ -2585,36 +2585,28 @@ export default function Home() {
             className="flex w-full flex-col"
           >
 
-            {/* ── HERO: text + illustration ─────────────────────────────────── */}
-            <div className="flex flex-col md:flex-row md:items-center md:gap-8">
+            {/* ── HERO: one-line title + illustration ───────────────────────── */}
+            <h1 className="px-5 pt-3 pb-1 text-xl font-bold leading-tight" dir={isRtl ? "rtl" : "ltr"}>
+              <span className="text-slate-900">{t.heroCompactLine1}</span>{" "}
+              <span className="text-orange-500">{t.heroCompactLine2}</span>
+            </h1>
 
-              {/* Text block */}
-              <div className="px-5 pt-4 pb-3 md:w-[45%] md:shrink-0 md:px-0 md:pt-0" dir={isRtl ? "rtl" : "ltr"}>
-                <p className="text-sm text-slate-500">{t.heroGreeting}</p>
-                <h1 className="mt-1">
-                  <span className="block text-[32px] font-extrabold leading-[1.15] text-slate-900">{t.heroCompactLine1}</span>
-                  <span className="block text-[32px] font-extrabold leading-[1.15] text-orange-500">{t.heroCompactLine2}</span>
-                </h1>
-                <p className="mt-2 text-sm text-slate-500">{t.heroCompactSub}</p>
-              </div>
-
-              {/* Illustration — full-bleed on mobile, contained column on desktop */}
-              <div className="relative left-1/2 w-screen -translate-x-1/2 md:left-auto md:w-[55%] md:shrink-0 md:translate-x-0">
-                <div className="relative aspect-[16/10] w-full md:aspect-[4/3]">
-                  <Image
-                    src="/hero-illustration.webp"
-                    alt=""
-                    fill
-                    priority
-                    sizes="(min-width: 768px) 55vw, 100vw"
-                    className="object-cover object-center"
-                  />
-                </div>
+            {/* Illustration — full-bleed, tightly cropped */}
+            <div className="relative left-1/2 w-screen -translate-x-1/2">
+              <div className="relative aspect-[16/11] w-full">
+                <Image
+                  src="/hero-illustration.webp"
+                  alt=""
+                  fill
+                  priority
+                  sizes="100vw"
+                  className="object-cover object-center"
+                />
               </div>
             </div>
 
             {/* ── SEARCH BAR ───────────────────────────────────────────────── */}
-            <div className="relative z-10 -mt-10 mx-5 rounded-[28px] bg-white p-3 shadow-xl shadow-slate-200/70 md:mx-0 md:mt-6">
+            <div className="relative z-10 -mt-10 mx-5 rounded-[28px] bg-white p-3 shadow-xl shadow-slate-200/70">
               <button
                 onClick={() => router.push("/search")}
                 className="flex w-full min-h-[56px] items-center gap-3 rounded-2xl px-1 text-start transition-transform duration-200 active:scale-[0.98]"
