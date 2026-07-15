@@ -5,6 +5,7 @@ import { Home, MessageCircle, Heart, User, Plus } from "lucide-react";
 import { useLang, type Lang } from "@/app/lib/LangContext";
 import { useAuth } from "@/app/lib/AuthContext";
 import { useProfileDrawer } from "@/app/lib/ProfileDrawerContext";
+import { useChatView } from "@/app/lib/ChatViewContext";
 import { useUnreadMessagesCount } from "@/app/lib/useUnreadMessages";
 
 const LABELS: Record<"home" | "messages" | "favorites" | "profile" | "postListing", Record<Lang, string>> = {
@@ -64,10 +65,12 @@ export default function BottomNavBar() {
   const { lang } = useLang();
   const { user } = useAuth();
   const { isOpen: profileDrawerOpen, setIsOpen: setProfileDrawerOpen } = useProfileDrawer();
+  const { isChatOpen } = useChatView();
   const unreadCount = useUnreadMessagesCount();
   const isRtl = lang === "fa" || lang === "ar";
 
   if (HIDDEN_PREFIXES.some((prefix) => pathname.startsWith(prefix))) return null;
+  if (isChatOpen) return null;
 
   const isActive = (path: string) => (path === "/" ? pathname === "/" : pathname.startsWith(path));
 

@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { useSearchParams, useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 import { formatMessageTime } from "@/app/lib/formatTime";
+import { useChatView } from "@/app/lib/ChatViewContext";
 
 const translations = {
   tr: {
@@ -315,6 +316,14 @@ function MessagesPageContent() {
   const [mounted, setMounted] = useState(false);
   const [selectedConv, setSelectedConv] = useState<string | null>(null);
   const [mobileView, setMobileView] = useState<"list" | "chat">("list");
+  const { setIsChatOpen } = useChatView();
+
+  // Hide the global bottom nav while a conversation is open (mobile only);
+  // reset on unmount so it doesn't stay hidden after navigating away.
+  useEffect(() => {
+    setIsChatOpen(mobileView === "chat");
+    return () => setIsChatOpen(false);
+  }, [mobileView, setIsChatOpen]);
 
   // System channel state
   const [globalMessages, setGlobalMessages] = useState<AdminMessage[]>([]);
@@ -1014,7 +1023,12 @@ function MessagesPageContent() {
     : false;
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-4rem-env(safe-area-inset-bottom))] md:h-dvh bg-[#fefaf5]" dir={isFa ? "rtl" : "ltr"}>
+    <div
+      className={`flex flex-col ${
+        mobileView === "chat" ? "h-dvh" : "h-[calc(100dvh-4rem-env(safe-area-inset-bottom))]"
+      } md:h-dvh bg-[#fefaf5]`}
+      dir={isFa ? "rtl" : "ltr"}
+    >
       <style>{`
         @keyframes slideUpSheet {
           from { transform: translateY(100%); }
@@ -1645,7 +1659,7 @@ function MessagesPageContent() {
                   </div>
 
                   {/* Message input */}
-                  <div className="relative z-40 bg-white border-t border-gray-100 px-4 py-3 flex items-center gap-3 shadow-lg flex-shrink-0">
+                  <div className="relative z-40 bg-white border-t border-gray-100 px-4 py-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] flex items-center gap-3 shadow-lg flex-shrink-0">
                     <div className="flex-1 flex items-center bg-gray-100 rounded-2xl px-4 py-2.5 gap-2">
                       <input
                         ref={messageInputRef}
@@ -1743,7 +1757,7 @@ function MessagesPageContent() {
                 })}
                 <div ref={chatBottomRef} />
               </div>
-              <div className="relative z-40 bg-white border-t border-gray-100 px-4 py-3 flex items-center gap-3 shadow-lg flex-shrink-0">
+              <div className="relative z-40 bg-white border-t border-gray-100 px-4 py-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] flex items-center gap-3 shadow-lg flex-shrink-0">
                 <div className="flex-1 flex items-center bg-gray-100 rounded-2xl px-4 py-2.5 gap-2">
                   <input
                     value={chatInput}
@@ -1822,7 +1836,7 @@ function MessagesPageContent() {
                   </div>
                 ))}
               </div>
-              <div className="bg-white border-t border-gray-100 px-4 py-3 flex-shrink-0">
+              <div className="bg-white border-t border-gray-100 px-4 py-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] flex-shrink-0">
                 <p className="text-xs text-gray-400 text-center">{t.systemMessage}</p>
               </div>
             </>
