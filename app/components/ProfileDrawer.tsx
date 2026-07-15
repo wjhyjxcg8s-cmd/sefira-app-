@@ -56,8 +56,8 @@ function MenuRow({
       onClick={onClick}
       className={
         danger
-          ? "w-full flex items-center gap-3 py-2 px-4 text-[15px] font-medium text-red-500 active:bg-gray-50 rounded-xl transition-colors duration-150"
-          : "w-full flex items-center gap-3 py-2 px-4 text-[15px] font-medium text-gray-800 active:bg-gray-50 rounded-xl transition-colors duration-150"
+          ? "w-full flex items-center gap-3.5 py-3 px-5 text-[15px] font-medium text-red-500 active:bg-gray-50 rounded-xl transition-colors duration-150"
+          : "w-full flex items-center gap-3.5 py-3 px-5 text-[15px] font-medium text-gray-800 active:bg-gray-50 rounded-xl transition-colors duration-150"
       }
     >
       <div className={iconClassName}>
@@ -151,8 +151,8 @@ export default function ProfileDrawer() {
         dir={isRtl ? "rtl" : "ltr"}
         className={
           isRtl
-            ? "fixed inset-y-0 left-0 h-dvh z-[10001] w-[78%] max-w-[320px] flex flex-col shadow-2xl rounded-r-3xl overflow-hidden bg-white"
-            : "fixed inset-y-0 right-0 h-dvh z-[10001] w-[78%] max-w-[320px] flex flex-col shadow-2xl rounded-l-3xl overflow-hidden bg-white"
+            ? "fixed inset-y-0 left-0 h-dvh z-[10001] w-[72%] max-w-[300px] flex flex-col shadow-2xl rounded-r-3xl overflow-hidden bg-white"
+            : "fixed inset-y-0 right-0 h-dvh z-[10001] w-[72%] max-w-[300px] flex flex-col shadow-2xl rounded-l-3xl overflow-hidden bg-white"
         }
         style={{
           transform: isOpen ? "translateX(0)" : isRtl ? "translateX(-100%)" : "translateX(100%)",
@@ -160,11 +160,11 @@ export default function ProfileDrawer() {
         }}
       >
         {/* Compact header — fixed, NOT scrollable */}
-        <div className="flex-shrink-0 pt-[max(1rem,env(safe-area-inset-top))] px-4 pb-4 bg-gradient-to-br from-orange-500 via-orange-600 to-purple-600">
+        <div className="relative flex-shrink-0 pt-[max(1.25rem,env(safe-area-inset-top))] px-5 pb-5 bg-gradient-to-br from-orange-500 via-orange-500/95 to-purple-600">
           <div className="flex items-center gap-3">
             <button
               onClick={() => goTo("/profile")}
-              className="w-12 h-12 rounded-full ring-2 ring-white flex items-center justify-center overflow-hidden flex-shrink-0 font-extrabold text-base text-white"
+              className="w-14 h-14 rounded-full ring-2 ring-white/90 shadow-md flex items-center justify-center overflow-hidden flex-shrink-0 font-extrabold text-base text-white"
               style={{ background: "linear-gradient(135deg, #ea580c, #d97706)" }}
             >
               {profileAvatarUrl ? (
@@ -173,27 +173,31 @@ export default function ProfileDrawer() {
                 initials
               )}
             </button>
-            <div className="min-w-0 flex-1">
-              <p className="text-base font-semibold text-white truncate">
-                {user.user_metadata?.full_name ?? user.email?.split("@")[0] ?? "User"} ⚡
+            <div className="flex-1 min-w-0">
+              <p className="text-lg font-bold text-white leading-tight truncate">
+                {user.user_metadata?.full_name ?? user.email?.split("@")[0] ?? "User"}
               </p>
-              <p className="text-xs text-white/80 truncate">{user.email}</p>
+              <p className="text-[13px] text-white/75 truncate mt-0.5">{user.email}</p>
             </div>
-            <button
-              onClick={close}
-              aria-label="Close"
-              className="w-8 h-8 rounded-full bg-white/20 text-white flex items-center justify-center flex-shrink-0"
-            >
-              <X className="w-4 h-4" />
-            </button>
           </div>
+          <button
+            onClick={close}
+            aria-label="Close"
+            className={
+              isRtl
+                ? "absolute top-[max(0.75rem,env(safe-area-inset-top))] left-3 w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center"
+                : "absolute top-[max(0.75rem,env(safe-area-inset-top))] right-3 w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center"
+            }
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
 
         {/* Menu items */}
         <div
           ref={menuScrollRef}
           dir={isRtl ? "rtl" : "ltr"}
-          className="flex-1 overflow-y-auto overscroll-contain"
+          className="flex-1 overflow-y-auto overscroll-contain py-2"
         >
           {/* Group A: Edit Profile, Post Listing */}
           <div className="py-1">
@@ -220,7 +224,7 @@ export default function ProfileDrawer() {
             />
           </div>
 
-          <div className="border-t border-gray-100 my-1" />
+          <div className="border-t border-gray-100 my-2 mx-5" />
 
           {/* Group B: Search, Saved, My Listings, Messages, Reviews */}
           <div className="py-1">
@@ -280,7 +284,7 @@ export default function ProfileDrawer() {
             />
           </div>
 
-          <div className="border-t border-gray-100 my-1" />
+          <div className="border-t border-gray-100 my-2 mx-5" />
 
           {/* Group C: Support, Advertise */}
           <div className="py-1">
@@ -308,7 +312,7 @@ export default function ProfileDrawer() {
             />
           </div>
 
-          <div className="border-t border-gray-100 my-1" />
+          <div className="border-t border-gray-100 my-2 mx-5" />
 
           {/* Group D: Logout */}
           <div className="py-1">
