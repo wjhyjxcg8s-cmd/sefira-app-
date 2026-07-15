@@ -138,7 +138,7 @@ export default function ProfileDrawer() {
       <div
         onClick={close}
         onTouchMove={(e) => e.preventDefault()}
-        className="fixed inset-0 z-[90] bg-black/40 backdrop-blur-sm"
+        className="fixed inset-0 z-[10000] bg-black/40 backdrop-blur-sm"
         style={{
           opacity: isOpen ? 1 : 0,
           transition: "opacity 0.3s ease-out",
@@ -151,8 +151,8 @@ export default function ProfileDrawer() {
         dir={isRtl ? "rtl" : "ltr"}
         className={
           isRtl
-            ? "fixed inset-y-0 left-0 h-dvh z-[100] w-[78%] max-w-[320px] flex flex-col shadow-2xl rounded-r-3xl overflow-hidden bg-white"
-            : "fixed inset-y-0 right-0 h-dvh z-[100] w-[78%] max-w-[320px] flex flex-col shadow-2xl rounded-l-3xl overflow-hidden bg-white"
+            ? "fixed inset-y-0 left-0 h-dvh z-[10001] w-[78%] max-w-[320px] flex flex-col shadow-2xl rounded-r-3xl overflow-hidden bg-white"
+            : "fixed inset-y-0 right-0 h-dvh z-[10001] w-[78%] max-w-[320px] flex flex-col shadow-2xl rounded-l-3xl overflow-hidden bg-white"
         }
         style={{
           transform: isOpen ? "translateX(0)" : isRtl ? "translateX(-100%)" : "translateX(100%)",
