@@ -1014,7 +1014,7 @@ function MessagesPageContent() {
     : false;
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem-env(safe-area-inset-bottom))] md:h-screen bg-[#fefaf5]" dir={isFa ? "rtl" : "ltr"}>
+    <div className="flex flex-col h-[calc(100dvh-4rem-env(safe-area-inset-bottom))] md:h-dvh bg-[#fefaf5]" dir={isFa ? "rtl" : "ltr"}>
       <style>{`
         @keyframes slideUpSheet {
           from { transform: translateY(100%); }
@@ -1645,7 +1645,7 @@ function MessagesPageContent() {
                   </div>
 
                   {/* Message input */}
-                  <div className="bg-white border-t border-gray-100 px-4 py-3 flex items-center gap-3 shadow-lg flex-shrink-0">
+                  <div className="relative z-40 bg-white border-t border-gray-100 px-4 py-3 flex items-center gap-3 shadow-lg flex-shrink-0">
                     <div className="flex-1 flex items-center bg-gray-100 rounded-2xl px-4 py-2.5 gap-2">
                       <input
                         ref={messageInputRef}
@@ -1743,7 +1743,7 @@ function MessagesPageContent() {
                 })}
                 <div ref={chatBottomRef} />
               </div>
-              <div className="bg-white border-t border-gray-100 px-4 py-3 flex items-center gap-3 shadow-lg flex-shrink-0">
+              <div className="relative z-40 bg-white border-t border-gray-100 px-4 py-3 flex items-center gap-3 shadow-lg flex-shrink-0">
                 <div className="flex-1 flex items-center bg-gray-100 rounded-2xl px-4 py-2.5 gap-2">
                   <input
                     value={chatInput}
