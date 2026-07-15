@@ -2574,9 +2574,9 @@ export default function Home() {
       </nav>
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
-      <div className="w-full px-4 pt-10 overflow-hidden relative bg-white">
+      <div className="w-full px-4 overflow-hidden relative bg-white">
 
-        <div className="relative z-10 max-w-2xl mx-auto px-5 pt-8 pb-8 w-full">
+        <div className="relative z-10 max-w-2xl mx-auto px-5 pt-[68px] pb-8 w-full">
 
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -2585,28 +2585,29 @@ export default function Home() {
             className="flex w-full flex-col"
           >
 
-            {/* ── HERO: one-line title + illustration ───────────────────────── */}
-            <h1 className="px-5 pt-3 pb-1 text-xl font-bold leading-tight" dir={isRtl ? "rtl" : "ltr"}>
-              <span className="text-slate-900">{t.heroCompactLine1}</span>{" "}
-              <span className="text-orange-500">{t.heroCompactLine2}</span>
+            {/* ── HERO: h1 kept for SEO/a11y, hidden visually ───────────────── */}
+            <h1 className="sr-only" dir={isRtl ? "rtl" : "ltr"}>
+              <span>{t.heroCompactLine1}</span>{" "}
+              <span>{t.heroCompactLine2}</span>
             </h1>
 
-            {/* Illustration — full-bleed, tightly cropped */}
+            {/* Illustration — full-bleed, the entire visual hero */}
             <div className="relative left-1/2 w-screen -translate-x-1/2">
-              <div className="relative aspect-[16/11] w-full">
+              <div className="relative aspect-[4/3] w-full md:aspect-[21/9] md:max-h-[520px]">
                 <Image
                   src="/hero-illustration.webp"
                   alt=""
                   fill
                   priority
                   sizes="100vw"
-                  className="object-cover object-center"
+                  className="object-cover object-[center_55%] md:object-center"
                 />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent" />
               </div>
             </div>
 
             {/* ── SEARCH BAR ───────────────────────────────────────────────── */}
-            <div className="relative z-10 -mt-10 mx-5 rounded-[28px] bg-white p-3 shadow-xl shadow-slate-200/70">
+            <div className="relative z-10 -mt-14 mx-5 rounded-[28px] bg-white p-3 shadow-xl shadow-slate-200/70">
               <button
                 onClick={() => router.push("/search")}
                 className="flex w-full min-h-[56px] items-center gap-3 rounded-2xl px-1 text-start transition-transform duration-200 active:scale-[0.98]"
