@@ -2576,7 +2576,7 @@ export default function Home() {
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
       <div className="w-full px-4 overflow-hidden relative bg-white">
 
-        <div className="relative z-10 max-w-2xl mx-auto px-5 pt-[68px] pb-8 w-full">
+        <div className="relative z-10 max-w-2xl mx-auto px-5 pt-[68px] w-full">
 
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -3053,17 +3053,14 @@ export default function Home() {
 
         </div>
 
-        {/* Transition from the hero's white zone to the page's stone-50 */}
-        <div className="h-8 w-full bg-gradient-to-b from-white to-stone-50" />
-
       </div>
 
       {/* ── PROMO VIDEO ───────────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-5 mt-2 pb-4">
-        <p className="text-sm font-bold text-stone-800 mb-3 sm:mb-4">
+      <section className="max-w-7xl mx-auto mt-10 pb-4">
+        <p className="px-5 mb-3 text-lg font-extrabold text-slate-900">
           {t.promoVideoHeading}
         </p>
-        <div ref={promoVideoSectionRef} className="relative w-full aspect-video overflow-hidden rounded-3xl shadow-lg">
+        <div ref={promoVideoSectionRef} className="relative mx-5 aspect-video overflow-hidden rounded-3xl shadow-lg shadow-slate-200/60 ring-1 ring-slate-100">
           {promoVideoInView ? (
             <video
               autoPlay
@@ -3083,7 +3080,7 @@ export default function Home() {
 
       {/* ── WEEKLY STORIES ────────────────────────────────────────────────────── */}
       {weeklyStories.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-5 mt-2 pt-0 pb-4">
+        <section className="max-w-7xl mx-auto px-4 sm:px-5 mt-10 pb-4">
           <p className="text-sm font-bold text-stone-800 mb-3 sm:mb-4">
             {thisWeekLabel[lang] ?? "Bu Hafta"}
           </p>
