@@ -2668,43 +2668,32 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=has_place'); }}
-                      className="group flex flex-col rounded-3xl bg-orange-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group relative min-h-[168px] rounded-3xl bg-orange-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
-                      {/* Slot A — chip */}
-                      <div className="flex h-9 items-start">
-                        <span className="whitespace-nowrap rounded-lg bg-orange-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-orange-700">
+                      <div className="relative z-10 max-w-[58%]">
+                        <span className="inline-block whitespace-nowrap rounded-lg bg-orange-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-orange-700">
                           {t.landlordBadge}
                         </span>
-                      </div>
-                      {/* Slot B — title */}
-                      <div className="flex h-14 items-start">
-                        <p className="line-clamp-2 text-lg font-extrabold leading-snug text-stone-900">
+                        <p className="mt-2 line-clamp-2 text-lg font-extrabold leading-snug text-stone-900">
                           {t.optionSeekingTitle}
                         </p>
+                        <p className="mt-1 text-xs text-slate-500">
+                          {t.landlordSubtext}
+                        </p>
                       </div>
-                      {/* Slot C — subtitle */}
-                      <p className="h-5 truncate text-xs text-slate-500">
-                        {t.landlordSubtext}
-                      </p>
-                      {/* Slot D — illustration */}
-                      <div className="my-2 h-28 w-full rounded-2xl bg-white/60 p-2">
-                        <Image
-                          src="/card-residential-owner.webp"
-                          alt=""
-                          width={640}
-                          height={584}
-                          loading="lazy"
-                          className={`mx-auto h-full object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
-                        />
-                      </div>
-                      {/* Slot E — arrow */}
-                      <div className="flex h-10 items-center justify-end">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
-                            <path d="M5 12h14M13 6l6 6-6 6" />
-                          </svg>
-                        </span>
-                      </div>
+                      <Image
+                        src="/card-residential-owner.webp"
+                        alt=""
+                        width={560}
+                        height={511}
+                        loading="lazy"
+                        className={`absolute bottom-2 end-0 h-auto w-[42%] max-w-[70px] object-contain drop-shadow-sm ${isRtl ? "scale-x-[-1]" : ""}`}
+                      />
+                      <span className="absolute bottom-3 start-3 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
+                          <path d="M5 12h14M13 6l6 6-6 6" />
+                        </svg>
+                      </span>
                     </motion.button>
 
                     {/* Card 2 — Tenant */}
@@ -2713,43 +2702,32 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.18 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=needs_place'); }}
-                      className="group flex flex-col rounded-3xl bg-blue-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group relative min-h-[168px] rounded-3xl bg-blue-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
-                      {/* Slot A — chip */}
-                      <div className="flex h-9 items-start">
-                        <span className="whitespace-nowrap rounded-lg bg-blue-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-blue-700">
+                      <div className="relative z-10 max-w-[58%]">
+                        <span className="inline-block whitespace-nowrap rounded-lg bg-blue-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-blue-700">
                           {t.tenantBadge}
                         </span>
-                      </div>
-                      {/* Slot B — title */}
-                      <div className="flex h-14 items-start">
-                        <p className="line-clamp-2 text-lg font-extrabold leading-snug text-stone-900">
+                        <p className="mt-2 line-clamp-2 text-lg font-extrabold leading-snug text-stone-900">
                           {t.optionOfferingTitle}
                         </p>
+                        <p className="mt-1 text-xs text-slate-500">
+                          {t.tenantSubtext}
+                        </p>
                       </div>
-                      {/* Slot C — subtitle */}
-                      <p className="h-5 truncate text-xs text-slate-500">
-                        {t.tenantSubtext}
-                      </p>
-                      {/* Slot D — illustration */}
-                      <div className="my-2 h-28 w-full rounded-2xl bg-white/60 p-2">
-                        <Image
-                          src="/card-residential-seeker.webp"
-                          alt=""
-                          width={640}
-                          height={512}
-                          loading="lazy"
-                          className={`mx-auto h-full object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
-                        />
-                      </div>
-                      {/* Slot E — arrow */}
-                      <div className="flex h-10 items-center justify-end">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
-                            <path d="M5 12h14M13 6l6 6-6 6" />
-                          </svg>
-                        </span>
-                      </div>
+                      <Image
+                        src="/card-residential-seeker.webp"
+                        alt=""
+                        width={560}
+                        height={448}
+                        loading="lazy"
+                        className={`absolute bottom-2 end-0 h-auto w-[42%] max-w-[70px] object-contain drop-shadow-sm ${isRtl ? "scale-x-[-1]" : ""}`}
+                      />
+                      <span className="absolute bottom-3 start-3 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
+                          <path d="M5 12h14M13 6l6 6-6 6" />
+                        </svg>
+                      </span>
                     </motion.button>
 
                     {/* Card 3 — Commercial space owner */}
@@ -2758,43 +2736,32 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.26 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('owner'); setShowCommercialModal(true); }}
-                      className="group flex flex-col rounded-3xl bg-emerald-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group relative min-h-[168px] rounded-3xl bg-emerald-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
-                      {/* Slot A — chip */}
-                      <div className="flex h-9 items-start">
-                        <span className="whitespace-nowrap rounded-lg bg-emerald-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-emerald-700">
+                      <div className="relative z-10 max-w-[58%]">
+                        <span className="inline-block whitespace-nowrap rounded-lg bg-emerald-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-emerald-700">
                           {t.commercialOwnerBadge}
                         </span>
-                      </div>
-                      {/* Slot B — title */}
-                      <div className="flex h-14 items-start">
-                        <p className="line-clamp-2 text-lg font-extrabold leading-snug text-stone-900">
+                        <p className="mt-2 line-clamp-2 text-lg font-extrabold leading-snug text-stone-900">
                           {t.commercialOwnerTitle}
                         </p>
+                        <p className="mt-1 text-xs text-slate-500">
+                          {t.commercialOwnerSubtitle}
+                        </p>
                       </div>
-                      {/* Slot C — subtitle */}
-                      <p className="h-5 truncate text-xs text-slate-500">
-                        {t.commercialOwnerSubtitle}
-                      </p>
-                      {/* Slot D — illustration */}
-                      <div className="my-2 h-28 w-full rounded-2xl bg-white/60 p-2">
-                        <Image
-                          src="/card-commercial-owner.webp"
-                          alt=""
-                          width={640}
-                          height={512}
-                          loading="lazy"
-                          className={`mx-auto h-full object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
-                        />
-                      </div>
-                      {/* Slot E — arrow */}
-                      <div className="flex h-10 items-center justify-end">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
-                            <path d="M5 12h14M13 6l6 6-6 6" />
-                          </svg>
-                        </span>
-                      </div>
+                      <Image
+                        src="/card-commercial-owner.webp"
+                        alt=""
+                        width={560}
+                        height={448}
+                        loading="lazy"
+                        className={`absolute bottom-2 end-0 h-auto w-[42%] max-w-[70px] object-contain drop-shadow-sm ${isRtl ? "scale-x-[-1]" : ""}`}
+                      />
+                      <span className="absolute bottom-3 start-3 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
+                          <path d="M5 12h14M13 6l6 6-6 6" />
+                        </svg>
+                      </span>
                     </motion.button>
 
                     {/* Card 4 — Commercial space seeker */}
@@ -2803,43 +2770,32 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.34 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('seeker'); setShowCommercialModal(true); }}
-                      className="group flex flex-col rounded-3xl bg-teal-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group relative min-h-[168px] rounded-3xl bg-teal-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
-                      {/* Slot A — chip */}
-                      <div className="flex h-9 items-start">
-                        <span className="whitespace-nowrap rounded-lg bg-teal-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-teal-700">
+                      <div className="relative z-10 max-w-[58%]">
+                        <span className="inline-block whitespace-nowrap rounded-lg bg-teal-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-teal-700">
                           {t.commercialSeekerBadge}
                         </span>
-                      </div>
-                      {/* Slot B — title */}
-                      <div className="flex h-14 items-start">
-                        <p className="line-clamp-2 text-lg font-extrabold leading-snug text-stone-900">
+                        <p className="mt-2 line-clamp-2 text-lg font-extrabold leading-snug text-stone-900">
                           {t.commercialSeekerTitle}
                         </p>
+                        <p className="mt-1 text-xs text-slate-500">
+                          {t.commercialSeekerSubtitle}
+                        </p>
                       </div>
-                      {/* Slot C — subtitle */}
-                      <p className="h-5 truncate text-xs text-slate-500">
-                        {t.commercialSeekerSubtitle}
-                      </p>
-                      {/* Slot D — illustration */}
-                      <div className="my-2 h-28 w-full rounded-2xl bg-white/60 p-2">
-                        <Image
-                          src="/card-commercial-seeker.webp"
-                          alt=""
-                          width={640}
-                          height={512}
-                          loading="lazy"
-                          className={`mx-auto h-full object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
-                        />
-                      </div>
-                      {/* Slot E — arrow */}
-                      <div className="flex h-10 items-center justify-end">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
-                            <path d="M5 12h14M13 6l6 6-6 6" />
-                          </svg>
-                        </span>
-                      </div>
+                      <Image
+                        src="/card-commercial-seeker.webp"
+                        alt=""
+                        width={560}
+                        height={448}
+                        loading="lazy"
+                        className={`absolute bottom-2 end-0 h-auto w-[42%] max-w-[70px] object-contain drop-shadow-sm ${isRtl ? "scale-x-[-1]" : ""}`}
+                      />
+                      <span className="absolute bottom-3 start-3 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
+                          <path d="M5 12h14M13 6l6 6-6 6" />
+                        </svg>
+                      </span>
                     </motion.button>
                   </div>
                 </>
