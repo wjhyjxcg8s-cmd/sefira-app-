@@ -161,7 +161,10 @@ export default function ProfileDrawer() {
         }}
       >
         {/* Compact header — fixed, NOT scrollable */}
-        <div className="relative flex-shrink-0 h-[140px] overflow-hidden">
+        <div
+          className="relative flex-shrink-0 overflow-hidden"
+          style={{ height: 140, minHeight: 140, maxHeight: 140 }}
+        >
           <Image
             src="/images/drawer-header.webp"
             alt=""
@@ -170,7 +173,7 @@ export default function ProfileDrawer() {
             sizes="300px"
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-black/10" />
           <button
             onClick={close}
             aria-label="Close"
