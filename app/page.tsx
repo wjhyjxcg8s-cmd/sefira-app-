@@ -2668,7 +2668,7 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=has_place'); }}
-                      className="group flex min-h-[210px] flex-col gap-2 rounded-3xl bg-orange-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group flex min-h-[320px] flex-col gap-2 rounded-3xl bg-orange-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
                       <span className="self-start rounded-md bg-orange-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-orange-700">
                         {t.landlordBadge}
@@ -2679,13 +2679,16 @@ export default function Home() {
                       <p className="line-clamp-1 text-xs text-slate-500">
                         {t.landlordSubtext}
                       </p>
-                      <Image
-                        src="/card-owner-home.webp"
-                        alt=""
-                        width={200}
-                        height={200}
-                        className={`my-1 h-20 object-contain mx-auto ${isRtl ? "scale-x-[-1]" : ""}`}
-                      />
+                      <div className="my-1 rounded-2xl bg-white/60 p-2">
+                        <Image
+                          src="/card-residential-owner.webp"
+                          alt=""
+                          width={640}
+                          height={584}
+                          loading="lazy"
+                          className={`mx-auto h-28 object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
+                        />
+                      </div>
                       <span className="mt-auto flex h-9 w-9 items-center justify-center self-end rounded-full bg-white shadow-md">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
                           <path d="M5 12h14M13 6l6 6-6 6" />
@@ -2699,7 +2702,7 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.18 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=needs_place'); }}
-                      className="group flex min-h-[210px] flex-col gap-2 rounded-3xl bg-blue-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group flex min-h-[320px] flex-col gap-2 rounded-3xl bg-blue-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
                       <span className="self-start rounded-md bg-blue-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-700">
                         {t.tenantBadge}
@@ -2710,13 +2713,16 @@ export default function Home() {
                       <p className="line-clamp-1 text-xs text-slate-500">
                         {t.tenantSubtext}
                       </p>
-                      <Image
-                        src="/card-seeker-home.webp"
-                        alt=""
-                        width={200}
-                        height={200}
-                        className={`my-1 h-20 object-contain mx-auto ${isRtl ? "scale-x-[-1]" : ""}`}
-                      />
+                      <div className="my-1 rounded-2xl bg-white/60 p-2">
+                        <Image
+                          src="/card-residential-seeker.webp"
+                          alt=""
+                          width={640}
+                          height={512}
+                          loading="lazy"
+                          className={`mx-auto h-28 object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
+                        />
+                      </div>
                       <span className="mt-auto flex h-9 w-9 items-center justify-center self-end rounded-full bg-white shadow-md">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
                           <path d="M5 12h14M13 6l6 6-6 6" />
@@ -2730,7 +2736,7 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.26 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('owner'); setShowCommercialModal(true); }}
-                      className="group flex min-h-[210px] flex-col gap-2 rounded-3xl bg-emerald-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group flex min-h-[320px] flex-col gap-2 rounded-3xl bg-emerald-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
                       <span className="self-start rounded-md bg-emerald-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700">
                         {t.commercialOwnerBadge}
@@ -2741,13 +2747,16 @@ export default function Home() {
                       <p className="line-clamp-1 text-xs text-slate-500">
                         {t.commercialOwnerSubtitle}
                       </p>
-                      <Image
-                        src="/card-owner-commercial.webp"
-                        alt=""
-                        width={200}
-                        height={200}
-                        className={`my-1 h-20 object-contain mx-auto ${isRtl ? "scale-x-[-1]" : ""}`}
-                      />
+                      <div className="my-1 rounded-2xl bg-white/60 p-2">
+                        <Image
+                          src="/card-commercial-owner.webp"
+                          alt=""
+                          width={640}
+                          height={512}
+                          loading="lazy"
+                          className={`mx-auto h-28 object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
+                        />
+                      </div>
                       <span className="mt-auto flex h-9 w-9 items-center justify-center self-end rounded-full bg-white shadow-md">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
                           <path d="M5 12h14M13 6l6 6-6 6" />
@@ -2761,7 +2770,7 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.34 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('seeker'); setShowCommercialModal(true); }}
-                      className="group flex min-h-[210px] flex-col gap-2 rounded-3xl bg-teal-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group flex min-h-[320px] flex-col gap-2 rounded-3xl bg-teal-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
                       <span className="self-start rounded-md bg-teal-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-teal-700">
                         {t.commercialSeekerBadge}
@@ -2772,13 +2781,16 @@ export default function Home() {
                       <p className="line-clamp-1 text-xs text-slate-500">
                         {t.commercialSeekerSubtitle}
                       </p>
-                      <Image
-                        src="/card-seeker-commercial.webp"
-                        alt=""
-                        width={200}
-                        height={200}
-                        className={`my-1 h-20 object-contain mx-auto ${isRtl ? "scale-x-[-1]" : ""}`}
-                      />
+                      <div className="my-1 rounded-2xl bg-white/60 p-2">
+                        <Image
+                          src="/card-commercial-seeker.webp"
+                          alt=""
+                          width={640}
+                          height={512}
+                          loading="lazy"
+                          className={`mx-auto h-28 object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
+                        />
+                      </div>
                       <span className="mt-auto flex h-9 w-9 items-center justify-center self-end rounded-full bg-white shadow-md">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
                           <path d="M5 12h14M13 6l6 6-6 6" />
