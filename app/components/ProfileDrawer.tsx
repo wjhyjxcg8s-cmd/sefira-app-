@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
-import { ChevronRight } from "lucide-react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { ChevronRight, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { useLang, type Lang } from "@/app/lib/LangContext";
@@ -82,6 +82,7 @@ export default function ProfileDrawer() {
   const [unreadSupportCount, setUnreadSupportCount] = useState(0);
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   const isRtl = lang === "fa" || lang === "ar";
+  const menuScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Drawer renders null when there's no user, so no reset-on-logout is needed.
@@ -110,6 +111,12 @@ export default function ProfileDrawer() {
     return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
 
+  useEffect(() => {
+    if (isOpen && menuScrollRef.current) {
+      menuScrollRef.current.scrollTop = 0;
+    }
+  }, [isOpen]);
+
   if (!user) return null;
 
   const close = () => setIsOpen(false);
@@ -124,11 +131,8 @@ export default function ProfileDrawer() {
       <div
         onClick={close}
         onTouchMove={(e) => e.preventDefault()}
+        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
         style={{
-          position: "fixed",
-          inset: 0,
-          backgroundColor: "rgba(0,0,0,0.5)",
-          zIndex: 40,
           opacity: isOpen ? 1 : 0,
           transition: "opacity 0.3s ease-out",
           pointerEvents: isOpen ? "auto" : "none",
@@ -137,22 +141,19 @@ export default function ProfileDrawer() {
 
       {/* Drawer */}
       <div
-        dir="ltr"
-        className="flex flex-col h-dvh"
+        dir={isRtl ? "rtl" : "ltr"}
+        className={
+          isRtl
+            ? "fixed inset-y-0 left-0 h-dvh z-[60] w-[78%] max-w-[320px] flex flex-col shadow-2xl rounded-r-3xl overflow-hidden bg-white"
+            : "fixed inset-y-0 right-0 h-dvh z-[60] w-[78%] max-w-[320px] flex flex-col shadow-2xl rounded-l-3xl overflow-hidden bg-white"
+        }
         style={{
-          position: "fixed",
-          top: 0,
-          right: isOpen ? 0 : "-100%",
-          width: "85%",
-          maxWidth: "360px",
-          zIndex: 50,
-          backgroundColor: "white",
-          transition: "right 0.3s ease",
-          boxShadow: "-4px 0 40px rgba(0,0,0,0.18)",
+          transform: isOpen ? "translateX(0)" : isRtl ? "translateX(-100%)" : "translateX(100%)",
+          transition: "transform 0.3s ease",
         }}
       >
         {/* Compact header — fixed, NOT scrollable */}
-        <div dir={isRtl ? "rtl" : "ltr"} className="flex-shrink-0 p-4 bg-gradient-to-br from-orange-500 via-orange-600 to-purple-600">
+        <div className="flex-shrink-0 p-4 bg-gradient-to-br from-orange-500 via-orange-600 to-purple-600">
           <div className="flex items-center gap-3">
             <button
               onClick={() => goTo("/profile")}
@@ -167,18 +168,25 @@ export default function ProfileDrawer() {
             </button>
             <div className="min-w-0 flex-1">
               <p className="text-base font-semibold text-white truncate">
-                {user.user_metadata?.full_name ?? user.email?.split("@")[0] ?? "User"}
+                {user.user_metadata?.full_name ?? user.email?.split("@")[0] ?? "User"} ⚡
               </p>
               <p className="text-xs text-white/80 truncate">{user.email}</p>
             </div>
+            <button
+              onClick={close}
+              aria-label="Close"
+              className="w-8 h-8 rounded-full bg-white/20 text-white flex items-center justify-center flex-shrink-0"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
-        {/* Menu items — flex-1 + height: 0 is required for iOS Safari/PWA scroll */}
+        {/* Menu items */}
         <div
+          ref={menuScrollRef}
           dir={isRtl ? "rtl" : "ltr"}
-          className="flex-1 overflow-y-auto"
-          style={{ flex: "1 1 0", height: 0, WebkitOverflowScrolling: "touch" }}
+          className="flex-1 overflow-y-auto overscroll-contain"
         >
           {/* Group A: Edit Profile, Post Listing */}
           <div className="py-1">
