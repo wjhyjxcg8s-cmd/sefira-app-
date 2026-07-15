@@ -2606,47 +2606,8 @@ export default function Home() {
               </div>
             </div>
 
-            {/* ── SEARCH BAR ───────────────────────────────────────────────── */}
-            <div className="relative z-10 -mt-14 mx-5 rounded-[28px] bg-white p-3 shadow-xl shadow-slate-200/70">
-              <button
-                onClick={() => router.push("/search")}
-                className="flex w-full min-h-[56px] items-center gap-3 rounded-2xl px-1 text-start transition-transform duration-200 active:scale-[0.98]"
-                dir={isRtl ? "rtl" : "ltr"}
-              >
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-orange-500 text-white">
-                  <Search className="h-5 w-5" />
-                </span>
-                <span className="min-w-0 flex-1 truncate text-base text-slate-400">
-                  {t.heroSearchPlaceholder}
-                </span>
-              </button>
-
-              <div className="my-2 border-t border-slate-100" />
-
-              <div className="flex h-11" dir={isRtl ? "rtl" : "ltr"}>
-                <button
-                  onClick={() => router.push("/search-wizard")}
-                  className="flex flex-1 items-center justify-center gap-1.5 text-[13px] font-medium text-slate-600"
-                >
-                  <MapPin className="h-4 w-4" />
-                  <span className="truncate">{t.quickLocationLabel}</span>
-                </button>
-                <button
-                  onClick={() => router.push("/search-wizard")}
-                  className="flex flex-1 items-center justify-center gap-1.5 border-s border-slate-100 text-[13px] font-medium text-slate-600"
-                >
-                  <LayoutGrid className="h-4 w-4" />
-                  <span className="truncate">{t.quickCategoryLabel}</span>
-                </button>
-                <button
-                  onClick={() => router.push("/search")}
-                  className="flex flex-1 items-center justify-center gap-1.5 border-s border-slate-100 text-[13px] font-medium text-slate-600"
-                >
-                  <SlidersHorizontal className="h-4 w-4" />
-                  <span className="truncate">{t.quickFilterLabel}</span>
-                </button>
-              </div>
-            </div>
+            {/* White→stone-50 handoff — sized to exactly match the search card's overlap below, so the card floats over the blend with no hard edge beside it */}
+            <div className="h-10 w-full bg-gradient-to-b from-white to-stone-50" />
           </motion.div>
 
         </div>
@@ -2662,6 +2623,48 @@ export default function Home() {
           transition={{ duration: 0.6 }}
           className="flex w-full flex-col"
         >
+
+          {/* ── SEARCH BAR — overlaps up into the gradient handoff above ─────── */}
+          <div className="relative z-10 -mt-10 mx-5 rounded-[28px] bg-white p-3 shadow-xl shadow-slate-200/70">
+            <button
+              onClick={() => router.push("/search")}
+              className="flex w-full min-h-[56px] items-center gap-3 rounded-2xl px-1 text-start transition-transform duration-200 active:scale-[0.98]"
+              dir={isRtl ? "rtl" : "ltr"}
+            >
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-orange-500 text-white">
+                <Search className="h-5 w-5" />
+              </span>
+              <span className="min-w-0 flex-1 truncate text-base text-slate-400">
+                {t.heroSearchPlaceholder}
+              </span>
+            </button>
+
+            <div className="my-2 border-t border-slate-100" />
+
+            <div className="flex h-11" dir={isRtl ? "rtl" : "ltr"}>
+              <button
+                onClick={() => router.push("/search-wizard")}
+                className="flex flex-1 items-center justify-center gap-1.5 text-[13px] font-medium text-slate-600"
+              >
+                <MapPin className="h-4 w-4" />
+                <span className="truncate">{t.quickLocationLabel}</span>
+              </button>
+              <button
+                onClick={() => router.push("/search-wizard")}
+                className="flex flex-1 items-center justify-center gap-1.5 border-s border-slate-100 text-[13px] font-medium text-slate-600"
+              >
+                <LayoutGrid className="h-4 w-4" />
+                <span className="truncate">{t.quickCategoryLabel}</span>
+              </button>
+              <button
+                onClick={() => router.push("/search")}
+                className="flex flex-1 items-center justify-center gap-1.5 border-s border-slate-100 text-[13px] font-medium text-slate-600"
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+                <span className="truncate">{t.quickFilterLabel}</span>
+              </button>
+            </div>
+          </div>
 
             {/* ── SEARCH WIZARD ─────────────────────────────────────────────── */}
             <div className="w-full mt-3">
