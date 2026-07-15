@@ -174,15 +174,15 @@ const translations = {
     igDesc: "Özel ev arkadaşı ipuçları ve gerçek eşleşme hikayeleri",
     tgDesc: "Anlık bildirimler ve özel teklifler için kanalımıza katılın",
     landlordBadge: "EV SAHİBİ",
-    tenantBadge: "EV ARKADAŞI ARAYAN",
+    tenantBadge: "EV ARAYAN",
     landlordSubtext: "Güvenli housemate bul",
     tenantSubtext: "İdeal evinizi bul",
-    commercialOwnerBadge: "TİCARİ ALAN SAHİBİ",
+    commercialOwnerBadge: "ALAN SAHİBİ",
     commercialOwnerTitle: "Ticari Alanım Var",
-    commercialOwnerSubtitle: "Alanınızı doğru kişiyle paylaşın",
-    commercialSeekerBadge: "TİCARİ ALAN ARAYAN",
+    commercialOwnerSubtitle: "Alanını paylaş",
+    commercialSeekerBadge: "ALAN ARAYAN",
     commercialSeekerTitle: "Ticari Alan Arıyorum",
-    commercialSeekerSubtitle: "Size uygun ticari alanı bulun",
+    commercialSeekerSubtitle: "Uygun alanı bul",
     commercialModalTitleOwner: "Mekan türünü seçin",
     commercialModalTitleSeeker: "Aradığınız mekan türünü seçin",
   },
@@ -330,12 +330,12 @@ const translations = {
     tenantBadge: "ROOM SEEKER",
     landlordSubtext: "Find a verified roommate",
     tenantSubtext: "Find your ideal home",
-    commercialOwnerBadge: "COMMERCIAL SPACE OWNER",
+    commercialOwnerBadge: "SPACE OWNER",
     commercialOwnerTitle: "I Have a Space",
-    commercialOwnerSubtitle: "Share your space with the right person",
-    commercialSeekerBadge: "LOOKING FOR COMMERCIAL SPACE",
+    commercialOwnerSubtitle: "Share your space",
+    commercialSeekerBadge: "NEED SPACE",
     commercialSeekerTitle: "Looking for a Space",
-    commercialSeekerSubtitle: "Find the right space for you",
+    commercialSeekerSubtitle: "Find your space",
     commercialModalTitleOwner: "Select space type",
     commercialModalTitleSeeker: "Select the space you're looking for",
   },
@@ -483,12 +483,12 @@ const translations = {
     tenantBadge: "هم‌خانه‌یاب",
     landlordSubtext: "هم‌خانه معتبر پیدا کن",
     tenantSubtext: "خانه ایده‌آلت را بیاب",
-    commercialOwnerBadge: "صاحب فضای تجاری",
+    commercialOwnerBadge: "صاحب فضا",
     commercialOwnerTitle: "فضای تجاری دارم",
-    commercialOwnerSubtitle: "فضای خود را با فرد مناسب به اشتراک بگذارید",
-    commercialSeekerBadge: "دنبال فضای تجاری",
+    commercialOwnerSubtitle: "فضایت را به اشتراک بذار",
+    commercialSeekerBadge: "دنبال فضا",
     commercialSeekerTitle: "دنبال فضای تجاری‌ام",
-    commercialSeekerSubtitle: "فضای مناسب خود را پیدا کنید",
+    commercialSeekerSubtitle: "فضای مناسب را پیدا کن",
     commercialModalTitleOwner: "نوع مکان را انتخاب کنید",
     commercialModalTitleSeeker: "نوع مکان مورد نظر را انتخاب کنید",
   },
@@ -632,15 +632,15 @@ const translations = {
     igDesc: "Exklusive Mitbewohner-Tipps und echte Match-Geschichten",
     tgDesc: "Tritt unserem Kanal bei für Benachrichtigungen und Sonderangebote",
     landlordBadge: "VERMIETER",
-    tenantBadge: "MITBEWOHNER SUCHER",
+    tenantBadge: "ZIMMERSUCHE",
     landlordSubtext: "Mitbewohner finden",
     tenantSubtext: "Traumzuhause finden",
-    commercialOwnerBadge: "GEWERBERAUM-EIGENTÜMER",
+    commercialOwnerBadge: "GEWERBERAUM",
     commercialOwnerTitle: "Ich Habe Gewerberaum",
-    commercialOwnerSubtitle: "Teilen Sie Ihren Raum mit der richtigen Person",
-    commercialSeekerBadge: "GEWERBERAUM GESUCHT",
+    commercialOwnerSubtitle: "Teile deinen Raum",
+    commercialSeekerBadge: "RAUMSUCHE",
     commercialSeekerTitle: "Ich Suche Gewerberaum",
-    commercialSeekerSubtitle: "Finden Sie den richtigen Raum für Sie",
+    commercialSeekerSubtitle: "Finde deinen Raum",
     commercialModalTitleOwner: "Raumtyp auswählen",
     commercialModalTitleSeeker: "Gesuchten Raumtyp auswählen",
   },
@@ -786,15 +786,15 @@ const translations = {
     igDesc: "نصائح حصرية لشركاء السكن وقصص تطابق حقيقية",
     tgDesc: "انضم إلى قناتنا للإشعارات الفورية والعروض الخاصة",
     landlordBadge: "صاحب المنزل",
-    tenantBadge: "باحث عن شريك سكن",
+    tenantBadge: "باحث سكن",
     landlordSubtext: "ابحث عن شريك سكن موثَّق",
     tenantSubtext: "ابحث عن منزلك المثالي",
-    commercialOwnerBadge: "صاحب مساحة تجارية",
+    commercialOwnerBadge: "صاحب مساحة",
     commercialOwnerTitle: "لدي مساحة تجارية",
-    commercialOwnerSubtitle: "شارك مساحتك مع الشخص المناسب",
-    commercialSeekerBadge: "أبحث عن مساحة تجارية",
+    commercialOwnerSubtitle: "شارك مساحتك",
+    commercialSeekerBadge: "أبحث مساحة",
     commercialSeekerTitle: "أبحث عن مساحة تجارية",
-    commercialSeekerSubtitle: "اعثر على المساحة المناسبة لك",
+    commercialSeekerSubtitle: "ابحث عن مساحتك",
     commercialModalTitleOwner: "اختر نوع المكان",
     commercialModalTitleSeeker: "اختر نوع المكان الذي تبحث عنه",
   },
@@ -941,12 +941,12 @@ const translations = {
     tenantBadge: "Ищу соседа",
     landlordSubtext: "Найди проверенного соседа",
     tenantSubtext: "Найди своё идеальное жильё",
-    commercialOwnerBadge: "ВЛАДЕЛЕЦ КОММЕРЧЕСКОЙ ПЛОЩАДИ",
+    commercialOwnerBadge: "ПЛОЩАДЬ",
     commercialOwnerTitle: "Есть Площадь",
-    commercialOwnerSubtitle: "Поделитесь площадью с подходящим человеком",
-    commercialSeekerBadge: "ИЩУ КОММЕРЧЕСКУЮ ПЛОЩАДЬ",
+    commercialOwnerSubtitle: "Поделись площадью",
+    commercialSeekerBadge: "ИЩУ ПЛОЩАДЬ",
     commercialSeekerTitle: "Ищу Площадь",
-    commercialSeekerSubtitle: "Найдите подходящую площадь для себя",
+    commercialSeekerSubtitle: "Найди площадь",
     commercialModalTitleOwner: "Выберите тип помещения",
     commercialModalTitleSeeker: "Выберите тип помещения, которое ищете",
   },
@@ -2661,39 +2661,50 @@ export default function Home() {
               {wizardMode === null ? (
                 <>
                   {/* Intent cards — 2×2 grid */}
-                  <div className="grid grid-cols-2 gap-4" dir={isRtl ? "rtl" : "ltr"}>
+                  <div className="grid grid-cols-2 gap-3" dir={isRtl ? "rtl" : "ltr"}>
                     {/* Card 1 — Landlord */}
                     <motion.button
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=has_place'); }}
-                      className="group flex min-h-[320px] flex-col gap-2 rounded-3xl bg-orange-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group flex flex-col rounded-3xl bg-orange-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
-                      <span className="self-start rounded-md bg-orange-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-orange-700">
-                        {t.landlordBadge}
-                      </span>
-                      <p className="text-lg font-extrabold leading-snug text-stone-900">
-                        {t.optionSeekingTitle}
-                      </p>
-                      <p className="line-clamp-1 text-xs text-slate-500">
+                      {/* Slot A — chip */}
+                      <div className="flex h-9 items-start">
+                        <span className="whitespace-nowrap rounded-lg bg-orange-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-orange-700">
+                          {t.landlordBadge}
+                        </span>
+                      </div>
+                      {/* Slot B — title */}
+                      <div className="flex h-14 items-start">
+                        <p className="line-clamp-2 text-lg font-extrabold leading-snug text-stone-900">
+                          {t.optionSeekingTitle}
+                        </p>
+                      </div>
+                      {/* Slot C — subtitle */}
+                      <p className="h-5 truncate text-xs text-slate-500">
                         {t.landlordSubtext}
                       </p>
-                      <div className="my-1 rounded-2xl bg-white/60 p-2">
+                      {/* Slot D — illustration */}
+                      <div className="my-2 h-28 w-full rounded-2xl bg-white/60 p-2">
                         <Image
                           src="/card-residential-owner.webp"
                           alt=""
                           width={640}
                           height={584}
                           loading="lazy"
-                          className={`mx-auto h-28 object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
+                          className={`mx-auto h-full object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
                         />
                       </div>
-                      <span className="mt-auto flex h-9 w-9 items-center justify-center self-end rounded-full bg-white shadow-md">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
-                          <path d="M5 12h14M13 6l6 6-6 6" />
-                        </svg>
-                      </span>
+                      {/* Slot E — arrow */}
+                      <div className="flex h-10 items-center justify-end">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
+                            <path d="M5 12h14M13 6l6 6-6 6" />
+                          </svg>
+                        </span>
+                      </div>
                     </motion.button>
 
                     {/* Card 2 — Tenant */}
@@ -2702,32 +2713,43 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.18 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=needs_place'); }}
-                      className="group flex min-h-[320px] flex-col gap-2 rounded-3xl bg-blue-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group flex flex-col rounded-3xl bg-blue-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
-                      <span className="self-start rounded-md bg-blue-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-700">
-                        {t.tenantBadge}
-                      </span>
-                      <p className="text-lg font-extrabold leading-snug text-stone-900">
-                        {t.optionOfferingTitle}
-                      </p>
-                      <p className="line-clamp-1 text-xs text-slate-500">
+                      {/* Slot A — chip */}
+                      <div className="flex h-9 items-start">
+                        <span className="whitespace-nowrap rounded-lg bg-blue-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-blue-700">
+                          {t.tenantBadge}
+                        </span>
+                      </div>
+                      {/* Slot B — title */}
+                      <div className="flex h-14 items-start">
+                        <p className="line-clamp-2 text-lg font-extrabold leading-snug text-stone-900">
+                          {t.optionOfferingTitle}
+                        </p>
+                      </div>
+                      {/* Slot C — subtitle */}
+                      <p className="h-5 truncate text-xs text-slate-500">
                         {t.tenantSubtext}
                       </p>
-                      <div className="my-1 rounded-2xl bg-white/60 p-2">
+                      {/* Slot D — illustration */}
+                      <div className="my-2 h-28 w-full rounded-2xl bg-white/60 p-2">
                         <Image
                           src="/card-residential-seeker.webp"
                           alt=""
                           width={640}
                           height={512}
                           loading="lazy"
-                          className={`mx-auto h-28 object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
+                          className={`mx-auto h-full object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
                         />
                       </div>
-                      <span className="mt-auto flex h-9 w-9 items-center justify-center self-end rounded-full bg-white shadow-md">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
-                          <path d="M5 12h14M13 6l6 6-6 6" />
-                        </svg>
-                      </span>
+                      {/* Slot E — arrow */}
+                      <div className="flex h-10 items-center justify-end">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
+                            <path d="M5 12h14M13 6l6 6-6 6" />
+                          </svg>
+                        </span>
+                      </div>
                     </motion.button>
 
                     {/* Card 3 — Commercial space owner */}
@@ -2736,32 +2758,43 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.26 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('owner'); setShowCommercialModal(true); }}
-                      className="group flex min-h-[320px] flex-col gap-2 rounded-3xl bg-emerald-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group flex flex-col rounded-3xl bg-emerald-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
-                      <span className="self-start rounded-md bg-emerald-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700">
-                        {t.commercialOwnerBadge}
-                      </span>
-                      <p className="text-lg font-extrabold leading-snug text-stone-900">
-                        {t.commercialOwnerTitle}
-                      </p>
-                      <p className="line-clamp-1 text-xs text-slate-500">
+                      {/* Slot A — chip */}
+                      <div className="flex h-9 items-start">
+                        <span className="whitespace-nowrap rounded-lg bg-emerald-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-emerald-700">
+                          {t.commercialOwnerBadge}
+                        </span>
+                      </div>
+                      {/* Slot B — title */}
+                      <div className="flex h-14 items-start">
+                        <p className="line-clamp-2 text-lg font-extrabold leading-snug text-stone-900">
+                          {t.commercialOwnerTitle}
+                        </p>
+                      </div>
+                      {/* Slot C — subtitle */}
+                      <p className="h-5 truncate text-xs text-slate-500">
                         {t.commercialOwnerSubtitle}
                       </p>
-                      <div className="my-1 rounded-2xl bg-white/60 p-2">
+                      {/* Slot D — illustration */}
+                      <div className="my-2 h-28 w-full rounded-2xl bg-white/60 p-2">
                         <Image
                           src="/card-commercial-owner.webp"
                           alt=""
                           width={640}
                           height={512}
                           loading="lazy"
-                          className={`mx-auto h-28 object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
+                          className={`mx-auto h-full object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
                         />
                       </div>
-                      <span className="mt-auto flex h-9 w-9 items-center justify-center self-end rounded-full bg-white shadow-md">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
-                          <path d="M5 12h14M13 6l6 6-6 6" />
-                        </svg>
-                      </span>
+                      {/* Slot E — arrow */}
+                      <div className="flex h-10 items-center justify-end">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
+                            <path d="M5 12h14M13 6l6 6-6 6" />
+                          </svg>
+                        </span>
+                      </div>
                     </motion.button>
 
                     {/* Card 4 — Commercial space seeker */}
@@ -2770,32 +2803,43 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.34 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('seeker'); setShowCommercialModal(true); }}
-                      className="group flex min-h-[320px] flex-col gap-2 rounded-3xl bg-teal-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group flex flex-col rounded-3xl bg-teal-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
-                      <span className="self-start rounded-md bg-teal-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-teal-700">
-                        {t.commercialSeekerBadge}
-                      </span>
-                      <p className="text-lg font-extrabold leading-snug text-stone-900">
-                        {t.commercialSeekerTitle}
-                      </p>
-                      <p className="line-clamp-1 text-xs text-slate-500">
+                      {/* Slot A — chip */}
+                      <div className="flex h-9 items-start">
+                        <span className="whitespace-nowrap rounded-lg bg-teal-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-teal-700">
+                          {t.commercialSeekerBadge}
+                        </span>
+                      </div>
+                      {/* Slot B — title */}
+                      <div className="flex h-14 items-start">
+                        <p className="line-clamp-2 text-lg font-extrabold leading-snug text-stone-900">
+                          {t.commercialSeekerTitle}
+                        </p>
+                      </div>
+                      {/* Slot C — subtitle */}
+                      <p className="h-5 truncate text-xs text-slate-500">
                         {t.commercialSeekerSubtitle}
                       </p>
-                      <div className="my-1 rounded-2xl bg-white/60 p-2">
+                      {/* Slot D — illustration */}
+                      <div className="my-2 h-28 w-full rounded-2xl bg-white/60 p-2">
                         <Image
                           src="/card-commercial-seeker.webp"
                           alt=""
                           width={640}
                           height={512}
                           loading="lazy"
-                          className={`mx-auto h-28 object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
+                          className={`mx-auto h-full object-contain ${isRtl ? "scale-x-[-1]" : ""}`}
                         />
                       </div>
-                      <span className="mt-auto flex h-9 w-9 items-center justify-center self-end rounded-full bg-white shadow-md">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
-                          <path d="M5 12h14M13 6l6 6-6 6" />
-                        </svg>
-                      </span>
+                      {/* Slot E — arrow */}
+                      <div className="flex h-10 items-center justify-end">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
+                            <path d="M5 12h14M13 6l6 6-6 6" />
+                          </svg>
+                        </span>
+                      </div>
                     </motion.button>
                   </div>
                 </>
