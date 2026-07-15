@@ -175,8 +175,8 @@ const translations = {
     tgDesc: "Anlık bildirimler ve özel teklifler için kanalımıza katılın",
     landlordBadge: "EV SAHİBİ",
     tenantBadge: "EV ARAYAN",
-    landlordSubtext: "Güvenli housemate bul",
-    tenantSubtext: "İdeal evinizi bul",
+    landlordSubtext: "Ev arkadaşını bul",
+    tenantSubtext: "İdeal evini bul",
     commercialOwnerBadge: "ALAN SAHİBİ",
     commercialOwnerTitle: "Ticari Alanım Var",
     commercialOwnerSubtitle: "Alanını paylaş",
@@ -2661,36 +2661,30 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=has_place'); }}
-                      className="group flex min-h-[176px] overflow-hidden rounded-3xl bg-orange-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group flex min-h-[172px] flex-col rounded-3xl bg-orange-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
-                      {/* Text column */}
-                      <div className="flex w-[55%] flex-col">
-                        <span className="self-start rounded-md bg-orange-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-orange-700">
-                          {t.landlordBadge}
+                      <span className="self-start whitespace-nowrap rounded-md bg-orange-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-orange-700">
+                        {t.landlordBadge}
+                      </span>
+                      <p className="mt-2 text-lg font-extrabold leading-snug text-stone-900">
+                        {t.optionSeekingTitle}
+                      </p>
+                      <p className="mt-1 text-xs text-slate-500">
+                        {t.landlordSubtext}
+                      </p>
+                      <div className="mt-3 flex items-end justify-between">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
+                            <path d="M5 12h14M13 6l6 6-6 6" />
+                          </svg>
                         </span>
-                        <p className="mt-2 text-lg font-extrabold leading-snug text-stone-900">
-                          {t.optionSeekingTitle}
-                        </p>
-                        <p className="mt-1 line-clamp-2 text-xs text-slate-500">
-                          {t.landlordSubtext}
-                        </p>
-                        <div className="mt-auto self-start pt-2">
-                          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
-                              <path d="M5 12h14M13 6l6 6-6 6" />
-                            </svg>
-                          </span>
-                        </div>
-                      </div>
-                      {/* Illustration column */}
-                      <div className="flex w-[45%] items-end justify-end">
                         <Image
                           src="/card-residential-owner.webp"
                           alt=""
                           width={560}
                           height={511}
                           loading="lazy"
-                          className={`h-32 w-auto self-end object-contain drop-shadow-md ${isRtl ? "scale-x-[-1]" : ""}`}
+                          className={`h-24 w-auto object-contain drop-shadow-md ${isRtl ? "scale-x-[-1]" : ""}`}
                         />
                       </div>
                     </motion.button>
@@ -2701,36 +2695,30 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.18 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=needs_place'); }}
-                      className="group flex min-h-[176px] overflow-hidden rounded-3xl bg-blue-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group flex min-h-[172px] flex-col rounded-3xl bg-blue-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
-                      {/* Text column */}
-                      <div className="flex w-[55%] flex-col">
-                        <span className="self-start rounded-md bg-blue-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-700">
-                          {t.tenantBadge}
+                      <span className="self-start whitespace-nowrap rounded-md bg-blue-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-700">
+                        {t.tenantBadge}
+                      </span>
+                      <p className="mt-2 text-lg font-extrabold leading-snug text-stone-900">
+                        {t.optionOfferingTitle}
+                      </p>
+                      <p className="mt-1 text-xs text-slate-500">
+                        {t.tenantSubtext}
+                      </p>
+                      <div className="mt-3 flex items-end justify-between">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
+                            <path d="M5 12h14M13 6l6 6-6 6" />
+                          </svg>
                         </span>
-                        <p className="mt-2 text-lg font-extrabold leading-snug text-stone-900">
-                          {t.optionOfferingTitle}
-                        </p>
-                        <p className="mt-1 line-clamp-2 text-xs text-slate-500">
-                          {t.tenantSubtext}
-                        </p>
-                        <div className="mt-auto self-start pt-2">
-                          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
-                              <path d="M5 12h14M13 6l6 6-6 6" />
-                            </svg>
-                          </span>
-                        </div>
-                      </div>
-                      {/* Illustration column */}
-                      <div className="flex w-[45%] items-end justify-end">
                         <Image
                           src="/card-residential-seeker.webp"
                           alt=""
                           width={560}
                           height={448}
                           loading="lazy"
-                          className={`h-32 w-auto self-end object-contain drop-shadow-md ${isRtl ? "scale-x-[-1]" : ""}`}
+                          className={`h-24 w-auto object-contain drop-shadow-md ${isRtl ? "scale-x-[-1]" : ""}`}
                         />
                       </div>
                     </motion.button>
@@ -2741,36 +2729,30 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.26 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('owner'); setShowCommercialModal(true); }}
-                      className="group flex min-h-[176px] overflow-hidden rounded-3xl bg-emerald-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group flex min-h-[172px] flex-col rounded-3xl bg-emerald-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
-                      {/* Text column */}
-                      <div className="flex w-[55%] flex-col">
-                        <span className="self-start rounded-md bg-emerald-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700">
-                          {t.commercialOwnerBadge}
+                      <span className="self-start whitespace-nowrap rounded-md bg-emerald-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700">
+                        {t.commercialOwnerBadge}
+                      </span>
+                      <p className="mt-2 text-lg font-extrabold leading-snug text-stone-900">
+                        {t.commercialOwnerTitle}
+                      </p>
+                      <p className="mt-1 text-xs text-slate-500">
+                        {t.commercialOwnerSubtitle}
+                      </p>
+                      <div className="mt-3 flex items-end justify-between">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
+                            <path d="M5 12h14M13 6l6 6-6 6" />
+                          </svg>
                         </span>
-                        <p className="mt-2 text-lg font-extrabold leading-snug text-stone-900">
-                          {t.commercialOwnerTitle}
-                        </p>
-                        <p className="mt-1 line-clamp-2 text-xs text-slate-500">
-                          {t.commercialOwnerSubtitle}
-                        </p>
-                        <div className="mt-auto self-start pt-2">
-                          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
-                              <path d="M5 12h14M13 6l6 6-6 6" />
-                            </svg>
-                          </span>
-                        </div>
-                      </div>
-                      {/* Illustration column */}
-                      <div className="flex w-[45%] items-end justify-end">
                         <Image
                           src="/card-commercial-owner.webp"
                           alt=""
                           width={560}
                           height={448}
                           loading="lazy"
-                          className={`h-32 w-auto self-end object-contain drop-shadow-md ${isRtl ? "scale-x-[-1]" : ""}`}
+                          className={`h-24 w-auto object-contain drop-shadow-md ${isRtl ? "scale-x-[-1]" : ""}`}
                         />
                       </div>
                     </motion.button>
@@ -2781,36 +2763,30 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.34 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('seeker'); setShowCommercialModal(true); }}
-                      className="group flex min-h-[176px] overflow-hidden rounded-3xl bg-teal-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group flex min-h-[172px] flex-col rounded-3xl bg-teal-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
                     >
-                      {/* Text column */}
-                      <div className="flex w-[55%] flex-col">
-                        <span className="self-start rounded-md bg-teal-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-teal-700">
-                          {t.commercialSeekerBadge}
+                      <span className="self-start whitespace-nowrap rounded-md bg-teal-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-teal-700">
+                        {t.commercialSeekerBadge}
+                      </span>
+                      <p className="mt-2 text-lg font-extrabold leading-snug text-stone-900">
+                        {t.commercialSeekerTitle}
+                      </p>
+                      <p className="mt-1 text-xs text-slate-500">
+                        {t.commercialSeekerSubtitle}
+                      </p>
+                      <div className="mt-3 flex items-end justify-between">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
+                            <path d="M5 12h14M13 6l6 6-6 6" />
+                          </svg>
                         </span>
-                        <p className="mt-2 text-lg font-extrabold leading-snug text-stone-900">
-                          {t.commercialSeekerTitle}
-                        </p>
-                        <p className="mt-1 line-clamp-2 text-xs text-slate-500">
-                          {t.commercialSeekerSubtitle}
-                        </p>
-                        <div className="mt-auto self-start pt-2">
-                          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
-                              <path d="M5 12h14M13 6l6 6-6 6" />
-                            </svg>
-                          </span>
-                        </div>
-                      </div>
-                      {/* Illustration column */}
-                      <div className="flex w-[45%] items-end justify-end">
                         <Image
                           src="/card-commercial-seeker.webp"
                           alt=""
                           width={560}
                           height={448}
                           loading="lazy"
-                          className={`h-32 w-auto self-end object-contain drop-shadow-md ${isRtl ? "scale-x-[-1]" : ""}`}
+                          className={`h-24 w-auto object-contain drop-shadow-md ${isRtl ? "scale-x-[-1]" : ""}`}
                         />
                       </div>
                     </motion.button>
