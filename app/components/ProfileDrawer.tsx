@@ -167,42 +167,40 @@ export default function ProfileDrawer() {
             alt=""
             fill
             priority
-            className="object-cover"
             sizes="300px"
+            className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/20 to-transparent" />
-          <div className="relative z-10">
-            <div className="absolute inset-x-0 bottom-0 flex items-center gap-3 px-5 pb-4">
-              <button
-                onClick={() => goTo("/profile")}
-                className="w-14 h-14 rounded-full ring-2 ring-white/90 shadow-md flex items-center justify-center overflow-hidden flex-shrink-0 font-extrabold text-base text-white"
-                style={{ background: "linear-gradient(135deg, #ea580c, #d97706)" }}
-              >
-                {profileAvatarUrl ? (
-                  <img src={profileAvatarUrl} alt="avatar" className="w-full h-full object-cover" />
-                ) : (
-                  initials
-                )}
-              </button>
-              <div className="flex-1 min-w-0">
-                <p className="text-lg font-bold text-white leading-tight truncate">
-                  {user.user_metadata?.full_name ?? user.email?.split("@")[0] ?? "User"}
-                </p>
-                <p className="text-[13px] text-white/75 truncate mt-0.5">{user.email}</p>
-              </div>
-            </div>
-          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
           <button
             onClick={close}
             aria-label="Close"
             className={
               isRtl
-                ? "absolute top-[max(0.75rem,env(safe-area-inset-top))] left-3 w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center z-10"
-                : "absolute top-[max(0.75rem,env(safe-area-inset-top))] right-3 w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center z-10"
+                ? "absolute top-[max(0.75rem,env(safe-area-inset-top))] left-3 w-8 h-8 rounded-full bg-black/30 text-white flex items-center justify-center z-10"
+                : "absolute top-[max(0.75rem,env(safe-area-inset-top))] right-3 w-8 h-8 rounded-full bg-black/30 text-white flex items-center justify-center z-10"
             }
           >
             <X className="w-4 h-4" />
           </button>
+          <div className="absolute inset-x-0 bottom-0 z-10 flex items-center gap-3 px-5 pb-3.5">
+            <button
+              onClick={() => goTo("/profile")}
+              className="w-12 h-12 rounded-full ring-2 ring-white/90 shadow-md flex items-center justify-center overflow-hidden flex-shrink-0 font-extrabold text-base text-white"
+              style={{ background: "linear-gradient(135deg, #ea580c, #d97706)" }}
+            >
+              {profileAvatarUrl ? (
+                <img src={profileAvatarUrl} alt="avatar" className="w-full h-full object-cover" />
+              ) : (
+                initials
+              )}
+            </button>
+            <div className="flex-1 min-w-0">
+              <p className="text-base font-bold text-white leading-tight truncate">
+                {user.user_metadata?.full_name ?? user.email?.split("@")[0] ?? "User"}
+              </p>
+              <p className="text-[12px] text-white/80 truncate mt-0.5">{user.email}</p>
+            </div>
+          </div>
         </div>
 
         {/* Menu items */}
