@@ -55,8 +55,8 @@ function MenuRow({
       onClick={onClick}
       className={
         danger
-          ? "w-full flex items-center gap-3 py-2.5 px-4 text-sm font-medium text-red-500 active:bg-gray-50 rounded-xl transition-colors duration-150"
-          : "w-full flex items-center gap-3 py-2.5 px-4 text-sm font-medium text-gray-800 active:bg-gray-50 rounded-xl transition-colors duration-150"
+          ? "w-full flex items-center gap-3 py-2 px-4 text-[15px] font-medium text-red-500 active:bg-gray-50 rounded-xl transition-colors duration-150"
+          : "w-full flex items-center gap-3 py-2 px-4 text-[15px] font-medium text-gray-800 active:bg-gray-50 rounded-xl transition-colors duration-150"
       }
     >
       <div className={iconClassName}>
@@ -138,17 +138,15 @@ export default function ProfileDrawer() {
       {/* Drawer */}
       <div
         dir="ltr"
+        className="flex flex-col h-dvh"
         style={{
           position: "fixed",
           top: 0,
           right: isOpen ? 0 : "-100%",
           width: "85%",
           maxWidth: "360px",
-          height: "100dvh",
           zIndex: 50,
           backgroundColor: "white",
-          display: "flex",
-          flexDirection: "column",
           transition: "right 0.3s ease",
           boxShadow: "-4px 0 40px rgba(0,0,0,0.18)",
         }}
@@ -158,7 +156,7 @@ export default function ProfileDrawer() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => goTo("/profile")}
-              className="w-14 h-14 rounded-full border-2 border-white flex items-center justify-center overflow-hidden flex-shrink-0 font-extrabold text-lg text-white"
+              className="w-12 h-12 rounded-full ring-2 ring-white flex items-center justify-center overflow-hidden flex-shrink-0 font-extrabold text-base text-white"
               style={{ background: "linear-gradient(135deg, #ea580c, #d97706)" }}
             >
               {profileAvatarUrl ? (
@@ -207,7 +205,7 @@ export default function ProfileDrawer() {
             />
           </div>
 
-          <div className="border-t border-gray-100 mx-4" />
+          <div className="border-t border-gray-100 my-1" />
 
           {/* Group B: Search, Saved, My Listings, Messages, Reviews */}
           <div className="py-1">
@@ -267,7 +265,7 @@ export default function ProfileDrawer() {
             />
           </div>
 
-          <div className="border-t border-gray-100 mx-4" />
+          <div className="border-t border-gray-100 my-1" />
 
           {/* Group C: Support, Advertise */}
           <div className="py-1">
@@ -295,7 +293,7 @@ export default function ProfileDrawer() {
             />
           </div>
 
-          <div className="border-t border-gray-100 mx-4" />
+          <div className="border-t border-gray-100 my-1" />
 
           {/* Group D: Logout */}
           <div className="py-1">
