@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { ChevronRight, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
@@ -83,6 +84,11 @@ export default function ProfileDrawer() {
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   const isRtl = lang === "fa" || lang === "ar";
   const menuScrollRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     // Drawer renders null when there's no user, so no reset-on-logout is needed.
@@ -118,6 +124,7 @@ export default function ProfileDrawer() {
   }, [isOpen]);
 
   if (!user) return null;
+  if (!mounted) return null;
 
   const close = () => setIsOpen(false);
   const goTo = (path: string) => { close(); router.push(path); };
@@ -125,13 +132,13 @@ export default function ProfileDrawer() {
   const initials = (user.user_metadata?.full_name ?? user.email ?? "U")
     .split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase();
 
-  return (
+  return createPortal(
     <>
       {/* Overlay */}
       <div
         onClick={close}
         onTouchMove={(e) => e.preventDefault()}
-        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+        className="fixed inset-0 z-[90] bg-black/40 backdrop-blur-sm"
         style={{
           opacity: isOpen ? 1 : 0,
           transition: "opacity 0.3s ease-out",
@@ -144,8 +151,8 @@ export default function ProfileDrawer() {
         dir={isRtl ? "rtl" : "ltr"}
         className={
           isRtl
-            ? "fixed inset-y-0 left-0 h-dvh z-[60] w-[78%] max-w-[320px] flex flex-col shadow-2xl rounded-r-3xl overflow-hidden bg-white"
-            : "fixed inset-y-0 right-0 h-dvh z-[60] w-[78%] max-w-[320px] flex flex-col shadow-2xl rounded-l-3xl overflow-hidden bg-white"
+            ? "fixed inset-y-0 left-0 h-dvh z-[100] w-[78%] max-w-[320px] flex flex-col shadow-2xl rounded-r-3xl overflow-hidden bg-white"
+            : "fixed inset-y-0 right-0 h-dvh z-[100] w-[78%] max-w-[320px] flex flex-col shadow-2xl rounded-l-3xl overflow-hidden bg-white"
         }
         style={{
           transform: isOpen ? "translateX(0)" : isRtl ? "translateX(-100%)" : "translateX(100%)",
@@ -153,7 +160,7 @@ export default function ProfileDrawer() {
         }}
       >
         {/* Compact header — fixed, NOT scrollable */}
-        <div className="flex-shrink-0 p-4 bg-gradient-to-br from-orange-500 via-orange-600 to-purple-600">
+        <div className="flex-shrink-0 pt-[max(1rem,env(safe-area-inset-top))] px-4 pb-4 bg-gradient-to-br from-orange-500 via-orange-600 to-purple-600">
           <div className="flex items-center gap-3">
             <button
               onClick={() => goTo("/profile")}
@@ -353,6 +360,7 @@ export default function ProfileDrawer() {
           </div>
         </div>
       )}
-    </>
+    </>,
+    document.body
   );
 }
