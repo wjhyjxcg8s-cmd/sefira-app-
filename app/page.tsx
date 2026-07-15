@@ -2647,6 +2647,21 @@ export default function Home() {
                 </button>
               </div>
             </div>
+          </motion.div>
+
+        </div>
+
+      </div>
+
+      {/* ── INTENT CARDS + İLAN VER (own canvas, no bg — sits on page's stone-50) ── */}
+      <div className="max-w-2xl mx-auto px-5 w-full">
+
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex w-full flex-col"
+        >
 
             {/* ── SEARCH WIZARD ─────────────────────────────────────────────── */}
             <div className="w-full mt-3">
@@ -3049,14 +3064,12 @@ export default function Home() {
               </svg>
               {t.ilanVer}
             </button>
-          </motion.div>
-
-        </div>
+        </motion.div>
 
       </div>
 
       {/* ── PROMO VIDEO ───────────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto mt-10 pb-4">
+      <section className="max-w-7xl mx-auto mt-8">
         <p className="px-5 mb-3 text-lg font-extrabold text-slate-900">
           {t.promoVideoHeading}
         </p>
@@ -3080,7 +3093,7 @@ export default function Home() {
 
       {/* ── WEEKLY STORIES ────────────────────────────────────────────────────── */}
       {weeklyStories.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-5 mt-10 pb-4">
+        <section className="max-w-7xl mx-auto px-4 sm:px-5 mt-8 pb-4">
           <p className="text-sm font-bold text-stone-800 mb-3 sm:mb-4">
             {thisWeekLabel[lang] ?? "Bu Hafta"}
           </p>
