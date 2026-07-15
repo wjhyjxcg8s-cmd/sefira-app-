@@ -2592,7 +2592,7 @@ export default function Home() {
             </h1>
 
             {/* Illustration — full-bleed, the entire visual hero */}
-            <div className="relative left-1/2 w-screen -translate-x-1/2">
+            <div className="-mx-9">
               <div className="relative aspect-[4/3] w-full md:aspect-[21/9] md:max-h-[520px]">
                 <Image
                   src="/hero-illustration.webp"
@@ -2600,7 +2600,11 @@ export default function Home() {
                   fill
                   priority
                   sizes="100vw"
-                  className="object-cover object-[center_55%] md:object-center"
+                  className={
+                    isRtl
+                      ? "scale-x-[-1] object-cover object-[50%_55%] md:object-[50%_50%]"
+                      : "object-cover object-[50%_55%] md:object-[50%_50%]"
+                  }
                 />
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent" />
               </div>
