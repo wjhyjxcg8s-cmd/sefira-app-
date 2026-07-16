@@ -1634,6 +1634,7 @@ export default function Home() {
   const notifRef = useRef<HTMLDivElement>(null);
   const [notifOpen, setNotifOpen] = useState(false);
   const promoVideoSectionRef = useRef<HTMLDivElement>(null);
+  const promoVideoRef = useRef<HTMLVideoElement>(null);
   const [promoVideoInView, setPromoVideoInView] = useState(false);
   const [notifications, setNotifications] = useState<NotifItem[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -1704,6 +1705,32 @@ export default function Home() {
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
+
+  // ── Promo video: enforce autoplay + seamless loop on iOS/Android ──────────
+  useEffect(() => {
+    if (!promoVideoInView) return;
+    const v = promoVideoRef.current;
+    if (!v) return;
+    v.muted = true;
+    v.defaultMuted = true;
+    v.playsInline = true;
+    const tryPlay = () => v.play().catch(() => {});
+    tryPlay();
+    const onVis = () => { if (!document.hidden) tryPlay(); };
+    const onEnded = () => { v.currentTime = 0; tryPlay(); };
+    document.addEventListener("visibilitychange", onVis);
+    v.addEventListener("pause", tryPlay);
+    v.addEventListener("stalled", tryPlay);
+    v.addEventListener("suspend", tryPlay);
+    v.addEventListener("ended", onEnded);
+    return () => {
+      document.removeEventListener("visibilitychange", onVis);
+      v.removeEventListener("pause", tryPlay);
+      v.removeEventListener("stalled", tryPlay);
+      v.removeEventListener("suspend", tryPlay);
+      v.removeEventListener("ended", onEnded);
+    };
+  }, [promoVideoInView]);
 
   // ── Restore scroll position after back-navigation from a listing ──────────
   useEffect(() => {
@@ -3081,19 +3108,18 @@ export default function Home() {
           {t.promoVideoHeading}
         </p>
         <div ref={promoVideoSectionRef} className="relative mx-5 aspect-video overflow-hidden rounded-3xl shadow-lg shadow-slate-200/60 ring-1 ring-slate-100">
-          {promoVideoInView ? (
+          <Image src="/hero-bg.webp" alt="" fill className="object-cover" />
+          {promoVideoInView && (
             <video
+              ref={promoVideoRef}
               autoPlay
               loop
               muted
               playsInline
-              preload="none"
-              poster="/hero-bg.webp"
+              preload="auto"
               src="https://ceetzophaybywfuhezhv.supabase.co/storage/v1/object/public/media/IMG_1365.MP4"
               className="absolute inset-0 h-full w-full object-cover"
             />
-          ) : (
-            <Image src="/hero-bg.webp" alt="" fill className="object-cover" />
           )}
         </div>
       </section>
