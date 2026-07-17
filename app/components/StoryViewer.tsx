@@ -208,9 +208,9 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
         />
       </div>
 
-      {/* Media — a centering box only; the card frame lives on the image itself */}
+      {/* Media — full-width, no card framing (Instagram doesn't frame landscape media) */}
       <div
-        className="absolute inset-0 z-10 flex items-center justify-center px-4 pt-20 pb-12"
+        className="absolute inset-0 z-10 flex items-center justify-center px-0 pt-20 pb-12"
         style={{
           opacity: fadeIn ? 1 : 0,
           transform: entered ? "scale(1)" : "scale(0.96)",
@@ -220,11 +220,10 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
         <Image
           src={story.image_url}
           alt={story.caption ?? "Hikaye"}
-          width={1600}
-          height={1600}
+          fill
           sizes="100vw"
           priority
-          className="w-auto h-auto max-w-full max-h-full object-contain rounded-3xl shadow-[0_30px_80px_rgba(0,0,0,0.7)] ring-1 ring-white/10"
+          className="object-contain"
         />
       </div>
 
