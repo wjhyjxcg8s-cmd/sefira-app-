@@ -157,12 +157,12 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
     : "absolute top-0 inset-x-0 z-40 pt-[max(0.75rem,env(safe-area-inset-top))] px-3 flex gap-1";
 
   const prevZoneClassName = isRTL
-    ? "absolute top-24 bottom-0 right-0 z-30 w-[35%]"
-    : "absolute top-24 bottom-0 left-0 z-30 w-[35%]";
+    ? "absolute top-24 bottom-0 right-0 z-30 w-[35%] active:bg-white/[0.03]"
+    : "absolute top-24 bottom-0 left-0 z-30 w-[35%] active:bg-white/[0.03]";
 
   const nextZoneClassName = isRTL
-    ? "absolute top-24 bottom-0 left-0 z-30 w-[65%]"
-    : "absolute top-24 bottom-0 right-0 z-30 w-[65%]";
+    ? "absolute top-24 bottom-0 left-0 z-30 w-[65%] active:bg-white/[0.03]"
+    : "absolute top-24 bottom-0 right-0 z-30 w-[65%] active:bg-white/[0.03]";
 
   return createPortal(
     <div
@@ -181,13 +181,25 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
       onTouchEnd={handleTouchEnd}
     >
       {/* Blurred backdrop — kills the black void */}
+      <style>{`
+        @keyframes storyKenBurns {
+          0% { transform: scale(1.25); }
+          100% { transform: scale(1.4); }
+        }
+        .story-kenburns {
+          animation: storyKenBurns 20s ease-in-out infinite alternate;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .story-kenburns { animation: none; transform: scale(1.3); }
+        }
+      `}</style>
       <div className="absolute inset-0 z-0 transition-opacity duration-200 ease-out" style={{ opacity: fadeIn ? 1 : 0 }}>
         <Image
           src={story.image_url}
           alt=""
           fill
           aria-hidden="true"
-          className="object-cover scale-125 blur-3xl opacity-90 saturate-150"
+          className="story-kenburns object-cover blur-3xl opacity-90 saturate-150"
         />
         <div className="absolute inset-0 z-[1] bg-black/20" />
         <div
@@ -196,29 +208,28 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
         />
       </div>
 
-      {/* Media — floating card over the blurred backdrop */}
+      {/* Media — a centering box only; the card frame lives on the image itself */}
       <div
-        className="absolute inset-0 z-10 flex items-center justify-center px-3 pt-20 pb-10"
+        className="absolute inset-0 z-10 flex items-center justify-center px-4 pt-20 pb-12"
         style={{
           opacity: fadeIn ? 1 : 0,
           transform: entered ? "scale(1)" : "scale(0.96)",
           transition: entered ? "opacity 200ms ease-out" : "opacity 250ms ease-out, transform 250ms ease-out",
         }}
       >
-        <div className="relative w-full h-full flex items-center justify-center ring-1 ring-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden rounded-2xl">
-          <Image
-            src={story.image_url}
-            alt={story.caption ?? "Hikaye"}
-            fill
-            priority
-            sizes="100vw"
-            className="object-contain w-full h-full rounded-2xl"
-          />
-        </div>
+        <Image
+          src={story.image_url}
+          alt={story.caption ?? "Hikaye"}
+          width={1600}
+          height={1600}
+          sizes="100vw"
+          priority
+          className="w-auto h-auto max-w-full max-h-full object-contain rounded-3xl shadow-[0_30px_80px_rgba(0,0,0,0.7)] ring-1 ring-white/10"
+        />
       </div>
 
       {/* Progress bars */}
-      <div className={progressRowClassName}>
+      <div className={progressRowClassName} style={{ opacity: isPaused ? 0 : 1, transition: "opacity 150ms ease-out" }}>
         {stories.map((s, i) => (
           <div key={s.id} className="h-[3px] flex-1 rounded-full bg-white/30 overflow-hidden">
             <div
@@ -237,7 +248,8 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
 
       {/* Header */}
       <div
-        className="absolute inset-x-0 z-40 top-11 pt-[env(safe-area-inset-top)] px-4 flex items-center gap-2.5"
+        className="absolute inset-x-0 z-40 top-11 pt-[env(safe-area-inset-top)] pl-5 pr-4 flex items-center gap-2.5 drop-shadow-md"
+        style={{ opacity: isPaused ? 0 : 1, transition: "opacity 150ms ease-out" }}
       >
         <Image
           src="/images/sefira-logo.png"
@@ -247,7 +259,7 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
           className="w-8 h-8 rounded-full ring-1 ring-white/40 object-cover flex-shrink-0"
         />
         <div className="min-w-0 flex-1">
-          <p className="text-[15px] font-semibold text-white drop-shadow-sm truncate">
+          <p className="text-[15px] font-semibold text-white truncate">
             {story.caption ?? "Sefira"}
           </p>
           <p className="text-xs text-white/70">
