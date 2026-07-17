@@ -2175,26 +2175,34 @@ export default function Home() {
   const openStory = (index: number) => {
     setViewerIndex(index);
     setViewerOpen(true);
-    trackView(weeklyStories[index].id);
   };
 
+  // Functional updates only — never close over `viewerIndex` directly, since
+  // page.tsx re-renders often (unread-message polling, notifications, etc.)
+  // and a closed-over value can be stale by the time a handler actually fires.
   const goToNext = () => {
-    const next = viewerIndex + 1;
-    if (next < weeklyStories.length) {
-      setViewerIndex(next);
-      trackView(weeklyStories[next].id);
-    } else {
-      setViewerOpen(false);
-    }
+    setViewerIndex((i) => {
+      const next = i + 1;
+      if (next >= weeklyStories.length) {
+        setViewerOpen(false);
+        return i;
+      }
+      return next;
+    });
   };
 
   const goToPrev = () => {
-    const prev = viewerIndex - 1;
-    if (prev >= 0) {
-      setViewerIndex(prev);
-      trackView(weeklyStories[prev].id);
-    }
+    setViewerIndex((i) => Math.max(0, i - 1));
   };
+
+  // View tracking is driven by committed state (not by the handlers above),
+  // so it always reflects the story actually being shown, regardless of how
+  // viewerIndex got there (open, next, prev, swipe, keyboard, auto-advance).
+  useEffect(() => {
+    if (!viewerOpen) return;
+    const current = weeklyStories[viewerIndex];
+    if (current) trackView(current.id);
+  }, [viewerOpen, viewerIndex, weeklyStories]);
 
   // Keyboard navigation (Escape/ArrowLeft/ArrowRight) is handled inside <StoryViewer>
 

@@ -9,6 +9,8 @@ import { formatMessageTime } from "@/app/lib/formatTime";
 
 const STORY_DURATION_MS = 5000;
 const CLOSE_SWIPE_THRESHOLD = 80;
+const NAV_LOCK_MS = 250;
+const CROSSFADE_MS = 200;
 
 const LOCALE_MAP: Record<Lang, string> = {
   tr: "tr-TR",
@@ -26,6 +28,10 @@ interface StoryViewerStory {
   week_label: string | null;
   created_at: string;
   views: number;
+}
+
+interface Layer {
+  story: StoryViewerStory;
 }
 
 interface StoryViewerProps {
@@ -46,10 +52,22 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
   const [dragY, setDragY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
 
+  const story = stories[index];
+
+  // Two-layer cross-fade: `currentLayer` is fully visible; `incomingLayer` (if any)
+  // mounts at opacity 0 and only fades in once its image has actually loaded,
+  // which is what kills the white-flash-on-swap (a single swapped `src` renders
+  // blank for a frame before the new image paints).
+  const [currentLayer, setCurrentLayer] = useState<Layer | null>(() => (story ? { story } : null));
+  const [incomingLayer, setIncomingLayer] = useState<Layer | null>(null);
+  const [incomingVisible, setIncomingVisible] = useState(false);
+  const isFirstStoryEffect = useRef(true);
+
   const elapsedRef = useRef(0);
-  const startTimeRef = useRef(0);
+  const isPausedRef = useRef(isPaused);
   const touchStartYRef = useRef<number | null>(null);
   const dragYRef = useRef(0);
+  const lastNavRef = useRef(0);
   const onNextRef = useRef(onNext);
   const onPrevRef = useRef(onPrev);
   const onCloseRef = useRef(onClose);
@@ -57,6 +75,7 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
   useEffect(() => { onNextRef.current = onNext; }, [onNext]);
   useEffect(() => { onPrevRef.current = onPrev; }, [onPrev]);
   useEffect(() => { onCloseRef.current = onClose; }, [onClose]);
+  useEffect(() => { isPausedRef.current = isPaused; }, [isPaused]);
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -72,52 +91,79 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
     return () => { document.body.style.overflow = original; };
   }, []);
 
-  const story = stories[index];
+  // Navigation lock: swallow repeat taps within NAV_LOCK_MS (iOS can fire both
+  // a pointer event and a click for the same tap, which used to double-advance).
+  // Routed through refs so the RAF auto-advance loop below never calls a stale
+  // onNext/onPrev captured from an old page.tsx render.
+  const guardedNav = (fn: () => void) => {
+    const now = Date.now();
+    if (now - lastNavRef.current < NAV_LOCK_MS) return;
+    lastNavRef.current = now;
+    fn();
+  };
+  const handleNext = () => guardedNav(() => onNextRef.current());
+  const handlePrev = () => guardedNav(() => onPrevRef.current());
 
-  // Reset progress + trigger cross-fade whenever the active story changes
+  // Start (or restart) the incoming layer whenever the active story changes.
+  // Skipped on first mount — currentLayer already holds story 0 via lazy init.
   useEffect(() => {
-    elapsedRef.current = 0;
-    setProgress(0);
+    if (!story) return;
+    if (isFirstStoryEffect.current) {
+      isFirstStoryEffect.current = false;
+      return;
+    }
+    setIncomingLayer((inc) => (inc && inc.story.id === story.id ? inc : { story }));
+    setIncomingVisible(false);
+  }, [story]);
+
+  // Backdrop-only fade (media cross-fade is handled by the two layers above)
+  useEffect(() => {
     setFadeIn(false);
     const raf = requestAnimationFrame(() => setFadeIn(true));
     return () => cancelAnimationFrame(raf);
   }, [index]);
 
-  // Preload the next story's image so advancing never shows a blank frame
+  // Preload both neighbors so advancing OR going back never shows a blank frame
   useEffect(() => {
-    const next = stories[index + 1];
-    if (!next) return;
-    const img = new window.Image();
-    img.src = next.image_url;
+    [stories[index + 1], stories[index - 1]].forEach((neighbor) => {
+      if (!neighbor) return;
+      const img = new window.Image();
+      img.src = neighbor.image_url;
+    });
   }, [index, stories]);
 
-  // Drive the auto-advance timer; pausable via isPaused
+  // Drive the auto-advance timer. A single effect keyed only on `index` — it
+  // clears and restarts on every story change (never on pause/resume, which
+  // is checked via a ref instead), so a previous story's timer can never fire
+  // an extra advance for the new one.
   useEffect(() => {
-    if (isPaused) return;
-    startTimeRef.current = performance.now();
+    elapsedRef.current = 0;
+    setProgress(0);
+
     let raf: number;
+    let lastFrameTime = performance.now();
     const tick = (now: number) => {
-      const elapsed = elapsedRef.current + (now - startTimeRef.current);
-      const pct = Math.min(100, (elapsed / STORY_DURATION_MS) * 100);
+      if (!isPausedRef.current) {
+        elapsedRef.current += now - lastFrameTime;
+      }
+      lastFrameTime = now;
+      const pct = Math.min(100, (elapsedRef.current / STORY_DURATION_MS) * 100);
       setProgress(pct);
-      if (elapsed >= STORY_DURATION_MS) {
-        onNextRef.current();
+      if (elapsedRef.current >= STORY_DURATION_MS) {
+        handleNext();
         return;
       }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
-    return () => {
-      cancelAnimationFrame(raf);
-      elapsedRef.current += performance.now() - startTimeRef.current;
-    };
-  }, [isPaused, index]);
+    return () => cancelAnimationFrame(raf);
+  }, [index]);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onCloseRef.current();
-      else if (e.key === "ArrowLeft") onPrevRef.current();
-      else if (e.key === "ArrowRight") onNextRef.current();
+      else if (e.key === "ArrowLeft") handlePrev();
+      else if (e.key === "ArrowRight") handleNext();
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
@@ -212,19 +258,58 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
       <div
         className="absolute inset-0 z-10 flex items-center justify-center px-0 pt-20 pb-12"
         style={{
-          opacity: fadeIn ? 1 : 0,
+          opacity: entered ? 1 : 0,
           transform: entered ? "scale(1)" : "scale(0.96)",
-          transition: entered ? "opacity 200ms ease-out" : "opacity 250ms ease-out, transform 250ms ease-out",
+          transition: "opacity 250ms ease-out, transform 250ms ease-out",
         }}
       >
-        <Image
-          src={story.image_url}
-          alt={story.caption ?? "Hikaye"}
-          fill
-          sizes="100vw"
-          priority
-          className="object-contain"
-        />
+        {currentLayer && (
+          <Image
+            key={currentLayer.story.id}
+            src={currentLayer.story.image_url}
+            alt={currentLayer.story.caption ?? "Hikaye"}
+            fill
+            priority
+            sizes="100vw"
+            className="absolute inset-0 object-contain transition-opacity ease-out"
+            style={{
+              opacity: incomingLayer && incomingVisible ? 0 : 1,
+              transitionDuration: `${CROSSFADE_MS}ms`,
+            }}
+          />
+        )}
+        {incomingLayer && (
+          <Image
+            key={incomingLayer.story.id}
+            src={incomingLayer.story.image_url}
+            alt={incomingLayer.story.caption ?? "Hikaye"}
+            fill
+            sizes="100vw"
+            className="absolute inset-0 object-contain transition-opacity ease-out"
+            style={{ opacity: incomingVisible ? 1 : 0, transitionDuration: `${CROSSFADE_MS}ms` }}
+            onLoad={() => {
+              setIncomingVisible(true);
+              // Fallback promotion: cached/instant loads can update opacity within
+              // the same paint as the mount, in which case no CSS transition ever
+              // fires and onTransitionEnd below never runs. Whichever of the two
+              // fires first promotes the layer; the other becomes a no-op.
+              window.setTimeout(() => {
+                setIncomingLayer((inc) => {
+                  if (!inc) return null;
+                  setCurrentLayer(inc);
+                  return null;
+                });
+              }, CROSSFADE_MS + 50);
+            }}
+            onTransitionEnd={() => {
+              setIncomingLayer((inc) => {
+                if (!inc) return null;
+                setCurrentLayer(inc);
+                return null;
+              });
+            }}
+          />
+        )}
       </div>
 
       {/* Progress bars */}
@@ -281,8 +366,8 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
       <div className="absolute bottom-0 inset-x-0 z-10 h-24 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
 
       {/* Tap zones */}
-      <button className={prevZoneClassName} onClick={onPrev} aria-label="Önceki hikaye" />
-      <button className={nextZoneClassName} onClick={onNext} aria-label="Sonraki hikaye" />
+      <button className={prevZoneClassName} onClick={handlePrev} aria-label="Önceki hikaye" />
+      <button className={nextZoneClassName} onClick={handleNext} aria-label="Sonraki hikaye" />
     </div>,
     document.body
   );
