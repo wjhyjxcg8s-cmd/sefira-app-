@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import WelcomePopup from "@/app/components/WelcomePopup";
+import StoryViewer from "@/app/components/StoryViewer";
 import { Search, MapPin, LayoutGrid, SlidersHorizontal } from "lucide-react";
 
 import LatestListings from "@/app/components/LatestListings";
@@ -2195,18 +2196,7 @@ export default function Home() {
     }
   };
 
-  // ── Story viewer keyboard navigation ─────────────────────────────────────
-  useEffect(() => {
-    if (!viewerOpen) return;
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setViewerOpen(false);
-      else if (e.key === "ArrowLeft") goToPrev();
-      else if (e.key === "ArrowRight") goToNext();
-    };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  // viewerIndex in deps so goToNext/goToPrev close over the current index
-  }, [viewerOpen, viewerIndex, weeklyStories.length]);
+  // Keyboard navigation (Escape/ArrowLeft/ArrowRight) is handled inside <StoryViewer>
 
   const t = translations[lang];
 
@@ -3167,70 +3157,14 @@ export default function Home() {
 
       {/* ── STORY VIEWER ──────────────────────────────────────────────────────── */}
       {viewerOpen && weeklyStories.length > 0 && (
-        <>
-          {/* Backdrop (desktop only — mobile has full black bg) */}
-          <div
-            className="fixed inset-0 z-[99998] hidden md:block bg-black/70"
-            onClick={() => setViewerOpen(false)}
-          />
-
-          {/* Modal: 100vw×100vh mobile, 600px×90vh centered on desktop */}
-          <div className="fixed z-[99999] bg-black flex flex-col inset-0 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-[600px] md:h-[90vh] md:rounded-2xl md:overflow-hidden">
-
-            {/* Close button */}
-            <button
-              onClick={() => setViewerOpen(false)}
-              className="absolute top-4 right-4 z-10 w-11 h-11 rounded-full bg-black/50 flex items-center justify-center text-white text-lg hover:bg-black/70 transition-colors"
-              aria-label="Kapat"
-            >
-              ✕
-            </button>
-
-            {/* Progress bars */}
-            <div className="absolute top-4 left-4 right-16 z-10 flex gap-1">
-              {weeklyStories.map((_, i) => (
-                <div
-                  key={i}
-                  className="h-0.5 rounded-full flex-1 transition-all duration-200"
-                  style={{ backgroundColor: i === viewerIndex ? "white" : "rgba(255,255,255,0.35)" }}
-                />
-              ))}
-            </div>
-
-            {/* Image */}
-            <div className="flex-1 flex items-center justify-center px-4 mt-10">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={weeklyStories[viewerIndex].image_url}
-                alt={weeklyStories[viewerIndex].caption ?? "Hikaye"}
-                className="max-w-full max-h-full object-contain select-none"
-              />
-            </div>
-
-            {/* Caption */}
-            {weeklyStories[viewerIndex].caption && (
-              <div className="px-6 pb-10 pt-4 text-center" style={{ paddingBottom: "max(2.5rem, env(safe-area-inset-bottom))" }}>
-                <p className="text-white text-base font-medium drop-shadow-lg">
-                  {weeklyStories[viewerIndex].caption}
-                </p>
-              </div>
-            )}
-
-            {/* Tap zones: left half = prev, right half = next */}
-            <div className="absolute inset-0 flex pointer-events-none mt-10">
-              <button
-                className="w-1/2 h-full pointer-events-auto focus:outline-none"
-                onClick={() => goToPrev()}
-                aria-label="Önceki hikaye"
-              />
-              <button
-                className="w-1/2 h-full pointer-events-auto focus:outline-none"
-                onClick={() => goToNext()}
-                aria-label="Sonraki hikaye"
-              />
-            </div>
-          </div>
-        </>
+        <StoryViewer
+          stories={weeklyStories}
+          index={viewerIndex}
+          lang={lang}
+          onClose={() => setViewerOpen(false)}
+          onNext={goToNext}
+          onPrev={goToPrev}
+        />
       )}
 
       {/* ── LISTINGS ──────────────────────────────────────────────────────────── */}
