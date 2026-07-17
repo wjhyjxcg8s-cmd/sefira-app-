@@ -159,7 +159,7 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[9999] bg-neutral-950 select-none overflow-hidden"
+      className="fixed inset-0 z-[9999] bg-black select-none overflow-hidden"
       style={{
         transform: `translateY(${dragY}px)`,
         opacity: isDragging ? Math.max(1 - dragY / 400, 0.3) : 1,
@@ -174,32 +174,30 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
       onTouchEnd={handleTouchEnd}
     >
       {/* Blurred backdrop — kills the black void */}
-      <div className="absolute inset-0 transition-opacity duration-200 ease-out" style={{ opacity: fadeIn ? 1 : 0 }}>
+      <div className="absolute inset-0 z-0 transition-opacity duration-200 ease-out" style={{ opacity: fadeIn ? 1 : 0 }}>
         <Image
           src={story.image_url}
           alt=""
           fill
           aria-hidden="true"
-          className="object-cover scale-110 blur-2xl opacity-40"
+          className="object-cover scale-125 blur-3xl opacity-80"
         />
-        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 z-[1] bg-black/25" />
       </div>
 
       {/* Media */}
-      <div className="absolute inset-0 flex items-center justify-center px-2 py-14">
-        <div
-          className="relative w-full h-full transition-opacity duration-200 ease-out"
-          style={{ opacity: fadeIn ? 1 : 0 }}
-        >
-          <Image
-            src={story.image_url}
-            alt={story.caption ?? "Hikaye"}
-            fill
-            priority
-            sizes="100vw"
-            className="object-contain rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.5)]"
-          />
-        </div>
+      <div
+        className="absolute inset-0 z-10 flex items-center justify-center px-0 pt-16 pb-8 transition-opacity duration-200 ease-out"
+        style={{ opacity: fadeIn ? 1 : 0 }}
+      >
+        <Image
+          src={story.image_url}
+          alt={story.caption ?? "Hikaye"}
+          fill
+          priority
+          sizes="100vw"
+          className="object-contain w-full h-full max-h-full rounded-none"
+        />
       </div>
 
       {/* Progress bars */}
@@ -249,7 +247,7 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
       </div>
 
       {/* Bottom scrim */}
-      <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 inset-x-0 z-10 h-24 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
 
       {/* Tap zones */}
       <button className={prevZoneClassName} onClick={onPrev} aria-label="Önceki hikaye" />
