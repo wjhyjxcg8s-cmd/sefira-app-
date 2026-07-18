@@ -30,8 +30,6 @@ export async function POST(request: Request) {
       .order("created_at", { ascending: false })
       .limit(10);
 
-    console.log("[messages/unread] unread count:", unread?.length, error?.message);
-
     if (!unread || unread.length === 0) {
       return NextResponse.json({ notifications: [] });
     }
