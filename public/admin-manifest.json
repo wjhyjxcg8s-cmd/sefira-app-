@@ -1,7 +1,7 @@
 {
   "name": "Sefira Yönetim",
   "short_name": "S-Admin",
-  "start_url": "/admin-sefira-2026",
+  "start_url": "/admin-sefira-2026?source=pwa-admin",
   "scope": "/admin-sefira-2026",
   "display": "standalone",
   "orientation": "portrait",

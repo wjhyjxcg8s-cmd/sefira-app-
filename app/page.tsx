@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import WelcomePopup from "@/app/components/WelcomePopup";
@@ -31,6 +31,8 @@ interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
+
+const ADMIN_EMAIL = "supportsefira@gmail.com";
 
 // ─── i18n ─────────────────────────────────────────────────────────────────────
 const translations = {
@@ -1264,8 +1266,9 @@ interface SmartRec {
 
 export default function Home() {
   // ── Auth ──────────────────────────────────────────────────────────────────
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const [showAuth, setShowAuth] = useState(false);
   const [authTab, setAuthTab] = useState<"login" | "register">("login");
   const [showAuthPromptModal, setShowAuthPromptModal] = useState(false);
@@ -1317,6 +1320,28 @@ export default function Home() {
       navigator.serviceWorker.register("/sw.js").catch(() => {});
     }
   }, []);
+
+  // iOS PWA quirk: some standalone launches ignore the admin manifest's
+  // start_url and open at "/" instead (the URL Safari had when the icon was
+  // added). If this is the S-Admin install (flag set by the admin layout)
+  // and we've landed here in standalone mode, bounce straight to the admin
+  // panel. Guard against a stale/leaked flag: only redirect once we've
+  // confirmed the signed-in user is actually the admin account; otherwise
+  // clear the flag so a non-admin is never trapped by it.
+  useEffect(() => {
+    if (pathname !== "/" || authLoading) return;
+    const isStandalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (navigator as Navigator & { standalone?: boolean }).standalone === true;
+    if (!isStandalone) return;
+    if (localStorage.getItem("sefira_pwa_admin") !== "1") return;
+
+    if (user?.email === ADMIN_EMAIL) {
+      router.replace("/admin-sefira-2026");
+    } else {
+      localStorage.removeItem("sefira_pwa_admin");
+    }
+  }, [pathname, authLoading, user, router]);
 
   function dismissPwaBanner() {
     localStorage.setItem("sefira-pwa-dismissed", "1");

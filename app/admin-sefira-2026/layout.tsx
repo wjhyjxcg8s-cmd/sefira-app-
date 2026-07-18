@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import AdminPwaFlag from "@/app/components/AdminPwaFlag";
 
 export const metadata: Metadata = {
   manifest: "/admin-manifest.json",
@@ -24,5 +25,10 @@ export default function AdminLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return children;
+  return (
+    <>
+      <AdminPwaFlag />
+      {children}
+    </>
+  );
 }
