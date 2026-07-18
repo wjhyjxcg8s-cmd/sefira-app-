@@ -8,13 +8,35 @@ const supabase = createClient(
   { auth: { autoRefreshToken: false, persistSession: false } }
 );
 
+async function verifyUser(req: NextRequest) {
+  const auth = req.headers.get('Authorization');
+  if (!auth) return null;
+  const c = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      global: { headers: { Authorization: auth } },
+      auth: { autoRefreshToken: false, persistSession: false },
+    }
+  );
+  const { data: { user } } = await c.auth.getUser();
+  return user ?? null;
+}
+
 export async function POST(req: NextRequest) {
+  const authUser = await verifyUser(req);
+  if (!authUser) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const formData = await req.formData();
   const file = formData.get('file') as File | null;
-  const userId = formData.get('userId') as string | null;
+  // Never trust a client-supplied userId — derive it from the verified token
+  // so a caller can't upload photos under another user's path.
+  const userId = authUser.id;
 
-  if (!file || !userId) {
-    return NextResponse.json({ error: 'Missing file or userId' }, { status: 400 });
+  if (!file) {
+    return NextResponse.json({ error: 'Missing file' }, { status: 400 });
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());

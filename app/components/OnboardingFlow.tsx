@@ -252,10 +252,15 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
     if (!photoFile || saving) return;
     setSaving(true);
     setPhotoUploadError(null);
+    const { data: { session } } = await supabase.auth.getSession();
     const fd = new FormData();
     fd.append('file', photoFile);
     fd.append('userId', userId);
-    const res = await fetch('/api/upload-avatar', { method: 'POST', body: fd });
+    const res = await fetch('/api/upload-avatar', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${session?.access_token}` },
+      body: fd,
+    });
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
       setPhotoUploadError(body.error === 'inappropriate_content' ? t.inappropriateContent : null);

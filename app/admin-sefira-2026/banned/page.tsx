@@ -40,7 +40,9 @@ export default function BannedPage() {
 
   const fetchBanned = async () => {
     setPageLoading(true);
-    const res = await fetch('/api/admin/banned-list');
+    const res = await fetch('/api/admin/banned-list', {
+      headers: { Authorization: `Bearer ${session?.access_token}` },
+    });
     const { banned } = await res.json();
     setBannedList(banned);
     setBannedLastUpdated(new Date().toLocaleTimeString('tr-TR'));

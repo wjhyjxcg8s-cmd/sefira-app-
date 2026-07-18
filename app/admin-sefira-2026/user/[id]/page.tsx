@@ -95,7 +95,9 @@ export default function UserDetailPage() {
 
     const fetchAll = async () => {
       setPageLoading(true);
-      const res = await fetch(`/api/admin/user-detail?userId=${userId}`);
+      const res = await fetch(`/api/admin/user-detail?userId=${userId}`, {
+        headers: { Authorization: `Bearer ${session?.access_token}` },
+      });
       const data = await res.json();
       if (data.profile) {
         const p = data.profile as Profile;
@@ -128,7 +130,10 @@ export default function UserDetailPage() {
     };
     const res = await fetch("/api/admin/update-user", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session?.access_token}`,
+      },
       body: JSON.stringify({ userId, updates }),
     });
     const json = await res.json();
@@ -148,7 +153,10 @@ export default function UserDetailPage() {
     setDeletingListing(id);
     await fetch('/api/admin/user-delete-listing', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session?.access_token}`,
+      },
       body: JSON.stringify({ id }),
     });
     setListings((prev) => prev.filter((l) => l.id !== id));
@@ -173,7 +181,9 @@ export default function UserDetailPage() {
 
   const loadConversation = async (convId: string) => {
     if (convMessages[convId]) { setOpenConvId(convId); return; }
-    const res = await fetch(`/api/admin/user-messages?convId=${convId}`);
+    const res = await fetch(`/api/admin/user-messages?convId=${convId}`, {
+      headers: { Authorization: `Bearer ${session?.access_token}` },
+    });
     const { messages } = await res.json();
     setConvMessages((prev) => ({ ...prev, [convId]: messages || [] }));
     setOpenConvId(convId);

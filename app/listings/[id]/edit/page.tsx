@@ -495,11 +495,16 @@ export default function EditListingPage() {
     if (newFiles.length === 0) return;
     setPhotoError(null);
     setUploadingCount((c) => c + newFiles.length);
+    const { data: { session } } = await supabase.auth.getSession();
     for (const file of newFiles) {
       const fd = new FormData();
       fd.append('file', file);
       fd.append('userId', user.id);
-      const res = await fetch('/api/upload-photo', { method: 'POST', body: fd });
+      const res = await fetch('/api/upload-photo', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${session?.access_token}` },
+        body: fd,
+      });
       setUploadingCount((c) => c - 1);
       if (!res.ok) {
         setPhotoError(t.errorPhoto);

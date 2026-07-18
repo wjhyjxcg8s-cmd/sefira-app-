@@ -588,12 +588,16 @@ export default function ProfilePage() {
     setError(null);
     canvas.toBlob(async (blob) => {
       if (!blob) { setSaving(false); return; }
-      const { data: { user: currentUser } } = await supabase.auth.getUser();
-      if (!currentUser) { setSaving(false); return; }
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      if (!currentSession?.user) { setSaving(false); return; }
       const fd = new FormData();
       fd.append("file", blob, "avatar.webp");
-      fd.append("userId", currentUser.id);
-      const res = await fetch("/api/upload-avatar", { method: "POST", body: fd });
+      fd.append("userId", currentSession.user.id);
+      const res = await fetch("/api/upload-avatar", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${currentSession.access_token}` },
+        body: fd,
+      });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         if (body.error === 'inappropriate_content') {
@@ -612,7 +616,7 @@ export default function ProfilePage() {
       const { url: publicUrl } = await res.json();
       const { error: dbError } = await supabase
         .from("profiles")
-        .upsert({ user_id: currentUser.id, avatar_url: publicUrl }, { onConflict: "user_id" });
+        .upsert({ user_id: currentSession.user.id, avatar_url: publicUrl }, { onConflict: "user_id" });
       if (dbError) { setError(dbError.message); setSaving(false); return; }
       setAvatarUrl(publicUrl);
       setAvatarFile(null);
@@ -706,7 +710,8 @@ export default function ProfilePage() {
       return;
     }
 
-    const { data: { user: currentUser } } = await supabase.auth.getUser();
+    const { data: { session: currentSession } } = await supabase.auth.getSession();
+    const currentUser = currentSession?.user ?? null;
     if (!currentUser) { setSaving(false); return; }
 
     if (field === "avatar") {
@@ -714,7 +719,11 @@ export default function ProfilePage() {
       const fd = new FormData();
       fd.append('file', avatarFile);
       fd.append('userId', currentUser.id);
-      const res = await fetch('/api/upload-avatar', { method: 'POST', body: fd });
+      const res = await fetch('/api/upload-avatar', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${currentSession?.access_token}` },
+        body: fd,
+      });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         if (body.error === 'inappropriate_content') {

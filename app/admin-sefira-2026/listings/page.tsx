@@ -78,7 +78,7 @@ export default function AdminListingsPage() {
     setActing(deleteTarget.id);
     await fetch('/api/admin/listings-update', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token}` },
       body: JSON.stringify({ id: deleteTarget.id, action: 'hide' }),
     });
     setListings((prev) => prev.map((l) => l.id === deleteTarget.id ? { ...l, is_deleted: true } : l));
@@ -90,7 +90,7 @@ export default function AdminListingsPage() {
     setActing(id);
     await fetch('/api/admin/listings-update', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token}` },
       body: JSON.stringify({ id, action: 'restore' }),
     });
     setListings((prev) => prev.map((l) => l.id === id ? { ...l, is_deleted: false } : l));

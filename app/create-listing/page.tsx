@@ -1484,11 +1484,16 @@ function CreateListingPage() {
     setCropSaving(true);
     canvas.toBlob(async (blob) => {
       if (!blob) { setCropSaving(false); return; }
+      const { data: { session } } = await supabase.auth.getSession();
       const fd = new FormData();
       fd.append("file", blob, "photo.jpg");
       fd.append("userId", user.id);
       setUploadingCount((c) => c + 1);
-      const res = await fetch("/api/upload-photo", { method: "POST", body: fd });
+      const res = await fetch("/api/upload-photo", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${session?.access_token}` },
+        body: fd,
+      });
       setUploadingCount((c) => c - 1);
       if (!res.ok) {
         const body = await res.json().catch(() => ({})) as { error?: string };

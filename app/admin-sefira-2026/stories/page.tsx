@@ -31,7 +31,7 @@ const NAV_ITEMS = [
 ];
 
 export default function StoriesPage() {
-  const { user } = useAuth();
+  const { user, session } = useAuth();
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -55,7 +55,9 @@ export default function StoriesPage() {
 
   const fetchStories = async () => {
     setLoading(true);
-    const res = await fetch('/api/admin/stories-list');
+    const res = await fetch('/api/admin/stories-list', {
+      headers: { Authorization: `Bearer ${session?.access_token}` },
+    });
     const { stories } = await res.json();
     setStories(stories);
     setLoading(false);
@@ -78,7 +80,11 @@ export default function StoriesPage() {
     form.append("caption", caption.trim());
     form.append("week_label", weekLabel.trim() || "Bu Hafta");
 
-    const uploadRes = await fetch("/api/upload-story", { method: "POST", body: form });
+    const uploadRes = await fetch("/api/upload-story", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${session?.access_token}` },
+      body: form,
+    });
     const uploadJson = await uploadRes.json();
 
     if (!uploadRes.ok || uploadJson.error) {
@@ -103,7 +109,10 @@ export default function StoriesPage() {
     const filename = story.image_url.split('/').pop();
     await fetch('/api/admin/stories-delete', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session?.access_token}`,
+      },
       body: JSON.stringify({ id: story.id, filename }),
     });
     setStories((prev) => prev.filter((s) => s.id !== story.id));
