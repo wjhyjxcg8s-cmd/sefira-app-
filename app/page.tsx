@@ -2177,24 +2177,6 @@ export default function Home() {
     setViewerOpen(true);
   };
 
-  // Functional updates only — never close over `viewerIndex` directly, since
-  // page.tsx re-renders often (unread-message polling, notifications, etc.)
-  // and a closed-over value can be stale by the time a handler actually fires.
-  const goToNext = () => {
-    setViewerIndex((i) => {
-      const next = i + 1;
-      if (next >= weeklyStories.length) {
-        setViewerOpen(false);
-        return i;
-      }
-      return next;
-    });
-  };
-
-  const goToPrev = () => {
-    setViewerIndex((i) => Math.max(0, i - 1));
-  };
-
   // View tracking is driven by committed state (not by the handlers above),
   // so it always reflects the story actually being shown, regardless of how
   // viewerIndex got there (open, next, prev, swipe, keyboard, auto-advance).
@@ -3167,11 +3149,10 @@ export default function Home() {
       {viewerOpen && weeklyStories.length > 0 && (
         <StoryViewer
           stories={weeklyStories}
-          index={viewerIndex}
+          initialIndex={viewerIndex}
           lang={lang}
           onClose={() => setViewerOpen(false)}
-          onNext={goToNext}
-          onPrev={goToPrev}
+          onIndexChange={setViewerIndex}
         />
       )}
 

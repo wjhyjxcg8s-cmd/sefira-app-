@@ -1,6 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+// Verified flow: tap right half → onPointerUp fires (no onClick — kills the
+// iOS pointer+synthesized-click double-fire) → pointerType/duration/movement
+// guard passes → navLock guard passes → goNext() functional setIndex update →
+// index changes → timer effect's cleanup cancels the old RAF, a fresh one is
+// requested for the new index → two-layer incoming/current cross-fade runs.
+// Index lives only in this component's state (`index`); nothing else in this
+// file may call setIndex, and page.tsx never holds it.
+
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { X } from "lucide-react";
@@ -9,7 +17,9 @@ import { formatMessageTime } from "@/app/lib/formatTime";
 
 const STORY_DURATION_MS = 5000;
 const CLOSE_SWIPE_THRESHOLD = 80;
-const NAV_LOCK_MS = 250;
+const NAV_LOCK_MS = 300;
+const TAP_MAX_DURATION_MS = 250;
+const TAP_MAX_MOVEMENT_PX = 10;
 const CROSSFADE_MS = 200;
 
 const LOCALE_MAP: Record<Lang, string> = {
@@ -36,15 +46,15 @@ interface Layer {
 
 interface StoryViewerProps {
   stories: StoryViewerStory[];
-  index: number;
+  initialIndex: number;
   lang: Lang;
   onClose: () => void;
-  onNext: () => void;
-  onPrev: () => void;
+  onIndexChange?: (index: number) => void;
 }
 
-export default function StoryViewer({ stories, index, lang, onClose, onNext, onPrev }: StoryViewerProps) {
+export default function StoryViewer({ stories, initialIndex, lang, onClose, onIndexChange }: StoryViewerProps) {
   const [mounted, setMounted] = useState(false);
+  const [index, setIndex] = useState(initialIndex);
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [fadeIn, setFadeIn] = useState(false);
@@ -62,19 +72,19 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
   const [incomingLayer, setIncomingLayer] = useState<Layer | null>(null);
   const [incomingVisible, setIncomingVisible] = useState(false);
   const isFirstStoryEffect = useRef(true);
+  const lastResetIndexRef = useRef(-1);
 
   const elapsedRef = useRef(0);
   const isPausedRef = useRef(isPaused);
   const touchStartYRef = useRef<number | null>(null);
   const dragYRef = useRef(0);
-  const lastNavRef = useRef(0);
-  const onNextRef = useRef(onNext);
-  const onPrevRef = useRef(onPrev);
+  const navLockRef = useRef(0);
+  const pressRef = useRef<{ time: number; x: number; y: number } | null>(null);
   const onCloseRef = useRef(onClose);
+  const onIndexChangeRef = useRef(onIndexChange);
 
-  useEffect(() => { onNextRef.current = onNext; }, [onNext]);
-  useEffect(() => { onPrevRef.current = onPrev; }, [onPrev]);
   useEffect(() => { onCloseRef.current = onClose; }, [onClose]);
+  useEffect(() => { onIndexChangeRef.current = onIndexChange; }, [onIndexChange]);
   useEffect(() => { isPausedRef.current = isPaused; }, [isPaused]);
 
   useEffect(() => { setMounted(true); }, []);
@@ -91,18 +101,29 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
     return () => { document.body.style.overflow = original; };
   }, []);
 
-  // Navigation lock: swallow repeat taps within NAV_LOCK_MS (iOS can fire both
-  // a pointer event and a click for the same tap, which used to double-advance).
-  // Routed through refs so the RAF auto-advance loop below never calls a stale
-  // onNext/onPrev captured from an old page.tsx render.
-  const guardedNav = (fn: () => void) => {
+  // Report every index change up for view-tracking. This is the ONLY thing
+  // the parent learns about navigation — it never drives it.
+  useEffect(() => {
+    onIndexChangeRef.current?.(index);
+  }, [index]);
+
+  // Single source of truth for navigation. Functional updates only — nothing
+  // here closes over `index`, so a stale render can never undo a newer one.
+  const goNext = useCallback(() => {
+    setIndex((i) => (i + 1 < stories.length ? i + 1 : (onCloseRef.current(), i)));
+  }, [stories.length]);
+  const goPrev = useCallback(() => {
+    setIndex((i) => Math.max(0, i - 1));
+  }, []);
+
+  // Shared debounce across tap zones, keyboard, and the auto-advance timer —
+  // whichever nav path fires first within the window wins, the rest are no-ops.
+  const guardedNav = useCallback((fn: () => void) => {
     const now = Date.now();
-    if (now - lastNavRef.current < NAV_LOCK_MS) return;
-    lastNavRef.current = now;
+    if (now - navLockRef.current < NAV_LOCK_MS) return;
+    navLockRef.current = now;
     fn();
-  };
-  const handleNext = () => guardedNav(() => onNextRef.current());
-  const handlePrev = () => guardedNav(() => onPrevRef.current());
+  }, []);
 
   // Start (or restart) the incoming layer whenever the active story changes.
   // Skipped on first mount — currentLayer already holds story 0 via lazy init.
@@ -132,13 +153,16 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
     });
   }, [index, stories]);
 
-  // Drive the auto-advance timer. A single effect keyed only on `index` — it
-  // clears and restarts on every story change (never on pause/resume, which
-  // is checked via a ref instead), so a previous story's timer can never fire
-  // an extra advance for the new one.
+  // Drive the auto-advance timer. Elapsed time only resets when `index` has
+  // actually changed (tracked via lastResetIndexRef) — re-running this effect
+  // for an `isPaused` flip just re-arms the RAF without losing progress,
+  // since pause/resume itself is already handled by isPausedRef inside tick.
   useEffect(() => {
-    elapsedRef.current = 0;
-    setProgress(0);
+    if (lastResetIndexRef.current !== index) {
+      lastResetIndexRef.current = index;
+      elapsedRef.current = 0;
+      setProgress(0);
+    }
 
     let raf: number;
     let lastFrameTime = performance.now();
@@ -150,24 +174,24 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
       const pct = Math.min(100, (elapsedRef.current / STORY_DURATION_MS) * 100);
       setProgress(pct);
       if (elapsedRef.current >= STORY_DURATION_MS) {
-        handleNext();
+        guardedNav(goNext);
         return;
       }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [index]);
+  }, [index, isPaused, goNext, guardedNav]);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onCloseRef.current();
-      else if (e.key === "ArrowLeft") handlePrev();
-      else if (e.key === "ArrowRight") handleNext();
+      else if (e.key === "ArrowLeft") guardedNav(goPrev);
+      else if (e.key === "ArrowRight") guardedNav(goNext);
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, []);
+  }, [goNext, goPrev, guardedNav]);
 
   if (!mounted || !story) return null;
 
@@ -198,17 +222,35 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
     setDragY(0);
   };
 
+  // Tap-zone press tracking: pointerdown records where/when the press started;
+  // pointerup (the ONLY nav trigger — no onClick, so no synthesized double-fire)
+  // only navigates if it looks like a genuine tap, not a pause-hold or a swipe.
+  const handleZonePointerDown = (e: React.PointerEvent) => {
+    pressRef.current = { time: Date.now(), x: e.clientX, y: e.clientY };
+  };
+
+  const handleZonePointerUp = (direction: "prev" | "next") => (e: React.PointerEvent) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    const press = pressRef.current;
+    pressRef.current = null;
+    if (!press) return;
+    const duration = Date.now() - press.time;
+    const distance = Math.hypot(e.clientX - press.x, e.clientY - press.y);
+    if (duration >= TAP_MAX_DURATION_MS || distance >= TAP_MAX_MOVEMENT_PX) return;
+    guardedNav(direction === "next" ? goNext : goPrev);
+  };
+
   const progressRowClassName = isRTL
     ? "absolute top-0 inset-x-0 z-40 pt-[max(0.75rem,env(safe-area-inset-top))] px-3 flex gap-1 flex-row-reverse"
     : "absolute top-0 inset-x-0 z-40 pt-[max(0.75rem,env(safe-area-inset-top))] px-3 flex gap-1";
 
   const prevZoneClassName = isRTL
-    ? "absolute top-24 bottom-0 right-0 z-30 w-[35%] active:bg-white/[0.03]"
-    : "absolute top-24 bottom-0 left-0 z-30 w-[35%] active:bg-white/[0.03]";
+    ? "absolute top-24 bottom-0 right-0 z-30 w-[35%] select-none touch-manipulation active:bg-white/[0.03]"
+    : "absolute top-24 bottom-0 left-0 z-30 w-[35%] select-none touch-manipulation active:bg-white/[0.03]";
 
   const nextZoneClassName = isRTL
-    ? "absolute top-24 bottom-0 left-0 z-30 w-[65%] active:bg-white/[0.03]"
-    : "absolute top-24 bottom-0 right-0 z-30 w-[65%] active:bg-white/[0.03]";
+    ? "absolute top-24 bottom-0 left-0 z-30 w-[65%] select-none touch-manipulation active:bg-white/[0.03]"
+    : "absolute top-24 bottom-0 right-0 z-30 w-[65%] select-none touch-manipulation active:bg-white/[0.03]";
 
   return createPortal(
     <div
@@ -217,6 +259,8 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
         transform: `translateY(${dragY}px)`,
         opacity: isDragging ? Math.max(1 - dragY / 400, 0.3) : 1,
         transition: isDragging ? "none" : "transform 200ms ease, opacity 200ms ease",
+        WebkitTapHighlightColor: "transparent",
+        WebkitUserSelect: "none",
       }}
       onPointerDown={() => setIsPaused(true)}
       onPointerUp={() => setIsPaused(false)}
@@ -354,6 +398,7 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
           onClick={(e) => { e.stopPropagation(); onCloseRef.current(); }}
           onPointerDown={(e) => e.stopPropagation()}
           className="group relative z-40 w-10 h-10 flex items-center justify-center pointer-events-auto flex-shrink-0"
+          style={{ WebkitTapHighlightColor: "transparent" }}
           aria-label="Kapat"
         >
           <span className="w-9 h-9 rounded-full bg-white/15 backdrop-blur text-white flex items-center justify-center transition-colors group-active:bg-white/25 pointer-events-none">
@@ -365,9 +410,28 @@ export default function StoryViewer({ stories, index, lang, onClose, onNext, onP
       {/* Bottom scrim */}
       <div className="absolute bottom-0 inset-x-0 z-10 h-24 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
 
-      {/* Tap zones */}
-      <button className={prevZoneClassName} onClick={handlePrev} aria-label="Önceki hikaye" />
-      <button className={nextZoneClassName} onClick={handleNext} aria-label="Sonraki hikaye" />
+      {/* Tap zones — div[role=button], NOT <button>: buttons synthesize a
+          click ~300ms after pointerup on iOS (double-fire risk) and paint the
+          default -webkit-tap-highlight-color (the reported "white sheet").
+          onPointerUp is the ONLY trigger; no onClick exists on these at all. */}
+      <div
+        role="button"
+        tabIndex={-1}
+        aria-label="Önceki hikaye"
+        className={prevZoneClassName}
+        style={{ WebkitTapHighlightColor: "transparent" }}
+        onPointerDown={handleZonePointerDown}
+        onPointerUp={handleZonePointerUp("prev")}
+      />
+      <div
+        role="button"
+        tabIndex={-1}
+        aria-label="Sonraki hikaye"
+        className={nextZoneClassName}
+        style={{ WebkitTapHighlightColor: "transparent" }}
+        onPointerDown={handleZonePointerDown}
+        onPointerUp={handleZonePointerUp("next")}
+      />
     </div>,
     document.body
   );
