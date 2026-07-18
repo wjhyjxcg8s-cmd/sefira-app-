@@ -245,12 +245,12 @@ export default function StoryViewer({ stories, initialIndex, lang, onClose, onIn
     : "absolute top-0 inset-x-0 z-40 pt-[max(0.75rem,env(safe-area-inset-top))] px-3 flex gap-1";
 
   const prevZoneClassName = isRTL
-    ? "absolute top-24 bottom-0 right-0 z-30 w-[35%] select-none touch-manipulation active:bg-white/[0.03]"
-    : "absolute top-24 bottom-0 left-0 z-30 w-[35%] select-none touch-manipulation active:bg-white/[0.03]";
+    ? "absolute top-24 bottom-0 right-0 z-30 w-[35%] select-none touch-manipulation appearance-none outline-none focus:outline-none focus-visible:outline-none"
+    : "absolute top-24 bottom-0 left-0 z-30 w-[35%] select-none touch-manipulation appearance-none outline-none focus:outline-none focus-visible:outline-none";
 
   const nextZoneClassName = isRTL
-    ? "absolute top-24 bottom-0 left-0 z-30 w-[65%] select-none touch-manipulation active:bg-white/[0.03]"
-    : "absolute top-24 bottom-0 right-0 z-30 w-[65%] select-none touch-manipulation active:bg-white/[0.03]";
+    ? "absolute top-24 bottom-0 left-0 z-30 w-[65%] select-none touch-manipulation appearance-none outline-none focus:outline-none focus-visible:outline-none"
+    : "absolute top-24 bottom-0 right-0 z-30 w-[65%] select-none touch-manipulation appearance-none outline-none focus:outline-none focus-visible:outline-none";
 
   return createPortal(
     <div
