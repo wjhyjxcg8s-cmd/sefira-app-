@@ -237,7 +237,8 @@ interface CityCardProps {
 }
 
 function CityCard({ city, lang, inView, delay, className = "", imgSizes, t, featured, onCityClick, count }: CityCardProps) {
-  const hasCount = typeof count === "number" && count > 0;
+  // Hide small counts pre-growth; real social proof only. Threshold, not fabrication.
+  const hasCount = typeof count === "number" && count >= 50;
   return (
     <motion.div
       initial={{ opacity: 0, y: 44 }}
