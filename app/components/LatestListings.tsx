@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
 import { getListingSide, getCommercialBadgeLabel, COMMERCIAL_BADGE_CLASS } from "@/app/lib/listingBadge";
+import { cityMatches } from "@/app/lib/cityMatch";
 
 const supabaseClient = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -499,11 +500,10 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
           return category === "residential" || category == null;
         });
     if (filterCity) {
-      const q = normalizeTR(filterCity);
       base = base.filter(
         (l) =>
-          normalizeTR(l.city || "").includes(q) ||
-          normalizeTR(l.district || "").includes(q)
+          cityMatches(l.city || "", filterCity) ||
+          cityMatches(l.district || "", filterCity)
       );
     }
     if (selectedCountry !== 'all') {

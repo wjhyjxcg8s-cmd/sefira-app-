@@ -41,12 +41,6 @@ const translations = {
       { label: "İlan Ver", href: "/create-listing" },
       { label: "Topluluk", href: "#" },
     ],
-    stats: [
-      { value: "127K+", label: "Doğrulanmış Kullanıcı" },
-      { value: "52",    label: "Dünya Genelinde Şehir" },
-      { value: "98%",   label: "Eşleşme Memnuniyeti" },
-      { value: "4.9★",  label: "Uygulama Puanı" },
-    ],
     signIn: "Giriş Yap",
     signOut: "Çıkış Yap",
     signOutConfirmTitle: "Çıkış Yap",
@@ -54,7 +48,6 @@ const translations = {
     signOutConfirmCancel: "İptal",
     signOutConfirmOk: "Çıkış Yap",
     getStarted: "Başla",
-    heroBadge: "52 şehirde 127.000'den fazla doğrulanmış kullanıcı tarafından güvenilir",
     heroLine1: "Alanınız Size Kazandırsın, Başkalarına Fırsat Olsun.",
     heroLine2: "",
     heroLine3: "",
@@ -95,21 +88,9 @@ const translations = {
     priorityGroupLabel: "⭐ Popüler Ülkeler",
     allCountriesLabel: "Tüm Ülkeler",
     searchPlaceholder: "Şehir, mahalle veya anahtar kelime ara...",
-    matchesThisWeek: "Bu hafta 2.847 eşleşme",
-    reviewsLabel: "12.000'den fazla değerlendirmeden 4.9 yıldız",
     storiesTitle: "Topluluk Hikayeleri",
     storiesLive: "Canlı",
     addStory: "Hikaye Ekle",
-    aiMatchBadge: "Yapay Zeka Destekli Eşleştirme",
-    aiMatchLine1: "Mükemmel Eşiniz",
-    aiMatchLine2: "Sizi Buluyor.",
-    aiMatchP: "Yapay zekamız, uyku düzeninden sosyal alışkanlıklara kadar 40'tan fazla uyumluluk faktörünü analiz eder; gerçekten birlikte yaşamak isteyeceğiniz kişileri öne çıkarır.",
-    compatBars: [
-      { label: "Yaşam Tarzı Uyumu", value: 97,  color: "from-blue-500 to-violet-600" },
-      { label: "Uyku Düzeni",       value: 94,  color: "from-orange-500 to-orange-600" },
-      { label: "Temizlik",          value: 100, color: "from-amber-500 to-orange-700" },
-      { label: "Bütçe Aralığı",     value: 88,  color: "from-rose-500 to-pink-600" },
-    ],
     findMatchesBtn: "Eşleşmelerimi Bul",
     matchLabel: "Eşleşme",
     verifiedLabel: "Doğrulandı",
@@ -119,20 +100,9 @@ const translations = {
     nonSmoker: "Sigara İçmiyor",
     skipBtn: "Geç",
     likeBtn: "Beğen",
-    featuredH2: "Öne Çıkan İlanlar",
-    featuredP: "Premium doğrulanmış odalar ve daireler",
     listingFilterAll: "Tümü",
     listingVerified: "Doğrulandı",
     perMonth: "/ay",
-    viewAllBtn: "Tüm İlanları Gör",
-    howH2: "Sefira Nasıl Çalışır?",
-    howP: "Profilden mükemmel eve 48 saatin altında.",
-    howItWorks: [
-      { step: "01", title: "Profil Oluştur",         desc: "Yaşam tarzınızı, bütçenizi ve kişiliğinizi bize anlatın. Yapay zekamız sizi benzersiz kılan şeyleri öğrenir.",               icon: "✦", gradient: "from-blue-500 to-indigo-600" },
-      { step: "02", title: "Yapay Zeka Eşleşmeleri", desc: "40'tan fazla uyumluluk faktörü anında analiz edildi. Mükemmel ev arkadaşınız düşündüğünüzden daha yakın.",                   icon: "◈", gradient: "from-violet-500 to-purple-600" },
-      { step: "03", title: "Kaydır ve Bağlan",       desc: "Beğen, eşleş ve mesajlaş. Herhangi bir taahhüt vermeden önce video ile doğrula.",                                            icon: "◎", gradient: "from-pink-500 to-rose-600" },
-      { step: "04", title: "Taşın",                  desc: "Dijital olarak imzala, topluluk desteği al ve mükemmel evinize yerleş.",                                                      icon: "⌂", gradient: "from-orange-500 to-orange-600" },
-    ],
     roommatesH2: "Yakınındaki En İyi Eşleşmeler",
     roommatesP: "Şu anda Berlin'de ev arkadaşı arayan kişiler",
     viewAll: "Tümünü Gör",
@@ -140,11 +110,6 @@ const translations = {
     connectBtn: "Bağlan",
     petsOkShort: "Evcil Hayvan Olabilir",
     noPetsShort: "Evcil Hayvan Yok",
-    trendingH2: "Popüler Şehirler",
-    trendingP: "Modern insanların 2025'te taşındığı yerler",
-    activeListings: "aktif ilan",
-    testiH2: "Binlerce Kişi Tarafından Seviliyor",
-    testiReviews: "12.000'den fazla değerlendirmeden",
     appH2a: "Sefira cebinizde.",
     appH2b: "Her Yerde. Her Zaman.",
     appP: "Anında eşleşme bildirimleri, gerçek zamanlı mesajlaşma ve gidilen her yerde ilan kaydırma.",
@@ -152,9 +117,6 @@ const translations = {
     appStoreName: "App Store",
     googlePlayLabel: "Şuradan edin:",
     googlePlayName: "Google Play",
-    newMatch: "Yeni Eşleşme!",
-    likedProfile: "Emma W. profilinizi beğendi",
-    compatibility: "%97 uyumluluk · 2 dakika önce",
     suggested: "Önerilen",
     footerDesc: "Evinizi, ofisinizi veya ticari alanınızı güvenle paylaşın ya da ihtiyacınız olan alanı kolayca bulun.",
     footerLinks: [
@@ -194,12 +156,6 @@ const translations = {
       { label: "List Property", href: "/create-listing" },
       { label: "Community", href: "#" },
     ],
-    stats: [
-      { value: "127K+", label: "Verified Users" },
-      { value: "52",    label: "Cities Worldwide" },
-      { value: "98%",   label: "Match Satisfaction" },
-      { value: "4.9★",  label: "App Rating" },
-    ],
     signIn: "Sign In",
     signOut: "Log Out",
     signOutConfirmTitle: "Sign Out",
@@ -207,7 +163,6 @@ const translations = {
     signOutConfirmCancel: "Cancel",
     signOutConfirmOk: "Sign Out",
     getStarted: "Get Started",
-    heroBadge: "Trusted by 127,000+ verified users across 52 cities",
     heroLine1: "Let Your Space Earn for You, and Open Doors for Others.",
     heroLine2: "",
     heroLine3: "",
@@ -248,21 +203,9 @@ const translations = {
     priorityGroupLabel: "⭐ Top Destinations",
     allCountriesLabel: "All Countries",
     searchPlaceholder: "Search city, neighborhood, or keyword...",
-    matchesThisWeek: "2,847 matches this week",
-    reviewsLabel: "4.9 stars from 12,000+ reviews",
     storiesTitle: "Community Stories",
     storiesLive: "Live",
     addStory: "Add Story",
-    aiMatchBadge: "AI-Powered Matching",
-    aiMatchLine1: "Your Perfect Match",
-    aiMatchLine2: "Finds You.",
-    aiMatchP: "Our AI analyzes 40+ compatibility factors from sleep schedules to social habits, surfacing people you will genuinely want to live with.",
-    compatBars: [
-      { label: "Lifestyle Match", value: 97,  color: "from-blue-500 to-violet-600" },
-      { label: "Sleep Schedule",  value: 94,  color: "from-orange-500 to-orange-600" },
-      { label: "Cleanliness",     value: 100, color: "from-amber-500 to-orange-700" },
-      { label: "Budget Range",    value: 88,  color: "from-rose-500 to-pink-600" },
-    ],
     findMatchesBtn: "Find My Matches",
     matchLabel: "Match",
     verifiedLabel: "Verified",
@@ -272,20 +215,9 @@ const translations = {
     nonSmoker: "Non-smoker",
     skipBtn: "Skip",
     likeBtn: "Like",
-    featuredH2: "Featured Listings",
-    featuredP: "Premium verified rooms and apartments",
     listingFilterAll: "All",
     listingVerified: "Verified",
     perMonth: "/mo",
-    viewAllBtn: "View All Listings",
-    howH2: "How Sefira Works",
-    howP: "From profile to perfect home in under 48 hours.",
-    howItWorks: [
-      { step: "01", title: "Build Your Profile", desc: "Tell us your lifestyle, budget, and personality. Our AI learns what makes you unique.",         icon: "✦", gradient: "from-blue-500 to-indigo-600" },
-      { step: "02", title: "Get AI Matches",     desc: "40+ compatibility factors analyzed instantly. Your perfect roommate is closer than you think.", icon: "◈", gradient: "from-violet-500 to-purple-600" },
-      { step: "03", title: "Swipe and Connect",  desc: "Like, match, and message. Video verify before any commitment is made.",                         icon: "◎", gradient: "from-pink-500 to-rose-600" },
-      { step: "04", title: "Move In",            desc: "Sign digitally, get community support, and settle into your perfect home.",                    icon: "⌂", gradient: "from-orange-500 to-orange-600" },
-    ],
     roommatesH2: "Top Matches Near You",
     roommatesP: "People looking for roommates in Berlin right now",
     viewAll: "View all",
@@ -293,11 +225,6 @@ const translations = {
     connectBtn: "Connect",
     petsOkShort: "Pets OK",
     noPetsShort: "No pets",
-    trendingH2: "Trending Cities",
-    trendingP: "Where modern people are moving in 2025",
-    activeListings: "active listings",
-    testiH2: "Loved by Thousands",
-    testiReviews: "from 12,000+ reviews",
     appH2a: "Sefira in your pocket.",
     appH2b: "Anywhere. Anytime.",
     appP: "Instant match notifications, real-time messaging, and swipe through listings on the go.",
@@ -305,9 +232,6 @@ const translations = {
     appStoreName: "App Store",
     googlePlayLabel: "Get it on",
     googlePlayName: "Google Play",
-    newMatch: "New Match!",
-    likedProfile: "Emma W. liked your profile",
-    compatibility: "97% compatibility · 2 min ago",
     suggested: "Suggested",
     footerDesc: "Safely share your home, office or commercial space — or easily find the space you need.",
     footerLinks: [
@@ -347,12 +271,6 @@ const translations = {
       { label: "ثبت آگهی", href: "/create-listing" },
       { label: "جامعه", href: "#" },
     ],
-    stats: [
-      { value: "127K+", label: "کاربر تأیید شده" },
-      { value: "52",    label: "شهر در سراسر جهان" },
-      { value: "98%",   label: "رضایت از تطابق" },
-      { value: "4.9★",  label: "امتیاز اپلیکیشن" },
-    ],
     signIn: "ورود",
     signOut: "خروج",
     signOutConfirmTitle: "خروج از حساب",
@@ -360,7 +278,6 @@ const translations = {
     signOutConfirmCancel: "انصراف",
     signOutConfirmOk: "خروج",
     getStarted: "شروع کن",
-    heroBadge: "مورد اعتماد بیش از ۱۲۷,۰۰۰ کاربر تأیید شده در ۵۲ شهر",
     heroLine1: "فضای شما برایتان درآمد بسازد، برای دیگران فرصت.",
     heroLine2: "",
     heroLine3: "",
@@ -401,21 +318,9 @@ const translations = {
     priorityGroupLabel: "⭐ مقاصد محبوب",
     allCountriesLabel: "همه کشورها",
     searchPlaceholder: "جستجوی شهر، محله یا کلمه کلیدی...",
-    matchesThisWeek: "۲,۸۴۷ تطابق این هفته",
-    reviewsLabel: "۴.۹ ستاره از بیش از ۱۲,۰۰۰ نظر",
     storiesTitle: "داستان‌های جامعه",
     storiesLive: "زنده",
     addStory: "افزودن داستان",
-    aiMatchBadge: "تطابق با هوش مصنوعی",
-    aiMatchLine1: "همتای کامل شما",
-    aiMatchLine2: "شما را پیدا می‌کند.",
-    aiMatchP: "هوش مصنوعی ما بیش از ۴۰ عامل سازگاری را از برنامه خواب تا عادات اجتماعی تحلیل می‌کند و افرادی را معرفی می‌کند که واقعاً دوست دارید با آن‌ها زندگی کنید.",
-    compatBars: [
-      { label: "تطابق سبک زندگی", value: 97,  color: "from-blue-500 to-violet-600" },
-      { label: "برنامه خواب",      value: 94,  color: "from-orange-500 to-orange-600" },
-      { label: "نظافت",            value: 100, color: "from-amber-500 to-orange-700" },
-      { label: "محدوده بودجه",     value: 88,  color: "from-rose-500 to-pink-600" },
-    ],
     findMatchesBtn: "پیدا کردن تطابق‌هایم",
     matchLabel: "تطابق",
     verifiedLabel: "تأیید شده",
@@ -425,20 +330,9 @@ const translations = {
     nonSmoker: "غیرسیگاری",
     skipBtn: "رد کن",
     likeBtn: "لایک",
-    featuredH2: "آگهی‌های ویژه",
-    featuredP: "اتاق‌ها و آپارتمان‌های ممتاز تأیید شده",
     listingFilterAll: "همه",
     listingVerified: "تأیید شده",
     perMonth: "/ماه",
-    viewAllBtn: "مشاهده همه آگهی‌ها",
-    howH2: "سفیرا چگونه کار می‌کند؟",
-    howP: "از پروفایل تا خانه کامل در کمتر از ۴۸ ساعت.",
-    howItWorks: [
-      { step: "۰۱", title: "پروفایل بسازید",          desc: "سبک زندگی، بودجه و شخصیت خود را به ما بگویید. هوش مصنوعی ما یاد می‌گیرد چه چیزی شما را منحصربه‌فرد می‌کند.",                icon: "✦", gradient: "from-blue-500 to-indigo-600" },
-      { step: "۰۲", title: "تطابق هوش مصنوعی",        desc: "بیش از ۴۰ عامل سازگاری به صورت فوری تحلیل شد. هم‌خانه کامل شما نزدیک‌تر از آن چیزی است که فکر می‌کنید.",                icon: "◈", gradient: "from-violet-500 to-purple-600" },
-      { step: "۰۳", title: "بکشید و ارتباط بگیرید",    desc: "لایک کنید، تطابق بگیرید و پیام بدهید. قبل از هر تعهدی تأیید ویدیویی کنید.",                                                icon: "◎", gradient: "from-pink-500 to-rose-600" },
-      { step: "۰۴", title: "اسباب‌کشی کنید",           desc: "دیجیتالی امضا کنید، پشتیبانی جامعه بگیرید و در خانه کامل خود مستقر شوید.",                                               icon: "⌂", gradient: "from-orange-500 to-orange-600" },
-    ],
     roommatesH2: "بهترین تطابق‌های نزدیک شما",
     roommatesP: "افرادی که اکنون در برلین دنبال هم‌خانه می‌گردند",
     viewAll: "مشاهده همه",
@@ -446,11 +340,6 @@ const translations = {
     connectBtn: "ارتباط",
     petsOkShort: "حیوانات خانگی مجاز",
     noPetsShort: "بدون حیوان",
-    trendingH2: "شهرهای محبوب",
-    trendingP: "جایی که مردم مدرن در ۲۰۲۵ نقل مکان می‌کنند",
-    activeListings: "آگهی فعال",
-    testiH2: "محبوب هزاران نفر",
-    testiReviews: "از بیش از ۱۲,۰۰۰ نظر",
     appH2a: "سفیرا در جیب شما.",
     appH2b: "هر جا. هر زمان.",
     appP: "اعلان‌های تطابق فوری، پیام‌رسانی در لحظه، و مرور آگهی‌ها در هر کجا.",
@@ -458,9 +347,6 @@ const translations = {
     appStoreName: "App Store",
     googlePlayLabel: "دریافت از:",
     googlePlayName: "Google Play",
-    newMatch: "تطابق جدید!",
-    likedProfile: "Emma W. پروفایل شما را لایک کرد",
-    compatibility: "۹۷٪ سازگاری · ۲ دقیقه پیش",
     suggested: "پیشنهادی",
     footerDesc: "خانه، دفتر یا فضای تجاری خود را با اطمینان به اشتراک بگذارید یا فضای موردنیاز خود را به‌راحتی پیدا کنید.",
     footerLinks: [
@@ -500,12 +386,6 @@ const translations = {
       { label: "Inserat aufgeben", href: "/create-listing" },
       { label: "Community", href: "#" },
     ],
-    stats: [
-      { value: "127K+", label: "Verifizierte Nutzer" },
-      { value: "52",    label: "Städte weltweit" },
-      { value: "98%",   label: "Matching-Zufriedenheit" },
-      { value: "4.9★",  label: "App-Bewertung" },
-    ],
     signIn: "Anmelden",
     signOut: "Abmelden",
     signOutConfirmTitle: "Abmelden",
@@ -513,7 +393,6 @@ const translations = {
     signOutConfirmCancel: "Abbrechen",
     signOutConfirmOk: "Abmelden",
     getStarted: "Loslegen",
-    heroBadge: "Von über 127.000 verifizierten Nutzern in 52 Städten vertraut",
     heroLine1: "Lassen Sie Ihren Raum für Sie verdienen und für andere zur Chance werden.",
     heroLine2: "",
     heroLine3: "",
@@ -553,21 +432,9 @@ const translations = {
     priorityGroupLabel: "⭐ Beliebte Ziele",
     allCountriesLabel: "Alle Länder",
     searchPlaceholder: "Stadt, Stadtteil oder Stichwort suchen...",
-    matchesThisWeek: "2.847 Matches diese Woche",
-    reviewsLabel: "4,9 Sterne aus über 12.000 Bewertungen",
     storiesTitle: "Community-Geschichten",
     storiesLive: "Live",
     addStory: "Geschichte hinzufügen",
-    aiMatchBadge: "KI-gestütztes Matching",
-    aiMatchLine1: "Ihr perfekter Match",
-    aiMatchLine2: "findet Sie.",
-    aiMatchP: "Unsere KI analysiert über 40 Kompatibilitätsfaktoren – vom Schlafrhythmus bis hin zu sozialen Gewohnheiten – und findet Menschen, mit denen Sie wirklich zusammenleben möchten.",
-    compatBars: [
-      { label: "Lebensstil-Kompatibilität", value: 97,  color: "from-blue-500 to-violet-600" },
-      { label: "Schlafrhythmus",             value: 94,  color: "from-orange-500 to-orange-600" },
-      { label: "Sauberkeit",                 value: 100, color: "from-amber-500 to-orange-700" },
-      { label: "Budgetrahmen",               value: 88,  color: "from-rose-500 to-pink-600" },
-    ],
     findMatchesBtn: "Meine Matches finden",
     matchLabel: "Match",
     verifiedLabel: "Verifiziert",
@@ -577,20 +444,9 @@ const translations = {
     nonSmoker: "Nichtraucher",
     skipBtn: "Überspringen",
     likeBtn: "Gefällt mir",
-    featuredH2: "Empfohlene Inserate",
-    featuredP: "Premium-verifizierte Zimmer und Wohnungen",
     listingFilterAll: "Alle",
     listingVerified: "Verifiziert",
     perMonth: "/Mo.",
-    viewAllBtn: "Alle Inserate anzeigen",
-    howH2: "Wie funktioniert Sefira?",
-    howP: "Vom Profil zur Traumwohnung in unter 48 Stunden.",
-    howItWorks: [
-      { step: "01", title: "Profil erstellen",      desc: "Erzählen Sie uns von Ihrem Lebensstil, Budget und Ihrer Persönlichkeit. Unsere KI lernt, was Sie einzigartig macht.",                       icon: "✦", gradient: "from-blue-500 to-indigo-600" },
-      { step: "02", title: "KI-Matches erhalten",   desc: "Über 40 Kompatibilitätsfaktoren sofort analysiert. Ihr perfekter Mitbewohner ist näher als Sie denken.",                                  icon: "◈", gradient: "from-violet-500 to-purple-600" },
-      { step: "03", title: "Wischen und verbinden", desc: "Gefällt mir, matchen und schreiben. Per Video verifizieren, bevor Sie sich festlegen.",                                                     icon: "◎", gradient: "from-pink-500 to-rose-600" },
-      { step: "04", title: "Einziehen",             desc: "Digital unterzeichnen, Community-Support erhalten und in Ihr Traumzuhause einziehen.",                                                     icon: "⌂", gradient: "from-orange-500 to-orange-600" },
-    ],
     roommatesH2: "Top-Matches in Ihrer Nähe",
     roommatesP: "Menschen, die jetzt in Berlin einen Mitbewohner suchen",
     viewAll: "Alle anzeigen",
@@ -598,11 +454,6 @@ const translations = {
     connectBtn: "Verbinden",
     petsOkShort: "Haustiere erlaubt",
     noPetsShort: "Keine Haustiere",
-    trendingH2: "Angesagte Städte",
-    trendingP: "Wohin moderne Menschen 2025 ziehen",
-    activeListings: "aktive Inserate",
-    testiH2: "Von Tausenden geliebt",
-    testiReviews: "aus über 12.000 Bewertungen",
     appH2a: "Sefira in Ihrer Tasche.",
     appH2b: "Überall. Jederzeit.",
     appP: "Sofortige Match-Benachrichtigungen, Echtzeit-Messaging und Inserate durchscrollen – immer und überall.",
@@ -610,9 +461,6 @@ const translations = {
     appStoreName: "App Store",
     googlePlayLabel: "Jetzt bei",
     googlePlayName: "Google Play",
-    newMatch: "Neuer Match!",
-    likedProfile: "Emma W. hat Ihr Profil geliked",
-    compatibility: "97 % Kompatibilität · vor 2 Minuten",
     suggested: "Vorgeschlagen",
     footerDesc: "Teilen Sie Ihr Zuhause, Ihr Büro oder Ihre Gewerbefläche sicher — oder finden Sie ganz einfach den Raum, den Sie brauchen.",
     footerLinks: [
@@ -653,12 +501,6 @@ const translations = {
       { label: "نشر إعلان", href: "/create-listing" },
       { label: "المجتمع", href: "#" },
     ],
-    stats: [
-      { value: "127K+", label: "مستخدم موثَّق" },
-      { value: "52",    label: "مدينة حول العالم" },
-      { value: "98%",   label: "رضا عن المطابقة" },
-      { value: "4.9★",  label: "تقييم التطبيق" },
-    ],
     signIn: "تسجيل الدخول",
     signOut: "تسجيل الخروج",
     signOutConfirmTitle: "تسجيل الخروج",
@@ -666,7 +508,6 @@ const translations = {
     signOutConfirmCancel: "إلغاء",
     signOutConfirmOk: "خروج",
     getStarted: "ابدأ الآن",
-    heroBadge: "موثوق به من قِبَل أكثر من ١٢٧,٠٠٠ مستخدم موثَّق في ٥٢ مدينة",
     heroLine1: "دع مساحتك تربح لك، وتفتح فرصة للآخرين.",
     heroLine2: "",
     heroLine3: "",
@@ -707,21 +548,9 @@ const translations = {
     priorityGroupLabel: "⭐ الوجهات المميزة",
     allCountriesLabel: "جميع الدول",
     searchPlaceholder: "ابحث عن مدينة أو حي أو كلمة مفتاحية...",
-    matchesThisWeek: "٢,٨٤٧ مطابقة هذا الأسبوع",
-    reviewsLabel: "٤.٩ نجوم من أكثر من ١٢,٠٠٠ تقييم",
     storiesTitle: "قصص المجتمع",
     storiesLive: "مباشر",
     addStory: "إضافة قصة",
-    aiMatchBadge: "مطابقة بالذكاء الاصطناعي",
-    aiMatchLine1: "توأمك المثالي",
-    aiMatchLine2: "يجدك.",
-    aiMatchP: "يحلّل ذكاؤنا الاصطناعي أكثر من ٤٠ عاملاً للتوافق، من جداول النوم إلى العادات الاجتماعية، ليُبرز الأشخاص الذين ستودّ حقاً العيش معهم.",
-    compatBars: [
-      { label: "توافق أسلوب الحياة", value: 97,  color: "from-blue-500 to-violet-600" },
-      { label: "جدول النوم",          value: 94,  color: "from-orange-500 to-orange-600" },
-      { label: "النظافة",             value: 100, color: "from-amber-500 to-orange-700" },
-      { label: "نطاق الميزانية",      value: 88,  color: "from-rose-500 to-pink-600" },
-    ],
     findMatchesBtn: "ابحث عن مطابقاتي",
     matchLabel: "توافق",
     verifiedLabel: "موثَّق",
@@ -731,20 +560,9 @@ const translations = {
     nonSmoker: "غير مدخِّن",
     skipBtn: "تخطَّ",
     likeBtn: "إعجاب",
-    featuredH2: "الإعلانات المميزة",
-    featuredP: "غرف وشقق مميزة موثَّقة",
     listingFilterAll: "الكل",
     listingVerified: "موثَّق",
     perMonth: "/شهر",
-    viewAllBtn: "عرض جميع الإعلانات",
-    howH2: "كيف تعمل سفيرا؟",
-    howP: "من الملف الشخصي إلى المنزل المثالي في أقل من ٤٨ ساعة.",
-    howItWorks: [
-      { step: "٠١", title: "أنشئ ملفك الشخصي",      desc: "أخبرنا عن أسلوب حياتك وميزانيتك وشخصيتك. يتعلّم ذكاؤنا الاصطناعي ما يجعلك فريداً.",                                    icon: "✦", gradient: "from-blue-500 to-indigo-600" },
-      { step: "٠٢", title: "مطابقات بالذكاء الاصطناعي", desc: "تحليل فوري لأكثر من ٤٠ عامل توافق. شريك السكن المثالي أقرب مما تتصوّر.",                                           icon: "◈", gradient: "from-violet-500 to-purple-600" },
-      { step: "٠٣", title: "تصفَّح وتواصَل",           desc: "أعجب وطابق وراسِل. تحقَّق بالفيديو قبل أي التزام.",                                                                    icon: "◎", gradient: "from-pink-500 to-rose-600" },
-      { step: "٠٤", title: "انتقل للسكن",              desc: "وقِّع رقمياً، واحصل على دعم المجتمع، واستقرّ في منزلك المثالي.",                                                       icon: "⌂", gradient: "from-orange-500 to-orange-600" },
-    ],
     roommatesH2: "أفضل المطابقات بالقرب منك",
     roommatesP: "أشخاص يبحثون عن شريك سكن في برلين الآن",
     viewAll: "عرض الكل",
@@ -752,11 +570,6 @@ const translations = {
     connectBtn: "تواصَل",
     petsOkShort: "الحيوانات الأليفة مسموح بها",
     noPetsShort: "لا حيوانات",
-    trendingH2: "المدن الرائجة",
-    trendingP: "أين ينتقل الناس المعاصرون في ٢٠٢٥",
-    activeListings: "إعلان نشط",
-    testiH2: "يحبّه الآلاف",
-    testiReviews: "من أكثر من ١٢,٠٠٠ تقييم",
     appH2a: "سفيرا في جيبك.",
     appH2b: "في أي مكان. في أي وقت.",
     appP: "إشعارات فورية للمطابقات، ومراسلة في الوقت الحقيقي، وتصفُّح الإعلانات أينما كنت.",
@@ -764,9 +577,6 @@ const translations = {
     appStoreName: "App Store",
     googlePlayLabel: "احصل عليه من:",
     googlePlayName: "Google Play",
-    newMatch: "مطابقة جديدة!",
-    likedProfile: "أعجبت Emma W. بملفك الشخصي",
-    compatibility: "توافق ٩٧٪ · منذ دقيقتين",
     suggested: "مقترَح",
     footerDesc: "شارك منزلك أو مكتبك أو مساحتك التجارية بأمان، أو ابحث بسهولة عن المساحة التي تحتاجها.",
     footerLinks: [
@@ -806,12 +616,6 @@ const translations = {
       { label: "Как это работает", href: "#" },
       { label: "Отзывы", href: "#" },
     ],
-    stats: [
-      { value: "127K+", label: "Активных пользователей" },
-      { value: "52",    label: "Успешных совпадений" },
-      { value: "98%",   label: "Городов" },
-      { value: "4.9★",  label: "Отзывов" },
-    ],
     signIn: "Войти",
     signOut: "Выйти",
     signOutConfirmTitle: "Выйти",
@@ -819,7 +623,6 @@ const translations = {
     signOutConfirmCancel: "Отмена",
     signOutConfirmOk: "Выйти",
     getStarted: "Начать",
-    heroBadge: "Поиск соседей по комнате",
     heroLine1: "Пусть ваше пространство приносит доход вам и возможности другим.",
     heroLine2: "",
     heroLine3: "",
@@ -859,21 +662,9 @@ const translations = {
     priorityGroupLabel: "Популярные страны",
     allCountriesLabel: "Все страны",
     searchPlaceholder: "Поиск...",
-    matchesThisWeek: "совпадений на этой неделе",
-    reviewsLabel: "отзывов",
     storiesTitle: "Истории",
     storiesLive: "Прямой эфир",
     addStory: "Добавить историю",
-    aiMatchBadge: "ИИ подбор",
-    aiMatchLine1: "Умный",
-    aiMatchLine2: "подбор соседей",
-    aiMatchP: "Наш ИИ анализирует ваши предпочтения и находит идеальных соседей.",
-    compatBars: [
-      { label: "Образ жизни", value: 97,  color: "from-blue-500 to-violet-600" },
-      { label: "Расписание",  value: 94,  color: "from-orange-500 to-orange-600" },
-      { label: "Чистота",     value: 100, color: "from-amber-500 to-orange-700" },
-      { label: "Бюджет",      value: 88,  color: "from-rose-500 to-pink-600" },
-    ],
     findMatchesBtn: "Найти совпадения",
     matchLabel: "Совпадение",
     verifiedLabel: "Проверено",
@@ -883,20 +674,9 @@ const translations = {
     nonSmoker: "Некурящий",
     skipBtn: "Пропустить",
     likeBtn: "Нравится",
-    featuredH2: "Рекомендуемые объявления",
-    featuredP: "Проверенные и популярные объявления",
     listingFilterAll: "Все",
     listingVerified: "Проверено",
     perMonth: "/месяц",
-    viewAllBtn: "Смотреть все",
-    howH2: "Как это работает",
-    howP: "Найти соседа по комнате легко за 3 шага",
-    howItWorks: [
-      { step: "01", title: "Создайте профиль",    desc: "Расскажите о себе и своих предпочтениях",         icon: "✦", gradient: "from-blue-500 to-indigo-600" },
-      { step: "02", title: "Найдите совпадения",  desc: "Наш ИИ подберёт подходящих соседей",              icon: "◈", gradient: "from-violet-500 to-purple-600" },
-      { step: "03", title: "Свяжитесь",           desc: "Общайтесь и договаривайтесь о встрече",           icon: "◎", gradient: "from-pink-500 to-rose-600" },
-      { step: "04", title: "Въезжайте",           desc: "Подпишите договор и обустраивайтесь в новом доме", icon: "⌂", gradient: "from-orange-500 to-orange-600" },
-    ],
     roommatesH2: "Активные пользователи",
     roommatesP: "Люди, которые ищут соседей прямо сейчас",
     viewAll: "Смотреть всех",
@@ -904,11 +684,6 @@ const translations = {
     connectBtn: "Связаться",
     petsOkShort: "Животные ✓",
     noPetsShort: "Без животных",
-    trendingH2: "Популярные объявления",
-    trendingP: "Самые просматриваемые объявления этой недели",
-    activeListings: "Активные объявления",
-    testiH2: "Отзывы пользователей",
-    testiReviews: "отзывов",
     appH2a: "Скачайте",
     appH2b: "приложение",
     appP: "Ищите соседей в любое время и в любом месте",
@@ -916,9 +691,6 @@ const translations = {
     appStoreName: "App Store",
     googlePlayLabel: "Доступно в",
     googlePlayName: "Google Play",
-    newMatch: "Новое совпадение",
-    likedProfile: "оценил ваш профиль",
-    compatibility: "Совместимость",
     suggested: "Рекомендуется",
     footerDesc: "Безопасно делитесь своим домом, офисом или коммерческим пространством — или легко найдите нужное вам место.",
     footerLinks: [
@@ -1021,114 +793,6 @@ const COMMERCIAL_OWNER_TEXTS = new Set([
   "Ticari Alanını Paylaş", "Share Your Commercial Space", "مکان تجاری‌ات را به اشتراک بگذار", "شارك مساحتك التجارية", "Gewerbefläche teilen", "Поделиться коммерческим помещением",
 ]);
 
-
-const listings = [
-  {
-    id: 1, title: "Modern Studio near Alexanderplatz", city: "Berlin", country: "Germany",
-    price: 850, sym: "EUR" as const, rating: 4.9, reviews: 127, type: "Private Room",
-    available: "Jun 1", gradient: "from-blue-600 via-indigo-700 to-violet-800",
-    verified: true, amenities: ["WiFi", "Gym", "Balcony"], tag: "Most Popular",
-    tagColor: "from-blue-500 to-indigo-600", gender: "Any",
-    image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 2, title: "Luxury Sea-View Apartment", city: "Dubai", country: "UAE",
-    price: 1200, sym: "USD" as const, rating: 4.8, reviews: 89, type: "Entire Flat",
-    available: "Now", gradient: "from-amber-500 via-orange-700 to-rose-700",
-    verified: true, amenities: ["Pool", "Gym", "Concierge"], tag: "New",
-    tagColor: "from-amber-500 to-orange-700", gender: "Male",
-    image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 3, title: "Charming Room near Bosphorus", city: "Istanbul", country: "Turkey",
-    price: 450, sym: "USD" as const, rating: 4.7, reviews: 204, type: "Private Room",
-    available: "May 25", gradient: "from-orange-500 via-orange-600 to-amber-700",
-    verified: false, amenities: ["WiFi", "Kitchen", "Sea View"], tag: "Best Value",
-    tagColor: "from-orange-500 to-orange-600", gender: "Any",
-    image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 4, title: "Designer Loft in Eixample", city: "Barcelona", country: "Spain",
-    price: 780, sym: "EUR" as const, rating: 5.0, reviews: 56, type: "Private Room",
-    available: "Jun 15", gradient: "from-rose-500 via-pink-600 to-fuchsia-700",
-    verified: true, amenities: ["WiFi", "Rooftop", "A/C"], tag: "Top Rated",
-    tagColor: "from-rose-500 to-pink-600", gender: "Female",
-    image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 5, title: "Cozy Flat in Shoreditch", city: "London", country: "United Kingdom",
-    price: 1100, sym: "EUR" as const, rating: 4.8, reviews: 73, type: "Private Room",
-    available: "Now", gradient: "from-indigo-500 via-blue-600 to-sky-700",
-    verified: true, amenities: ["WiFi", "Garden", "Desk"], tag: "New",
-    tagColor: "from-indigo-500 to-blue-600", gender: "Any",
-    image: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 6, title: "Canal-Side Studio, Jordaan", city: "Amsterdam", country: "Netherlands",
-    price: 920, sym: "EUR" as const, rating: 4.9, reviews: 112, type: "Studio",
-    available: "Jun 5", gradient: "from-red-500 via-rose-600 to-pink-700",
-    verified: true, amenities: ["WiFi", "Bike", "Terrace"], tag: "Most Popular",
-    tagColor: "from-red-500 to-rose-600", gender: "Any",
-    image: "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 7, title: "Bright Room in Le Marais", city: "Paris", country: "France",
-    price: 990, sym: "EUR" as const, rating: 4.7, reviews: 88, type: "Private Room",
-    available: "Jun 10", gradient: "from-violet-500 via-purple-600 to-fuchsia-700",
-    verified: false, amenities: ["WiFi", "A/C", "Metro"], tag: "Best Value",
-    tagColor: "from-violet-500 to-purple-600", gender: "Female",
-    image: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 8, title: "Trastevere Apartment with Terrace", city: "Rome", country: "Italy",
-    price: 720, sym: "EUR" as const, rating: 4.8, reviews: 61, type: "Entire Flat",
-    available: "Now", gradient: "from-orange-500 via-amber-600 to-yellow-600",
-    verified: true, amenities: ["WiFi", "Terrace", "Kitchen"], tag: "Top Rated",
-    tagColor: "from-orange-500 to-amber-500", gender: "Any",
-    image: "https://images.unsplash.com/photo-1529260830199-42c24126f198?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 9, title: "Minimalist Room in Alfama", city: "Lisbon", country: "Portugal",
-    price: 580, sym: "EUR" as const, rating: 4.6, reviews: 95, type: "Private Room",
-    available: "Jun 20", gradient: "from-orange-500 via-amber-600 to-sky-700",
-    verified: true, amenities: ["WiFi", "Balcony", "Tram"], tag: "New",
-    tagColor: "from-orange-500 to-amber-600", gender: "Male",
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 10, title: "Elegant Room in 1st District", city: "Vienna", country: "Austria",
-    price: 860, sym: "EUR" as const, rating: 4.9, reviews: 44, type: "Private Room",
-    available: "Now", gradient: "from-slate-500 via-gray-600 to-zinc-700",
-    verified: true, amenities: ["WiFi", "Piano", "Library"], tag: "Most Popular",
-    tagColor: "from-slate-500 to-gray-600", gender: "Any",
-    image: "https://images.unsplash.com/photo-1509749837427-ac94a2553d0e?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 11, title: "Studio in Beyoğlu Art District", city: "Istanbul", country: "Turkey",
-    price: 380, sym: "USD" as const, rating: 4.7, reviews: 138, type: "Studio",
-    available: "Jun 8", gradient: "from-amber-500 via-orange-600 to-orange-700",
-    verified: false, amenities: ["WiFi", "Kitchen", "Art"], tag: "Best Value",
-    tagColor: "from-amber-500 to-orange-600", gender: "Any",
-    image: "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 12, title: "Penthouse Suite, Downtown Dubai", city: "Dubai", country: "UAE",
-    price: 1800, sym: "USD" as const, rating: 5.0, reviews: 29, type: "Entire Flat",
-    available: "Now", gradient: "from-yellow-500 via-amber-500 to-orange-700",
-    verified: true, amenities: ["Pool", "Gym", "Valet"], tag: "Top Rated",
-    tagColor: "from-yellow-500 to-orange-500", gender: "Any",
-    image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80",
-  },
-];
-
-const trendingCities = [
-  { name: "Istanbul",  country: "Turkey",      listings: "2,847", growth: "+23%", glow: "bg-orange-500/10", border: "border-orange-500/20", emoji: "🕌" },
-  { name: "Berlin",    country: "Germany",     listings: "1,923", growth: "+18%", glow: "bg-blue-500/10",   border: "border-blue-500/20",   emoji: "🐻" },
-  { name: "Dubai",     country: "UAE",         listings: "1,456", growth: "+31%", glow: "bg-amber-500/10",  border: "border-amber-500/20",  emoji: "🏙️" },
-  { name: "Barcelona", country: "Spain",       listings: "1,234", growth: "+15%", glow: "bg-yellow-500/10", border: "border-yellow-500/20", emoji: "🏖️" },
-  { name: "Amsterdam", country: "Netherlands", listings: "987",   growth: "+12%", glow: "bg-red-500/10",    border: "border-red-500/20",    emoji: "🚲" },
-  { name: "London",    country: "UK",          listings: "3,201", growth: "+8%",  glow: "bg-indigo-500/10", border: "border-indigo-500/20", emoji: "🎡" },
-];
 
 const commercialTypeOptionsByLang: Record<string, { slug: string; emoji: string; label: string }[]> = {
   tr: [
@@ -1517,23 +1181,6 @@ const PRIORITY_CITIES: Record<string, string[]> = {
   "France":               ["Paris", "Marseille", "Lyon", "Toulouse", "Nice", "Bordeaux"],
   "United Arab Emirates": ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "Ras Al Khaimah", "Al Ain"],
   "South Korea":          ["Seoul", "Busan", "Incheon", "Daegu", "Daejeon", "Gwangju"],
-};
-
-// ─── Russian label lookups (static demo data that bypasses the t object) ──────
-const TAG_RU: Record<string, string> = {
-  "Most Popular": "Самый популярный",
-  "New":          "Новый",
-  "Best Value":   "Лучшая цена",
-  "Top Rated":    "Лучший рейтинг",
-  "Featured":     "Рекомендуем",
-};
-const COUNTRY_RU: Record<string, string> = {
-  "Germany": "Германия",
-  "UAE":     "ОАЭ",
-  "Turkey":  "Турция",
-  "Spain":   "Испания",
-  "France":  "Франция",
-  "UK":      "Великобритания",
 };
 
 // ─── Wizard types ─────────────────────────────────────────────────────────────
@@ -2010,7 +1657,6 @@ export default function Home() {
   }
 
   // ── Existing state ────────────────────────────────────────────────────────
-  const [likedListings, setLikedListings] = useState<number[]>([]);
   const [searchInput, setSearchInput] = useState("");
   const [countries, setCountries] = useState<string[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("");
@@ -2192,9 +1838,6 @@ export default function Home() {
 
   const [savedProfiles,  setSavedProfiles]  = useState<number[]>([]);
   const [animatingIds,   setAnimatingIds]   = useState<number[]>([]);
-
-  const toggleListing = (id: number) =>
-    setLikedListings((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
 
   const toggleSave = (id: number) => {
     setSavedProfiles((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
@@ -3155,71 +2798,6 @@ export default function Home() {
           onIndexChange={setViewerIndex}
         />
       )}
-
-      {/* ── LISTINGS ──────────────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-5 mt-2 pt-2 pb-0 mb-0">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
-          <div>
-            <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mb-2 tracking-tight">
-              {t.featuredH2}
-            </h2>
-            <p className="text-stone-500">{t.featuredP}</p>
-          </div>
-        </div>
-        <div className="grid grid-cols-3 gap-3">
-          {listings.map((listing, idx) => (
-            <div
-              key={listing.id}
-              className="group bg-white border border-stone-200 rounded-2xl overflow-hidden hover:border-orange-200 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/5 hover:-translate-y-1 cursor-pointer hover:ring-1 hover:ring-orange-200"
-            >
-              <div className="relative h-32 overflow-hidden">
-                <div className={`absolute inset-0 bg-gradient-to-br ${listing.gradient}`} />
-                <Image
-                  src={listing.image}
-                  alt={listing.title}
-                  fill
-                  sizes="(max-width: 1280px) 33vw, 25vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                  quality={80}
-                  {...(idx === 0 ? { priority: true } : { loading: "lazy" })}
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-stone-900/25 via-transparent to-stone-900/30" />
-                <div className={`absolute top-2 left-2 bg-gradient-to-r ${listing.tagColor} text-white text-xs font-bold px-1.5 py-0.5 rounded-full shadow`}>
-                  {lang === "ru" ? (TAG_RU[listing.tag] ?? listing.tag) : listing.tag}
-                </div>
-                <button
-                  onClick={() => toggleListing(listing.id)}
-                  className={`absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 font-bold active:scale-90 text-xs ${
-                    likedListings.includes(listing.id)
-                      ? "bg-rose-500 text-white shadow-lg shadow-rose-500/40 scale-110"
-                      : "bg-stone-900/25 backdrop-blur-sm text-white/60 hover:text-white hover:bg-stone-900/50 hover:scale-110"
-                  }`}
-                >
-                  ♥
-                </button>
-                <div className="absolute bottom-2 right-2 bg-stone-900/60 backdrop-blur-sm rounded-lg px-2 py-0.5">
-                  <span className="text-white font-black text-xs">
-                    {displayPrice(listing.price, listing.sym, currency)}
-                  </span>
-                </div>
-              </div>
-              <div className="p-2">
-                <h3 className="text-xs font-bold text-stone-900 group-hover:text-orange-700 transition-colors truncate">
-                  {listing.title}
-                </h3>
-                <p className="text-xs text-gray-400 truncate">
-                  {listing.city}
-                </p>
-                <div className="flex items-center gap-1 mt-1">
-                  <span className="text-amber-500 text-xs">★</span>
-                  <span className="text-stone-900 text-xs font-bold">{listing.rating}</span>
-                  <span className="text-stone-400 text-xs">({listing.reviews})</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* ── SMART RECOMMENDATIONS ─────────────────────────────────────────────── */}
       {smartRecs.length > 0 && (
