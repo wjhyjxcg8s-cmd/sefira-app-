@@ -277,6 +277,32 @@ export default function SearchSheet({ mode, lang, onClose, onSubmitLocation, onS
     ? (catStep === "commercialType" ? t.commercialTypeTitle : t.categoryTitle)
     : t.locationTitle;
 
+  // Only the plain 2-card category step is short enough to auto-height with no scrolling —
+  // every other step (long country/city/district/neighborhood lists, the 14-tile commercial
+  // grid) opens tall since its content can exceed the viewport.
+  const isTallMode = mode === "location" || (mode === "category" && catStep === "commercialType");
+
+  // CTAs that must stay visible while the list beneath them scrolls, so they live in the
+  // flex-shrink-0 header instead of scrolling away with the list content.
+  const pinnedCta = mode === "location"
+    ? locStep === "city"
+      ? <SearchHereButton label={t.searchHere} value={countryName} onClick={() => submitLocation({ country: countryCode })} />
+      : locStep === "district"
+        ? <SearchHereButton label={t.searchHere} value={`${city}, ${countryName}`} onClick={() => submitLocation({ country: countryCode, city })} />
+        : locStep === "neighborhood"
+          ? <SearchHereButton label={t.searchHere} value={`${district}, ${city}`} onClick={() => submitLocation({ country: countryCode, city, district })} />
+          : null
+    : mode === "category" && catStep === "commercialType"
+      ? (
+          <button
+            onClick={() => submitCategory({ category: "commercial" })}
+            className="w-full rounded-xl border-2 border-emerald-300 bg-emerald-50 px-4 py-3 text-[14px] font-bold text-emerald-700 transition-transform active:scale-[0.98]"
+          >
+            {t.searchAllCommercial}
+          </button>
+        )
+      : null;
+
   const inputClass =
     "mb-3 w-full rounded-xl border-2 border-gray-200 px-4 py-2.5 text-[15px] text-gray-900 outline-none focus:border-orange-400";
   const rowClass =
@@ -320,7 +346,7 @@ export default function SearchSheet({ mode, lang, onClose, onSubmitLocation, onS
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 32, stiffness: 320 }}
             dir={isRtl ? "rtl" : "ltr"}
-            className="fixed inset-x-0 bottom-0 z-[10001] flex max-h-[80dvh] flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl"
+            className={`fixed inset-x-0 bottom-0 z-[10001] flex flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl ${isTallMode ? "max-h-[85dvh]" : ""}`}
           >
             <div
               onPointerDown={(e) => dragControls.start(e)}
@@ -352,7 +378,17 @@ export default function SearchSheet({ mode, lang, onClose, onSubmitLocation, onS
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto overscroll-contain px-4 pb-6">
+            {pinnedCta && (
+              <div className="flex-shrink-0 px-4 pb-3">
+                {pinnedCta}
+              </div>
+            )}
+
+            <div className="relative min-h-0 flex-1">
+              <div
+                className="h-full overflow-y-auto overscroll-contain px-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))]"
+                style={{ WebkitOverflowScrolling: "touch" }}
+              >
               {mode === "location" && (
                 <>
                   {locStep === "country" && (
@@ -378,7 +414,6 @@ export default function SearchSheet({ mode, lang, onClose, onSubmitLocation, onS
 
                   {locStep === "city" && (
                     <>
-                      <SearchHereButton label={t.searchHere} value={countryName} onClick={() => submitLocation({ country: countryCode })} />
                       <input
                         type="text"
                         value={citySearch}
@@ -403,11 +438,6 @@ export default function SearchSheet({ mode, lang, onClose, onSubmitLocation, onS
 
                   {locStep === "district" && (
                     <>
-                      <SearchHereButton
-                        label={t.searchHere}
-                        value={`${city}, ${countryName}`}
-                        onClick={() => submitLocation({ country: countryCode, city })}
-                      />
                       <input
                         type="text"
                         value={districtSearch}
@@ -432,11 +462,6 @@ export default function SearchSheet({ mode, lang, onClose, onSubmitLocation, onS
 
                   {locStep === "neighborhood" && (
                     <>
-                      <SearchHereButton
-                        label={t.searchHere}
-                        value={`${district}, ${city}`}
-                        onClick={() => submitLocation({ country: countryCode, city, district })}
-                      />
                       <input
                         type="text"
                         value={neighborhoodSearch}
@@ -482,12 +507,6 @@ export default function SearchSheet({ mode, lang, onClose, onSubmitLocation, onS
 
                   {catStep === "commercialType" && (
                     <>
-                      <button
-                        onClick={() => submitCategory({ category: "commercial" })}
-                        className="mb-3 w-full rounded-xl border-2 border-emerald-300 bg-emerald-50 px-4 py-3 text-[14px] font-bold text-emerald-700 transition-transform active:scale-[0.98]"
-                      >
-                        {t.searchAllCommercial}
-                      </button>
                       <div className="grid grid-cols-3 gap-2">
                         {COMMERCIAL_TYPES.map((ct) => (
                           <button
@@ -503,6 +522,13 @@ export default function SearchSheet({ mode, lang, onClose, onSubmitLocation, onS
                     </>
                   )}
                 </>
+              )}
+              </div>
+
+              {/* Static scroll hint — no scroll listeners, just a persistent cue that more
+                  content sits below the fold. Only shown where there's a long list to scroll. */}
+              {isTallMode && (
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white to-transparent" />
               )}
             </div>
           </motion.div>
