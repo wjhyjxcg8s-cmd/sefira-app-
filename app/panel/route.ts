@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 
-export function GET(request: Request) {
-  return NextResponse.redirect(new URL("/admin-sefira-2026", request.url), 308);
+export function GET() {
+  return new NextResponse(null, {
+    status: 308,
+    headers: { Location: "/admin-sefira-2026" },
+  });
 }
