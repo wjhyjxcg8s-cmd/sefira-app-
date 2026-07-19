@@ -1,9 +1,14 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useRef, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { useLang } from "@/app/lib/LangContext";
+import { tierByLocation } from "@/app/search-wizard/locationTiers";
+import { filterByCategory, filterByCommercialType, type SearchCategory } from "@/app/lib/searchQuery";
+import { getListingSide, getCommercialBadgeLabel, COMMERCIAL_BADGE_CLASS } from "@/app/lib/listingBadge";
+import { COMMERCIAL_TYPE_BY_SLUG } from "@/app/lib/commercialTypes";
+import { getCountryName } from "@/app/lib/locationData";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -12,12 +17,26 @@ const supabase = createClient(
 
 type Filter = "all" | "listings" | "users";
 
+// Extended vs. the original select — adds the columns needed for category/commercial-type
+// filtering, location-tier ranking, and correct has/needs badge derivation. `type` replaces
+// the old `listing_type` column, which doesn't exist on `listings` (the real column is
+// `type`) — that mismatch was why listing badges always rendered as "needs place".
+const LISTING_COLUMNS =
+  "id, title, city, district, neighborhood, price, type, has_place, needs_place, country_code, listing_category, commercial_type, photos";
+
 interface Listing {
   id: string;
   title: string;
   city: string;
+  district?: string | null;
+  neighborhood?: string | null;
   price: number | null;
-  listing_type: "has_place" | "needs_place";
+  type?: string | null;
+  has_place?: boolean | null;
+  needs_place?: boolean | null;
+  country_code?: string | null;
+  listing_category?: string | null;
+  commercial_type?: string | null;
   photos: string[] | null;
 }
 
@@ -41,6 +60,11 @@ const translations = {
     noResults: "Sonuç bulunamadı",
     hasPlace: "Oda Var",
     needsPlace: "Oda Arıyor",
+    chipCategory: "Kategori",
+    chipType: "Tür",
+    chipLocation: "Konum",
+    categoryResidential: "Konut",
+    categoryCommercial: "Ticari",
   },
   en: {
     title: "Search",
@@ -54,6 +78,11 @@ const translations = {
     noResults: "No results found",
     hasPlace: "Has Place",
     needsPlace: "Needs Place",
+    chipCategory: "Category",
+    chipType: "Type",
+    chipLocation: "Location",
+    categoryResidential: "Residential",
+    categoryCommercial: "Commercial",
   },
   fa: {
     title: "جستجو",
@@ -67,6 +96,11 @@ const translations = {
     noResults: "نتیجه‌ای یافت نشد",
     hasPlace: "جا دارم",
     needsPlace: "جا می‌خوام",
+    chipCategory: "دسته‌بندی",
+    chipType: "نوع",
+    chipLocation: "موقعیت",
+    categoryResidential: "مسکونی",
+    categoryCommercial: "تجاری",
   },
   ar: {
     title: "بحث",
@@ -80,6 +114,11 @@ const translations = {
     noResults: "لا توجد نتائج",
     hasPlace: "لدي مكان",
     needsPlace: "أبحث عن مكان",
+    chipCategory: "الفئة",
+    chipType: "النوع",
+    chipLocation: "الموقع",
+    categoryResidential: "سكني",
+    categoryCommercial: "تجاري",
   },
   de: {
     title: "Suche",
@@ -93,6 +132,11 @@ const translations = {
     noResults: "Keine Ergebnisse gefunden",
     hasPlace: "Platz vorhanden",
     needsPlace: "Suche Platz",
+    chipCategory: "Kategorie",
+    chipType: "Typ",
+    chipLocation: "Ort",
+    categoryResidential: "Wohnen",
+    categoryCommercial: "Gewerbe",
   },
   ru: {
     title: "Поиск",
@@ -106,17 +150,77 @@ const translations = {
     noResults: "Ничего не найдено",
     hasPlace: "Есть место",
     needsPlace: "Ищет место",
+    chipCategory: "Категория",
+    chipType: "Тип",
+    chipLocation: "Локация",
+    categoryResidential: "Жильё",
+    categoryCommercial: "Коммерция",
   },
 };
 
-export default function SearchPage() {
+function parseCategory(value: string | null): SearchCategory {
+  return value === "residential" || value === "commercial" ? value : null;
+}
+
+function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }) {
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        padding: "6px 12px",
+        borderRadius: 9999,
+        backgroundColor: "#fff7ed",
+        color: "#c2410c",
+        fontSize: 13,
+        fontWeight: 600,
+        border: "1px solid #fed7aa",
+      }}
+    >
+      {label}
+      <button
+        onClick={onRemove}
+        aria-label="remove filter"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 16,
+          height: 16,
+          borderRadius: "50%",
+          border: "none",
+          backgroundColor: "transparent",
+          color: "#c2410c",
+          cursor: "pointer",
+          fontSize: 14,
+          lineHeight: 1,
+          padding: 0,
+        }}
+      >
+        ×
+      </button>
+    </span>
+  );
+}
+
+function SearchPageContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { lang } = useLang();
   const t = translations[lang];
   const isRTL = lang === "ar" || lang === "fa";
 
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(() => searchParams.get("q") ?? "");
   const [filter, setFilter] = useState<Filter>("all");
+
+  const [category, setCategory] = useState<SearchCategory>(() => parseCategory(searchParams.get("category")));
+  const [commercialType, setCommercialType] = useState(() => searchParams.get("commercial_type") ?? "");
+  const [countryCode, setCountryCode] = useState(() => searchParams.get("country") ?? "");
+  const [city, setCity] = useState(() => searchParams.get("city") ?? "");
+  const [district, setDistrict] = useState(() => searchParams.get("district") ?? "");
+  const [neighborhood, setNeighborhood] = useState(() => searchParams.get("neighborhood") ?? "");
+
   const [listings, setListings] = useState<Listing[]>([]);
   const [users, setUsers] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(false);
@@ -128,8 +232,42 @@ export default function SearchPage() {
     inputRef.current?.focus();
   }, []);
 
+  // Keeps the URL in sync with the current filter state so results stay shareable/deep-linkable.
+  function updateUrl(next: {
+    q?: string;
+    category?: SearchCategory;
+    commercialType?: string;
+    countryCode?: string;
+    city?: string;
+    district?: string;
+    neighborhood?: string;
+  }) {
+    const q = next.q ?? query;
+    const cat = next.category !== undefined ? next.category : category;
+    const ct = next.commercialType !== undefined ? next.commercialType : commercialType;
+    const cc = next.countryCode !== undefined ? next.countryCode : countryCode;
+    const ci = next.city !== undefined ? next.city : city;
+    const di = next.district !== undefined ? next.district : district;
+    const ne = next.neighborhood !== undefined ? next.neighborhood : neighborhood;
+
+    const params = new URLSearchParams();
+    if (q.trim()) params.set("q", q.trim());
+    if (cat) params.set("category", cat);
+    if (ct) params.set("commercial_type", ct);
+    if (cc) params.set("country", cc);
+    if (ci) params.set("city", ci);
+    if (di) params.set("district", di);
+    if (ne) params.set("neighborhood", ne);
+
+    const qs = params.toString();
+    router.replace(qs ? `/search?${qs}` : "/search", { scroll: false });
+  }
+
   useEffect(() => {
-    if (!query.trim()) {
+    const hasQuery = !!query.trim();
+    const hasStructuredFilters = !!(category || commercialType || countryCode || city || district || neighborhood);
+
+    if (!hasQuery && !hasStructuredFilters) {
       setListings([]);
       setUsers([]);
       setSearched(false);
@@ -140,34 +278,56 @@ export default function SearchPage() {
     setLoading(true);
     setSearched(false);
 
+    // Structured-only searches (arriving from a category/location link) run immediately;
+    // typed text searches keep the original 400ms debounce.
+    const delay = hasQuery ? 400 : 0;
+
     const timeout = setTimeout(async () => {
       const q = query.trim();
 
       if (filter === "all" || filter === "listings") {
-        const [{ data: byTitle }, { data: byCity }] = await Promise.all([
-          supabase
+        let candidates: Listing[] = [];
+
+        if (hasQuery) {
+          const titleBase = supabase.from("listings").select(LISTING_COLUMNS).ilike("title", `%${q}%`);
+          const cityBase = supabase.from("listings").select(LISTING_COLUMNS).ilike("city", `%${q}%`);
+          const [{ data: byTitle }, { data: byCity }] = await Promise.all([
+            (countryCode ? titleBase.eq("country_code", countryCode) : titleBase).limit(10),
+            (countryCode ? cityBase.eq("country_code", countryCode) : cityBase).limit(10),
+          ]);
+          const seen = new Set();
+          candidates = [...(byTitle || []), ...(byCity || [])].filter((item) => {
+            if (seen.has(item.id)) return false;
+            seen.add(item.id);
+            return true;
+          }) as Listing[];
+        } else {
+          // No text typed but structured params present — fetch recent listings like
+          // the search-wizard does, then filter/rank the same way.
+          const latestBase = supabase
             .from("listings")
-            .select("id, title, city, price, listing_type, photos")
-            .ilike("title", `%${q}%`)
-            .limit(10),
-          supabase
-            .from("listings")
-            .select("id, title, city, price, listing_type, photos")
-            .ilike("city", `%${q}%`)
-            .limit(10),
-        ]);
-        const seen = new Set();
-        const listingResults = [...(byTitle || []), ...(byCity || [])].filter((item) => {
-          if (seen.has(item.id)) return false;
-          seen.add(item.id);
-          return true;
-        });
-        setListings(listingResults as Listing[]);
+            .select(LISTING_COLUMNS)
+            .eq("is_deleted", false)
+            .order("created_at", { ascending: false });
+          const { data } = await (countryCode ? latestBase.eq("country_code", countryCode) : latestBase).limit(50);
+          candidates = (data || []) as Listing[];
+        }
+
+        let filtered = filterByCategory(candidates, category);
+        filtered = filterByCommercialType(filtered, commercialType);
+
+        if (city || district || neighborhood) {
+          filtered = tierByLocation(filtered, { city, district, neighborhood, countryCode }) as Listing[];
+        }
+
+        setListings(filtered);
       } else {
         setListings([]);
       }
 
-      if (filter === "all" || filter === "users") {
+      // Structured filters (category/commercial type/location) are listing-only concepts —
+      // the user search stays a plain text match, same as before.
+      if (hasQuery && (filter === "all" || filter === "users")) {
         const { data } = await supabase
           .from("profiles_public")
           .select("user_id, display_name, avatar_url, country")
@@ -177,14 +337,16 @@ export default function SearchPage() {
       } else {
         setUsers([]);
       }
+
       setLoading(false);
       setSearched(true);
-    }, 400);
+    }, delay);
 
     return () => clearTimeout(timeout);
-  }, [query, filter]);
+  }, [query, filter, category, commercialType, countryCode, city, district, neighborhood]);
 
   const hasResults = listings.length > 0 || users.length > 0;
+  const hasStructuredFilters = !!(category || commercialType || countryCode || city || district || neighborhood);
 
   return (
     <div dir={isRTL ? "rtl" : "ltr"} style={{ minHeight: "100dvh", backgroundColor: "white" }}>
@@ -267,7 +429,11 @@ export default function SearchPage() {
             ref={inputRef}
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setQuery(value);
+              updateUrl({ q: value });
+            }}
             placeholder={t.placeholder}
             dir={isRTL ? "rtl" : "ltr"}
             style={{
@@ -340,6 +506,43 @@ export default function SearchPage() {
 
       {/* Content area */}
       <div style={{ padding: "16px 16px 32px" }}>
+        {/* Active structured filters — removable chips */}
+        {hasStructuredFilters && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
+            {category && (
+              <FilterChip
+                label={`${t.chipCategory}: ${category === "commercial" ? t.categoryCommercial : t.categoryResidential}`}
+                onRemove={() => {
+                  setCategory(null);
+                  setCommercialType("");
+                  updateUrl({ category: null, commercialType: "" });
+                }}
+              />
+            )}
+            {commercialType && (
+              <FilterChip
+                label={`${t.chipType}: ${COMMERCIAL_TYPE_BY_SLUG[commercialType]?.label[lang] ?? commercialType}`}
+                onRemove={() => {
+                  setCommercialType("");
+                  updateUrl({ commercialType: "" });
+                }}
+              />
+            )}
+            {(countryCode || city || district || neighborhood) && (
+              <FilterChip
+                label={`${t.chipLocation}: ${neighborhood || district || city || getCountryName(countryCode, lang)}`}
+                onRemove={() => {
+                  setCountryCode("");
+                  setCity("");
+                  setDistrict("");
+                  setNeighborhood("");
+                  updateUrl({ countryCode: "", city: "", district: "", neighborhood: "" });
+                }}
+              />
+            )}
+          </div>
+        )}
+
         {/* Loading skeleton */}
         {loading && (
           <>
@@ -399,7 +602,7 @@ export default function SearchPage() {
         )}
 
         {/* Empty state — before typing */}
-        {!loading && !query.trim() && (
+        {!loading && !query.trim() && !hasStructuredFilters && (
           <div
             style={{
               display: "flex",
@@ -420,7 +623,7 @@ export default function SearchPage() {
         )}
 
         {/* No results */}
-        {!loading && searched && !hasResults && query.trim() && (
+        {!loading && searched && !hasResults && (query.trim() || hasStructuredFilters) && (
           <div
             style={{
               display: "flex",
@@ -435,7 +638,9 @@ export default function SearchPage() {
             <p style={{ color: "#111827", fontWeight: 600, fontSize: 16, margin: 0 }}>
               {t.noResults}
             </p>
-            <p style={{ color: "#9ca3af", fontSize: 14, margin: 0 }}>"{query}"</p>
+            {query.trim() && (
+              <p style={{ color: "#9ca3af", fontSize: 14, margin: 0 }}>"{query}"</p>
+            )}
           </div>
         )}
 
@@ -459,123 +664,130 @@ export default function SearchPage() {
                   </p>
                 )}
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  {listings.map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() => router.push(`/listings/${item.id}`)}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 12,
-                        padding: 12,
-                        borderRadius: 16,
-                        border: "1px solid #f3f4f6",
-                        backgroundColor: "white",
-                        cursor: "pointer",
-                        textAlign: isRTL ? "right" : "left",
-                        width: "100%",
-                        transition: "background-color 0.1s",
-                        boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-                      }}
-                      onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#fffbf7";
-                      }}
-                      onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLButtonElement).style.backgroundColor = "white";
-                      }}
-                    >
-                      {/* Thumbnail */}
-                      {item.photos && item.photos[0] ? (
-                        <img
-                          src={item.photos[0]}
-                          alt={item.title}
-                          style={{
-                            width: 60,
-                            height: 60,
-                            borderRadius: 12,
-                            objectFit: "cover",
-                            flexShrink: 0,
-                            backgroundColor: "#f3f4f6",
-                          }}
-                        />
-                      ) : (
-                        <div
-                          style={{
-                            width: 60,
-                            height: 60,
-                            borderRadius: 12,
-                            backgroundColor: "#f3f4f6",
-                            flexShrink: 0,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#d1d5db"
-                            strokeWidth={1.5}
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            width={24}
-                            height={24}
-                          >
-                            <rect x="3" y="3" width="18" height="18" rx="2" />
-                            <circle cx="8.5" cy="8.5" r="1.5" />
-                            <polyline points="21 15 16 10 5 21" />
-                          </svg>
-                        </div>
-                      )}
+                  {listings.map((item) => {
+                    const side = getListingSide(item);
+                    const isCommercial = item.listing_category === "commercial";
+                    const badgeLabel = side
+                      ? isCommercial
+                        ? getCommercialBadgeLabel(side, lang)
+                        : side === "has_place" ? t.hasPlace : t.needsPlace
+                      : null;
+                    const badgeColorClass = side
+                      ? isCommercial
+                        ? `${COMMERCIAL_BADGE_CLASS[side]} text-white`
+                        : side === "has_place" ? "bg-orange-50 text-orange-700" : "bg-blue-50 text-blue-700"
+                      : "";
 
-                      {/* Info */}
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <p
-                          style={{
-                            fontWeight: 700,
-                            fontSize: 14,
-                            color: "#111827",
-                            margin: "0 0 3px",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {item.title}
-                        </p>
-                        <p style={{ fontSize: 13, color: "#6b7280", margin: "0 0 5px" }}>
-                          {[item.city, item.price ? String(item.price) : null]
-                            .filter(Boolean)
-                            .join(" · ")}
-                        </p>
-                        <span
-                          style={{
-                            display: "inline-block",
-                            fontSize: 11,
-                            fontWeight: 600,
-                            padding: "2px 8px",
-                            borderRadius: 9999,
-                            backgroundColor:
-                              item.listing_type === "has_place" ? "#fff7ed" : "#eff6ff",
-                            color:
-                              item.listing_type === "has_place" ? "#c2410c" : "#1d4ed8",
-                          }}
-                        >
-                          {item.listing_type === "has_place" ? t.hasPlace : t.needsPlace}
-                        </span>
-                      </div>
-                      <span
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => router.push(`/listings/${item.id}`)}
                         style={{
-                          color: "#d1d5db",
-                          fontSize: 20,
-                          flexShrink: 0,
-                          transform: isRTL ? "scaleX(-1)" : "none",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 12,
+                          padding: 12,
+                          borderRadius: 16,
+                          border: "1px solid #f3f4f6",
+                          backgroundColor: "white",
+                          cursor: "pointer",
+                          textAlign: isRTL ? "right" : "left",
+                          width: "100%",
+                          transition: "background-color 0.1s",
+                          boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+                        }}
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#fffbf7";
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.backgroundColor = "white";
                         }}
                       >
-                        ›
-                      </span>
-                    </button>
-                  ))}
+                        {/* Thumbnail */}
+                        {item.photos && item.photos[0] ? (
+                          <img
+                            src={item.photos[0]}
+                            alt={item.title}
+                            style={{
+                              width: 60,
+                              height: 60,
+                              borderRadius: 12,
+                              objectFit: "cover",
+                              flexShrink: 0,
+                              backgroundColor: "#f3f4f6",
+                            }}
+                          />
+                        ) : (
+                          <div
+                            style={{
+                              width: 60,
+                              height: 60,
+                              borderRadius: 12,
+                              backgroundColor: "#f3f4f6",
+                              flexShrink: 0,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="#d1d5db"
+                              strokeWidth={1.5}
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              width={24}
+                              height={24}
+                            >
+                              <rect x="3" y="3" width="18" height="18" rx="2" />
+                              <circle cx="8.5" cy="8.5" r="1.5" />
+                              <polyline points="21 15 16 10 5 21" />
+                            </svg>
+                          </div>
+                        )}
+
+                        {/* Info */}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <p
+                            style={{
+                              fontWeight: 700,
+                              fontSize: 14,
+                              color: "#111827",
+                              margin: "0 0 3px",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {item.title}
+                          </p>
+                          <p style={{ fontSize: 13, color: "#6b7280", margin: "0 0 5px" }}>
+                            {[item.city, item.price ? String(item.price) : null]
+                              .filter(Boolean)
+                              .join(" · ")}
+                          </p>
+                          {badgeLabel && (
+                            <span
+                              className={`inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full ${badgeColorClass}`}
+                            >
+                              {badgeLabel}
+                            </span>
+                          )}
+                        </div>
+                        <span
+                          style={{
+                            color: "#d1d5db",
+                            fontSize: 20,
+                            flexShrink: 0,
+                            transform: isRTL ? "scaleX(-1)" : "none",
+                          }}
+                        >
+                          ›
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -698,5 +910,13 @@ export default function SearchPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: "100dvh", backgroundColor: "white" }} />}>
+      <SearchPageContent />
+    </Suspense>
   );
 }
