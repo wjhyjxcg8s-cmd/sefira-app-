@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import WelcomePopup from "@/app/components/WelcomePopup";
 import StoryViewer from "@/app/components/StoryViewer";
+import SearchSheet, { type SheetMode } from "@/app/components/SearchSheet";
 import { Search, MapPin, LayoutGrid, SlidersHorizontal } from "lucide-react";
 
 import LatestListings from "@/app/components/LatestListings";
@@ -1712,6 +1713,10 @@ export default function Home() {
   const [genderPref, setGenderPref] = useState<GenderPref>("any");
   const [budgetUSD, setBudgetUSD] = useState(800);
 
+  // ── Hero search box ───────────────────────────────────────────────────────
+  const [heroSearchValue, setHeroSearchValue] = useState("");
+  const [sheetMode, setSheetMode] = useState<SheetMode>(null);
+
   // ── Weekly Stories ────────────────────────────────────────────────────────
   const [weeklyStories, setWeeklyStories] = useState<WeeklyStory[]>([]);
   const [viewerOpen, setViewerOpen] = useState(false);
@@ -2280,31 +2285,44 @@ export default function Home() {
 
           {/* ── SEARCH BAR — overlaps up into the gradient handoff above ─────── */}
           <div className="relative z-10 -mt-10 mx-5 rounded-[28px] bg-white p-3 shadow-xl shadow-slate-200/70">
-            <button
-              onClick={() => router.push("/search")}
-              className="flex w-full min-h-[56px] items-center gap-3 rounded-2xl px-1 text-start transition-transform duration-200 active:scale-[0.98]"
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const value = heroSearchValue.trim();
+                router.push(value ? `/search?q=${encodeURIComponent(value)}` : "/search");
+              }}
+              className="flex w-full min-h-[56px] items-center gap-3 rounded-2xl px-1"
               dir={isRtl ? "rtl" : "ltr"}
             >
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-orange-500 text-white">
+              <button
+                type="submit"
+                aria-label={t.heroSearchPlaceholder}
+                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-orange-500 text-white transition-transform duration-200 active:scale-95"
+              >
                 <Search className="h-5 w-5" />
-              </span>
-              <span className="min-w-0 flex-1 truncate text-base text-slate-400">
-                {t.heroSearchPlaceholder}
-              </span>
-            </button>
+              </button>
+              <input
+                type="text"
+                value={heroSearchValue}
+                onChange={(e) => setHeroSearchValue(e.target.value)}
+                placeholder={t.heroSearchPlaceholder}
+                dir={isRtl ? "rtl" : "ltr"}
+                className="min-w-0 flex-1 truncate bg-transparent text-base text-slate-900 outline-none placeholder:text-slate-400"
+              />
+            </form>
 
             <div className="my-2 border-t border-slate-100" />
 
             <div className="flex h-11" dir={isRtl ? "rtl" : "ltr"}>
               <button
-                onClick={() => router.push("/search-wizard")}
+                onClick={() => setSheetMode("location")}
                 className="flex flex-1 items-center justify-center gap-1.5 text-[13px] font-medium text-slate-600"
               >
                 <MapPin className="h-4 w-4" />
                 <span className="truncate">{t.quickLocationLabel}</span>
               </button>
               <button
-                onClick={() => router.push("/search-wizard")}
+                onClick={() => setSheetMode("category")}
                 className="flex flex-1 items-center justify-center gap-1.5 border-s border-slate-100 text-[13px] font-medium text-slate-600"
               >
                 <LayoutGrid className="h-4 w-4" />
@@ -2319,6 +2337,26 @@ export default function Home() {
               </button>
             </div>
           </div>
+
+          <SearchSheet
+            mode={sheetMode}
+            lang={lang}
+            onClose={() => setSheetMode(null)}
+            onSubmitLocation={(params) => {
+              const qs = new URLSearchParams();
+              if (params.country) qs.set("country", params.country);
+              if (params.city) qs.set("city", params.city);
+              if (params.district) qs.set("district", params.district);
+              if (params.neighborhood) qs.set("neighborhood", params.neighborhood);
+              router.push(`/search?${qs.toString()}`);
+            }}
+            onSubmitCategory={(params) => {
+              const qs = new URLSearchParams();
+              qs.set("category", params.category);
+              if (params.commercialType) qs.set("commercial_type", params.commercialType);
+              router.push(`/search?${qs.toString()}`);
+            }}
+          />
 
             {/* ── SEARCH WIZARD ─────────────────────────────────────────────── */}
             <div className="w-full mt-3">
