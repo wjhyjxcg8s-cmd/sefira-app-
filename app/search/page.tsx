@@ -17,20 +17,20 @@ const supabase = createClient(
 
 type Filter = "all" | "listings" | "users";
 
-// Extended vs. the original select — adds the columns needed for category/commercial-type
-// filtering, location-tier ranking, and correct has/needs badge derivation. `type` replaces
-// the old `listing_type` column, which doesn't exist on `listings` (the real column is
-// `type`) — that mismatch was why listing badges always rendered as "needs place".
+// `listings` has neither `title` nor `price` — those were never real columns, which is why
+// listings search previously returned nothing. Real columns only: `rent` is the price field,
+// `type` carries the residential has/needs side.
 const LISTING_COLUMNS =
-  "id, title, city, district, neighborhood, price, type, has_place, needs_place, country_code, listing_category, commercial_type, photos";
+  "id, user_id, type, city, district, neighborhood, rent, currency, photos, country_code, listing_category, commercial_type, has_place, needs_place, description";
 
 interface Listing {
   id: string;
-  title: string;
+  user_id?: string | null;
   city: string;
   district?: string | null;
   neighborhood?: string | null;
-  price: number | null;
+  rent: number | null;
+  currency?: string | null;
   type?: string | null;
   has_place?: boolean | null;
   needs_place?: boolean | null;
@@ -38,6 +38,7 @@ interface Listing {
   listing_category?: string | null;
   commercial_type?: string | null;
   photos: string[] | null;
+  description?: string | null;
 }
 
 interface Profile {
@@ -289,18 +290,30 @@ function SearchPageContent() {
         let candidates: Listing[] = [];
 
         if (hasQuery) {
-          const titleBase = supabase.from("listings").select(LISTING_COLUMNS).ilike("title", `%${q}%`);
           const cityBase = supabase.from("listings").select(LISTING_COLUMNS).ilike("city", `%${q}%`);
-          const [{ data: byTitle }, { data: byCity }] = await Promise.all([
-            (countryCode ? titleBase.eq("country_code", countryCode) : titleBase).limit(10),
+          const districtBase = supabase.from("listings").select(LISTING_COLUMNS).ilike("district", `%${q}%`);
+          const neighborhoodBase = supabase.from("listings").select(LISTING_COLUMNS).ilike("neighborhood", `%${q}%`);
+          const descriptionBase = supabase.from("listings").select(LISTING_COLUMNS).ilike("description", `%${q}%`);
+
+          const results = await Promise.all([
             (countryCode ? cityBase.eq("country_code", countryCode) : cityBase).limit(10),
+            (countryCode ? districtBase.eq("country_code", countryCode) : districtBase).limit(10),
+            (countryCode ? neighborhoodBase.eq("country_code", countryCode) : neighborhoodBase).limit(10),
+            (countryCode ? descriptionBase.eq("country_code", countryCode) : descriptionBase).limit(10),
           ]);
+
+          for (const { error } of results) {
+            if (error) console.error("Supabase listings search error:", error);
+          }
+
           const seen = new Set();
-          candidates = [...(byTitle || []), ...(byCity || [])].filter((item) => {
-            if (seen.has(item.id)) return false;
-            seen.add(item.id);
-            return true;
-          }) as Listing[];
+          candidates = results
+            .flatMap(({ data }) => data || [])
+            .filter((item) => {
+              if (seen.has(item.id)) return false;
+              seen.add(item.id);
+              return true;
+            }) as Listing[];
         } else {
           // No text typed but structured params present — fetch recent listings like
           // the search-wizard does, then filter/rank the same way.
@@ -309,7 +322,8 @@ function SearchPageContent() {
             .select(LISTING_COLUMNS)
             .eq("is_deleted", false)
             .order("created_at", { ascending: false });
-          const { data } = await (countryCode ? latestBase.eq("country_code", countryCode) : latestBase).limit(50);
+          const { data, error } = await (countryCode ? latestBase.eq("country_code", countryCode) : latestBase).limit(50);
+          if (error) console.error("Supabase listings search error:", error);
           candidates = (data || []) as Listing[];
         }
 
@@ -678,6 +692,14 @@ function SearchPageContent() {
                         : side === "has_place" ? "bg-orange-50 text-orange-700" : "bg-blue-50 text-blue-700"
                       : "";
 
+                    // No `title` column exists — build the heading from real fields instead.
+                    const typeLabel = isCommercial
+                      ? (item.commercial_type ? COMMERCIAL_TYPE_BY_SLUG[item.commercial_type]?.label[lang] : null) ?? t.categoryCommercial
+                      : (side === "has_place" ? t.hasPlace : side === "needs_place" ? t.needsPlace : t.filterListings);
+                    const headingLocation = item.district || item.city;
+                    const heading = headingLocation ? `${typeLabel} · ${headingLocation}` : typeLabel;
+                    const rentText = item.rent != null ? `${item.rent}${item.currency ? ` ${item.currency}` : ""}` : null;
+
                     return (
                       <button
                         key={item.id}
@@ -707,7 +729,7 @@ function SearchPageContent() {
                         {item.photos && item.photos[0] ? (
                           <img
                             src={item.photos[0]}
-                            alt={item.title}
+                            alt={item.city || ""}
                             style={{
                               width: 60,
                               height: 60,
@@ -760,12 +782,10 @@ function SearchPageContent() {
                               whiteSpace: "nowrap",
                             }}
                           >
-                            {item.title}
+                            {heading}
                           </p>
                           <p style={{ fontSize: 13, color: "#6b7280", margin: "0 0 5px" }}>
-                            {[item.city, item.price ? String(item.price) : null]
-                              .filter(Boolean)
-                              .join(" · ")}
+                            {[item.city, rentText].filter(Boolean).join(" · ")}
                           </p>
                           {badgeLabel && (
                             <span
