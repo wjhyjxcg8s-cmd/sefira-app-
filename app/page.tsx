@@ -3059,7 +3059,7 @@ export default function Home() {
       <div className="h-24 bg-gradient-to-b from-stone-50 to-stone-900" />
 
       {/* ── FOOTER ────────────────────────────────────────────────────────────── */}
-      <footer className="bg-gradient-to-b from-stone-900 to-stone-950 border-t border-stone-700 pb-20 md:pb-0">
+      <footer className="bg-gradient-to-b from-stone-900 to-stone-950 border-t border-stone-700 pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
         <div className="max-w-7xl mx-auto px-5 py-16">
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-12 mb-14">
             <div className="lg:col-span-2">
