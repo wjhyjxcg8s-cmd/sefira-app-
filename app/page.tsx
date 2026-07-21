@@ -2819,7 +2819,7 @@ export default function Home() {
               playsInline
               preload="none"
               poster="/hero-bg.webp"
-              src="https://ceetzophaybywfuhezhv.supabase.co/storage/v1/object/public/media/IMG_1365.MP4"
+              src="/promo-720.mp4"
               className="absolute inset-0 h-full w-full object-cover"
             />
           )}
