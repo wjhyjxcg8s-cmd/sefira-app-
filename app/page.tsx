@@ -2234,7 +2234,7 @@ export default function Home() {
         <div className="relative z-10 max-w-2xl mx-auto px-5 pt-[68px] w-full">
 
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={false}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
             className="flex w-full flex-col"
@@ -2277,7 +2277,7 @@ export default function Home() {
       <div className="max-w-2xl mx-auto px-5 w-full">
 
         <motion.div
-          initial={{ opacity: 0, x: -30 }}
+          initial={false}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
           className="flex w-full flex-col"
