@@ -5,16 +5,53 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import WelcomePopup from "@/app/components/WelcomePopup";
-import StoryViewer from "@/app/components/StoryViewer";
-import SearchSheet, { type SheetMode } from "@/app/components/SearchSheet";
+import dynamic from "next/dynamic";
 import { Search, MapPin, LayoutGrid, SlidersHorizontal } from "lucide-react";
+import type { SheetMode } from "@/app/components/SearchSheet";
 
-import LatestListings from "@/app/components/LatestListings";
-import PopularCities from "@/app/components/PopularCities";
-import PropertyFilters from "@/app/components/PropertyFilters";
-import AuthModal from "@/app/components/AuthModal";
-import OnboardingFlow from "@/app/components/OnboardingFlow";
+// ── Lazy-loaded client components (kept out of the initial JS bundle) ────────
+// Modals/overlays are only rendered when opened, so their chunk is fetched on
+// first open. Always-mounted pieces (SearchSheet, WelcomePopup) stream in right
+// after hydration. Below-fold sections show a skeleton to avoid layout shift.
+const WelcomePopup = dynamic(() => import("@/app/components/WelcomePopup"), { ssr: false });
+const StoryViewer = dynamic(() => import("@/app/components/StoryViewer"), { ssr: false });
+const AuthModal = dynamic(() => import("@/app/components/AuthModal"), { ssr: false });
+const OnboardingFlow = dynamic(() => import("@/app/components/OnboardingFlow"), { ssr: false });
+const SearchSheet = dynamic(() => import("@/app/components/SearchSheet"), { ssr: false });
+
+// Warm the SearchSheet chunk on first pointerdown over the search card, so the
+// sheet never opens against a cold chunk (no dead tap). import() is deduped.
+function preloadSearchSheet() {
+  void import("@/app/components/SearchSheet");
+}
+
+const LatestListings = dynamic(() => import("@/app/components/LatestListings"), {
+  ssr: false,
+  loading: () => (
+    <section className="max-w-7xl mx-auto mt-10 animate-pulse" aria-hidden="true">
+      <div className="h-[200px] sm:h-[240px] w-full bg-stone-200" />
+      <div className="px-5 mt-6 grid grid-cols-2 lg:grid-cols-3 gap-4">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="h-64 rounded-2xl bg-stone-200" />
+        ))}
+      </div>
+    </section>
+  ),
+});
+
+const PopularCities = dynamic(() => import("@/app/components/PopularCities"), {
+  ssr: false,
+  loading: () => (
+    <section className="max-w-7xl mx-auto px-5 pt-10 pb-20 animate-pulse" aria-hidden="true">
+      <div className="mx-auto mb-14 h-8 w-64 rounded-full bg-stone-200" />
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} className="h-40 rounded-2xl bg-stone-200" />
+        ))}
+      </div>
+    </section>
+  ),
+});
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
 import { useLang } from "@/app/lib/LangContext";
@@ -26,6 +63,33 @@ import {
   displayPrice,
   fetchLiveRates,
 } from "@/app/lib/currency";
+
+// ─── Country reverse-map: localized country name → ISO-3166-1 alpha-2 code ─────
+// Covers all 6 app locales so a stored profile.country matches regardless of the
+// locale it was saved in. Built once on first use (≈4k Intl.DisplayNames calls),
+// then cached for the rest of the session so it never re-runs per fetch.
+let countryReverseMapCache: Record<string, string> | null = null;
+function getCountryReverseMap(): Record<string, string> {
+  if (countryReverseMapCache) return countryReverseMapCache;
+  const locales = ["tr", "en", "fa", "ar", "de", "ru"];
+  const map: Record<string, string> = {};
+  // All alpha-2 codes (A–Z × A–Z that are valid regions)
+  for (let i = 65; i <= 90; i++) {
+    for (let j = 65; j <= 90; j++) {
+      const code = String.fromCharCode(i) + String.fromCharCode(j);
+      for (const locale of locales) {
+        try {
+          const dn = new Intl.DisplayNames([locale], { type: "region" });
+          const name = dn.of(code);
+          // Intl.DisplayNames returns the code itself when it's not a valid region
+          if (name && name !== code) map[name.toLowerCase().trim()] = code;
+        } catch { /* ignore */ }
+      }
+    }
+  }
+  countryReverseMapCache = map;
+  return map;
+}
 
 // ─── PWA type ─────────────────────────────────────────────────────────────────
 interface BeforeInstallPromptEvent extends Event {
@@ -1533,28 +1597,6 @@ export default function Home() {
     let active = true;
     const SMART_REC_SELECT = `id, type, city, country_code, rent, max_budget, currency, photos, house_type, rooms, seeker_age, occupation, gender_preference, seeker_gender, user_id, listing_category`;
 
-    // Build reverse map: lowercased localized country name -> ISO-3166-1 alpha-2 code.
-    // Covers all 6 app locales so profile.country matches regardless of how it was stored.
-    function buildCountryReverseMap(): Record<string, string> {
-      const locales = ["tr", "en", "fa", "ar", "de", "ru"];
-      const map: Record<string, string> = {};
-      // All alpha-2 codes (A–Z × A–Z that are valid regions)
-      for (let i = 65; i <= 90; i++) {
-        for (let j = 65; j <= 90; j++) {
-          const code = String.fromCharCode(i) + String.fromCharCode(j);
-          for (const locale of locales) {
-            try {
-              const dn = new Intl.DisplayNames([locale], { type: "region" });
-              const name = dn.of(code);
-              // Intl.DisplayNames returns the code itself when it's not a valid region
-              if (name && name !== code) map[name.toLowerCase().trim()] = code;
-            } catch { /* ignore */ }
-          }
-        }
-      }
-      return map;
-    }
-
     async function fetchRecent(dismissed: string[]) {
       const { data, error } = await supabase
         .from("listings")
@@ -1577,24 +1619,29 @@ export default function Home() {
         return;
       }
 
-      const { data: userListings } = await supabase
-        .from("listings")
-        .select("type, city, country_code, max_budget, gender_preference")
-        .eq("user_id", user.id)
-        .eq("is_deleted", false)
-        .limit(1);
-
-      if (!userListings || userListings.length === 0) {
-        // No listing: try to match by country code resolved from profile country name
-        const { data: profile } = await supabase
+      // The profile.country lookup is only needed in the no-listing branch, but it
+      // depends solely on user.id (not on userListings' contents), so fire both in
+      // parallel to save a serial round-trip on the common no-listing path.
+      const [{ data: userListings }, { data: profile }] = await Promise.all([
+        supabase
+          .from("listings")
+          .select("type, city, country_code, max_budget, gender_preference")
+          .eq("user_id", user.id)
+          .eq("is_deleted", false)
+          .limit(1),
+        supabase
           .from("profiles")
           .select("country")
           .eq("user_id", user.id)
-          .single();
+          .single(),
+      ]);
 
+      if (!userListings || userListings.length === 0) {
+        // No listing: match by country code resolved from the profile country name
+        // (profile was already fetched in parallel above).
         let recs: SmartRec[] = [];
         if (profile?.country) {
-          const reverseMap = buildCountryReverseMap();
+          const reverseMap = getCountryReverseMap();
           const code = reverseMap[profile.country.toLowerCase().trim()];
           if (code) {
             const { data, error } = await supabase
@@ -2284,7 +2331,7 @@ export default function Home() {
         >
 
           {/* ── SEARCH BAR — overlaps up into the gradient handoff above ─────── */}
-          <div className="relative z-10 -mt-10 mx-5 rounded-[28px] bg-white p-3 shadow-xl shadow-slate-200/70">
+          <div onPointerDown={preloadSearchSheet} className="relative z-10 -mt-10 mx-5 rounded-[28px] bg-white p-3 shadow-xl shadow-slate-200/70">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
