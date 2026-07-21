@@ -20,18 +20,16 @@ export const CURRENCY_SYMBOLS: Record<Currency, string> = {
 let _ratesCached = false;
 
 /**
- * Pulls live rates from frankfurter.app (ECB data) using USD as base.
- * Requesting USD→TRY directly avoids a cross-rate calculation and is
- * more reliable than the previous EUR-base approach (ECB occasionally
- * omits TRY from non-USD pairs).
+ * Pulls live rates via the same-origin /api/rates proxy (backed by ECB data),
+ * using USD as base. Going through our own route avoids browser CORS failures
+ * and keeps the upstream provider swappable without touching the client.
+ * The proxy returns { base: "USD", rates: { TRY, EUR } } — TRY/EUR per 1 USD.
  * Patches CURRENCY_RATES in-place; idempotent after first success.
  */
 export async function fetchLiveRates(): Promise<void> {
   if (_ratesCached) return;
   try {
-    const res = await fetch(
-      "https://api.frankfurter.app/latest?from=USD&to=TRY,EUR",
-    );
+    const res = await fetch("/api/rates");
     if (!res.ok) return;
     const json = await res.json();
 

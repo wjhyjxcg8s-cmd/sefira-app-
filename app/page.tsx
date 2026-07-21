@@ -56,6 +56,7 @@ import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
 import { useLang } from "@/app/lib/LangContext";
 import { useProfileDrawer } from "@/app/lib/ProfileDrawerContext";
+import { useUnreadMessages } from "@/app/lib/useUnreadMessages";
 import {
   type Currency,
   CURRENCY_SYMBOLS,
@@ -1277,16 +1278,6 @@ interface NotifItem {
   read: boolean;
 }
 
-interface MsgNotifItem {
-  id: string;
-  conversationId: string;
-  senderId: string;
-  senderName: string;
-  senderAvatar: string | null;
-  content: string;
-  createdAt: string;
-}
-
 // ─── Supabase listing type ─────────────────────────────────────────────────────
 interface SupabaseListing {
   id: string;
@@ -1351,7 +1342,10 @@ export default function Home() {
   const [promoVideoInView, setPromoVideoInView] = useState(false);
   const [notifications, setNotifications] = useState<NotifItem[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [msgNotifications, setMsgNotifications] = useState<MsgNotifItem[]>([]);
+  // Unread peer-message notifications come from the shared provider (single
+  // poller) — see UnreadMessagesProvider. No local poll here (avoids duplicate
+  // /api/messages/unread requests).
+  const { notifications: msgNotifications, dismissConversation } = useUnreadMessages();
 
   // ── PWA install banner ────────────────────────────────────────────────────
   const [pwaPrompt, setPwaPrompt] = useState<Event | null>(null);
@@ -1782,26 +1776,42 @@ export default function Home() {
 
   // ── Latest listings from Supabase (notifications only) ──────────────────
   useEffect(() => {
-    supabase
-      .from("listings")
-      .select(`
-        id, type, city, district, rent, currency, photos,
-        house_type, rooms, smoking, furnished, current_residents,
-        user_id,
-        profiles(display_name, avatar_url)
-      `)
-      .eq("is_deleted", false)
-      .order("created_at", { ascending: false })
-      .limit(6)
-      .then(({ data }) => {
-        if (!data) return;
-        const incoming = data as unknown as SupabaseListing[];
+    (async () => {
+      // NOTE: an embedded `profiles(...)` join on `listings` has no PostgREST
+      // relationship and returns 400 — author info is fetched separately from
+      // the public profiles view (same pattern as LatestListings).
+      const { data, error } = await supabase
+        .from("listings")
+        .select("id, type, city, district, rent, currency, user_id")
+        .eq("is_deleted", false)
+        .order("created_at", { ascending: false })
+        .limit(6);
 
-        setNotifications((prev) => {
-          const existingIds = new Set(prev.map((n) => n.id));
-          const newItems: NotifItem[] = incoming
-            .filter((l) => !existingIds.has(l.id))
-            .map((l) => ({
+      if (error) {
+        console.error("Notifications listings query error:", error.message);
+        return;
+      }
+      if (!data) return;
+      const incoming = data as unknown as SupabaseListing[];
+
+      const userIds = incoming.map((l) => l.user_id).filter(Boolean);
+      const { data: profiles } = await supabase
+        .from("profiles_public")
+        .select("user_id, display_name, avatar_url")
+        .in("user_id", userIds);
+      const profileMap = new Map(
+        (profiles ?? []).map(
+          (p: { user_id: string; display_name: string | null; avatar_url: string | null }) => [p.user_id, p],
+        ),
+      );
+
+      setNotifications((prev) => {
+        const existingIds = new Set(prev.map((n) => n.id));
+        const newItems: NotifItem[] = incoming
+          .filter((l) => !existingIds.has(l.id))
+          .map((l) => {
+            const p = profileMap.get(l.user_id);
+            return {
               id: l.id,
               type: "new_listing" as const,
               city: l.city,
@@ -1809,44 +1819,27 @@ export default function Home() {
               rent: l.rent,
               currency: l.currency,
               listingType: l.type,
-              avatar_url: l.profiles?.avatar_url ?? null,
-              display_name: l.profiles?.display_name ?? null,
+              avatar_url: p?.avatar_url ?? null,
+              display_name: p?.display_name ?? null,
               createdAt: Date.now(),
               read: false,
-            }));
-          if (newItems.length === 0) return prev;
-          const merged = [...newItems, ...prev];
-          try {
-            localStorage.setItem("sefira-notifications", JSON.stringify(merged));
-            const newUnread = merged.filter((n) => !n.read).length;
-            localStorage.setItem("sefira-notifications-unread", String(newUnread));
-            setUnreadCount(newUnread);
-          } catch { /* ignore */ }
-          return merged;
-        });
+            };
+          });
+        if (newItems.length === 0) return prev;
+        const merged = [...newItems, ...prev];
+        try {
+          localStorage.setItem("sefira-notifications", JSON.stringify(merged));
+          const newUnread = merged.filter((n) => !n.read).length;
+          localStorage.setItem("sefira-notifications-unread", String(newUnread));
+          setUnreadCount(newUnread);
+        } catch { /* ignore */ }
+        return merged;
       });
+    })();
   }, []);
 
-  // ── Poll for unread peer messages (every 15s when logged in) ────────────
-  useEffect(() => {
-    if (!user) return;
-
-    async function checkUnread() {
-      const res = await fetch("/api/messages/unread", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user!.id }),
-      });
-      const result = await res.json();
-      if (result.notifications) {
-        setMsgNotifications(result.notifications);
-      }
-    }
-
-    checkUnread();
-    const interval = setInterval(checkUnread, 15000);
-    return () => clearInterval(interval);
-  }, [user]);
+  // (Unread peer-message polling now lives in UnreadMessagesProvider — a single
+  // shared poller consumed via useUnreadMessages() above.)
 
   // ── Story viewer navigation helpers ──────────────────────────────────────
   const trackView = async (storyId: string) => {
@@ -2127,9 +2120,7 @@ export default function Home() {
                                 headers: { "Content-Type": "application/json" },
                                 body: JSON.stringify({ conversationId: notif.conversationId, userId: user!.id }),
                               });
-                              setMsgNotifications((prev) =>
-                                prev.filter((n) => n.conversationId !== notif.conversationId)
-                              );
+                              dismissConversation(notif.conversationId);
                               setNotifOpen(false);
                               router.push(`/messages?convId=${notif.conversationId}`);
                             }}
