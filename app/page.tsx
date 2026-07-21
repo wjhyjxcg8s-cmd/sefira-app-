@@ -2817,7 +2817,8 @@ export default function Home() {
               loop
               muted
               playsInline
-              preload="auto"
+              preload="none"
+              poster="/hero-bg.webp"
               src="https://ceetzophaybywfuhezhv.supabase.co/storage/v1/object/public/media/IMG_1365.MP4"
               className="absolute inset-0 h-full w-full object-cover"
             />
@@ -2848,12 +2849,13 @@ export default function Home() {
                   style={{ background: "linear-gradient(135deg, #F97316, #f59e0b, #ec4899)" }}
                 >
                   <div className="w-[64px] h-[64px] sm:w-[84px] sm:h-[84px] rounded-full overflow-hidden bg-stone-100 border-2 border-white">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <Image
                       src={story.image_url}
                       alt={story.caption ?? "Hikaye"}
-                      loading="lazy"
-                      decoding="async"
+                      width={84}
+                      height={84}
+                      sizes="84px"
+                      loading={idx < 4 ? "eager" : "lazy"}
                       className="w-full h-full object-cover"
                     />
                   </div>
