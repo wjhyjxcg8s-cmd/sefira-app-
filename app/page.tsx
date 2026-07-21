@@ -2139,6 +2139,8 @@ export default function Home() {
                               // eslint-disable-next-line @next/next/no-img-element
                               <img
                                 src={notif.senderAvatar}
+                                loading="lazy"
+                                decoding="async"
                                 className="w-9 h-9 rounded-full object-cover border-2 border-orange-200 flex-shrink-0"
                                 alt=""
                               />
@@ -2169,7 +2171,7 @@ export default function Home() {
                         >
                           {notif.avatar_url ? (
                             // eslint-disable-next-line @next/next/no-img-element
-                            <img src={notif.avatar_url} className="w-8 h-8 rounded-full object-cover border-2 border-orange-200 flex-shrink-0" alt="" />
+                            <img src={notif.avatar_url} loading="lazy" decoding="async" className="w-8 h-8 rounded-full object-cover border-2 border-orange-200 flex-shrink-0" alt="" />
                           ) : (
                             <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 text-xs font-bold border-2 border-orange-200 flex-shrink-0">
                               {notif.display_name?.[0]?.toUpperCase() || "?"}
@@ -2221,7 +2223,7 @@ export default function Home() {
                 className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-[10px] sm:text-xs text-white shadow-md shadow-orange-500/40 flex-shrink-0 hover:scale-105 active:scale-90 transition-all duration-200 overflow-hidden ring-2 ${profileMenuOpen ? "ring-orange-500 ring-offset-2 scale-95" : "ring-orange-300 ring-offset-1"}`}
               >
                 {profileAvatarUrl ? (
-                  <img src={profileAvatarUrl} alt="avatar" className="w-full h-full object-cover" />
+                  <img src={profileAvatarUrl} alt="avatar" loading="lazy" decoding="async" className="w-full h-full object-cover" />
                 ) : (
                   (user.user_metadata?.full_name ?? user.email ?? "U")
                     .split(" ")
@@ -2859,6 +2861,8 @@ export default function Home() {
                     <img
                       src={story.image_url}
                       alt={story.caption ?? "Hikaye"}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -2984,7 +2988,7 @@ export default function Home() {
                       <Image src={thumbnail} alt="" fill className="object-cover" sizes="(max-width: 768px) 50vw, 33vw" loading="lazy" />
                     ) : recAvatarMap[rec.user_id] ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={recAvatarMap[rec.user_id]!} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                      <img src={recAvatarMap[rec.user_id]!} alt="" loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
                     ) : (
                       <div className={`absolute inset-0 flex items-center justify-center ${isHasPlace ? "bg-gradient-to-br from-orange-400 to-amber-500" : "bg-gradient-to-br from-violet-500 to-blue-500"}`}>
                         {isHasPlace ? (
@@ -3337,11 +3341,12 @@ export default function Home() {
             <div className="relative px-6 py-8 flex flex-col items-center text-center gap-4">
               {/* Cat image */}
               <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-white/30 shadow-xl shadow-black/20 flex-shrink-0">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src="/images/sefira-cat.jpg"
                   alt="cat"
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  width={112}
+                  height={112}
+                  className="w-full h-full object-cover"
                 />
               </div>
 

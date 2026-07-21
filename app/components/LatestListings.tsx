@@ -680,6 +680,8 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                   <img
                     src={listing.photos[0]}
                     alt={listing.city}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover"
                   />
                 ) : listing.type === "needs_place" ? (
@@ -689,6 +691,8 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                       <img
                         src={listing.profile.avatar_url}
                         alt=""
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -830,6 +834,8 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={listing.profile.avatar_url}
+                      loading="lazy"
+                      decoding="async"
                       className="w-8 h-8 rounded-full object-cover border-2 border-orange-200"
                       alt=""
                     />
