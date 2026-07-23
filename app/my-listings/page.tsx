@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useLang } from "@/app/lib/LangContext";
 import { getThumbUrl } from "@/app/lib/imageVariants";
+import { getListingSide } from "@/app/lib/listingBadge";
+import SeekerCardVisual from "@/app/components/SeekerCardVisual";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
@@ -135,6 +137,12 @@ interface Listing {
   currency: string;
   house_type: string | null;
   created_at: string;
+  // Needed to distinguish seeker (no photos by design) from owner listings so the
+  // empty image slot can show the seeker visual instead of the gray placeholder.
+  type: string | null;
+  has_place: boolean | null;
+  needs_place: boolean | null;
+  listing_category: string | null;
 }
 
 function houseTypeLabel(
@@ -168,7 +176,7 @@ export default function MyListingsPage() {
     if (!user) { setFetching(false); return; }
     supabase
       .from("listings")
-      .select("id, photos, city, district, rent, currency, house_type, created_at")
+      .select("id, photos, city, district, rent, currency, house_type, created_at, type, has_place, needs_place, listing_category")
       .eq("user_id", user.id)
       .eq("is_deleted", false)
       .order("created_at", { ascending: false })
@@ -283,6 +291,7 @@ export default function MyListingsPage() {
           <div className="flex flex-col gap-4">
             {listings.map((listing) => {
               const firstPhoto = listing.photos?.[0] ?? null;
+              const isSeeker = getListingSide(listing) === "needs_place";
               const sym = CURRENCY_SYMBOLS[listing.currency] ?? listing.currency;
               const typeLabel = houseTypeLabel(t, listing.house_type);
               const isDeleting = deletingId === listing.id;
@@ -304,6 +313,11 @@ export default function MyListingsPage() {
                         src={getThumbUrl(firstPhoto)}
                         alt=""
                         className="w-full h-full object-cover"
+                      />
+                    ) : isSeeker ? (
+                      <SeekerCardVisual
+                        variant={listing.listing_category === "commercial" ? "commercial" : "residential"}
+                        className="w-full h-full"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">

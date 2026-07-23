@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 import { getThumbUrl } from "@/app/lib/imageVariants";
+import SeekerCardVisual from "@/app/components/SeekerCardVisual";
 import { useLang } from "@/app/lib/LangContext";
 import { tierByLocation } from "./locationTiers";
 import {
@@ -215,9 +216,8 @@ function ListingCard({
         {listing.photos?.[0] ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={getThumbUrl(listing.photos[0])} alt={listing.city || ""} className="w-full h-full object-cover" />
-        ) : isNeedsPlace && listing.profile?.avatar_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={listing.profile.avatar_url} alt="" className="w-full h-full object-cover" />
+        ) : isNeedsPlace ? (
+          <SeekerCardVisual variant={isCommercial ? "commercial" : "residential"} className="w-full h-full" />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-10 h-10 text-stone-400">

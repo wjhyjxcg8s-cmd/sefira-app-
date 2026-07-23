@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { useLang } from "@/app/lib/LangContext";
 import { getThumbUrl } from "@/app/lib/imageVariants";
+import SeekerCardVisual from "@/app/components/SeekerCardVisual";
 import { tierByLocation } from "@/app/search-wizard/locationTiers";
 import { filterByCategory, filterByCommercialType, type SearchCategory } from "@/app/lib/searchQuery";
 import { getListingSide, getCommercialBadgeLabel, COMMERCIAL_BADGE_CLASS } from "@/app/lib/listingBadge";
@@ -739,6 +740,11 @@ function SearchPageContent() {
                               flexShrink: 0,
                               backgroundColor: "#f3f4f6",
                             }}
+                          />
+                        ) : side === "needs_place" ? (
+                          <SeekerCardVisual
+                            variant={isCommercial ? "commercial" : "residential"}
+                            className="w-[60px] h-[60px] rounded-xl shrink-0"
                           />
                         ) : (
                           <div

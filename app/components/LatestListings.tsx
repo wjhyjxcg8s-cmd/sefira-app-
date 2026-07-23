@@ -6,6 +6,7 @@ import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
 import { getListingSide, getCommercialBadgeLabel, COMMERCIAL_BADGE_CLASS } from "@/app/lib/listingBadge";
 import { getThumbUrl } from "@/app/lib/imageVariants";
+import SeekerCardVisual from "@/app/components/SeekerCardVisual";
 import { cityMatches } from "@/app/lib/cityMatch";
 
 const supabaseClient = createClient(
@@ -685,26 +686,11 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                     decoding="async"
                     className="w-full h-full object-cover"
                   />
-                ) : listing.type === "needs_place" ? (
-                  <div className="w-full h-full bg-gradient-to-br from-blue-100 to-orange-50 relative">
-                    {listing.profile?.avatar_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={listing.profile.avatar_url}
-                        alt=""
-                        loading="lazy"
-                        decoding="async"
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-4xl text-blue-300 font-semibold">
-                        {listing.profile?.display_name
-                          ? listing.profile.display_name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase()
-                          : "👤"}
-                      </div>
-                    )}
-                    <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black/30 to-transparent" />
-                  </div>
+                ) : getListingSide(listing) === "needs_place" ? (
+                  <SeekerCardVisual
+                    variant={listing.listing_category === "commercial" ? "commercial" : "residential"}
+                    className="w-full h-full"
+                  />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-10 h-10 text-stone-400">
