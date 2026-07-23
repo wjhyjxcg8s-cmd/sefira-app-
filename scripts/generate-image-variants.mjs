@@ -63,6 +63,25 @@ const CONCURRENCY = 3;
 const LIST_PAGE_SIZE = 1000;
 const WEBP_QUALITY = 78;
 
+// --force: regenerate variants even when they already exist (upsert overwrites).
+// Needed to repair the earlier run's mis-oriented avatar thumbs. Without it, the
+// default skip-if-exists behavior is unchanged.
+const FORCE = process.argv.includes('--force');
+
+// --bucket=<name>: process ONLY that bucket from BUCKETS (e.g. --bucket=avatars
+// skips listing-photos entirely). Absent → process all buckets. Combines with
+// --force. Unknown name → hard error listing the valid options.
+const BUCKET_FILTER = (process.argv.find((a) => a.startsWith('--bucket=')) ?? '').split('=')[1] || null;
+const SELECTED_BUCKETS = BUCKET_FILTER
+  ? BUCKETS.filter((b) => b.name === BUCKET_FILTER)
+  : BUCKETS;
+if (BUCKET_FILTER && SELECTED_BUCKETS.length === 0) {
+  console.error(
+    `Unknown --bucket="${BUCKET_FILTER}". Valid: ${BUCKETS.map((b) => b.name).join(', ')}.`,
+  );
+  process.exit(1);
+}
+
 // ── Credentials ─────────────────────────────────────────────────────────────
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -161,7 +180,7 @@ async function processBucket(bucket) {
       ...v,
       path: join(dir, `${base}${v.suffix}.webp`),
     }));
-    const missing = wanted.filter((v) => !pathSet.has(v.path));
+    const missing = FORCE ? wanted : wanted.filter((v) => !pathSet.has(v.path));
 
     if (missing.length === 0) {
       stats.skipped++;
@@ -180,6 +199,10 @@ async function processBucket(bucket) {
 
       for (const v of missing) {
         const buf = await sharp(input)
+          // .rotate() with no args auto-orients from EXIF and strips the tag, so
+          // legacy raw avatars (which carry an orientation flag) get it baked in
+          // before resize. Harmless for already-upright files.
+          .rotate()
           .resize({ width: v.width, withoutEnlargement: true })
           .webp({ quality: WEBP_QUALITY })
           .toBuffer();
@@ -210,10 +233,10 @@ async function processBucket(bucket) {
 
 // ── Main ────────────────────────────────────────────────────────────────────
 async function main() {
-  console.log(`[variants] buckets=[${BUCKETS.map((b) => b.name).join(', ')}]  concurrency=${CONCURRENCY}`);
+  console.log(`[variants] buckets=[${SELECTED_BUCKETS.map((b) => b.name).join(', ')}]  concurrency=${CONCURRENCY}`);
 
   const totals = { processed: 0, skipped: 0, failed: 0, originals: 0 };
-  for (const bucket of BUCKETS) {
+  for (const bucket of SELECTED_BUCKETS) {
     const s = await processBucket(bucket);
     totals.processed += s.processed;
     totals.skipped += s.skipped;
