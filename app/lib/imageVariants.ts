@@ -49,8 +49,5 @@ export function getCardUrl(url: string): string {
 
 /** 200px-wide avatar thumbnail sibling (nav, cards, message lists, …). */
 export function getAvatarThumbUrl(url: string): string {
-  // TEMPORARILY DISABLED: legacy avatars produced broken _thumb variants
-  // (EXIF-rotated originals → rotated/404 thumbs). Passthrough until thumbs are
-  // regenerated, then restore: return isAvatarUrl(url) ? insertVariantSuffix(url, "_thumb") : url;
-  return url;
+  return isAvatarUrl(url) ? insertVariantSuffix(url, "_thumb") : url;
 }
