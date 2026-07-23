@@ -55,6 +55,7 @@ const PopularCities = dynamic(() => import("@/app/components/PopularCities"), {
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
 import { useLang } from "@/app/lib/LangContext";
+import { getAvatarThumbUrl } from "@/app/lib/imageVariants";
 import { useProfileDrawer } from "@/app/lib/ProfileDrawerContext";
 import { useUnreadMessages } from "@/app/lib/useUnreadMessages";
 import {
@@ -2162,7 +2163,7 @@ export default function Home() {
                         >
                           {notif.avatar_url ? (
                             // eslint-disable-next-line @next/next/no-img-element
-                            <img src={notif.avatar_url} loading="lazy" decoding="async" className="w-8 h-8 rounded-full object-cover border-2 border-orange-200 flex-shrink-0" alt="" />
+                            <img src={getAvatarThumbUrl(notif.avatar_url)} loading="lazy" decoding="async" className="w-8 h-8 rounded-full object-cover border-2 border-orange-200 flex-shrink-0" alt="" />
                           ) : (
                             <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 text-xs font-bold border-2 border-orange-200 flex-shrink-0">
                               {notif.display_name?.[0]?.toUpperCase() || "?"}
@@ -2214,7 +2215,7 @@ export default function Home() {
                 className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-[10px] sm:text-xs text-white shadow-md shadow-orange-500/40 flex-shrink-0 hover:scale-105 active:scale-90 transition-all duration-200 overflow-hidden ring-2 ${profileMenuOpen ? "ring-orange-500 ring-offset-2 scale-95" : "ring-orange-300 ring-offset-1"}`}
               >
                 {profileAvatarUrl ? (
-                  <img src={profileAvatarUrl} alt="avatar" loading="lazy" decoding="async" className="w-full h-full object-cover" />
+                  <img src={getAvatarThumbUrl(profileAvatarUrl)} alt="avatar" loading="lazy" decoding="async" className="w-full h-full object-cover" />
                 ) : (
                   (user.user_metadata?.full_name ?? user.email ?? "U")
                     .split(" ")

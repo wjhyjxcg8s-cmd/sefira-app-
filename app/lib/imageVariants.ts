@@ -1,45 +1,53 @@
-// Responsive-variant URL helpers for listing photos.
+// Responsive-variant URL helpers for images stored in Supabase.
 //
-// Every listing photo in the `listing-photos` bucket has two siblings created at
-// upload time (app/api/upload-photo/route.ts) and backfilled by the one-off
-// scripts/generate-image-variants.mjs migration:
-//   original:  {basename}.webp
-//   thumb:     {basename}_thumb.webp   (width 400)
-//   card:      {basename}_card.webp    (width 800)
+// Listing photos (bucket `listing-photos`) get two siblings at upload time
+// (app/api/upload-photo/route.ts) — {basename}_thumb.webp (w400) and
+// {basename}_card.webp (w800). Avatars (bucket `avatars`) get one —
+// {basename}_thumb.webp (w200) via app/api/upload-avatar/route.ts. Existing files
+// are backfilled by scripts/generate-image-variants.mjs.
 //
-// These helpers rewrite a public original URL to the matching sibling. They only
-// touch URLs from the listing-photos bucket — anything else (avatars, stories,
-// external/Unsplash images, empty strings) is returned unchanged.
+// These helpers rewrite a public original URL to the matching sibling, and are
+// each scoped to their own bucket path: a URL that isn't from the expected bucket
+// (external image, the wrong bucket, an empty string) is returned unchanged.
 
-const BUCKET_MARKER = "/listing-photos/";
+const LISTING_MARKER = "/listing-photos/";
+const AVATAR_MARKER = "/avatars/";
 
 /** True only for public URLs that live in the listing-photos bucket. */
 export function listingPhotoUrl(url: string | null | undefined): url is string {
-  return typeof url === "string" && url.includes(BUCKET_MARKER);
+  return typeof url === "string" && url.includes(LISTING_MARKER);
 }
 
-function withVariant(url: string, suffix: "_thumb" | "_card"): string {
-  if (!listingPhotoUrl(url)) return url;
+function isAvatarUrl(url: string | null | undefined): url is string {
+  return typeof url === "string" && url.includes(AVATAR_MARKER);
+}
 
-  // Preserve any query string / hash (e.g. cache-busting params).
+// Insert `suffix` before the filename extension and force `.webp`, preserving any
+// query string / hash (e.g. the avatar cache-buster `?v=…`). No bucket guard —
+// callers gate on the appropriate bucket check first.
+function insertVariantSuffix(url: string, suffix: "_thumb" | "_card"): string {
   const cut = url.search(/[?#]/);
   const path = cut === -1 ? url : url.slice(0, cut);
   const tail = cut === -1 ? "" : url.slice(cut);
 
-  // Strip the filename's extension only (a dot after the last slash).
   const dot = path.lastIndexOf(".");
   const slash = path.lastIndexOf("/");
-  const stem = dot > slash ? path.slice(0, dot) : path;
+  const stem = dot > slash ? path.slice(0, dot) : path; // strip filename extension only
 
   return `${stem}${suffix}.webp${tail}`;
 }
 
-/** 400px-wide thumbnail sibling (card grids, small previews). */
+/** 400px-wide listing thumbnail sibling (card grids, small previews). */
 export function getThumbUrl(url: string): string {
-  return withVariant(url, "_thumb");
+  return listingPhotoUrl(url) ? insertVariantSuffix(url, "_thumb") : url;
 }
 
-/** 800px-wide sibling (inline detail galleries). */
+/** 800px-wide listing sibling (inline detail galleries). */
 export function getCardUrl(url: string): string {
-  return withVariant(url, "_card");
+  return listingPhotoUrl(url) ? insertVariantSuffix(url, "_card") : url;
+}
+
+/** 200px-wide avatar thumbnail sibling (nav, cards, message lists, …). */
+export function getAvatarThumbUrl(url: string): string {
+  return isAvatarUrl(url) ? insertVariantSuffix(url, "_thumb") : url;
 }

@@ -6,6 +6,7 @@ import { createClient } from "@supabase/supabase-js";
 import { useLang } from "@/app/lib/LangContext";
 import { getThumbUrl } from "@/app/lib/imageVariants";
 import SeekerCardVisual from "@/app/components/SeekerCardVisual";
+import { getAvatarThumbUrl } from "@/app/lib/imageVariants";
 import { tierByLocation } from "@/app/search-wizard/locationTiers";
 import { filterByCategory, filterByCommercialType, type SearchCategory } from "@/app/lib/searchQuery";
 import { getListingSide, getCommercialBadgeLabel, COMMERCIAL_BADGE_CLASS } from "@/app/lib/listingBadge";
@@ -867,7 +868,7 @@ function SearchPageContent() {
                       {/* Avatar */}
                       {profile.avatar_url ? (
                         <img
-                          src={profile.avatar_url}
+                          src={getAvatarThumbUrl(profile.avatar_url)}
                           alt={profile.display_name}
                           style={{
                             width: 48,

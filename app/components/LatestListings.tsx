@@ -7,6 +7,7 @@ import { createClient } from "@supabase/supabase-js";
 import { getListingSide, getCommercialBadgeLabel, COMMERCIAL_BADGE_CLASS } from "@/app/lib/listingBadge";
 import { getThumbUrl } from "@/app/lib/imageVariants";
 import SeekerCardVisual from "@/app/components/SeekerCardVisual";
+import { getAvatarThumbUrl } from "@/app/lib/imageVariants";
 import { cityMatches } from "@/app/lib/cityMatch";
 
 const supabaseClient = createClient(
@@ -820,7 +821,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                   <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={listing.profile.avatar_url}
+                      src={getAvatarThumbUrl(listing.profile.avatar_url)}
                       loading="lazy"
                       decoding="async"
                       className="w-8 h-8 rounded-full object-cover border-2 border-orange-200"

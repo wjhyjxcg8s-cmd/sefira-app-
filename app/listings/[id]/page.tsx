@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLang } from "@/app/lib/LangContext";
-import { getThumbUrl, getCardUrl } from "@/app/lib/imageVariants";
+import { getThumbUrl, getCardUrl, getAvatarThumbUrl } from "@/app/lib/imageVariants";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import AuthModal from "@/app/components/AuthModal";
 import { createClient } from "@supabase/supabase-js";
@@ -928,7 +928,7 @@ export default function ListingDetailPage() {
                 {profile.avatar_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={profile.avatar_url}
+                    src={getAvatarThumbUrl(profile.avatar_url)}
                     alt={profile.display_name ?? ""}
                     className="w-14 h-14 rounded-full object-cover flex-shrink-0"
                   />
@@ -1115,7 +1115,7 @@ export default function ListingDetailPage() {
               {profile.avatar_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={profile.avatar_url}
+                  src={getAvatarThumbUrl(profile.avatar_url)}
                   alt={profile.display_name ?? ""}
                   className="w-16 h-16 rounded-full object-cover flex-shrink-0"
                 />

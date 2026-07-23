@@ -1,39 +1,34 @@
 // scripts/generate-image-variants.mjs
 //
-// ONE-OFF MIGRATION — backfills responsive image variants for EXISTING listing
-// photos already sitting in Supabase storage. Run once on the Hetzner box with
-// the service role key. Safe to re-run (idempotent).
+// ONE-OFF MIGRATION — backfills responsive image variants for EXISTING files
+// already sitting in Supabase storage. Run once on the Hetzner box with the
+// service role key. Safe to re-run (idempotent).
 //
-// ─── Storage layout (from grepping the upload code) ─────────────────────────
-//   • Listing photos:  bucket "listing-photos", path `${userId}/${timestamp}.webp`
-//                      (app/api/upload-photo/route.ts:105-109)
-//   • Avatars:         bucket "avatars"  (app/api/upload-avatar/route.ts:118)  — SEPARATE bucket
-//   • Stories:         bucket "stories"  (app/api/upload-story/route.ts:64)    — SEPARATE bucket
+// ─── Buckets & variants (see BUCKETS config below) ──────────────────────────
+//   • listing-photos  path `${userId}/${timestamp}.webp`  (app/api/upload-photo)
+//         → X_thumb.webp (w400) + X_card.webp (w800)
+//   • avatars         path `${userId}/avatar.webp`         (app/api/upload-avatar)
+//         → X_thumb.webp (w200)   [thumb only]
 //
-//   Avatars and stories live in their OWN buckets, so scoping this script to the
-//   "listing-photos" bucket is already sufficient isolation — it can never touch
-//   an avatar or a story. No in-bucket path/name discriminator is needed.
-//
-//   Within listing-photos, originals are one folder deep: `<uuid>/<epoch-ms>.webp`.
-//   Uploads use upsert:true, so re-running upload is harmless.
+//   `stories` lives in its own bucket and is intentionally NOT processed.
+//   Each bucket is one folder deep (`<uuid>/<file>`); uploads use upsert:true.
 //
 // ─── What this produces ─────────────────────────────────────────────────────
-//   For every original  X.ext  it writes two siblings in the SAME folder:
-//     X_thumb.webp  → resize({ width: 400, withoutEnlargement: true }).webp({ quality: 78 })
-//     X_card.webp   → resize({ width: 800, withoutEnlargement: true }).webp({ quality: 78 })
-//   The display code relies on this exact naming — do not change it here.
+//   For every original  X.ext  it writes the bucket's variants as siblings in the
+//   SAME folder, e.g.  X_thumb.webp  via
+//     sharp().resize({ width, withoutEnlargement: true }).webp({ quality: 78 })
+//   The display code relies on this exact naming (app/lib/imageVariants.ts).
 //
 // ─── Idempotency ────────────────────────────────────────────────────────────
-//   • Lists every object up front.
+//   • Lists every object per bucket up front.
 //   • Files whose basename ends in _thumb / _card ARE variants → never treated
 //     as originals (so we never make X_thumb_thumb.webp).
-//   • An original is skipped if BOTH of its variants already exist. If only one
-//     is missing, only the missing one is (re)generated.
+//   • An original is skipped if ALL of its bucket's variants already exist; only
+//     the missing ones are (re)generated. upsert:true makes writes safe.
 //
 // ─── Credentials (never hardcoded) ──────────────────────────────────────────
 //   Reads from process.env:
-//     SUPABASE_URL               (falls back to NEXT_PUBLIC_SUPABASE_URL, which
-//                                 is what .env.local actually defines)
+//     SUPABASE_URL               (falls back to NEXT_PUBLIC_SUPABASE_URL)
 //     SUPABASE_SERVICE_ROLE_KEY  (service role — required for full storage access)
 //
 // ─── Run it (Hetzner) ───────────────────────────────────────────────────────
@@ -47,13 +42,25 @@ import { createClient } from '@supabase/supabase-js';
 import sharp from 'sharp';
 
 // ── Config ──────────────────────────────────────────────────────────────────
-const BUCKET = 'listing-photos';
+// Add a bucket here to have it processed; each lists its own variant set.
+const BUCKETS = [
+  {
+    name: 'listing-photos',
+    variants: [
+      { suffix: '_thumb', width: 400 },
+      { suffix: '_card', width: 800 },
+    ],
+  },
+  {
+    name: 'avatars',
+    variants: [
+      { suffix: '_thumb', width: 200 },
+    ],
+  },
+];
+
 const CONCURRENCY = 3;
 const LIST_PAGE_SIZE = 1000;
-const VARIANTS = [
-  { suffix: '_thumb', width: 400 },
-  { suffix: '_card', width: 800 },
-];
 const WEBP_QUALITY = 78;
 
 // ── Credentials ─────────────────────────────────────────────────────────────
@@ -87,25 +94,25 @@ function parsePath(path) {
 const isVariant = (base) => base.endsWith('_thumb') || base.endsWith('_card');
 const join = (dir, name) => (dir ? `${dir}/${name}` : name);
 
-// Recursively list every object in the bucket. Supabase .list() returns one
-// level; folders come back with a null id / no metadata, files carry metadata.
-async function listAllFiles(prefix = '') {
+// Recursively list every object in a bucket. Supabase .list() returns one level;
+// folders come back with a null id / no metadata, files carry metadata.
+async function listAllFiles(bucket, prefix = '') {
   const out = [];
   let offset = 0;
   for (;;) {
-    const { data, error } = await supabase.storage.from(BUCKET).list(prefix, {
+    const { data, error } = await supabase.storage.from(bucket).list(prefix, {
       limit: LIST_PAGE_SIZE,
       offset,
       sortBy: { column: 'name', order: 'asc' },
     });
-    if (error) throw new Error(`list('${prefix}') failed: ${error.message}`);
+    if (error) throw new Error(`list('${bucket}/${prefix}') failed: ${error.message}`);
     if (!data || data.length === 0) break;
 
     for (const entry of data) {
       const full = join(prefix, entry.name);
       const isFolder = entry.id === null || entry.metadata == null;
       if (isFolder) {
-        out.push(...(await listAllFiles(full)));
+        out.push(...(await listAllFiles(bucket, full)));
       } else {
         out.push({ path: full, size: entry.metadata?.size ?? null });
       }
@@ -130,27 +137,27 @@ async function runPool(items, concurrency, worker) {
   await Promise.all(workers);
 }
 
-// ── Main ────────────────────────────────────────────────────────────────────
-async function main() {
-  console.log(`[variants] bucket="${BUCKET}"  concurrency=${CONCURRENCY}`);
+// ── Per-bucket processing ───────────────────────────────────────────────────
+async function processBucket(bucket) {
+  const variantLabel = bucket.variants.map((v) => `${v.suffix.slice(1)}@${v.width}`).join(', ');
+  console.log(`\n[variants] ── bucket "${bucket.name}" (${variantLabel}) ──`);
   console.log('[variants] listing all objects…');
 
-  const all = await listAllFiles('');
+  const all = await listAllFiles(bucket.name, '');
   const pathSet = new Set(all.map((f) => f.path));
 
   const originals = all.filter((f) => !isVariant(parsePath(f.path).base));
-  const variantCount = all.length - originals.length;
+  const existingVariants = all.length - originals.length;
   console.log(
-    `[variants] found ${all.length} objects — ${originals.length} originals, ${variantCount} existing variants`,
+    `[variants] found ${all.length} objects — ${originals.length} originals, ${existingVariants} existing variants`,
   );
 
-  const stats = { processed: 0, skipped: 0, failed: 0 };
+  const stats = { processed: 0, skipped: 0, failed: 0, originals: originals.length };
 
   await runPool(originals, CONCURRENCY, async (orig) => {
     const { dir, base } = parsePath(orig.path);
 
-    // Which variants are missing?
-    const wanted = VARIANTS.map((v) => ({
+    const wanted = bucket.variants.map((v) => ({
       ...v,
       path: join(dir, `${base}${v.suffix}.webp`),
     }));
@@ -158,13 +165,13 @@ async function main() {
 
     if (missing.length === 0) {
       stats.skipped++;
-      console.log(`[skip] ${orig.path} (both variants exist)`);
+      console.log(`[skip] ${bucket.name}/${orig.path} (all variants exist)`);
       return;
     }
 
     try {
       const { data: blob, error: dlErr } = await supabase.storage
-        .from(BUCKET)
+        .from(bucket.name)
         .download(orig.path);
       if (dlErr || !blob) throw new Error(dlErr?.message || 'empty download');
 
@@ -178,7 +185,7 @@ async function main() {
           .toBuffer();
 
         const { error: upErr } = await supabase.storage
-          .from(BUCKET)
+          .from(bucket.name)
           .upload(v.path, buf, { contentType: 'image/webp', upsert: true });
         if (upErr) throw new Error(`upload ${v.path}: ${upErr.message}`);
 
@@ -187,21 +194,40 @@ async function main() {
       }
 
       stats.processed++;
-      const note = missing.length < VARIANTS.length ? ' (partial: filled missing only)' : '';
-      console.log(`[ok]   ${orig.path}  ${kb(orig.size)} -> ${parts.join(' / ')}${note}`);
+      const note = missing.length < wanted.length ? ' (partial: filled missing only)' : '';
+      console.log(`[ok]   ${bucket.name}/${orig.path}  ${kb(orig.size)} -> ${parts.join(' / ')}${note}`);
     } catch (err) {
       stats.failed++;
-      console.error(`[FAIL] ${orig.path}: ${err.message}`);
+      console.error(`[FAIL] ${bucket.name}/${orig.path}: ${err.message}`);
     }
   });
 
+  console.log(
+    `[variants] "${bucket.name}" done — processed=${stats.processed}  skipped=${stats.skipped}  failed=${stats.failed}`,
+  );
+  return stats;
+}
+
+// ── Main ────────────────────────────────────────────────────────────────────
+async function main() {
+  console.log(`[variants] buckets=[${BUCKETS.map((b) => b.name).join(', ')}]  concurrency=${CONCURRENCY}`);
+
+  const totals = { processed: 0, skipped: 0, failed: 0, originals: 0 };
+  for (const bucket of BUCKETS) {
+    const s = await processBucket(bucket);
+    totals.processed += s.processed;
+    totals.skipped += s.skipped;
+    totals.failed += s.failed;
+    totals.originals += s.originals;
+  }
+
   console.log('─'.repeat(60));
   console.log(
-    `[variants] done — processed=${stats.processed}  skipped=${stats.skipped}  failed=${stats.failed}` +
-    `  (originals seen=${originals.length})`,
+    `[variants] ALL DONE — processed=${totals.processed}  skipped=${totals.skipped}  ` +
+    `failed=${totals.failed}  (originals seen=${totals.originals})`,
   );
   // Non-zero exit if anything failed, so a CI/ssh wrapper can notice.
-  if (stats.failed > 0) process.exit(1);
+  if (totals.failed > 0) process.exit(1);
 }
 
 main().catch((err) => {

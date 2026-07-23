@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 import { getThumbUrl } from "@/app/lib/imageVariants";
 import SeekerCardVisual from "@/app/components/SeekerCardVisual";
+import { getAvatarThumbUrl } from "@/app/lib/imageVariants";
 import { useLang } from "@/app/lib/LangContext";
 import { tierByLocation } from "./locationTiers";
 import {
@@ -276,7 +277,7 @@ function ListingCard({
         {listing.profile?.avatar_url && (
           <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={listing.profile.avatar_url} className="w-6 h-6 rounded-full object-cover border border-orange-200" alt="" />
+            <img src={getAvatarThumbUrl(listing.profile.avatar_url)} className="w-6 h-6 rounded-full object-cover border border-orange-200" alt="" />
             <span className="text-xs text-gray-500 font-medium truncate">{listing.profile.display_name || ""}</span>
           </div>
         )}

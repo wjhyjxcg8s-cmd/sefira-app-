@@ -115,6 +115,26 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
+  // 200px thumbnail — covers the largest *small* avatar render (~112px @2x). The
+  // display layer relies on the {basename}_thumb.webp naming (app/lib/imageVariants.ts,
+  // getAvatarThumbUrl). Best-effort: a thumb failure must NOT fail the upload —
+  // an unoptimized avatar is better than a lost one, so we only log and carry on.
+  const thumbPath = path.replace(/\.webp$/, '_thumb.webp'); // {userId}/avatar_thumb.webp
+  try {
+    const thumb = await sharp(compressed)
+      .resize({ width: 200, withoutEnlargement: true })
+      .webp({ quality: 78 })
+      .toBuffer();
+    const { error: thumbErr } = await supabase.storage
+      .from('avatars')
+      .upload(thumbPath, thumb, { contentType: 'image/webp', upsert: true });
+    if (thumbErr) {
+      console.error(`Avatar thumb upload failed (${thumbPath}):`, thumbErr.message);
+    }
+  } catch (err) {
+    console.error(`Avatar thumb generation failed (${thumbPath}):`, err);
+  }
+
   const { data } = supabase.storage.from('avatars').getPublicUrl(path);
   return NextResponse.json({ url: data.publicUrl + '?v=' + Date.now() });
 }

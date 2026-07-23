@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { useSearchParams, useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 import { formatMessageTime } from "@/app/lib/formatTime";
+import { getAvatarThumbUrl } from "@/app/lib/imageVariants";
 import { useChatView } from "@/app/lib/ChatViewContext";
 
 const translations = {
@@ -1205,7 +1206,7 @@ function MessagesPageContent() {
                 <div className="absolute -bottom-1 -right-1">
                   {activePeerAvatar ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={activePeerAvatar} alt="" className="w-6 h-6 rounded-full border-2 border-white object-cover" />
+                    <img src={getAvatarThumbUrl(activePeerAvatar)} alt="" className="w-6 h-6 rounded-full border-2 border-white object-cover" />
                   ) : (
                     <div className="w-6 h-6 rounded-full bg-orange-400 border-2 border-white flex items-center justify-center text-white text-[10px] font-bold">
                       {activePeerName[0]?.toUpperCase() ?? "?"}
@@ -1262,7 +1263,7 @@ function MessagesPageContent() {
                   <div className="absolute -bottom-1 -right-1">
                     {avatar ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={avatar} alt="" className="w-6 h-6 rounded-full border-2 border-white object-cover" />
+                      <img src={getAvatarThumbUrl(avatar)} alt="" className="w-6 h-6 rounded-full border-2 border-white object-cover" />
                     ) : (
                       <div className="w-6 h-6 rounded-full bg-orange-400 border-2 border-white flex items-center justify-center text-white text-[10px] font-bold">
                         {name[0]?.toUpperCase() ?? "?"}
@@ -1329,7 +1330,7 @@ function MessagesPageContent() {
                 {activePeerAvatar ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={activePeerAvatar}
+                    src={getAvatarThumbUrl(activePeerAvatar)}
                     alt=""
                     className="w-10 h-10 rounded-full object-cover border-2 border-orange-200"
                   />
@@ -1565,7 +1566,7 @@ function MessagesPageContent() {
                       {activePeerAvatar ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
-                          src={activePeerAvatar}
+                          src={getAvatarThumbUrl(activePeerAvatar)}
                           alt=""
                           className="w-7 h-7 rounded-full object-cover flex-shrink-0"
                         />
