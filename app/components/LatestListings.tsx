@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
 import { getListingSide, getCommercialBadgeLabel, COMMERCIAL_BADGE_CLASS } from "@/app/lib/listingBadge";
+import { getThumbUrl } from "@/app/lib/imageVariants";
 import { cityMatches } from "@/app/lib/cityMatch";
 
 const supabaseClient = createClient(
@@ -678,7 +679,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                 {listing.photos?.[0] ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={listing.photos[0]}
+                    src={getThumbUrl(listing.photos[0])}
                     alt={listing.city}
                     loading="lazy"
                     decoding="async"

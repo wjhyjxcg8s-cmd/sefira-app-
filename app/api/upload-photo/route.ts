@@ -112,6 +112,33 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
+  // Responsive variants — the display layer relies on the {basename}_thumb.webp /
+  // {basename}_card.webp naming (see app/lib/imageVariants.ts). Derived from the
+  // already-oriented `compressed` buffer so orientation/content match the original.
+  // Best-effort: a variant failure must NOT fail the request — an unoptimized
+  // photo is better than a lost upload, so we only log and carry on.
+  const base = path.replace(/\.webp$/, '');
+  const variants = [
+    { path: `${base}_thumb.webp`, width: 400 },
+    { path: `${base}_card.webp`, width: 800 },
+  ];
+  for (const v of variants) {
+    try {
+      const variantBuf = await sharp(compressed)
+        .resize({ width: v.width, withoutEnlargement: true })
+        .webp({ quality: 78 })
+        .toBuffer();
+      const { error: variantErr } = await supabase.storage
+        .from('listing-photos')
+        .upload(v.path, variantBuf, { contentType: 'image/webp', upsert: true });
+      if (variantErr) {
+        console.error(`Variant upload failed (${v.path}):`, variantErr.message);
+      }
+    } catch (err) {
+      console.error(`Variant generation failed (${v.path}):`, err);
+    }
+  }
+
   const { data } = supabase.storage.from('listing-photos').getPublicUrl(path);
   return NextResponse.json({ url: data.publicUrl });
 }

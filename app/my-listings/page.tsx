@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useLang } from "@/app/lib/LangContext";
+import { getThumbUrl } from "@/app/lib/imageVariants";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
@@ -300,7 +301,7 @@ export default function MyListingsPage() {
                     {firstPhoto ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={firstPhoto}
+                        src={getThumbUrl(firstPhoto)}
                         alt=""
                         className="w-full h-full object-cover"
                       />

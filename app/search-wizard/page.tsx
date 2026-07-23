@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
+import { getThumbUrl } from "@/app/lib/imageVariants";
 import { useLang } from "@/app/lib/LangContext";
 import { tierByLocation } from "./locationTiers";
 import {
@@ -213,7 +214,7 @@ function ListingCard({
       <div className="aspect-video bg-gray-100 relative">
         {listing.photos?.[0] ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={listing.photos[0]} alt={listing.city || ""} className="w-full h-full object-cover" />
+          <img src={getThumbUrl(listing.photos[0])} alt={listing.city || ""} className="w-full h-full object-cover" />
         ) : isNeedsPlace && listing.profile?.avatar_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={listing.profile.avatar_url} alt="" className="w-full h-full object-cover" />

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLang } from "@/app/lib/LangContext";
+import { getThumbUrl, getCardUrl } from "@/app/lib/imageVariants";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import AuthModal from "@/app/components/AuthModal";
 import { createClient } from "@supabase/supabase-js";
@@ -955,7 +956,7 @@ export default function ListingDetailPage() {
             <div className="aspect-video w-full overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={photos[activePhoto]}
+                src={getCardUrl(photos[activePhoto])}
                 alt={listing.city ?? ""}
                 className="w-full h-full object-cover"
               />
@@ -966,7 +967,7 @@ export default function ListingDetailPage() {
                   <button key={i} onClick={() => setActivePhoto(i)}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={p}
+                      src={getThumbUrl(p)}
                       alt=""
                       className={`w-16 h-12 object-cover rounded-lg border-2 transition-all ${
                         i === activePhoto ? "border-emerald-400" : "border-transparent opacity-60"

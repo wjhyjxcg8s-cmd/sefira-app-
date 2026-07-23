@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { useLang } from "@/app/lib/LangContext";
+import { getThumbUrl } from "@/app/lib/imageVariants";
 import { tierByLocation } from "@/app/search-wizard/locationTiers";
 import { filterByCategory, filterByCommercialType, type SearchCategory } from "@/app/lib/searchQuery";
 import { getListingSide, getCommercialBadgeLabel, COMMERCIAL_BADGE_CLASS } from "@/app/lib/listingBadge";
@@ -728,7 +729,7 @@ function SearchPageContent() {
                         {/* Thumbnail */}
                         {item.photos && item.photos[0] ? (
                           <img
-                            src={item.photos[0]}
+                            src={getThumbUrl(item.photos[0])}
                             alt={item.city || ""}
                             style={{
                               width: 60,
