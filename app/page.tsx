@@ -2343,6 +2343,8 @@ export default function Home() {
               </button>
               <input
                 type="text"
+                id="hero-search"
+                name="q"
                 value={heroSearchValue}
                 onChange={(e) => setHeroSearchValue(e.target.value)}
                 placeholder={t.heroSearchPlaceholder}
