@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLang } from "@/app/lib/LangContext";
-import { getThumbUrl, getCardUrl, getAvatarThumbUrl } from "@/app/lib/imageVariants";
+import { getThumbUrl, getCardUrl, getAvatarThumbUrl, getAvatarCardUrl } from "@/app/lib/imageVariants";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import AuthModal from "@/app/components/AuthModal";
 import { createClient } from "@supabase/supabase-js";
@@ -721,7 +721,7 @@ export default function ListingDetailPage() {
             {profile?.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={profile.avatar_url}
+                src={getAvatarCardUrl(profile.avatar_url)}
                 alt={profile.display_name ?? ""}
                 className="relative z-10 w-full h-full rounded-full object-cover border-4 border-white shadow-2xl"
               />

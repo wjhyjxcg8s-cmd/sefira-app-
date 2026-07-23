@@ -55,6 +55,7 @@ const BUCKETS = [
     name: 'avatars',
     variants: [
       { suffix: '_thumb', width: 200 },
+      { suffix: '_card', width: 512 },
     ],
   },
 ];

@@ -51,3 +51,8 @@ export function getCardUrl(url: string): string {
 export function getAvatarThumbUrl(url: string): string {
   return isAvatarUrl(url) ? insertVariantSuffix(url, "_thumb") : url;
 }
+
+/** 512px-wide avatar sibling (mid-size renders: hero avatars, rec cards, …). */
+export function getAvatarCardUrl(url: string): string {
+  return isAvatarUrl(url) ? insertVariantSuffix(url, "_card") : url;
+}

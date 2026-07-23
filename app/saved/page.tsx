@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 import { useLang } from "@/app/lib/LangContext";
 import { getListingSide, getCommercialBadgeLabel, COMMERCIAL_BADGE_CLASS } from "@/app/lib/listingBadge";
+import { getAvatarCardUrl } from "@/app/lib/imageVariants";
 
 type Lang = "tr" | "en" | "fa" | "ar" | "de" | "ru";
 
@@ -233,7 +234,7 @@ export default function SavedPage() {
                       )
                     ) : avatarUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={avatarUrl} alt={listing.city} className="w-full h-full object-cover" />
+                      <img src={getAvatarCardUrl(avatarUrl)} alt={listing.city} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center">
                         <svg viewBox="0 0 24 24" fill="white" className="w-12 h-12 opacity-80">

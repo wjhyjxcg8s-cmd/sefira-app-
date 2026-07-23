@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
+import { getAvatarCardUrl } from "@/app/lib/imageVariants";
 import { supabase } from "@/app/lib/supabase";
 import { useLang } from "@/app/lib/LangContext";
 import CountrySelect from "@/app/components/CountrySelect";
@@ -1249,7 +1250,7 @@ export default function ProfilePage() {
               {avatarPreview || avatarUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={avatarPreview ?? avatarUrl!}
+                  src={getAvatarCardUrl(avatarPreview ?? avatarUrl!)}
                   alt="Avatar"
                   className="w-24 h-24 rounded-full object-cover shadow-md"
                 />

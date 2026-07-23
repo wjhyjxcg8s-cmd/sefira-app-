@@ -55,7 +55,7 @@ const PopularCities = dynamic(() => import("@/app/components/PopularCities"), {
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
 import { useLang } from "@/app/lib/LangContext";
-import { getAvatarThumbUrl } from "@/app/lib/imageVariants";
+import { getAvatarThumbUrl, getAvatarCardUrl } from "@/app/lib/imageVariants";
 import { useProfileDrawer } from "@/app/lib/ProfileDrawerContext";
 import { useUnreadMessages } from "@/app/lib/useUnreadMessages";
 import {
@@ -2984,7 +2984,7 @@ export default function Home() {
                       <Image src={thumbnail} alt="" fill className="object-cover" sizes="(max-width: 768px) 50vw, 33vw" loading="lazy" />
                     ) : recAvatarMap[rec.user_id] ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={recAvatarMap[rec.user_id]!} alt="" loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
+                      <img src={getAvatarCardUrl(recAvatarMap[rec.user_id]!)} alt="" loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
                     ) : (
                       <div className={`absolute inset-0 flex items-center justify-center ${isHasPlace ? "bg-gradient-to-br from-orange-400 to-amber-500" : "bg-gradient-to-br from-violet-500 to-blue-500"}`}>
                         {isHasPlace ? (

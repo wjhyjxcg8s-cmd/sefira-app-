@@ -115,24 +115,32 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  // 200px thumbnail — covers the largest *small* avatar render (~112px @2x). The
-  // display layer relies on the {basename}_thumb.webp naming (app/lib/imageVariants.ts,
-  // getAvatarThumbUrl). Best-effort: a thumb failure must NOT fail the upload —
-  // an unoptimized avatar is better than a lost one, so we only log and carry on.
-  const thumbPath = path.replace(/\.webp$/, '_thumb.webp'); // {userId}/avatar_thumb.webp
-  try {
-    const thumb = await sharp(compressed)
-      .resize({ width: 200, withoutEnlargement: true })
-      .webp({ quality: 78 })
-      .toBuffer();
-    const { error: thumbErr } = await supabase.storage
-      .from('avatars')
-      .upload(thumbPath, thumb, { contentType: 'image/webp', upsert: true });
-    if (thumbErr) {
-      console.error(`Avatar thumb upload failed (${thumbPath}):`, thumbErr.message);
+  // Responsive variants — the display layer relies on these exact names
+  // (app/lib/imageVariants.ts): _thumb (200px) covers small renders (~112px @2x);
+  // _card (512px) covers mid-size renders (rec cards, hero/profile avatars) at 2x.
+  // Derived from the already-rotated `compressed` buffer, so orientation is baked
+  // in. Best-effort: a variant failure must NOT fail the upload — an unoptimized
+  // avatar is better than a lost one, so we only log and carry on.
+  const base = path.replace(/\.webp$/, ''); // {userId}/avatar
+  const variants = [
+    { path: `${base}_thumb.webp`, width: 200 },
+    { path: `${base}_card.webp`, width: 512 },
+  ];
+  for (const v of variants) {
+    try {
+      const variantBuf = await sharp(compressed)
+        .resize({ width: v.width, withoutEnlargement: true })
+        .webp({ quality: 78 })
+        .toBuffer();
+      const { error: variantErr } = await supabase.storage
+        .from('avatars')
+        .upload(v.path, variantBuf, { contentType: 'image/webp', upsert: true });
+      if (variantErr) {
+        console.error(`Avatar variant upload failed (${v.path}):`, variantErr.message);
+      }
+    } catch (err) {
+      console.error(`Avatar variant generation failed (${v.path}):`, err);
     }
-  } catch (err) {
-    console.error(`Avatar thumb generation failed (${thumbPath}):`, err);
   }
 
   const { data } = supabase.storage.from('avatars').getPublicUrl(path);
