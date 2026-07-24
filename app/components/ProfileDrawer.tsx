@@ -9,6 +9,7 @@ import { useAuth } from "@/app/lib/AuthContext";
 import { useLang, type Lang } from "@/app/lib/LangContext";
 import { useProfileDrawer } from "@/app/lib/ProfileDrawerContext";
 import { supabase } from "@/app/lib/supabase";
+import { getAvatarThumbUrl } from "@/app/lib/imageVariants";
 
 const SIGN_OUT = {
   signOut: { tr: "Çıkış Yap", en: "Log Out", fa: "خروج", de: "Abmelden", ar: "تسجيل الخروج", ru: "Выйти" },
@@ -192,7 +193,7 @@ export default function ProfileDrawer() {
               style={{ background: "linear-gradient(135deg, #ea580c, #d97706)" }}
             >
               {profileAvatarUrl ? (
-                <img src={profileAvatarUrl} alt="avatar" className="w-full h-full object-cover" />
+                <img src={getAvatarThumbUrl(profileAvatarUrl)} alt="avatar" loading="lazy" decoding="async" className="w-full h-full object-cover" />
               ) : (
                 initials
               )}

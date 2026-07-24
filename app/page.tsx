@@ -2130,7 +2130,7 @@ export default function Home() {
                             {notif.senderAvatar ? (
                               // eslint-disable-next-line @next/next/no-img-element
                               <img
-                                src={notif.senderAvatar}
+                                src={getAvatarThumbUrl(notif.senderAvatar)}
                                 loading="lazy"
                                 decoding="async"
                                 className="w-9 h-9 rounded-full object-cover border-2 border-orange-200 flex-shrink-0"
