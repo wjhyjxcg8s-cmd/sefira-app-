@@ -1724,7 +1724,10 @@ export default function Home() {
     const ids = smartRecs.filter((r) => r.type === "needs_place").map((r) => r.user_id).filter(Boolean);
     if (ids.length === 0) return;
     supabase
-      .from("profiles")
+      // profiles_public (not profiles): profiles is RLS-restricted to the owning
+      // user, so it returns no rows for other people's seeker recs. profiles_public
+      // is the same unrestricted source LatestListings/search read avatars from.
+      .from("profiles_public")
       .select("user_id, avatar_url")
       .in("user_id", ids)
       .then(({ data }) => {
