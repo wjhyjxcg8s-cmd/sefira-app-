@@ -7,7 +7,7 @@ import { createClient } from "@supabase/supabase-js";
 import { getListingSide, getCommercialBadgeLabel, COMMERCIAL_BADGE_CLASS } from "@/app/lib/listingBadge";
 import { getThumbUrl } from "@/app/lib/imageVariants";
 import SeekerCardVisual from "@/app/components/SeekerCardVisual";
-import { getAvatarThumbUrl } from "@/app/lib/imageVariants";
+import AvatarImage from "@/app/components/AvatarImage";
 import { cityMatches } from "@/app/lib/cityMatch";
 
 const supabaseClient = createClient(
@@ -688,9 +688,21 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                     className="w-full h-full object-cover"
                   />
                 ) : getListingSide(listing) === "needs_place" ? (
-                  <SeekerCardVisual
-                    variant={listing.listing_category === "commercial" ? "commercial" : "residential"}
-                    className="w-full h-full"
+                  // Seeker: prefer the seeker's avatar filling the slot; fall back to
+                  // the illustrated SeekerCardVisual only when there's no avatar (or it fails).
+                  <AvatarImage
+                    url={listing.profile?.avatar_url}
+                    size="card"
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover"
+                    fallback={
+                      <SeekerCardVisual
+                        variant={listing.listing_category === "commercial" ? "commercial" : "residential"}
+                        className="w-full h-full"
+                      />
+                    }
                   />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center">
@@ -819,9 +831,9 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                 {/* Avatar row */}
                 {listing.profile?.avatar_url && (
                   <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={getAvatarThumbUrl(listing.profile.avatar_url)}
+                    <AvatarImage
+                      url={listing.profile.avatar_url}
+                      size="thumb"
                       loading="lazy"
                       decoding="async"
                       className="w-8 h-8 rounded-full object-cover border-2 border-orange-200"

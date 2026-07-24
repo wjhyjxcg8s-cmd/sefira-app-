@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 import { getThumbUrl } from "@/app/lib/imageVariants";
 import SeekerCardVisual from "@/app/components/SeekerCardVisual";
-import { getAvatarThumbUrl } from "@/app/lib/imageVariants";
+import AvatarImage from "@/app/components/AvatarImage";
 import { useLang } from "@/app/lib/LangContext";
 import { tierByLocation } from "./locationTiers";
 import {
@@ -218,7 +218,13 @@ function ListingCard({
           // eslint-disable-next-line @next/next/no-img-element
           <img src={getThumbUrl(listing.photos[0])} alt={listing.city || ""} className="w-full h-full object-cover" />
         ) : isNeedsPlace ? (
-          <SeekerCardVisual variant={isCommercial ? "commercial" : "residential"} className="w-full h-full" />
+          <AvatarImage
+            url={listing.profile?.avatar_url}
+            size="card"
+            alt=""
+            className="w-full h-full object-cover"
+            fallback={<SeekerCardVisual variant={isCommercial ? "commercial" : "residential"} className="w-full h-full" />}
+          />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-10 h-10 text-stone-400">
@@ -276,8 +282,7 @@ function ListingCard({
         )}
         {listing.profile?.avatar_url && (
           <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={getAvatarThumbUrl(listing.profile.avatar_url)} className="w-6 h-6 rounded-full object-cover border border-orange-200" alt="" />
+            <AvatarImage url={listing.profile.avatar_url} size="thumb" className="w-6 h-6 rounded-full object-cover border border-orange-200" alt="" />
             <span className="text-xs text-gray-500 font-medium truncate">{listing.profile.display_name || ""}</span>
           </div>
         )}

@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLang } from "@/app/lib/LangContext";
-import { getThumbUrl, getCardUrl, getAvatarThumbUrl, getAvatarCardUrl } from "@/app/lib/imageVariants";
+import { getThumbUrl, getCardUrl } from "@/app/lib/imageVariants";
+import AvatarImage from "@/app/components/AvatarImage";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import AuthModal from "@/app/components/AuthModal";
 import { createClient } from "@supabase/supabase-js";
@@ -718,18 +719,17 @@ export default function ListingDetailPage() {
 
         <div className="flex justify-center -mt-16 relative z-20">
           <div className="relative w-32 h-32">
-            {profile?.avatar_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={getAvatarCardUrl(profile.avatar_url)}
-                alt={profile.display_name ?? ""}
-                className="relative z-10 w-full h-full rounded-full object-cover border-4 border-white shadow-2xl"
-              />
-            ) : (
-              <div className="relative z-10 w-full h-full rounded-full bg-gradient-to-br from-orange-400 to-amber-400 flex items-center justify-center text-5xl font-black text-white border-4 border-white shadow-2xl">
-                {(profile?.display_name ?? "?")[0]?.toUpperCase() ?? "?"}
-              </div>
-            )}
+            <AvatarImage
+              url={profile?.avatar_url}
+              size="card"
+              alt={profile?.display_name ?? ""}
+              className="relative z-10 w-full h-full rounded-full object-cover border-4 border-white shadow-2xl"
+              fallback={
+                <div className="relative z-10 w-full h-full rounded-full bg-gradient-to-br from-orange-400 to-amber-400 flex items-center justify-center text-5xl font-black text-white border-4 border-white shadow-2xl">
+                  {(profile?.display_name ?? "?")[0]?.toUpperCase() ?? "?"}
+                </div>
+              }
+            />
           </div>
         </div>
 
@@ -925,18 +925,17 @@ export default function ListingDetailPage() {
           {profile && (
             <div className="bg-white rounded-3xl shadow-sm p-5">
               <div className="flex items-center gap-3">
-                {profile.avatar_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={getAvatarThumbUrl(profile.avatar_url)}
-                    alt={profile.display_name ?? ""}
-                    className="w-14 h-14 rounded-full object-cover flex-shrink-0"
-                  />
-                ) : (
-                  <div className="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center text-xl font-bold text-orange-600 flex-shrink-0">
-                    {(profile.display_name ?? "?")[0]?.toUpperCase()}
-                  </div>
-                )}
+                <AvatarImage
+                  url={profile.avatar_url}
+                  size="thumb"
+                  alt={profile.display_name ?? ""}
+                  className="w-14 h-14 rounded-full object-cover flex-shrink-0"
+                  fallback={
+                    <div className="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center text-xl font-bold text-orange-600 flex-shrink-0">
+                      {(profile.display_name ?? "?")[0]?.toUpperCase()}
+                    </div>
+                  }
+                />
                 <div className="min-w-0">
                   <p className="font-bold text-gray-900 truncate">{profile.display_name ?? "—"}</p>
                   {profile.country && (
@@ -1112,18 +1111,17 @@ export default function ListingDetailPage() {
         {profile && (
           <div className="mx-4 mt-4 bg-white rounded-3xl shadow-md p-5">
             <div className="flex items-center gap-3">
-              {profile.avatar_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={getAvatarThumbUrl(profile.avatar_url)}
-                  alt={profile.display_name ?? ""}
-                  className="w-16 h-16 rounded-full object-cover flex-shrink-0"
-                />
-              ) : (
-                <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center text-2xl font-bold text-emerald-600 flex-shrink-0">
-                  {(profile.display_name ?? "?")[0]?.toUpperCase()}
-                </div>
-              )}
+              <AvatarImage
+                url={profile.avatar_url}
+                size="thumb"
+                alt={profile.display_name ?? ""}
+                className="w-16 h-16 rounded-full object-cover flex-shrink-0"
+                fallback={
+                  <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center text-2xl font-bold text-emerald-600 flex-shrink-0">
+                    {(profile.display_name ?? "?")[0]?.toUpperCase()}
+                  </div>
+                }
+              />
               <div className="min-w-0">
                 <p className="font-bold text-gray-900 truncate">{profile.display_name ?? "—"}</p>
                 <div className="flex items-center gap-1.5 mt-0.5 text-sm text-gray-500 flex-wrap">

@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import { useSearchParams, useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 import { formatMessageTime } from "@/app/lib/formatTime";
-import { getAvatarThumbUrl } from "@/app/lib/imageVariants";
+import AvatarImage from "@/app/components/AvatarImage";
 import { useChatView } from "@/app/lib/ChatViewContext";
 
 const translations = {
@@ -1204,14 +1204,17 @@ function MessagesPageContent() {
                   <div className="w-14 h-14 rounded-xl bg-orange-50 flex items-center justify-center text-2xl">🏠</div>
                 )}
                 <div className="absolute -bottom-1 -right-1">
-                  {activePeerAvatar ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={getAvatarThumbUrl(activePeerAvatar)} alt="" className="w-6 h-6 rounded-full border-2 border-white object-cover" />
-                  ) : (
-                    <div className="w-6 h-6 rounded-full bg-orange-400 border-2 border-white flex items-center justify-center text-white text-[10px] font-bold">
-                      {activePeerName[0]?.toUpperCase() ?? "?"}
-                    </div>
-                  )}
+                  <AvatarImage
+                    url={activePeerAvatar}
+                    size="thumb"
+                    alt=""
+                    className="w-6 h-6 rounded-full border-2 border-white object-cover"
+                    fallback={
+                      <div className="w-6 h-6 rounded-full bg-orange-400 border-2 border-white flex items-center justify-center text-white text-[10px] font-bold">
+                        {activePeerName[0]?.toUpperCase() ?? "?"}
+                      </div>
+                    }
+                  />
                 </div>
               </div>
               <div className="flex-1 min-w-0">
@@ -1261,14 +1264,17 @@ function MessagesPageContent() {
                     <div className="w-14 h-14 rounded-xl bg-orange-50 flex items-center justify-center text-2xl">🏠</div>
                   )}
                   <div className="absolute -bottom-1 -right-1">
-                    {avatar ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={getAvatarThumbUrl(avatar)} alt="" className="w-6 h-6 rounded-full border-2 border-white object-cover" />
-                    ) : (
-                      <div className="w-6 h-6 rounded-full bg-orange-400 border-2 border-white flex items-center justify-center text-white text-[10px] font-bold">
-                        {name[0]?.toUpperCase() ?? "?"}
-                      </div>
-                    )}
+                    <AvatarImage
+                      url={avatar}
+                      size="thumb"
+                      alt=""
+                      className="w-6 h-6 rounded-full border-2 border-white object-cover"
+                      fallback={
+                        <div className="w-6 h-6 rounded-full bg-orange-400 border-2 border-white flex items-center justify-center text-white text-[10px] font-bold">
+                          {name[0]?.toUpperCase() ?? "?"}
+                        </div>
+                      }
+                    />
                   </div>
                 </div>
                 <div className="flex-1 min-w-0">
@@ -1327,18 +1333,17 @@ function MessagesPageContent() {
                 >
                   ←
                 </button>
-                {activePeerAvatar ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={getAvatarThumbUrl(activePeerAvatar)}
-                    alt=""
-                    className="w-10 h-10 rounded-full object-cover border-2 border-orange-200"
-                  />
-                ) : (
-                  <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center font-bold text-orange-500">
-                    {activePeerName[0]?.toUpperCase() ?? "?"}
-                  </div>
-                )}
+                <AvatarImage
+                  url={activePeerAvatar}
+                  size="thumb"
+                  alt=""
+                  className="w-10 h-10 rounded-full object-cover border-2 border-orange-200"
+                  fallback={
+                    <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center font-bold text-orange-500">
+                      {activePeerName[0]?.toUpperCase() ?? "?"}
+                    </div>
+                  }
+                />
                 <div className="flex-1">
                   <p className="font-bold text-gray-900 text-sm">
                     {activePeerName || "Kullanıcı"}
@@ -1563,18 +1568,17 @@ function MessagesPageContent() {
                       className="flex items-end gap-2 mb-3 px-4 relative"
                       onContextMenu={(e) => handleRightClick(msg, e)}
                     >
-                      {activePeerAvatar ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={getAvatarThumbUrl(activePeerAvatar)}
-                          alt=""
-                          className="w-7 h-7 rounded-full object-cover flex-shrink-0"
-                        />
-                      ) : (
-                        <div className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-500 flex-shrink-0">
-                          {activePeerName[0]?.toUpperCase() ?? "?"}
-                        </div>
-                      )}
+                      <AvatarImage
+                        url={activePeerAvatar}
+                        size="thumb"
+                        alt=""
+                        className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+                        fallback={
+                          <div className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-500 flex-shrink-0">
+                            {activePeerName[0]?.toUpperCase() ?? "?"}
+                          </div>
+                        }
+                      />
                       {/* Reply icon appears between avatar and bubble */}
                       <div
                         aria-hidden="true"

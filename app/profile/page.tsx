@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
-import { getAvatarCardUrl } from "@/app/lib/imageVariants";
+import AvatarImage from "@/app/components/AvatarImage";
 import { supabase } from "@/app/lib/supabase";
 import { useLang } from "@/app/lib/LangContext";
 import CountrySelect from "@/app/components/CountrySelect";
@@ -1247,18 +1247,17 @@ export default function ProfilePage() {
           {/* Avatar section */}
           <div className="p-6 sm:p-8 border-b border-stone-100 flex flex-col items-center gap-3">
             <div className="relative flex-shrink-0">
-              {avatarPreview || avatarUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={getAvatarCardUrl(avatarPreview ?? avatarUrl!)}
-                  alt="Avatar"
-                  className="w-24 h-24 rounded-full object-cover shadow-md"
-                />
-              ) : (
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-2xl text-white shadow-md shadow-orange-500/30">
-                  {initials}
-                </div>
-              )}
+              <AvatarImage
+                url={avatarPreview ?? avatarUrl}
+                size="card"
+                alt="Avatar"
+                className="w-24 h-24 rounded-full object-cover shadow-md"
+                fallback={
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-2xl text-white shadow-md shadow-orange-500/30">
+                    {initials}
+                  </div>
+                }
+              />
               <button
                 onClick={() => setConfirmField("avatar")}
                 className="absolute -bottom-1 -right-1 w-8 h-8 bg-white border-2 border-stone-200 rounded-full flex items-center justify-center shadow-sm hover:border-orange-400 hover:bg-orange-50 transition-all"

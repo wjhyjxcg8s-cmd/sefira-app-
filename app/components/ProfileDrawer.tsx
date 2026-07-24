@@ -9,7 +9,7 @@ import { useAuth } from "@/app/lib/AuthContext";
 import { useLang, type Lang } from "@/app/lib/LangContext";
 import { useProfileDrawer } from "@/app/lib/ProfileDrawerContext";
 import { supabase } from "@/app/lib/supabase";
-import { getAvatarThumbUrl } from "@/app/lib/imageVariants";
+import AvatarImage from "@/app/components/AvatarImage";
 
 const SIGN_OUT = {
   signOut: { tr: "Çıkış Yap", en: "Log Out", fa: "خروج", de: "Abmelden", ar: "تسجيل الخروج", ru: "Выйти" },
@@ -192,11 +192,15 @@ export default function ProfileDrawer() {
               className="w-12 h-12 rounded-full ring-2 ring-white/90 shadow-md flex items-center justify-center overflow-hidden flex-shrink-0 font-extrabold text-base text-white"
               style={{ background: "linear-gradient(135deg, #ea580c, #d97706)" }}
             >
-              {profileAvatarUrl ? (
-                <img src={getAvatarThumbUrl(profileAvatarUrl)} alt="avatar" loading="lazy" decoding="async" className="w-full h-full object-cover" />
-              ) : (
-                initials
-              )}
+              <AvatarImage
+                url={profileAvatarUrl}
+                size="thumb"
+                alt="avatar"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-cover"
+                fallback={initials}
+              />
             </button>
             <div className="flex-1 min-w-0">
               <p className="text-base font-bold text-white leading-tight truncate">

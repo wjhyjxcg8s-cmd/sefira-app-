@@ -6,7 +6,7 @@ import { createClient } from "@supabase/supabase-js";
 import { useLang } from "@/app/lib/LangContext";
 import { getThumbUrl } from "@/app/lib/imageVariants";
 import SeekerCardVisual from "@/app/components/SeekerCardVisual";
-import { getAvatarThumbUrl } from "@/app/lib/imageVariants";
+import AvatarImage from "@/app/components/AvatarImage";
 import { tierByLocation } from "@/app/search-wizard/locationTiers";
 import { filterByCategory, filterByCommercialType, type SearchCategory } from "@/app/lib/searchQuery";
 import { getListingSide, getCommercialBadgeLabel, COMMERCIAL_BADGE_CLASS } from "@/app/lib/listingBadge";
@@ -42,6 +42,9 @@ interface Listing {
   commercial_type?: string | null;
   photos: string[] | null;
   description?: string | null;
+  // Seeker's avatar, enriched after the listings fetch (the listings table has no
+  // avatar column — it lives on profiles_public, keyed by user_id).
+  avatar_url?: string | null;
 }
 
 interface Profile {
@@ -337,7 +340,30 @@ function SearchPageContent() {
           filtered = tierByLocation(filtered, { city, district, neighborhood, countryCode }) as Listing[];
         }
 
-        setListings(filtered);
+        // Enrich seeker listings with the seeker's avatar so photo-less seeker cards
+        // can show the avatar instead of the generic seeker visual.
+        const listingUserIds = Array.from(
+          new Set(filtered.map((l) => l.user_id).filter(Boolean)),
+        ) as string[];
+        let avatarByUser = new Map<string, string | null>();
+        if (listingUserIds.length > 0) {
+          const { data: profs } = await supabase
+            .from("profiles_public")
+            .select("user_id, avatar_url")
+            .in("user_id", listingUserIds);
+          avatarByUser = new Map(
+            (profs ?? []).map((p: { user_id: string; avatar_url: string | null }) => [
+              p.user_id,
+              p.avatar_url ?? null,
+            ]),
+          );
+        }
+        setListings(
+          filtered.map((l) => ({
+            ...l,
+            avatar_url: l.user_id ? avatarByUser.get(l.user_id) ?? null : null,
+          })),
+        );
       } else {
         setListings([]);
       }
@@ -743,9 +769,17 @@ function SearchPageContent() {
                             }}
                           />
                         ) : side === "needs_place" ? (
-                          <SeekerCardVisual
-                            variant={isCommercial ? "commercial" : "residential"}
-                            className="w-[60px] h-[60px] rounded-xl shrink-0"
+                          <AvatarImage
+                            url={item.avatar_url}
+                            size="thumb"
+                            alt=""
+                            style={{ width: 60, height: 60, borderRadius: 12, objectFit: "cover", flexShrink: 0 }}
+                            fallback={
+                              <SeekerCardVisual
+                                variant={isCommercial ? "commercial" : "residential"}
+                                className="w-[60px] h-[60px] rounded-xl shrink-0"
+                              />
+                            }
                           />
                         ) : (
                           <div
@@ -866,37 +900,37 @@ function SearchPageContent() {
                       }}
                     >
                       {/* Avatar */}
-                      {profile.avatar_url ? (
-                        <img
-                          src={getAvatarThumbUrl(profile.avatar_url)}
-                          alt={profile.display_name}
-                          style={{
-                            width: 48,
-                            height: 48,
-                            borderRadius: "50%",
-                            objectFit: "cover",
-                            flexShrink: 0,
-                          }}
-                        />
-                      ) : (
-                        <div
-                          style={{
-                            width: 48,
-                            height: 48,
-                            borderRadius: "50%",
-                            backgroundColor: "#e5e7eb",
-                            flexShrink: 0,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontWeight: 700,
-                            fontSize: 18,
-                            color: "#6b7280",
-                          }}
-                        >
-                          {(profile.display_name ?? "?")[0]?.toUpperCase()}
-                        </div>
-                      )}
+                      <AvatarImage
+                        url={profile.avatar_url}
+                        size="thumb"
+                        alt={profile.display_name}
+                        style={{
+                          width: 48,
+                          height: 48,
+                          borderRadius: "50%",
+                          objectFit: "cover",
+                          flexShrink: 0,
+                        }}
+                        fallback={
+                          <div
+                            style={{
+                              width: 48,
+                              height: 48,
+                              borderRadius: "50%",
+                              backgroundColor: "#e5e7eb",
+                              flexShrink: 0,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontWeight: 700,
+                              fontSize: 18,
+                              color: "#6b7280",
+                            }}
+                          >
+                            {(profile.display_name ?? "?")[0]?.toUpperCase()}
+                          </div>
+                        }
+                      />
 
                       {/* Info */}
                       <div style={{ flex: 1, minWidth: 0 }}>

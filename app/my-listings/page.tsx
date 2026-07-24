@@ -5,6 +5,7 @@ import { useLang } from "@/app/lib/LangContext";
 import { getThumbUrl } from "@/app/lib/imageVariants";
 import { getListingSide } from "@/app/lib/listingBadge";
 import SeekerCardVisual from "@/app/components/SeekerCardVisual";
+import AvatarImage from "@/app/components/AvatarImage";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
@@ -170,6 +171,9 @@ export default function MyListingsPage() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [fetching, setFetching] = useState(true);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  // All listings here belong to the signed-in user, so one avatar covers every
+  // seeker card — fetched once rather than joined per row.
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (loading) return;
@@ -185,6 +189,16 @@ export default function MyListingsPage() {
         setFetching(false);
       });
   }, [user, loading]);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("profiles")
+      .select("avatar_url")
+      .eq("user_id", user.id)
+      .single()
+      .then(({ data }) => setAvatarUrl(data?.avatar_url ?? null));
+  }, [user]);
 
   const handleDelete = async (id: number) => {
     if (!window.confirm(t.deleteConfirm)) return;
@@ -315,9 +329,17 @@ export default function MyListingsPage() {
                         className="w-full h-full object-cover"
                       />
                     ) : isSeeker ? (
-                      <SeekerCardVisual
-                        variant={listing.listing_category === "commercial" ? "commercial" : "residential"}
-                        className="w-full h-full"
+                      <AvatarImage
+                        url={avatarUrl}
+                        size="card"
+                        alt=""
+                        className="w-full h-full object-cover"
+                        fallback={
+                          <SeekerCardVisual
+                            variant={listing.listing_category === "commercial" ? "commercial" : "residential"}
+                            className="w-full h-full"
+                          />
+                        }
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">

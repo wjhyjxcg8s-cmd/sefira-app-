@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 import { useLang } from "@/app/lib/LangContext";
 import { getListingSide, getCommercialBadgeLabel, COMMERCIAL_BADGE_CLASS } from "@/app/lib/listingBadge";
-import { getAvatarCardUrl } from "@/app/lib/imageVariants";
+import AvatarImage from "@/app/components/AvatarImage";
 
 type Lang = "tr" | "en" | "fa" | "ar" | "de" | "ru";
 
@@ -232,15 +232,20 @@ export default function SavedPage() {
                           </svg>
                         </div>
                       )
-                    ) : avatarUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={getAvatarCardUrl(avatarUrl)} alt={listing.city} className="w-full h-full object-cover" />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center">
-                        <svg viewBox="0 0 24 24" fill="white" className="w-12 h-12 opacity-80">
-                          <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
-                        </svg>
-                      </div>
+                      <AvatarImage
+                        url={avatarUrl}
+                        size="card"
+                        alt={listing.city}
+                        className="w-full h-full object-cover"
+                        fallback={
+                          <div className="w-full h-full bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center">
+                            <svg viewBox="0 0 24 24" fill="white" className="w-12 h-12 opacity-80">
+                              <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+                            </svg>
+                          </div>
+                        }
+                      />
                     )}
 
                     {/* Type badge */}

@@ -55,7 +55,7 @@ const PopularCities = dynamic(() => import("@/app/components/PopularCities"), {
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
 import { useLang } from "@/app/lib/LangContext";
-import { getAvatarThumbUrl, getAvatarCardUrl } from "@/app/lib/imageVariants";
+import AvatarImage from "@/app/components/AvatarImage";
 import { useProfileDrawer } from "@/app/lib/ProfileDrawerContext";
 import { useUnreadMessages } from "@/app/lib/useUnreadMessages";
 import {
@@ -2127,20 +2127,19 @@ export default function Home() {
                             }}
                             className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-orange-50 transition-colors text-left"
                           >
-                            {notif.senderAvatar ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img
-                                src={getAvatarThumbUrl(notif.senderAvatar)}
-                                loading="lazy"
-                                decoding="async"
-                                className="w-9 h-9 rounded-full object-cover border-2 border-orange-200 flex-shrink-0"
-                                alt=""
-                              />
-                            ) : (
-                              <div className="w-9 h-9 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 font-bold text-sm flex-shrink-0">
-                                {notif.senderName[0]?.toUpperCase() ?? "?"}
-                              </div>
-                            )}
+                            <AvatarImage
+                              url={notif.senderAvatar}
+                              size="thumb"
+                              loading="lazy"
+                              decoding="async"
+                              className="w-9 h-9 rounded-full object-cover border-2 border-orange-200 flex-shrink-0"
+                              alt=""
+                              fallback={
+                                <div className="w-9 h-9 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 font-bold text-sm flex-shrink-0">
+                                  {notif.senderName[0]?.toUpperCase() ?? "?"}
+                                </div>
+                              }
+                            />
                             <div className="flex-1 min-w-0">
                               <p className="text-xs font-bold text-stone-800 truncate">{notif.senderName}</p>
                               <p className="text-[11px] text-stone-500 truncate">{notif.content}</p>
@@ -2161,14 +2160,19 @@ export default function Home() {
                           key={notif.id}
                           className={`flex items-center gap-3 px-4 py-3 border-b border-stone-50 last:border-0 transition-colors ${!notif.read ? "bg-orange-50" : "hover:bg-stone-50"}`}
                         >
-                          {notif.avatar_url ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={getAvatarThumbUrl(notif.avatar_url)} loading="lazy" decoding="async" className="w-8 h-8 rounded-full object-cover border-2 border-orange-200 flex-shrink-0" alt="" />
-                          ) : (
-                            <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 text-xs font-bold border-2 border-orange-200 flex-shrink-0">
-                              {notif.display_name?.[0]?.toUpperCase() || "?"}
-                            </div>
-                          )}
+                          <AvatarImage
+                            url={notif.avatar_url}
+                            size="thumb"
+                            loading="lazy"
+                            decoding="async"
+                            className="w-8 h-8 rounded-full object-cover border-2 border-orange-200 flex-shrink-0"
+                            alt=""
+                            fallback={
+                              <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 text-xs font-bold border-2 border-orange-200 flex-shrink-0">
+                                {notif.display_name?.[0]?.toUpperCase() || "?"}
+                              </div>
+                            }
+                          />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-1.5 flex-wrap">
                               <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${notif.listingType === "has_place" ? "bg-orange-500 text-white" : "bg-blue-500 text-white"}`}>
@@ -2214,16 +2218,22 @@ export default function Home() {
                 onClick={() => { setProfileMenuOpen((o) => !o); setLangMenuOpen(false); setCurrencyMenuOpen(false); }}
                 className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center font-black text-[10px] sm:text-xs text-white shadow-md shadow-orange-500/40 flex-shrink-0 hover:scale-105 active:scale-90 transition-all duration-200 overflow-hidden ring-2 ${profileMenuOpen ? "ring-orange-500 ring-offset-2 scale-95" : "ring-orange-300 ring-offset-1"}`}
               >
-                {profileAvatarUrl ? (
-                  <img src={getAvatarThumbUrl(profileAvatarUrl)} alt="avatar" loading="lazy" decoding="async" className="w-full h-full object-cover" />
-                ) : (
-                  (user.user_metadata?.full_name ?? user.email ?? "U")
-                    .split(" ")
-                    .map((w: string) => w[0])
-                    .slice(0, 2)
-                    .join("")
-                    .toUpperCase()
-                )}
+                <AvatarImage
+                  url={profileAvatarUrl}
+                  size="thumb"
+                  alt="avatar"
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover"
+                  fallback={
+                    (user.user_metadata?.full_name ?? user.email ?? "U")
+                      .split(" ")
+                      .map((w: string) => w[0])
+                      .slice(0, 2)
+                      .join("")
+                      .toUpperCase()
+                  }
+                />
               </button>
             ) : (
               <>
@@ -2982,19 +2992,26 @@ export default function Home() {
                     {/* Background image or gradient */}
                     {thumbnail ? (
                       <Image src={thumbnail} alt="" fill className="object-cover" sizes="(max-width: 768px) 50vw, 33vw" loading="lazy" />
-                    ) : recAvatarMap[rec.user_id] ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={getAvatarCardUrl(recAvatarMap[rec.user_id]!)} alt="" loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
                     ) : (
-                      <div className={`absolute inset-0 flex items-center justify-center ${isHasPlace ? "bg-gradient-to-br from-orange-400 to-amber-500" : "bg-gradient-to-br from-violet-500 to-blue-500"}`}>
-                        {isHasPlace ? (
-                          <div className="w-20 h-20 rounded-full bg-white/25 flex items-center justify-center text-5xl">🏠</div>
-                        ) : (
-                          <svg viewBox="0 0 24 24" fill="white" className="w-20 h-20 opacity-70">
-                            <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-                          </svg>
-                        )}
-                      </div>
+                      <AvatarImage
+                        url={recAvatarMap[rec.user_id]}
+                        size="card"
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        className="absolute inset-0 w-full h-full object-cover"
+                        fallback={
+                          <div className={`absolute inset-0 flex items-center justify-center ${isHasPlace ? "bg-gradient-to-br from-orange-400 to-amber-500" : "bg-gradient-to-br from-violet-500 to-blue-500"}`}>
+                            {isHasPlace ? (
+                              <div className="w-20 h-20 rounded-full bg-white/25 flex items-center justify-center text-5xl">🏠</div>
+                            ) : (
+                              <svg viewBox="0 0 24 24" fill="white" className="w-20 h-20 opacity-70">
+                                <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                              </svg>
+                            )}
+                          </div>
+                        }
+                      />
                     )}
 
                     {/* Dark gradient overlay */}
