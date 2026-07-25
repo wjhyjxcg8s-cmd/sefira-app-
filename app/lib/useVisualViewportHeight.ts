@@ -39,8 +39,29 @@ export interface VisualViewportState {
 const INITIAL: VisualViewportState = { height: null, offsetTop: 0, keyboardInset: 0 };
 
 /**
+ * Quiet period after the last visualViewport event before a large change is
+ * committed. The iOS keyboard animation is ~300ms and fires resize+scroll
+ * throughout; rAF throttling alone still commits every frame of it, which
+ * re-renders and resizes the container *while* iOS is animating — a feedback
+ * loop the user sees as violent shake. Committing nothing until the burst stops
+ * settles it instead: one update, applied when the values are already final.
+ */
+const SETTLE_MS = 100;
+
+/**
+ * Deltas below this commit immediately instead of waiting out SETTLE_MS. URL-bar
+ * show/hide micro-shifts stay responsive; a keyboard (250-350px) never qualifies.
+ */
+const SMALL_CHANGE_PX = 8;
+
+/**
  * Tracks `window.visualViewport`. SSR-safe: renders `INITIAL` on the server and
  * the first client pass, so there is no hydration mismatch.
+ *
+ * The returned state only ever holds *settled* values — intermediate frames of a
+ * keyboard animation are never observable. Consumers can therefore treat any
+ * change to it as "the viewport has finished moving", which is what makes it
+ * safe to trigger scroll corrections and CSS transitions off of it.
  */
 export function useVisualViewportHeight(): VisualViewportState {
   const [state, setState] = useState<VisualViewportState>(INITIAL);
@@ -50,38 +71,70 @@ export function useVisualViewportHeight(): VisualViewportState {
     if (!vv) return; // unsupported engine — caller keeps its CSS fallback
 
     let frame = 0;
+    let settleTimer: ReturnType<typeof setTimeout> | null = null;
+    // Last values handed to React. Deltas are measured against these rather than
+    // against the previous *event*, so a burst of small steps that adds up to a
+    // keyboard still reads as one large change and takes the settle path.
+    let committedHeight: number | null = null;
+    let committedOffsetTop = 0;
+
+    const commit = () => {
+      // clientHeight, not innerHeight: this is the layout viewport, and iOS
+      // leaves it untouched when the keyboard opens — which is exactly the
+      // difference we are trying to measure. Read at commit time so the value
+      // is the settled one, not whatever it was when the burst started.
+      const layoutHeight = document.documentElement.clientHeight;
+      const height = vv.height;
+      const offsetTop = Math.max(0, Math.round(vv.offsetTop));
+      const keyboardInset = Math.max(0, Math.round(layoutHeight - height));
+      committedHeight = height;
+      committedOffsetTop = offsetTop;
+      // Return `prev` unchanged so React bails out on no-op updates.
+      setState((prev) =>
+        prev.height === height &&
+        prev.offsetTop === offsetTop &&
+        prev.keyboardInset === keyboardInset
+          ? prev
+          : { height, offsetTop, keyboardInset },
+      );
+    };
+
+    const handle = () => {
+      const isSmallChange =
+        committedHeight !== null &&
+        Math.abs(vv.height - committedHeight) < SMALL_CHANGE_PX &&
+        Math.abs(Math.round(vv.offsetTop) - committedOffsetTop) < SMALL_CHANGE_PX;
+
+      // Fast path only while no burst is in flight: once we are waiting one out,
+      // an individual small step must not sneak a commit through mid-animation.
+      if (isSmallChange && settleTimer === null) {
+        commit();
+        return;
+      }
+
+      if (settleTimer !== null) clearTimeout(settleTimer);
+      settleTimer = setTimeout(() => {
+        settleTimer = null;
+        commit();
+      }, SETTLE_MS);
+    };
+
     const sync = () => {
-      // rAF-throttle: iOS fires resize+scroll in bursts through the whole
-      // keyboard animation. One measurement per frame is plenty.
+      // rAF coalesces multiple events landing in the same frame; the settle
+      // timer is what actually absorbs the animation.
       if (frame) return;
       frame = requestAnimationFrame(() => {
         frame = 0;
-        // clientHeight, not innerHeight: this is the layout viewport, and iOS
-        // leaves it untouched when the keyboard opens — which is exactly the
-        // difference we are trying to measure.
-        const layoutHeight = document.documentElement.clientHeight;
-        const height = vv.height;
-        const offsetTop = Math.max(0, Math.round(vv.offsetTop));
-        const keyboardInset = Math.max(0, Math.round(layoutHeight - height));
-        // Return `prev` unchanged so React bails out on no-op updates. offsetTop
-        // is part of the comparison on purpose: the vv 'scroll' event is exactly
-        // where iOS reports a shifted visible region, and that has to reach the
-        // consumer even though the height did not move.
-        setState((prev) =>
-          prev.height === height &&
-          prev.offsetTop === offsetTop &&
-          prev.keyboardInset === keyboardInset
-            ? prev
-            : { height, offsetTop, keyboardInset },
-        );
+        handle();
       });
     };
 
-    sync();
+    commit(); // first measurement is immediate — nothing to settle yet
     vv.addEventListener("resize", sync);
     vv.addEventListener("scroll", sync);
     return () => {
       if (frame) cancelAnimationFrame(frame);
+      if (settleTimer !== null) clearTimeout(settleTimer);
       vv.removeEventListener("resize", sync);
       vv.removeEventListener("scroll", sync);
     };

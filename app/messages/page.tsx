@@ -315,9 +315,15 @@ const KEYBOARD_OVERLAY_MIN_PX = 120;
  * outside the conversation itself — they collapse away so the message list keeps
  * usable height, and animate back when the keyboard closes. maxHeight rather
  * than height so each row keeps its natural size when expanded.
+ *
+ * No extra gating is needed to keep these transitions off the keyboard
+ * animation: they are driven by `keyboardOverlays`, which derives from
+ * useVisualViewportHeight's settled state, so the class flip cannot happen until
+ * the keyboard has already stopped moving. 150ms so the collapse reads as a
+ * quick settle after it rather than a second animation competing with it.
  */
 const CHROME_TRANSITION =
-  "max-height 200ms ease-out, padding 200ms ease-out, opacity 150ms ease-out";
+  "max-height 150ms ease-out, padding 150ms ease-out, opacity 120ms ease-out";
 const chromeCollapsed: CSSProperties = {
   maxHeight: 0,
   opacity: 0,
@@ -610,14 +616,19 @@ function MessagesPageContent() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Keep the newest message pinned while the keyboard opens (WhatsApp
-  // behaviour) — on BOTH platforms, without any UA sniffing. iOS shows up as
-  // keyboardOverlays; Chromium with resizes-content shrinks the layout viewport
-  // instead, which surfaces as vvHeight dropping. The 80px floor keeps a URL-bar
-  // collapse (~50px) from triggering it. Sets scrollTop directly rather than
-  // scrollIntoView so it can never scroll an ancestor, including the window.
-  // Once the keyboard settles vvHeight stops changing and this goes quiet,
-  // leaving the user free to scroll back through history.
+  // Both effects below are driven by useVisualViewportHeight, which publishes
+  // ONLY settled values — intermediate frames of the keyboard animation never
+  // reach React. So each runs once, after the viewport has stopped moving,
+  // rather than per-frame against iOS while it is still animating. That
+  // ordering is the fix for the shake; neither effect changed what it does.
+
+  // Pin the newest message. Works on both platforms without UA sniffing: iOS
+  // shows up as keyboardOverlays, Chromium with resizes-content shrinks the
+  // layout viewport instead, which surfaces as vvHeight dropping. The 80px floor
+  // keeps a URL-bar collapse (~50px) from triggering it. Sets scrollTop directly
+  // rather than scrollIntoView so it can never scroll an ancestor. vvOffsetTop is
+  // deliberately NOT a dependency — a viewport pan while the keyboard is open
+  // must not yank a user who has scrolled back through history.
   const prevVvHeight = useRef<number | null>(null);
   useEffect(() => {
     if (vvHeight == null) return;
@@ -630,11 +641,9 @@ function MessagesPageContent() {
   }, [vvHeight, keyboardOverlays]);
 
   // Undo the layout-viewport scroll iOS applies while focusing the input, so the
-  // page behind cannot sit pushed up under the chat column. Deliberately keyed
-  // on vvOffsetTop: the visualViewport 'scroll' event is where iOS reports that
-  // shift, and the hook forwards it, so this re-pins there and not only on open.
-  // Self-terminating — a successful reset drives offsetTop back to 0 and the
-  // next run bails at the guard.
+  // page behind cannot sit pushed up under the chat column. Self-terminating: a
+  // successful reset drives offsetTop to 0, and the settled commit that follows
+  // bails at the guard.
   useEffect(() => {
     if (!keyboardOverlays || vvOffsetTop === 0) return;
     window.scrollTo(0, 0);
@@ -1513,7 +1522,7 @@ function MessagesPageContent() {
               {/* Listing context card — fetched on-demand per conversation */}
               {listingLoading && !activeListing && (
                 <div
-                  className={`mx-3 mt-3 mb-2 bg-orange-100 animate-pulse rounded-2xl flex-shrink-0 transition-all duration-200 ${
+                  className={`mx-3 mt-3 mb-2 bg-orange-100 animate-pulse rounded-2xl flex-shrink-0 transition-all duration-150 ${
                     keyboardOverlays ? "h-11" : "h-20"
                   }`}
                 />
@@ -1524,11 +1533,11 @@ function MessagesPageContent() {
                    on one line instead of the four-line card. */
                 <div
                   onClick={() => router.push(`/listings/${activeListing.id}`)}
-                  className="mx-3 mb-2 cursor-pointer active:scale-[0.98] flex-shrink-0 transition-all duration-200"
+                  className="mx-3 mb-2 cursor-pointer active:scale-[0.98] flex-shrink-0 transition-all duration-150"
                   style={{ marginTop: keyboardOverlays ? "0.5rem" : "0.75rem" }}
                 >
                   <div
-                    className={`flex items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg transition-all duration-200 ${
+                    className={`flex items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg transition-all duration-150 ${
                       keyboardOverlays ? "rounded-xl p-2" : "rounded-2xl p-3"
                     }`}
                   >
@@ -1536,14 +1545,14 @@ function MessagesPageContent() {
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={activeListing.photos[0]}
-                        className={`rounded-xl object-cover flex-shrink-0 border-2 border-white/30 transition-all duration-200 ${
+                        className={`rounded-xl object-cover flex-shrink-0 border-2 border-white/30 transition-all duration-150 ${
                           keyboardOverlays ? "w-8 h-8" : "w-16 h-16"
                         }`}
                         alt=""
                       />
                     ) : (
                       <div
-                        className={`rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
+                        className={`rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0 transition-all duration-150 ${
                           keyboardOverlays ? "w-8 h-8 text-base" : "w-16 h-16 text-3xl"
                         }`}
                       >
@@ -1580,7 +1589,7 @@ function MessagesPageContent() {
                       </div>
                     )}
                     <span
-                      className={`text-white/80 flex-shrink-0 transition-all duration-200 ${
+                      className={`text-white/80 flex-shrink-0 transition-all duration-150 ${
                         keyboardOverlays ? "text-base" : "text-xl"
                       }`}
                     >
