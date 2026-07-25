@@ -10,6 +10,7 @@ import { supabase } from "@/app/lib/supabase";
 import { formatMessageTime } from "@/app/lib/formatTime";
 import AvatarImage from "@/app/components/AvatarImage";
 import { useChatView } from "@/app/lib/ChatViewContext";
+import { useVisualViewportHeight } from "@/app/lib/useVisualViewportHeight";
 
 const translations = {
   tr: {
@@ -301,6 +302,13 @@ const LOCALE_MAP: Record<string, string> = {
   ru: "ru-RU",
 };
 
+/**
+ * Minimum layout-vs-visual viewport gap that counts as "a keyboard is covering
+ * the page". Comfortably above iOS's ~44px input accessory bar and well below
+ * any real keyboard (~250-350px), so transient URL-bar deltas never trip it.
+ */
+const KEYBOARD_OVERLAY_MIN_PX = 120;
+
 const SendIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
     <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
@@ -318,6 +326,16 @@ function MessagesPageContent() {
   const [selectedConv, setSelectedConv] = useState<string | null>(null);
   const [mobileView, setMobileView] = useState<"list" | "chat">("list");
   const { setIsChatOpen } = useChatView();
+
+  // ── Keyboard-aware chat height ────────────────────────────────────────────
+  // iOS Safari does not resize the layout viewport for the on-screen keyboard,
+  // so h-dvh keeps its full height and the input lands underneath it. Only when
+  // the keyboard actually overlays (keyboardInset > threshold) do we override
+  // the height with the visual-viewport height. On Chromium the layout viewport
+  // shrinks natively (interactive-widget=resizes-content in app/layout.tsx),
+  // keyboardInset stays ~0, and the existing h-dvh classes keep working.
+  const { height: vvHeight, keyboardInset } = useVisualViewportHeight();
+  const keyboardOverlays = keyboardInset > KEYBOARD_OVERLAY_MIN_PX;
 
   // Hide the global bottom nav while a conversation is open (mobile only);
   // reset on unmount so it doesn't stay hidden after navigating away.
@@ -347,6 +365,7 @@ function MessagesPageContent() {
   const [messageText, setMessageText] = useState("");
   const [sendingMessage, setSendingMessage] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesListRef = useRef<HTMLDivElement>(null);
   const messageInputRef = useRef<HTMLInputElement>(null);
   const messageRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -571,6 +590,28 @@ function MessagesPageContent() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Keep the newest message pinned while the keyboard opens (WhatsApp
+  // behaviour) — on BOTH platforms, without any UA sniffing. iOS shows up as
+  // keyboardOverlays; Chromium with resizes-content shrinks the layout viewport
+  // instead, which surfaces as vvHeight dropping. The 80px floor keeps a URL-bar
+  // collapse (~50px) from triggering it. Sets scrollTop directly rather than
+  // scrollIntoView so it can never scroll an ancestor, including the window.
+  // Once the keyboard settles vvHeight stops changing and this goes quiet,
+  // leaving the user free to scroll back through history.
+  const prevVvHeight = useRef<number | null>(null);
+  useEffect(() => {
+    if (vvHeight == null) return;
+    const previous = prevVvHeight.current;
+    prevVvHeight.current = vvHeight;
+    const shrank = previous != null && vvHeight < previous - 80;
+    if (!shrank && !keyboardOverlays) return;
+    // Undo any layout-viewport scroll iOS applies while focusing the input, so
+    // the page behind cannot sit pushed up under the shortened chat column.
+    window.scrollTo(0, 0);
+    const el = messagesListRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [vvHeight, keyboardOverlays]);
 
   // Scroll support chat to bottom
   useEffect(() => {
@@ -1028,6 +1069,10 @@ function MessagesPageContent() {
       className={`flex flex-col ${
         mobileView === "chat" ? "h-dvh" : "h-[calc(100dvh-4rem-env(safe-area-inset-bottom))]"
       } md:h-dvh bg-[#fefaf5]`}
+      /* Only overrides the h-dvh classes above while a keyboard is overlaying
+         the layout viewport (iOS). Otherwise `undefined` and CSS stays in
+         charge, so desktop and Chromium/Android are byte-for-byte unchanged. */
+      style={keyboardOverlays && vvHeight ? { height: `${vvHeight}px` } : undefined}
       dir={isFa ? "rtl" : "ltr"}
     >
       <style>{`
@@ -1486,8 +1531,14 @@ function MessagesPageContent() {
 
               {/* Messages area */}
               <div
+                ref={messagesListRef}
                 className="flex-1 overflow-y-auto py-4"
-                style={{ direction: "ltr", overflowX: "hidden" }}
+                /* overscrollBehaviorY (not the shorthand) on purpose: it stops
+                   rubber-banding at the ends of this list from scrolling the
+                   page behind, without touching the horizontal axis — the
+                   `overflow-x-hidden` + `overscroll-behavior: none` combo is a
+                   known Android scroll-killer in this project. */
+                style={{ direction: "ltr", overflowX: "hidden", overscrollBehaviorY: "contain" }}
               >
                 {messages.length === 0 && (
                   <div className="text-center py-10 text-gray-400 text-sm">
