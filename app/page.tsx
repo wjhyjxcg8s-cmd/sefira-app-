@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -1234,6 +1234,52 @@ const thisWeekLabel: Record<string, string> = {
   ru: "На этой неделе",
 };
 
+// Bell dropdown labels — same shape as commercialConfirmLabels above.
+const notifLabels: Record<string, { title: string; messages: string; admin: string; empty: string; emptyHint: string }> = {
+  tr: {
+    title: "Bildirimler",
+    messages: "💬 Yeni Mesajlar",
+    admin: "📢 Yönetim",
+    empty: "Yeni bildiriminiz yok",
+    emptyHint: "Mesajlarınız ve duyurular burada görünür.",
+  },
+  en: {
+    title: "Notifications",
+    messages: "💬 New Messages",
+    admin: "📢 Announcements",
+    empty: "You're all caught up",
+    emptyHint: "Your messages and announcements show up here.",
+  },
+  fa: {
+    title: "اعلان‌ها",
+    messages: "💬 پیام‌های جدید",
+    admin: "📢 اطلاعیه‌ها",
+    empty: "اعلان جدیدی ندارید",
+    emptyHint: "پیام‌ها و اطلاعیه‌های شما اینجا نمایش داده می‌شوند.",
+  },
+  ar: {
+    title: "الإشعارات",
+    messages: "💬 رسائل جديدة",
+    admin: "📢 الإدارة",
+    empty: "لا توجد إشعارات جديدة",
+    emptyHint: "ستظهر رسائلك والإعلانات هنا.",
+  },
+  de: {
+    title: "Benachrichtigungen",
+    messages: "💬 Neue Nachrichten",
+    admin: "📢 Mitteilungen",
+    empty: "Keine neuen Benachrichtigungen",
+    emptyHint: "Deine Nachrichten und Mitteilungen erscheinen hier.",
+  },
+  ru: {
+    title: "Уведомления",
+    messages: "💬 Новые сообщения",
+    admin: "📢 Администрация",
+    empty: "Новых уведомлений нет",
+    emptyHint: "Здесь появятся ваши сообщения и объявления.",
+  },
+};
+
 const PRIORITY_COUNTRIES = [
   "Turkey", "Germany", "United States", "Spain", "Brazil",
   "Italy", "France", "United Arab Emirates", "South Korea",
@@ -1263,73 +1309,6 @@ interface WeeklyStory {
   week_label: string | null;
   created_at: string;
   views: number;
-}
-
-// ─── Notification item ────────────────────────────────────────────────────────
-interface NotifItem {
-  id: string;
-  type: "new_listing";
-  city: string;
-  district: string | null;
-  rent: number | null;
-  currency: string | null;
-  listingType: string;
-  avatar_url: string | null;
-  display_name: string | null;
-  createdAt: number;
-}
-
-// ─── Notification persistence ─────────────────────────────────────────────────
-// Three keys, three jobs. The visible list is *history* and is not what decides
-// "new": seen/dismissed are separate id ledgers, so removing an item from the
-// list can never resurrect it as unread on the next fetch (the old model stored
-// `read` on the item itself, so any dismiss / "Clear All" wiped the seen-state
-// and the same 6 listings came back unread on the next mount).
-const NOTIF_LIST_KEY = "sefira-notifications";
-const NOTIF_SEEN_KEY = "sefira_notif_seen";
-const NOTIF_DISMISSED_KEY = "sefira_notif_dismissed";
-/** Ledgers are newest-first and capped so they can't grow without bound. */
-const NOTIF_ID_CAP = 100;
-
-function readIdLedger(key: string): string[] {
-  try {
-    const raw = localStorage.getItem(key);
-    if (!raw) return [];
-    const parsed: unknown = JSON.parse(raw);
-    return Array.isArray(parsed) ? (parsed.filter((v) => typeof v === "string") as string[]) : [];
-  } catch {
-    return [];
-  }
-}
-
-/** Prepends `ids`, de-dupes, caps — returns the ledger it persisted. */
-function addToIdLedger(key: string, prev: string[], ids: string[]): string[] {
-  const fresh = ids.filter((id) => !prev.includes(id));
-  if (fresh.length === 0) return prev;
-  const next = [...fresh, ...prev].slice(0, NOTIF_ID_CAP);
-  try { localStorage.setItem(key, JSON.stringify(next)); } catch { /* ignore */ }
-  return next;
-}
-
-/** Dismissed ids are never rendered, so they live in storage only — no state. */
-function markNotifDismissed(ids: string[]): void {
-  addToIdLedger(NOTIF_DISMISSED_KEY, readIdLedger(NOTIF_DISMISSED_KEY), ids);
-}
-
-// ─── Supabase listing type ─────────────────────────────────────────────────────
-interface SupabaseListing {
-  id: string;
-  type: string;
-  city: string;
-  district: string | null;
-  rent: number | null;
-  currency: string | null;
-  photos: string[] | null;
-  house_type: string | null;
-  rooms: number | null;
-  smoking: boolean | null;
-  user_id: string;
-  profiles: { display_name: string | null; avatar_url: string | null } | null;
 }
 
 const listingTypeTrans: Record<string, Record<string, string>> = {
@@ -1382,18 +1361,16 @@ export default function Home() {
   const promoVideoSectionRef = useRef<HTMLDivElement>(null);
   const promoVideoRef = useRef<HTMLVideoElement>(null);
   const [promoVideoInView, setPromoVideoInView] = useState(false);
-  const [notifications, setNotifications] = useState<NotifItem[]>([]);
-  // Seen = "has been shown in an opened dropdown". Dismissed = "× or Clear All".
-  // Both persist as id ledgers; the badge is derived, never stored.
-  const [seenIds, setSeenIds] = useState<string[]>([]);
-  const unreadCount = useMemo(
-    () => notifications.filter((n) => !seenIds.includes(n.id)).length,
-    [notifications, seenIds],
-  );
-  // Unread peer-message notifications come from the shared provider (single
-  // poller) — see UnreadMessagesProvider. No local poll here (avoids duplicate
-  // /api/messages/unread requests).
-  const { notifications: msgNotifications, dismissConversation } = useUnreadMessages();
+  // The bell is personal-only: unread peer messages + unread admin messages,
+  // both from the shared provider (single poller) — see UnreadMessagesProvider.
+  // It deliberately carries no site-wide "new listings" feed.
+  const {
+    notifications: msgNotifications,
+    dismissConversation,
+    adminNotifications,
+    dismissAdmin,
+  } = useUnreadMessages();
+  const notifCount = msgNotifications.length + adminNotifications.length;
 
   // ── PWA install banner ────────────────────────────────────────────────────
   const [pwaPrompt, setPwaPrompt] = useState<Event | null>(null);
@@ -1526,29 +1503,16 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
-  // ── Load persisted notifications + seen/dismissed ledgers ────────────────
+  // ── One-time cleanup of the retired site-wide "new listings" bell feed ────
+  // The bell used to mirror every new listing on the site and kept three local
+  // keys to track it. The feed is gone; drop the storage so it doesn't linger.
   useEffect(() => {
-    const dismissed = readIdLedger(NOTIF_DISMISSED_KEY);
-    let seen = readIdLedger(NOTIF_SEEN_KEY);
     try {
-      const stored = localStorage.getItem(NOTIF_LIST_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored) as (NotifItem & { read?: boolean })[];
-        if (Array.isArray(parsed)) {
-          // Migration: the old model kept seen-state as `read` on the item. Seed
-          // the ledger from it once so upgrading users don't see the badge return.
-          if (seen.length === 0) {
-            const alreadyRead = parsed.filter((n) => n?.id && n.read).map((n) => n.id);
-            if (alreadyRead.length > 0) seen = addToIdLedger(NOTIF_SEEN_KEY, seen, alreadyRead);
-          }
-          setNotifications(parsed.filter((n) => n?.id && !dismissed.includes(n.id)));
-        }
-      }
-      // Legacy: the badge used to be a stored number that could desync from the
-      // list. It is derived from the seen ledger now.
+      localStorage.removeItem("sefira-notifications");
       localStorage.removeItem("sefira-notifications-unread");
+      localStorage.removeItem("sefira_notif_seen");
+      localStorage.removeItem("sefira_notif_dismissed");
     } catch { /* ignore */ }
-    setSeenIds(seen);
   }, []);
 
   // ── WelcomePopup → openAuthModal event ───────────────────────────────────
@@ -1853,70 +1817,10 @@ export default function Home() {
     })();
   }, []);
 
-  // ── Latest listings from Supabase (notifications only) ──────────────────
-  useEffect(() => {
-    (async () => {
-      // NOTE: an embedded `profiles(...)` join on `listings` has no PostgREST
-      // relationship and returns 400 — author info is fetched separately from
-      // the public profiles view (same pattern as LatestListings).
-      const { data, error } = await supabase
-        .from("listings")
-        .select("id, type, city, district, rent, currency, user_id")
-        .eq("is_deleted", false)
-        .order("created_at", { ascending: false })
-        .limit(6);
-
-      if (error) {
-        console.error("Notifications listings query error:", error.message);
-        return;
-      }
-      if (!data) return;
-      const incoming = data as unknown as SupabaseListing[];
-
-      const userIds = incoming.map((l) => l.user_id).filter(Boolean);
-      const { data: profiles } = await supabase
-        .from("profiles_public")
-        .select("user_id, display_name, avatar_url")
-        .in("user_id", userIds);
-      const profileMap = new Map(
-        (profiles ?? []).map(
-          (p: { user_id: string; display_name: string | null; avatar_url: string | null }) => [p.user_id, p],
-        ),
-      );
-
-      // Dismissed ids are read straight from storage: this resolves after the
-      // load effect has run, and storage — not state — is the authority here.
-      const dismissed = readIdLedger(NOTIF_DISMISSED_KEY);
-
-      setNotifications((prev) => {
-        const existingIds = new Set(prev.map((n) => n.id));
-        const newItems: NotifItem[] = incoming
-          .filter((l) => !existingIds.has(l.id) && !dismissed.includes(l.id))
-          .map((l) => {
-            const p = profileMap.get(l.user_id);
-            return {
-              id: l.id,
-              type: "new_listing" as const,
-              city: l.city,
-              district: l.district,
-              rent: l.rent,
-              currency: l.currency,
-              listingType: l.type,
-              avatar_url: p?.avatar_url ?? null,
-              display_name: p?.display_name ?? null,
-              createdAt: Date.now(),
-            };
-          });
-        if (newItems.length === 0) return prev;
-        const merged = [...newItems, ...prev];
-        try { localStorage.setItem(NOTIF_LIST_KEY, JSON.stringify(merged)); } catch { /* ignore */ }
-        return merged;
-      });
-    })();
-  }, []);
-
-  // (Unread peer-message polling now lives in UnreadMessagesProvider — a single
-  // shared poller consumed via useUnreadMessages() above.)
+  // (Unread peer-message and admin-message polling both live in
+  // UnreadMessagesProvider — a single shared poller consumed via
+  // useUnreadMessages() above. The bell has no listings query of its own:
+  // a site-wide feed of every new listing was never a personal notification.)
 
   // ── Story viewer navigation helpers ──────────────────────────────────────
   const trackView = async (storyId: string) => {
@@ -2128,22 +2032,13 @@ export default function Home() {
             {/* Notifications bell */}
             <div className="relative" ref={notifRef}>
               <button
+                /* No "mark seen" step on open: every item is server-backed unread
+                   state that clears when the user actually opens the message. */
                 onClick={() => {
-                  const opening = !notifOpen;
-                  setNotifOpen(opening);
+                  setNotifOpen((o) => !o);
                   setLangMenuOpen(false);
                   setCurrencyMenuOpen(false);
                   setProfileMenuOpen(false);
-                  if (opening) {
-                    // Everything currently listed becomes "seen" — the items stay
-                    // visible as history, they just stop counting toward the badge,
-                    // and the ledger survives reloads. Listings that arrive later
-                    // are not in the ledger, so they still count as new.
-                    setSeenIds((prev) =>
-                      addToIdLedger(NOTIF_SEEN_KEY, prev, notifications.map((n) => n.id)),
-                    );
-                    // Message notifications remain until individually clicked
-                  }
                 }}
                 className="relative w-9 h-9 flex items-center justify-center rounded-lg border border-stone-200 text-stone-500 hover:text-orange-500 hover:border-orange-300 hover:bg-orange-50 transition-all duration-200"
                 aria-label="Bildirimler"
@@ -2152,39 +2047,25 @@ export default function Home() {
                   <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                   <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                 </svg>
-                {(unreadCount + msgNotifications.length) > 0 && (
+                {notifCount > 0 && (
                   <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center leading-none">
-                    {(unreadCount + msgNotifications.length) > 9 ? "9+" : (unreadCount + msgNotifications.length)}
+                    {notifCount > 9 ? "9+" : notifCount}
                   </span>
                 )}
               </button>
               {notifOpen && (
                 <div className="absolute top-full mt-2 right-0 z-[100] bg-white border border-stone-200 rounded-2xl shadow-xl overflow-hidden w-80 animate-dropdown-slide">
-                  <div className="px-4 py-3 border-b border-stone-100 flex items-center justify-between">
+                  <div className="px-4 py-3 border-b border-stone-100">
                     <p className="text-sm font-black text-stone-800">
-                      {lang === "tr" ? "Yeni İlanlar" : lang === "fa" ? "آگهی‌های جدید" : lang === "ar" ? "إعلانات جديدة" : lang === "de" ? "Neue Anzeigen" : lang === "ru" ? "Новые объявления" : "New Listings"}
+                      {(notifLabels[lang] ?? notifLabels.tr).title}
                     </p>
-                    {notifications.length > 0 && (
-                      <button
-                        onClick={() => {
-                          // Cleared items go into the dismissed ledger, otherwise the
-                          // next fetch would hand the exact same listings straight back.
-                          markNotifDismissed(notifications.map((n) => n.id));
-                          setNotifications([]);
-                          try { localStorage.setItem(NOTIF_LIST_KEY, "[]"); } catch { /* ignore */ }
-                        }}
-                        className="text-[10px] font-bold text-stone-400 hover:text-rose-500 transition-colors px-2 py-1 rounded-lg hover:bg-rose-50"
-                      >
-                        {lang === "tr" ? "Tümünü Temizle" : lang === "fa" ? "پاک کردن همه" : lang === "ar" ? "مسح الكل" : lang === "de" ? "Alle löschen" : lang === "ru" ? "Очистить всё" : "Clear All"}
-                      </button>
-                    )}
                   </div>
                   <div className="max-h-80 overflow-y-auto">
                     {/* ── Unread peer messages section ── */}
                     {msgNotifications.length > 0 && (
                       <div className="border-b border-stone-100 pb-1">
                         <p className="text-[10px] font-black text-stone-400 px-4 pt-2.5 pb-1 uppercase tracking-wider">
-                          {lang === "tr" ? "💬 Yeni Mesajlar" : lang === "fa" ? "💬 پیام‌های جدید" : lang === "ar" ? "💬 رسائل جديدة" : lang === "de" ? "💬 Neue Nachrichten" : lang === "ru" ? "💬 Новые сообщения" : "💬 New Messages"}
+                          {(notifLabels[lang] ?? notifLabels.tr).messages}
                         </p>
                         {msgNotifications.map((notif) => (
                           <button
@@ -2223,73 +2104,50 @@ export default function Home() {
                         ))}
                       </div>
                     )}
-                    {/* ── Listing notifications section ── */}
-                    {notifications.length === 0 && msgNotifications.length === 0 ? (
-                      <div className="px-4 py-6 text-center text-sm text-stone-400">
-                        {lang === "tr" ? "Henüz bildirim yok" : lang === "fa" ? "هیچ اعلانی یافت نشد" : lang === "ar" ? "لا توجد إشعارات بعد" : lang === "de" ? "Noch keine Benachrichtigungen" : lang === "ru" ? "Нет уведомлений" : "No notifications yet"}
-                      </div>
-                    ) : notifications.length === 0 ? null : (
-                      notifications.map((notif) => (
-                        <div
-                          key={notif.id}
-                          role="button"
-                          tabIndex={0}
-                          aria-label={`${notif.display_name || "Kullanıcı"} — ${notif.city}`}
-                          /* onPointerUp only (same lesson as SearchSheet/StoryViewer): an
-                             onClick here would double-fire a synthesized click ~300ms later
-                             on iOS and flash the default tap highlight. */
-                          onPointerUp={() => {
-                            setNotifOpen(false);
-                            router.push(`/listings/${notif.id}`);
-                          }}
-                          style={{ WebkitTapHighlightColor: "transparent" }}
-                          className={`flex items-center gap-3 px-4 py-3 min-h-[44px] cursor-pointer border-b border-stone-50 last:border-0 transition-colors ${!seenIds.includes(notif.id) ? "bg-orange-50" : "hover:bg-stone-50"}`}
-                        >
-                          <AvatarImage
-                            url={notif.avatar_url}
-                            size="thumb"
-                            loading="lazy"
-                            decoding="async"
-                            className="w-8 h-8 rounded-full object-cover border-2 border-orange-200 flex-shrink-0"
-                            alt=""
-                            fallback={
-                              <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 text-xs font-bold border-2 border-orange-200 flex-shrink-0">
-                                {notif.display_name?.[0]?.toUpperCase() || "?"}
-                              </div>
-                            }
-                          />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-1.5 flex-wrap">
-                              <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${notif.listingType === "has_place" ? "bg-orange-500 text-white" : "bg-blue-500 text-white"}`}>
-                                {listingTypeTrans[notif.listingType]?.[lang] || listingTypeTrans[notif.listingType]?.["tr"] || notif.listingType}
-                              </span>
-                              <span className="text-xs text-stone-600 font-medium truncate">
-                                {notif.display_name || (lang === "tr" ? "Kullanıcı" : "User")}
-                              </span>
-                            </div>
-                            <p className="text-xs text-stone-500 truncate mt-0.5">
-                              {notif.city}{notif.district ? ` / ${notif.district}` : ""}
-                            </p>
-                            {notif.rent && notif.currency && (
-                              <p className="text-xs font-bold text-orange-500 mt-0.5">{notif.rent} {notif.currency}/ay</p>
-                            )}
-                          </div>
+                    {/* ── Admin messages section ── */}
+                    {adminNotifications.length > 0 && (
+                      <div className="border-b border-stone-100 pb-1">
+                        <p className="text-[10px] font-black text-violet-400 px-4 pt-2.5 pb-1 uppercase tracking-wider">
+                          {(notifLabels[lang] ?? notifLabels.tr).admin}
+                        </p>
+                        {adminNotifications.map((notif) => (
                           <button
-                            aria-label="Bildirimi kaldır"
-                            /* stopPropagation so dismissing never also navigates the row */
-                            onPointerUp={(e) => {
-                              e.stopPropagation();
-                              const updated = notifications.filter((n) => n.id !== notif.id);
-                              setNotifications(updated);
-                              markNotifDismissed([notif.id]);
-                              try { localStorage.setItem(NOTIF_LIST_KEY, JSON.stringify(updated)); } catch { /* ignore */ }
+                            key={notif.id}
+                            onClick={() => {
+                              // Opening the destination persists is_read
+                              // (/support-chat POSTs /api/user/mark-read, /messages
+                              // updates the global rows); this is just instant feedback.
+                              dismissAdmin(notif.id);
+                              setNotifOpen(false);
+                              router.push(notif.href);
                             }}
-                            className="w-8 h-8 flex items-center justify-center rounded-full text-stone-300 hover:text-rose-500 hover:bg-rose-50 transition-colors flex-shrink-0 text-xs"
+                            className="w-full flex items-center gap-3 px-4 py-2.5 min-h-[44px] hover:bg-violet-50 transition-colors text-left"
                           >
-                            ✕
+                            <div className="w-9 h-9 rounded-full bg-violet-100 flex items-center justify-center text-violet-600 flex-shrink-0">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]">
+                                <path d="m3 11 18-5v12L3 14v-3z" />
+                                <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+                              </svg>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-bold text-stone-800 truncate">{notif.title}</p>
+                              <p className="text-[11px] text-stone-500 truncate">{notif.message}</p>
+                            </div>
+                            <div className="w-2 h-2 rounded-full bg-violet-500 flex-shrink-0" />
                           </button>
-                        </div>
-                      ))
+                        ))}
+                      </div>
+                    )}
+                    {/* ── Empty state ── */}
+                    {notifCount === 0 && (
+                      <div className="px-4 py-7 text-center">
+                        <p className="text-sm font-bold text-stone-500">
+                          {(notifLabels[lang] ?? notifLabels.tr).empty}
+                        </p>
+                        <p className="text-[11px] text-stone-400 mt-1">
+                          {(notifLabels[lang] ?? notifLabels.tr).emptyHint}
+                        </p>
+                      </div>
                     )}
                   </div>
                 </div>
