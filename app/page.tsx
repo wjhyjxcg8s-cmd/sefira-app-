@@ -8,6 +8,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Search, MapPin, LayoutGrid, SlidersHorizontal } from "lucide-react";
 import type { SheetMode } from "@/app/components/SearchSheet";
+import { getListingSide, getCommercialBadgeLabel, type Lang as BadgeLang } from "@/app/lib/listingBadge";
 
 // ── Lazy-loaded client components (kept out of the initial JS bundle) ────────
 // Modals/overlays are only rendered when opened, so their chunk is fetched on
@@ -1302,7 +1303,11 @@ const listingTypeTrans: Record<string, Record<string, string>> = {
 
 interface SmartRec {
   id: string;
-  type: string;
+  // Residential rows carry the side in `type`; commercial rows leave `type` null and
+  // set the has_place/needs_place booleans instead. Always derive via getListingSide().
+  type: string | null;
+  has_place: boolean | null;
+  needs_place: boolean | null;
   city: string;
   country_code: string | null;
   rent: number | null;
@@ -1590,7 +1595,10 @@ export default function Home() {
   // ── Fetch smart recommendations ──────────────────────────────────────────
   useEffect(() => {
     let active = true;
-    const SMART_REC_SELECT = `id, type, city, country_code, rent, max_budget, currency, photos, house_type, rooms, seeker_age, occupation, gender_preference, seeker_gender, user_id, listing_category`;
+    // has_place/needs_place are required, not optional extras: commercial rows have a
+    // null `type`, so without these booleans getListingSide() cannot tell which side a
+    // commercial rec is on — which is what silently suppressed seeker avatars here.
+    const SMART_REC_SELECT = `id, type, has_place, needs_place, city, country_code, rent, max_budget, currency, photos, house_type, rooms, seeker_age, occupation, gender_preference, seeker_gender, user_id, listing_category`;
 
     async function fetchRecent(dismissed: string[]) {
       const { data, error } = await supabase
@@ -1719,9 +1727,14 @@ export default function Home() {
   const [activeRecIndex, setActiveRecIndex] = useState(0);
   const recScrollRef = useRef<HTMLDivElement>(null);
 
-  // ── Fetch avatars for needs_place smart recs ─────────────────────────────
+  // ── Fetch avatars for seeker smart recs ──────────────────────────────────
+  // getListingSide (not `r.type === "needs_place"`): commercial rows never populate
+  // `type`, so the raw string check dropped every commercial seeker from `ids` and
+  // their cards fell through to the illustrated placeholder — even though the exact
+  // same user's avatar rendered fine in LatestListings, which derives the side properly.
   useEffect(() => {
-    const ids = smartRecs.filter((r) => r.type === "needs_place").map((r) => r.user_id).filter(Boolean);
+    let active = true;
+    const ids = smartRecs.filter((r) => getListingSide(r) === "needs_place").map((r) => r.user_id).filter(Boolean);
     if (ids.length === 0) return;
     supabase
       // profiles_public (not profiles): profiles is RLS-restricted to the owning
@@ -1730,12 +1743,17 @@ export default function Home() {
       .from("profiles_public")
       .select("user_id, avatar_url")
       .in("user_id", ids)
-      .then(({ data }) => {
+      .then(({ data, error }) => {
+        if (!active) return;
+        if (error) { console.error("SmartRec avatar query error:", error.message); return; }
         if (!data) return;
         const map: Record<string, string | null> = {};
         for (const p of data) map[p.user_id] = p.avatar_url ?? null;
+        // TEMP diagnostics — remove once verified on the live site.
+        console.log("[rec-avatars] ids:", ids, "map size:", Object.keys(map).length, "map:", map);
         setRecAvatarMap(map);
       });
+    return () => { active = false; };
   }, [smartRecs]);
 
   // ── Currency ──────────────────────────────────────────────────────────────
@@ -2967,7 +2985,14 @@ export default function Home() {
                 ? String.fromCodePoint(...(rec.country_code.toUpperCase().split("").map((c: string) => 0x1F1E6 + c.charCodeAt(0) - 65)))
                 : "🌍";
               const thumbnail = rec.photos?.[0] ?? null;
-              const isHasPlace = rec.type === "has_place";
+              // Derived, not `rec.type === "has_place"`: commercial rows have a null
+              // `type`, which made every commercial owner card render the seeker visual.
+              const side = getListingSide(rec);
+              const isHasPlace = side === "has_place";
+              // TEMP diagnostics — remove once verified on the live site.
+              if (side === "needs_place" && !rec.photos?.[0] && !recAvatarMap[rec.user_id]) {
+                console.log("[rec-avatars] no avatar for card", rec.id, "user_id:", rec.user_id, "category:", rec.listing_category, "type:", rec.type, "needs_place:", rec.needs_place);
+              }
               const summary = isHasPlace
                 ? [rec.house_type, rec.rooms ? `${rec.rooms} oda` : null].filter(Boolean).join(" · ")
                 : [rec.seeker_age, rec.occupation].filter(Boolean).join(" · ");
@@ -3037,9 +3062,13 @@ export default function Home() {
                         <span className="text-base font-bold text-white truncate" style={{ textShadow: "0 1px 6px rgba(0,0,0,0.5)" }}>
                           {flagEmoji} {rec.city}
                         </span>
-                        <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full text-white flex-shrink-0 ${isHasPlace ? "bg-emerald-500" : "bg-blue-500"}`}>
-                          {listingTypeTrans[rec.type]?.[lang] ?? rec.type}
-                        </span>
+                        {side && (
+                          <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full text-white flex-shrink-0 ${isHasPlace ? "bg-emerald-500" : "bg-blue-500"}`}>
+                            {rec.listing_category === "commercial"
+                              ? getCommercialBadgeLabel(side, lang as BadgeLang)
+                              : listingTypeTrans[side]?.[lang] ?? listingTypeTrans[side]?.tr}
+                          </span>
+                        )}
                       </div>
                       {priceDisplay && (
                         <p className="text-lg font-black text-orange-300" style={{ textShadow: "0 1px 4px rgba(0,0,0,0.6)" }}>{priceDisplay}</p>
