@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -1277,7 +1277,43 @@ interface NotifItem {
   avatar_url: string | null;
   display_name: string | null;
   createdAt: number;
-  read: boolean;
+}
+
+// ─── Notification persistence ─────────────────────────────────────────────────
+// Three keys, three jobs. The visible list is *history* and is not what decides
+// "new": seen/dismissed are separate id ledgers, so removing an item from the
+// list can never resurrect it as unread on the next fetch (the old model stored
+// `read` on the item itself, so any dismiss / "Clear All" wiped the seen-state
+// and the same 6 listings came back unread on the next mount).
+const NOTIF_LIST_KEY = "sefira-notifications";
+const NOTIF_SEEN_KEY = "sefira_notif_seen";
+const NOTIF_DISMISSED_KEY = "sefira_notif_dismissed";
+/** Ledgers are newest-first and capped so they can't grow without bound. */
+const NOTIF_ID_CAP = 100;
+
+function readIdLedger(key: string): string[] {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    return Array.isArray(parsed) ? (parsed.filter((v) => typeof v === "string") as string[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+/** Prepends `ids`, de-dupes, caps — returns the ledger it persisted. */
+function addToIdLedger(key: string, prev: string[], ids: string[]): string[] {
+  const fresh = ids.filter((id) => !prev.includes(id));
+  if (fresh.length === 0) return prev;
+  const next = [...fresh, ...prev].slice(0, NOTIF_ID_CAP);
+  try { localStorage.setItem(key, JSON.stringify(next)); } catch { /* ignore */ }
+  return next;
+}
+
+/** Dismissed ids are never rendered, so they live in storage only — no state. */
+function markNotifDismissed(ids: string[]): void {
+  addToIdLedger(NOTIF_DISMISSED_KEY, readIdLedger(NOTIF_DISMISSED_KEY), ids);
 }
 
 // ─── Supabase listing type ─────────────────────────────────────────────────────
@@ -1347,7 +1383,13 @@ export default function Home() {
   const promoVideoRef = useRef<HTMLVideoElement>(null);
   const [promoVideoInView, setPromoVideoInView] = useState(false);
   const [notifications, setNotifications] = useState<NotifItem[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
+  // Seen = "has been shown in an opened dropdown". Dismissed = "× or Clear All".
+  // Both persist as id ledgers; the badge is derived, never stored.
+  const [seenIds, setSeenIds] = useState<string[]>([]);
+  const unreadCount = useMemo(
+    () => notifications.filter((n) => !seenIds.includes(n.id)).length,
+    [notifications, seenIds],
+  );
   // Unread peer-message notifications come from the shared provider (single
   // poller) — see UnreadMessagesProvider. No local poll here (avoids duplicate
   // /api/messages/unread requests).
@@ -1484,14 +1526,29 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
-  // ── Load persisted notifications from localStorage ───────────────────────
+  // ── Load persisted notifications + seen/dismissed ledgers ────────────────
   useEffect(() => {
+    const dismissed = readIdLedger(NOTIF_DISMISSED_KEY);
+    let seen = readIdLedger(NOTIF_SEEN_KEY);
     try {
-      const stored = localStorage.getItem("sefira-notifications");
-      if (stored) setNotifications(JSON.parse(stored));
-      const unread = localStorage.getItem("sefira-notifications-unread");
-      if (unread) setUnreadCount(parseInt(unread, 10) || 0);
+      const stored = localStorage.getItem(NOTIF_LIST_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored) as (NotifItem & { read?: boolean })[];
+        if (Array.isArray(parsed)) {
+          // Migration: the old model kept seen-state as `read` on the item. Seed
+          // the ledger from it once so upgrading users don't see the badge return.
+          if (seen.length === 0) {
+            const alreadyRead = parsed.filter((n) => n?.id && n.read).map((n) => n.id);
+            if (alreadyRead.length > 0) seen = addToIdLedger(NOTIF_SEEN_KEY, seen, alreadyRead);
+          }
+          setNotifications(parsed.filter((n) => n?.id && !dismissed.includes(n.id)));
+        }
+      }
+      // Legacy: the badge used to be a stored number that could desync from the
+      // list. It is derived from the seen ledger now.
+      localStorage.removeItem("sefira-notifications-unread");
     } catch { /* ignore */ }
+    setSeenIds(seen);
   }, []);
 
   // ── WelcomePopup → openAuthModal event ───────────────────────────────────
@@ -1827,10 +1884,14 @@ export default function Home() {
         ),
       );
 
+      // Dismissed ids are read straight from storage: this resolves after the
+      // load effect has run, and storage — not state — is the authority here.
+      const dismissed = readIdLedger(NOTIF_DISMISSED_KEY);
+
       setNotifications((prev) => {
         const existingIds = new Set(prev.map((n) => n.id));
         const newItems: NotifItem[] = incoming
-          .filter((l) => !existingIds.has(l.id))
+          .filter((l) => !existingIds.has(l.id) && !dismissed.includes(l.id))
           .map((l) => {
             const p = profileMap.get(l.user_id);
             return {
@@ -1844,17 +1905,11 @@ export default function Home() {
               avatar_url: p?.avatar_url ?? null,
               display_name: p?.display_name ?? null,
               createdAt: Date.now(),
-              read: false,
             };
           });
         if (newItems.length === 0) return prev;
         const merged = [...newItems, ...prev];
-        try {
-          localStorage.setItem("sefira-notifications", JSON.stringify(merged));
-          const newUnread = merged.filter((n) => !n.read).length;
-          localStorage.setItem("sefira-notifications-unread", String(newUnread));
-          setUnreadCount(newUnread);
-        } catch { /* ignore */ }
+        try { localStorage.setItem(NOTIF_LIST_KEY, JSON.stringify(merged)); } catch { /* ignore */ }
         return merged;
       });
     })();
@@ -2080,14 +2135,13 @@ export default function Home() {
                   setCurrencyMenuOpen(false);
                   setProfileMenuOpen(false);
                   if (opening) {
-                    // Mark listing notifications as read
-                    setNotifications((prev) => {
-                      const updated = prev.map((n) => ({ ...n, read: true }));
-                      try { localStorage.setItem("sefira-notifications", JSON.stringify(updated)); } catch { /* ignore */ }
-                      return updated;
-                    });
-                    setUnreadCount(0);
-                    try { localStorage.setItem("sefira-notifications-unread", "0"); } catch { /* ignore */ }
+                    // Everything currently listed becomes "seen" — the items stay
+                    // visible as history, they just stop counting toward the badge,
+                    // and the ledger survives reloads. Listings that arrive later
+                    // are not in the ledger, so they still count as new.
+                    setSeenIds((prev) =>
+                      addToIdLedger(NOTIF_SEEN_KEY, prev, notifications.map((n) => n.id)),
+                    );
                     // Message notifications remain until individually clicked
                   }
                 }}
@@ -2113,12 +2167,11 @@ export default function Home() {
                     {notifications.length > 0 && (
                       <button
                         onClick={() => {
+                          // Cleared items go into the dismissed ledger, otherwise the
+                          // next fetch would hand the exact same listings straight back.
+                          markNotifDismissed(notifications.map((n) => n.id));
                           setNotifications([]);
-                          setUnreadCount(0);
-                          try {
-                            localStorage.setItem("sefira-notifications", "[]");
-                            localStorage.setItem("sefira-notifications-unread", "0");
-                          } catch { /* ignore */ }
+                          try { localStorage.setItem(NOTIF_LIST_KEY, "[]"); } catch { /* ignore */ }
                         }}
                         className="text-[10px] font-bold text-stone-400 hover:text-rose-500 transition-colors px-2 py-1 rounded-lg hover:bg-rose-50"
                       >
@@ -2179,7 +2232,18 @@ export default function Home() {
                       notifications.map((notif) => (
                         <div
                           key={notif.id}
-                          className={`flex items-center gap-3 px-4 py-3 border-b border-stone-50 last:border-0 transition-colors ${!notif.read ? "bg-orange-50" : "hover:bg-stone-50"}`}
+                          role="button"
+                          tabIndex={0}
+                          aria-label={`${notif.display_name || "Kullanıcı"} — ${notif.city}`}
+                          /* onPointerUp only (same lesson as SearchSheet/StoryViewer): an
+                             onClick here would double-fire a synthesized click ~300ms later
+                             on iOS and flash the default tap highlight. */
+                          onPointerUp={() => {
+                            setNotifOpen(false);
+                            router.push(`/listings/${notif.id}`);
+                          }}
+                          style={{ WebkitTapHighlightColor: "transparent" }}
+                          className={`flex items-center gap-3 px-4 py-3 min-h-[44px] cursor-pointer border-b border-stone-50 last:border-0 transition-colors ${!seenIds.includes(notif.id) ? "bg-orange-50" : "hover:bg-stone-50"}`}
                         >
                           <AvatarImage
                             url={notif.avatar_url}
@@ -2211,17 +2275,16 @@ export default function Home() {
                             )}
                           </div>
                           <button
-                            onClick={() => {
+                            aria-label="Bildirimi kaldır"
+                            /* stopPropagation so dismissing never also navigates the row */
+                            onPointerUp={(e) => {
+                              e.stopPropagation();
                               const updated = notifications.filter((n) => n.id !== notif.id);
                               setNotifications(updated);
-                              const newUnread = updated.filter((n) => !n.read).length;
-                              setUnreadCount(newUnread);
-                              try {
-                                localStorage.setItem("sefira-notifications", JSON.stringify(updated));
-                                localStorage.setItem("sefira-notifications-unread", String(newUnread));
-                              } catch { /* ignore */ }
+                              markNotifDismissed([notif.id]);
+                              try { localStorage.setItem(NOTIF_LIST_KEY, JSON.stringify(updated)); } catch { /* ignore */ }
                             }}
-                            className="w-5 h-5 flex items-center justify-center rounded-full text-stone-300 hover:text-rose-500 hover:bg-rose-50 transition-colors flex-shrink-0 text-xs"
+                            className="w-8 h-8 flex items-center justify-center rounded-full text-stone-300 hover:text-rose-500 hover:bg-rose-50 transition-colors flex-shrink-0 text-xs"
                           >
                             ✕
                           </button>
