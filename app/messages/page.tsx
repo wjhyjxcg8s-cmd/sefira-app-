@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense, type CSSProperties } from "react";
 import Image from "next/image";
 import { useLang } from "@/app/lib/LangContext";
 import Link from "next/link";
@@ -309,6 +309,25 @@ const LOCALE_MAP: Record<string, string> = {
  */
 const KEYBOARD_OVERLAY_MIN_PX = 120;
 
+/**
+ * Compact keyboard mode. With the keyboard up there is only ~350px of viewport
+ * left, and the page header + "Ana Sayfa" block are navigation chrome that sits
+ * outside the conversation itself — they collapse away so the message list keeps
+ * usable height, and animate back when the keyboard closes. maxHeight rather
+ * than height so each row keeps its natural size when expanded.
+ */
+const CHROME_TRANSITION =
+  "max-height 200ms ease-out, padding 200ms ease-out, opacity 150ms ease-out";
+const chromeCollapsed: CSSProperties = {
+  maxHeight: 0,
+  opacity: 0,
+  paddingTop: 0,
+  paddingBottom: 0,
+  borderBottomWidth: 0,
+  transition: CHROME_TRANSITION,
+};
+const chromeExpanded: CSSProperties = { opacity: 1, transition: CHROME_TRANSITION };
+
 const SendIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
     <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
@@ -334,7 +353,7 @@ function MessagesPageContent() {
   // the height with the visual-viewport height. On Chromium the layout viewport
   // shrinks natively (interactive-widget=resizes-content in app/layout.tsx),
   // keyboardInset stays ~0, and the existing h-dvh classes keep working.
-  const { height: vvHeight, keyboardInset } = useVisualViewportHeight();
+  const { height: vvHeight, offsetTop: vvOffsetTop, keyboardInset } = useVisualViewportHeight();
   const keyboardOverlays = keyboardInset > KEYBOARD_OVERLAY_MIN_PX;
 
   // Hide the global bottom nav while a conversation is open (mobile only);
@@ -606,12 +625,20 @@ function MessagesPageContent() {
     prevVvHeight.current = vvHeight;
     const shrank = previous != null && vvHeight < previous - 80;
     if (!shrank && !keyboardOverlays) return;
-    // Undo any layout-viewport scroll iOS applies while focusing the input, so
-    // the page behind cannot sit pushed up under the shortened chat column.
-    window.scrollTo(0, 0);
     const el = messagesListRef.current;
     if (el) el.scrollTop = el.scrollHeight;
   }, [vvHeight, keyboardOverlays]);
+
+  // Undo the layout-viewport scroll iOS applies while focusing the input, so the
+  // page behind cannot sit pushed up under the chat column. Deliberately keyed
+  // on vvOffsetTop: the visualViewport 'scroll' event is where iOS reports that
+  // shift, and the hook forwards it, so this re-pins there and not only on open.
+  // Self-terminating — a successful reset drives offsetTop back to 0 and the
+  // next run bails at the guard.
+  useEffect(() => {
+    if (!keyboardOverlays || vvOffsetTop === 0) return;
+    window.scrollTo(0, 0);
+  }, [keyboardOverlays, vvOffsetTop]);
 
   // Scroll support chat to bottom
   useEffect(() => {
@@ -1071,8 +1098,17 @@ function MessagesPageContent() {
       } md:h-dvh bg-[#fefaf5]`}
       /* Only overrides the h-dvh classes above while a keyboard is overlaying
          the layout viewport (iOS). Otherwise `undefined` and CSS stays in
-         charge, so desktop and Chromium/Android are byte-for-byte unchanged. */
-      style={keyboardOverlays && vvHeight ? { height: `${vvHeight}px` } : undefined}
+         charge, so desktop and Chromium/Android are byte-for-byte unchanged.
+         Height alone was not enough: iOS scrolls the layout viewport to reveal
+         the focused input, so a top-anchored container hangs offsetTop px past
+         the visible bottom edge and clips the input row. `position: fixed`
+         resolves against the layout viewport, so top: offsetTop + height:
+         vv.height covers exactly the visible region. */
+      style={
+        keyboardOverlays && vvHeight
+          ? { position: "fixed", top: vvOffsetTop, left: 0, right: 0, height: `${vvHeight}px` }
+          : undefined
+      }
       dir={isFa ? "rtl" : "ltr"}
     >
       <style>{`
@@ -1081,8 +1117,13 @@ function MessagesPageContent() {
           to { transform: translateY(0); }
         }
       `}</style>
-      {/* Top header bar */}
-      <header className="h-14 flex items-center px-4 border-b border-stone-200 bg-white shadow-sm flex-shrink-0 gap-3">
+      {/* Top header bar — collapses in compact keyboard mode (see CHROME_* above) */}
+      <header
+        className="flex items-center px-4 border-b border-stone-200 bg-white shadow-sm flex-shrink-0 gap-3 overflow-hidden"
+        /* maxHeight is a generous ceiling, not the rendered height — the row
+           still sizes to its content (32px logo + 0.75rem padding ≈ h-14). */
+        style={keyboardOverlays ? chromeCollapsed : { ...chromeExpanded, maxHeight: "4rem", paddingTop: "0.75rem", paddingBottom: "0.75rem" }}
+      >
         <Link
           href="/"
           className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 flex-shrink-0"
@@ -1092,8 +1133,11 @@ function MessagesPageContent() {
         <h1 className="font-black text-stone-900 text-lg">{t.title}</h1>
       </header>
 
-      {/* Back to home */}
-      <div className="px-4 py-2.5 border-b border-stone-100 bg-white flex-shrink-0">
+      {/* Back to home — collapses in compact keyboard mode */}
+      <div
+        className="px-4 border-b border-stone-100 bg-white flex-shrink-0 overflow-hidden"
+        style={keyboardOverlays ? chromeCollapsed : { ...chromeExpanded, maxHeight: "5rem", paddingTop: "0.625rem", paddingBottom: "0.625rem" }}
+      >
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
           <Link
             href="/"
@@ -1468,44 +1512,80 @@ function MessagesPageContent() {
 
               {/* Listing context card — fetched on-demand per conversation */}
               {listingLoading && !activeListing && (
-                <div className="mx-3 mt-3 mb-2 h-20 bg-orange-100 animate-pulse rounded-2xl flex-shrink-0" />
+                <div
+                  className={`mx-3 mt-3 mb-2 bg-orange-100 animate-pulse rounded-2xl flex-shrink-0 transition-all duration-200 ${
+                    keyboardOverlays ? "h-11" : "h-20"
+                  }`}
+                />
               )}
               {activeListing && (
+                /* Collapses to a single slim row while the keyboard is up —
+                   still the same tappable target, just 32px thumb + city + price
+                   on one line instead of the four-line card. */
                 <div
                   onClick={() => router.push(`/listings/${activeListing.id}`)}
-                  className="mx-3 mt-3 mb-2 cursor-pointer active:scale-[0.98] transition-transform flex-shrink-0"
+                  className="mx-3 mb-2 cursor-pointer active:scale-[0.98] flex-shrink-0 transition-all duration-200"
+                  style={{ marginTop: keyboardOverlays ? "0.5rem" : "0.75rem" }}
                 >
-                  <div className="flex items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-3 shadow-lg">
+                  <div
+                    className={`flex items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg transition-all duration-200 ${
+                      keyboardOverlays ? "rounded-xl p-2" : "rounded-2xl p-3"
+                    }`}
+                  >
                     {activeListing.photos?.[0] ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={activeListing.photos[0]}
-                        className="w-16 h-16 rounded-xl object-cover flex-shrink-0 border-2 border-white/30"
+                        className={`rounded-xl object-cover flex-shrink-0 border-2 border-white/30 transition-all duration-200 ${
+                          keyboardOverlays ? "w-8 h-8" : "w-16 h-16"
+                        }`}
                         alt=""
                       />
                     ) : (
-                      <div className="w-16 h-16 rounded-xl bg-white/20 flex items-center justify-center text-3xl flex-shrink-0">
+                      <div
+                        className={`rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
+                          keyboardOverlays ? "w-8 h-8 text-base" : "w-16 h-16 text-3xl"
+                        }`}
+                      >
                         🏠
                       </div>
                     )}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-white/80 text-[10px] font-bold uppercase tracking-wide mb-0.5">
-                        💬 Bu ilan hakkında konuşuyorsunuz
-                      </p>
-                      <p className="font-bold text-white text-sm truncate">
-                        {activeListing.city}
-                        {activeListing.district ? ` / ${activeListing.district}` : ""}
-                      </p>
-                      <p className="text-white font-bold text-sm">
-                        {activeListing.rent?.toLocaleString()} {activeListing.currency}/ay
-                      </p>
-                      <p className="text-white/70 text-xs">
-                        {activeListing.house_type}
-                        {activeListing.rooms ? ` • ${activeListing.rooms} oda` : ""}
-                        {" "}• Detay için tıkla →
-                      </p>
-                    </div>
-                    <span className="text-white/80 text-xl flex-shrink-0">›</span>
+                    {keyboardOverlays ? (
+                      <div className="flex-1 min-w-0 flex items-center gap-2">
+                        <p className="font-bold text-white text-xs truncate flex-1">
+                          {activeListing.city}
+                          {activeListing.district ? ` / ${activeListing.district}` : ""}
+                        </p>
+                        <p className="text-white font-bold text-xs flex-shrink-0">
+                          {activeListing.rent?.toLocaleString()} {activeListing.currency}/ay
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="flex-1 min-w-0">
+                        <p className="text-white/80 text-[10px] font-bold uppercase tracking-wide mb-0.5">
+                          💬 Bu ilan hakkında konuşuyorsunuz
+                        </p>
+                        <p className="font-bold text-white text-sm truncate">
+                          {activeListing.city}
+                          {activeListing.district ? ` / ${activeListing.district}` : ""}
+                        </p>
+                        <p className="text-white font-bold text-sm">
+                          {activeListing.rent?.toLocaleString()} {activeListing.currency}/ay
+                        </p>
+                        <p className="text-white/70 text-xs">
+                          {activeListing.house_type}
+                          {activeListing.rooms ? ` • ${activeListing.rooms} oda` : ""}
+                          {" "}• Detay için tıkla →
+                        </p>
+                      </div>
+                    )}
+                    <span
+                      className={`text-white/80 flex-shrink-0 transition-all duration-200 ${
+                        keyboardOverlays ? "text-base" : "text-xl"
+                      }`}
+                    >
+                      ›
+                    </span>
                   </div>
                 </div>
               )}
