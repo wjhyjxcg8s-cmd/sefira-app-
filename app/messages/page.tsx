@@ -321,9 +321,15 @@ const KEYBOARD_OVERLAY_MIN_PX = 120;
  * useVisualViewportHeight's settled state, so the class flip cannot happen until
  * the keyboard has already stopped moving. 150ms so the collapse reads as a
  * quick settle after it rather than a second animation competing with it.
+ *
+ * The 50ms delay staggers them behind the shell's height commit, which is
+ * instantaneous (the shell has no height transition, deliberately). Height snaps
+ * first, chrome eases in after — one thing moving at a time instead of an
+ * untransitioned resize and three eased collapses sharing the same frames.
  */
+const CHROME_DELAY = "50ms";
 const CHROME_TRANSITION =
-  "max-height 150ms ease-out, padding 150ms ease-out, opacity 120ms ease-out";
+  `max-height 150ms ease-out ${CHROME_DELAY}, padding 150ms ease-out ${CHROME_DELAY}, opacity 120ms ease-out ${CHROME_DELAY}`;
 const chromeCollapsed: CSSProperties = {
   maxHeight: 0,
   opacity: 0,
@@ -334,6 +340,21 @@ const chromeCollapsed: CSSProperties = {
 };
 const chromeExpanded: CSSProperties = { opacity: 1, transition: CHROME_TRANSITION };
 
+/**
+ * Same stagger for the listing banner, which collapses from a four-line card to
+ * a single slim row. Enumerated rather than `all`: the compact/full swap also
+ * changes background gradients, shadows and text sizes, and `transition: all`
+ * animated every one of them on top of the layout change.
+ */
+const LISTING_CARD_TRANSITION = `padding 150ms ease-out ${CHROME_DELAY}, border-radius 150ms ease-out ${CHROME_DELAY}`;
+const LISTING_THUMB_TRANSITION = `width 150ms ease-out ${CHROME_DELAY}, height 150ms ease-out ${CHROME_DELAY}`;
+const LISTING_CHEVRON_TRANSITION = `font-size 150ms ease-out ${CHROME_DELAY}`;
+const LISTING_SKELETON_TRANSITION = `height 150ms ease-out ${CHROME_DELAY}`;
+/* `transform` carries the active:scale-[0.98] tap feedback and gets no delay —
+   it is a touch response, not part of the keyboard stagger, and transform never
+   changes when the keyboard does. */
+const LISTING_WRAP_TRANSITION = `margin-top 150ms ease-out ${CHROME_DELAY}, transform 150ms ease-out`;
+
 const SendIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
     <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
@@ -343,9 +364,6 @@ const SendIcon = () => (
 function MessagesPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-
-  console.log("URL params - userId:", searchParams.get("userId"), "listingId:", searchParams.get("listingId"));
-
   const { lang } = useLang();
   const [mounted, setMounted] = useState(false);
   const [selectedConv, setSelectedConv] = useState<string | null>(null);
@@ -375,7 +393,7 @@ function MessagesPageContent() {
   const [unreadSupportCount, setUnreadSupportCount] = useState(0);
   const [chatInput, setChatInput] = useState("");
   const [sendingChat, setSendingChat] = useState(false);
-  const chatBottomRef = useRef<HTMLDivElement>(null);
+  const supportListRef = useRef<HTMLDivElement>(null);
 
   // Peer messaging state
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
@@ -389,7 +407,6 @@ function MessagesPageContent() {
   const [messages, setMessages] = useState<any[]>([]);
   const [messageText, setMessageText] = useState("");
   const [sendingMessage, setSendingMessage] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesListRef = useRef<HTMLDivElement>(null);
   const messageInputRef = useRef<HTMLInputElement>(null);
   const messageRefs = useRef<Map<string, HTMLDivElement>>(new Map());
@@ -611,24 +628,30 @@ function MessagesPageContent() {
       });
   }, [selectedConv, currentUserId, targetUserId]);
 
-  // Scroll to bottom after new messages
+  // Scroll to bottom after new messages. Scrolls the list itself rather than
+  // calling scrollIntoView on a sentinel: scrollIntoView walks up and scrolls
+  // *every* scrollable ancestor, and on iOS it will also pan the visual viewport
+  // — which is exactly the movement this route is trying to stop. scrollTo on
+  // the list can only ever move the list.
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = messagesListRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [messages]);
 
-  // Both effects below are driven by useVisualViewportHeight, which publishes
+  // Pin the newest message, driven by useVisualViewportHeight, which publishes
   // ONLY settled values — intermediate frames of the keyboard animation never
-  // reach React. So each runs once, after the viewport has stopped moving,
-  // rather than per-frame against iOS while it is still animating. That
-  // ordering is the fix for the shake; neither effect changed what it does.
-
-  // Pin the newest message. Works on both platforms without UA sniffing: iOS
-  // shows up as keyboardOverlays, Chromium with resizes-content shrinks the
-  // layout viewport instead, which surfaces as vvHeight dropping. The 80px floor
-  // keeps a URL-bar collapse (~50px) from triggering it. Sets scrollTop directly
-  // rather than scrollIntoView so it can never scroll an ancestor. vvOffsetTop is
-  // deliberately NOT a dependency — a viewport pan while the keyboard is open
-  // must not yank a user who has scrolled back through history.
+  // reach React, so this runs once after the viewport has stopped moving rather
+  // than per-frame against iOS while it is still animating.
+  //
+  // Works on both platforms without UA sniffing: iOS shows up as
+  // keyboardOverlays, Chromium with resizes-content shrinks the layout viewport
+  // instead, which surfaces as vvHeight dropping. The 80px floor keeps a URL-bar
+  // collapse (~50px) from triggering it. Sets scrollTop directly rather than
+  // scrollIntoView so it can never scroll an ancestor, and the list opts out of
+  // the global smooth scroll-behavior so this lands in one frame instead of
+  // gliding across the keyboard animation. vvOffsetTop is deliberately NOT a
+  // dependency — a viewport pan while the keyboard is open must not yank a user
+  // who has scrolled back through history.
   const prevVvHeight = useRef<number | null>(null);
   useEffect(() => {
     if (vvHeight == null) return;
@@ -640,20 +663,32 @@ function MessagesPageContent() {
     if (el) el.scrollTop = el.scrollHeight;
   }, [vvHeight, keyboardOverlays]);
 
-  // Undo the layout-viewport scroll iOS applies while focusing the input, so the
-  // page behind cannot sit pushed up under the chat column. Self-terminating: a
-  // successful reset drives offsetTop to 0, and the settled commit that follows
-  // bails at the guard.
+  // Lock the document for the lifetime of this route. The shell is fixed, so
+  // nothing here is meant to scroll the page — but iOS will happily scroll the
+  // layout viewport to reveal a focused input if the document allows it at all,
+  // and the correction that used to follow (window.scrollTo(0, 0) once the
+  // viewport settled) was itself the visible jump users reported: the scroll had
+  // already been painted before it could be undone. Removing the page's ability
+  // to scroll removes both. Internal scrolling (message list, conversation list)
+  // is unaffected — those are overflow-y-auto children.
   useEffect(() => {
-    if (!keyboardOverlays || vvOffsetTop === 0) return;
-    window.scrollTo(0, 0);
-  }, [keyboardOverlays, vvOffsetTop]);
+    const html = document.documentElement;
+    const { body } = document;
+    const prevHtml = html.style.overflow;
+    const prevBody = body.style.overflow;
+    html.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    return () => {
+      html.style.overflow = prevHtml;
+      body.style.overflow = prevBody;
+    };
+  }, []);
 
-  // Scroll support chat to bottom
+  // Scroll support chat to bottom — same container-scoped scroll as the peer list
   useEffect(() => {
-    if (selectedConv === "sefira-destek") {
-      chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
+    if (selectedConv !== "sefira-destek") return;
+    const el = supportListRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [chatMessages, selectedConv]);
 
   // Auto-dismiss context menu after 3 seconds
@@ -773,12 +808,19 @@ function MessagesPageContent() {
 
   const scrollToMessage = (messageId: string) => {
     const el = messageRefs.current.get(messageId);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
-      el.style.transition = "background-color 0.3s ease";
-      el.style.backgroundColor = "rgba(249, 115, 22, 0.18)";
-      setTimeout(() => { el.style.backgroundColor = ""; }, 1200);
-    }
+    const list = messagesListRef.current;
+    if (!el || !list) return;
+    // Centre it by scrolling the list, not scrollIntoView — see the
+    // scroll-to-bottom effect. offsetTop is not usable here: the shell is
+    // `position: fixed`, so it, not the list, is the offsetParent. Rect maths
+    // is layout-forcing but this only runs on an explicit tap, never on focus.
+    const elRect = el.getBoundingClientRect();
+    const listRect = list.getBoundingClientRect();
+    const delta = elRect.top - listRect.top - (list.clientHeight - elRect.height) / 2;
+    list.scrollTo({ top: Math.max(0, list.scrollTop + delta), behavior: "smooth" });
+    el.style.transition = "background-color 0.3s ease";
+    el.style.backgroundColor = "rgba(249, 115, 22, 0.18)";
+    setTimeout(() => { el.style.backgroundColor = ""; }, 1200);
   };
 
   const onMsgTouchStart = (msg: any, e: React.TouchEvent) => {
@@ -857,7 +899,11 @@ function MessagesPageContent() {
   const handleReply = (messageId: string, content: string) => {
     setReplyingTo({ id: messageId, content });
     setContextMenu(null);
-    setTimeout(() => messageInputRef.current?.focus(), 50);
+    // The one programmatic focus on this route. preventScroll stops the browser
+    // from scrolling ancestors to reveal the input — the input is already inside
+    // the fixed shell, and on iOS that scroll is the jump we are eliminating.
+    // Still deferred so the reply bar has expanded before focus lands.
+    setTimeout(() => messageInputRef.current?.focus({ preventScroll: true }), 50);
   };
 
   const showToast = (msg: string) => {
@@ -1102,20 +1148,27 @@ function MessagesPageContent() {
 
   return (
     <div
-      className={`flex flex-col ${
+      /* `fixed` from mount, not only while the keyboard is up. The shell used to
+         flip flow → fixed at the same moment the height changed and the chrome
+         collapsed, and that mode flip was the single biggest source of visible
+         jitter on the first focus of a fresh page load. Permanently fixed also
+         means the document has no in-flow content to scroll (see the scroll-lock
+         effect), which is what removes iOS's focus-time page scroll at the
+         source instead of undoing it afterwards.
+         Height still comes from the classes — they carry the md: and list/chat
+         variants an inline style cannot express. */
+      className={`fixed top-0 left-0 right-0 flex flex-col ${
         mobileView === "chat" ? "h-dvh" : "h-[calc(100dvh-4rem-env(safe-area-inset-bottom))]"
       } md:h-dvh bg-[#fefaf5]`}
-      /* Only overrides the h-dvh classes above while a keyboard is overlaying
-         the layout viewport (iOS). Otherwise `undefined` and CSS stays in
-         charge, so desktop and Chromium/Android are byte-for-byte unchanged.
-         Height alone was not enough: iOS scrolls the layout viewport to reveal
-         the focused input, so a top-anchored container hangs offsetTop px past
-         the visible bottom edge and clips the input row. `position: fixed`
-         resolves against the layout viewport, so top: offsetTop + height:
-         vv.height covers exactly the visible region. */
+      /* The only keyboard-time override, and only on iOS (elsewhere
+         keyboardOverlays stays false and CSS remains in charge). `height` is the
+         substance; `top` tracks the visual viewport being *panned* inside the
+         layout viewport, which iOS still does to reveal the focused input even
+         when the page itself cannot scroll — with the document locked it stays 0
+         in practice, so in effect one property changes at commit. */
       style={
         keyboardOverlays && vvHeight
-          ? { position: "fixed", top: vvOffsetTop, left: 0, right: 0, height: `${vvHeight}px` }
+          ? { top: vvOffsetTop, height: `${vvHeight}px` }
           : undefined
       }
       dir={isFa ? "rtl" : "ltr"}
@@ -1338,14 +1391,6 @@ function MessagesPageContent() {
             const avatar = conv.otherUser?.avatar_url ?? null;
             const listing = conv.listing ?? null;
             const isSelected = selectedConv === conv.id;
-            console.log("Conv listing DEBUG:", {
-              convId: conv.id,
-              hasListing: !!conv.listing,
-              listingId: conv.listing?.id,
-              photosArray: conv.listing?.photos,
-              firstPhoto: conv.listing?.photos?.[0],
-              otherUserId: conv.user1_id === currentUserId ? conv.user2_id : conv.user1_id,
-            });
             return (
               <button
                 key={conv.id}
@@ -1522,9 +1567,10 @@ function MessagesPageContent() {
               {/* Listing context card — fetched on-demand per conversation */}
               {listingLoading && !activeListing && (
                 <div
-                  className={`mx-3 mt-3 mb-2 bg-orange-100 animate-pulse rounded-2xl flex-shrink-0 transition-all duration-150 ${
+                  className={`mx-3 mt-3 mb-2 bg-orange-100 animate-pulse rounded-2xl flex-shrink-0 ${
                     keyboardOverlays ? "h-11" : "h-20"
                   }`}
+                  style={{ transition: LISTING_SKELETON_TRANSITION }}
                 />
               )}
               {activeListing && (
@@ -1533,28 +1579,34 @@ function MessagesPageContent() {
                    on one line instead of the four-line card. */
                 <div
                   onClick={() => router.push(`/listings/${activeListing.id}`)}
-                  className="mx-3 mb-2 cursor-pointer active:scale-[0.98] flex-shrink-0 transition-all duration-150"
-                  style={{ marginTop: keyboardOverlays ? "0.5rem" : "0.75rem" }}
+                  className="mx-3 mb-2 cursor-pointer active:scale-[0.98] flex-shrink-0"
+                  style={{
+                    marginTop: keyboardOverlays ? "0.5rem" : "0.75rem",
+                    transition: LISTING_WRAP_TRANSITION,
+                  }}
                 >
                   <div
-                    className={`flex items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg transition-all duration-150 ${
+                    className={`flex items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg ${
                       keyboardOverlays ? "rounded-xl p-2" : "rounded-2xl p-3"
                     }`}
+                    style={{ transition: LISTING_CARD_TRANSITION }}
                   >
                     {activeListing.photos?.[0] ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={activeListing.photos[0]}
-                        className={`rounded-xl object-cover flex-shrink-0 border-2 border-white/30 transition-all duration-150 ${
+                        className={`rounded-xl object-cover flex-shrink-0 border-2 border-white/30 ${
                           keyboardOverlays ? "w-8 h-8" : "w-16 h-16"
                         }`}
+                        style={{ transition: LISTING_THUMB_TRANSITION }}
                         alt=""
                       />
                     ) : (
                       <div
-                        className={`rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0 transition-all duration-150 ${
+                        className={`rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0 ${
                           keyboardOverlays ? "w-8 h-8 text-base" : "w-16 h-16 text-3xl"
                         }`}
+                        style={{ transition: LISTING_THUMB_TRANSITION }}
                       >
                         🏠
                       </div>
@@ -1589,9 +1641,10 @@ function MessagesPageContent() {
                       </div>
                     )}
                     <span
-                      className={`text-white/80 flex-shrink-0 transition-all duration-150 ${
+                      className={`text-white/80 flex-shrink-0 ${
                         keyboardOverlays ? "text-base" : "text-xl"
                       }`}
+                      style={{ transition: LISTING_CHEVRON_TRANSITION }}
                     >
                       ›
                     </span>
@@ -1626,8 +1679,21 @@ function MessagesPageContent() {
                    rubber-banding at the ends of this list from scrolling the
                    page behind, without touching the horizontal axis — the
                    `overflow-x-hidden` + `overscroll-behavior: none` combo is a
-                   known Android scroll-killer in this project. */
-                style={{ direction: "ltr", overflowX: "hidden", overscrollBehaviorY: "contain" }}
+                   known Android scroll-killer in this project.
+
+                   scrollBehavior opts out of the global `* { scroll-behavior:
+                   smooth }` in globals.css. That rule was silently animating the
+                   keyboard-open pin below (`scrollTop = scrollHeight`) — a plain
+                   assignment, but rendered as a ~300ms glide landing on the same
+                   frames as the keyboard: the "fast auto-scroll on open". The
+                   pin is now instant; the two scrolls that *should* animate pass
+                   `behavior: "smooth"` explicitly, which still overrides this. */
+                style={{
+                  direction: "ltr",
+                  overflowX: "hidden",
+                  overscrollBehaviorY: "contain",
+                  scrollBehavior: "auto",
+                }}
               >
                 {messages.length === 0 && (
                   <div className="text-center py-10 text-gray-400 text-sm">
@@ -1771,7 +1837,6 @@ function MessagesPageContent() {
                     </div>
                   );
                 })}
-                <div ref={messagesEndRef} />
               </div>
 
               {/* Reply preview bar and message input — hidden when blocked */}
@@ -1851,6 +1916,7 @@ function MessagesPageContent() {
                 </div>
               </div>
               <div
+                ref={supportListRef}
                 className="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-3"
                 style={{ direction: "ltr" }}
               >
@@ -1900,7 +1966,6 @@ function MessagesPageContent() {
                     </div>
                   );
                 })}
-                <div ref={chatBottomRef} />
               </div>
               <div className="relative z-40 bg-white border-t border-gray-100 px-4 py-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] flex items-center gap-3 shadow-lg flex-shrink-0">
                 <div className="flex-1 flex items-center bg-gray-100 rounded-2xl px-4 py-2.5 gap-2">
