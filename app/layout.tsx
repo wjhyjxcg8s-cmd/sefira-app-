@@ -42,7 +42,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        <link rel="preload" as="image" href="/hero-bg.webp" />
+        <link rel="preload" as="image" href="/video-poster.webp" />
         <UserPwaTags />
         <meta name="theme-color" content="#F97316" />
       </head>

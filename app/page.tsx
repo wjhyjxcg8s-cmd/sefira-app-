@@ -130,6 +130,7 @@ const translations = {
     quickCategoryLabel: "Kategori",
     quickFilterLabel: "Filtrele",
     promoVideoHeading: "Sefira ile tanışın",
+    playVideo: "Videoyu oynat",
     // ── Wizard ──
     wizardTitle: "Ne arıyorsunuz?",
     optionSeekingTitle: "Evim Var",
@@ -245,6 +246,7 @@ const translations = {
     quickCategoryLabel: "Category",
     quickFilterLabel: "Filter",
     promoVideoHeading: "Meet Sefira",
+    playVideo: "Play video",
     // ── Wizard ──
     wizardTitle: "What are you looking for?",
     optionSeekingTitle: "I Have a Place",
@@ -360,6 +362,7 @@ const translations = {
     quickCategoryLabel: "دسته‌بندی",
     quickFilterLabel: "فیلتر",
     promoVideoHeading: "با سفیرا آشنا شوید",
+    playVideo: "پخش ویدیو",
     // ── Wizard ──
     wizardTitle: "دنبال چه می‌گردید؟",
     optionSeekingTitle: "خونه دارم",
@@ -475,6 +478,7 @@ const translations = {
     quickCategoryLabel: "Kategorie",
     quickFilterLabel: "Filtern",
     promoVideoHeading: "Lerne Sefira kennen",
+    playVideo: "Video abspielen",
     wizardTitle: "Was suchen Sie?",
     optionSeekingTitle: "Ich Habe ein Zimmer",
     optionSeekingSubtitle: "Ich habe ein Zimmer und suche einen guten Mitbewohner",
@@ -590,6 +594,7 @@ const translations = {
     quickCategoryLabel: "الفئة",
     quickFilterLabel: "تصفية",
     promoVideoHeading: "تعرّف على سفيرا",
+    playVideo: "تشغيل الفيديو",
     // ── Wizard ──
     wizardTitle: "ماذا تبحث عن؟",
     optionSeekingTitle: "لدي غرفة",
@@ -705,6 +710,7 @@ const translations = {
     quickCategoryLabel: "Категория",
     quickFilterLabel: "Фильтр",
     promoVideoHeading: "Познакомьтесь с Sefira",
+    playVideo: "Воспроизвести видео",
     wizardTitle: "Что вы ищете?",
     optionSeekingTitle: "У Меня Есть Комната",
     optionSeekingSubtitle: "У меня есть комната, ищу хорошего соседа",
@@ -1361,6 +1367,8 @@ export default function Home() {
   const promoVideoSectionRef = useRef<HTMLDivElement>(null);
   const promoVideoRef = useRef<HTMLVideoElement>(null);
   const [promoVideoInView, setPromoVideoInView] = useState(false);
+  const [promoVideoBlocked, setPromoVideoBlocked] = useState(false);
+  const [promoVideoPlaying, setPromoVideoPlaying] = useState(false);
   // The bell is personal-only: unread peer messages + unread admin messages,
   // both from the shared provider (single poller) — see UnreadMessagesProvider.
   // It deliberately carries no site-wide "new listings" feed.
@@ -1438,7 +1446,11 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
 
-  // ── Promo video: enforce autoplay + seamless loop on iOS/Android ──────────
+  // ── Promo video: enforce autoplay on iOS/Android ──────────────────────────
+  // Retries on canplay/loadeddata (not just at mount) so a play() that loses the
+  // race against the fetch isn't fatal. A denied play() is surfaced as state +
+  // a console warning, never swallowed — that failure is user-recoverable via
+  // the tap-to-play affordance below.
   useEffect(() => {
     if (!promoVideoInView) return;
     const v = promoVideoRef.current;
@@ -1446,23 +1458,38 @@ export default function Home() {
     v.muted = true;
     v.defaultMuted = true;
     v.playsInline = true;
-    const tryPlay = () => v.play().catch(() => {});
+    const tryPlay = () => {
+      v.play()
+        .then(() => setPromoVideoBlocked(false))
+        .catch((err) => {
+          // iOS Low Power Mode, Safari per-site "Auto-Play: Never", Chrome Data Saver.
+          console.warn("[promo-video] autoplay blocked:", err);
+          setPromoVideoBlocked(true);
+        });
+    };
     tryPlay();
     const onVis = () => { if (!document.hidden) tryPlay(); };
-    const onEnded = () => { v.currentTime = 0; tryPlay(); };
+    const onPlaying = () => { setPromoVideoPlaying(true); setPromoVideoBlocked(false); };
     document.addEventListener("visibilitychange", onVis);
-    v.addEventListener("pause", tryPlay);
-    v.addEventListener("stalled", tryPlay);
-    v.addEventListener("suspend", tryPlay);
-    v.addEventListener("ended", onEnded);
+    v.addEventListener("canplay", tryPlay);
+    v.addEventListener("loadeddata", tryPlay);
+    v.addEventListener("playing", onPlaying);
     return () => {
       document.removeEventListener("visibilitychange", onVis);
-      v.removeEventListener("pause", tryPlay);
-      v.removeEventListener("stalled", tryPlay);
-      v.removeEventListener("suspend", tryPlay);
-      v.removeEventListener("ended", onEnded);
+      v.removeEventListener("canplay", tryPlay);
+      v.removeEventListener("loadeddata", tryPlay);
+      v.removeEventListener("playing", onPlaying);
     };
   }, [promoVideoInView]);
+
+  function handlePromoVideoTap() {
+    const v = promoVideoRef.current;
+    if (!v) return;
+    v.muted = true;
+    v.play()
+      .then(() => setPromoVideoBlocked(false))
+      .catch((err) => console.warn("[promo-video] tap-to-play failed:", err));
+  }
 
   // ── Restore scroll position after back-navigation from a listing ──────────
   useEffect(() => {
@@ -2764,7 +2791,9 @@ export default function Home() {
           {t.promoVideoHeading}
         </p>
         <div ref={promoVideoSectionRef} className="relative mx-5 aspect-video overflow-hidden rounded-3xl shadow-lg shadow-slate-200/60 ring-1 ring-slate-100">
-          <Image src="/hero-bg.webp" alt="" fill className="object-cover" />
+          {!promoVideoPlaying && (
+            <Image src="/video-poster.webp" alt="" fill className="object-cover" />
+          )}
           {promoVideoInView && (
             <video
               ref={promoVideoRef}
@@ -2772,11 +2801,26 @@ export default function Home() {
               loop
               muted
               playsInline
-              preload="none"
-              poster="/hero-bg.webp"
+              // Never "none": that pins readyState at HAVE_NOTHING, makes autoPlay inert, and strands the poster.
+              preload="auto"
+              poster="/video-poster.webp"
               src="/promo-720.mp4"
               className="absolute inset-0 h-full w-full object-cover"
             />
+          )}
+          {promoVideoBlocked && !promoVideoPlaying && (
+            <button
+              type="button"
+              onClick={handlePromoVideoTap}
+              aria-label={t.playVideo}
+              className="group absolute inset-0 z-10 flex items-center justify-center bg-slate-900/10"
+            >
+              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-900/60 shadow-lg ring-1 ring-white/20 backdrop-blur-sm transition-transform duration-150 group-active:scale-95">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="ml-0.5 h-7 w-7 text-white">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </span>
+            </button>
           )}
         </div>
       </section>
