@@ -10,7 +10,7 @@ import { supabase } from "@/app/lib/supabase";
 import { formatMessageTime } from "@/app/lib/formatTime";
 import AvatarImage from "@/app/components/AvatarImage";
 import { useChatView } from "@/app/lib/ChatViewContext";
-import { useVisualViewportHeight } from "@/app/lib/useVisualViewportHeight";
+import { useVisualViewportHeight, KEYBOARD_OVERLAY_MIN_PX } from "@/app/lib/useVisualViewportHeight";
 
 const translations = {
   tr: {
@@ -301,13 +301,6 @@ const LOCALE_MAP: Record<string, string> = {
   de: "de-DE",
   ru: "ru-RU",
 };
-
-/**
- * Minimum layout-vs-visual viewport gap that counts as "a keyboard is covering
- * the page". Comfortably above iOS's ~44px input accessory bar and well below
- * any real keyboard (~250-350px), so transient URL-bar deltas never trip it.
- */
-const KEYBOARD_OVERLAY_MIN_PX = 120;
 
 /**
  * Compact keyboard mode. With the keyboard up there is only ~350px of viewport

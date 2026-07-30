@@ -39,6 +39,16 @@ export interface VisualViewportState {
 const INITIAL: VisualViewportState = { height: null, offsetTop: 0, keyboardInset: 0 };
 
 /**
+ * Minimum layout-vs-visual viewport gap that counts as "a keyboard is covering
+ * the page". Comfortably above iOS's ~44px input accessory bar and well below
+ * any real keyboard (~250-350px), so transient URL-bar deltas never trip it.
+ *
+ * Lives here rather than in a consumer because it is the threshold for reading
+ * `keyboardInset`, and every consumer must agree on it.
+ */
+export const KEYBOARD_OVERLAY_MIN_PX = 120;
+
+/**
  * Quiet period after the last visualViewport event before a large change is
  * committed. The iOS keyboard animation is ~300ms and fires resize+scroll
  * throughout; rAF throttling alone still commits every frame of it, which

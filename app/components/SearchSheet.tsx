@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useDragControls } from "framer-motion";
 import { ChevronLeft, X } from "lucide-react";
 import type { Lang } from "@/app/lib/LangContext";
+import { useVisualViewportHeight, KEYBOARD_OVERLAY_MIN_PX } from "@/app/lib/useVisualViewportHeight";
 import {
   getOrderedCountryCodes,
   getCountryName,
@@ -132,6 +133,30 @@ export default function SearchSheet({ mode, lang, onClose, onSubmitLocation, onS
   // Set when a selection is submitted, so the scroll-lock cleanup can tell a plain
   // close (restore the page's offset) from a close that navigates (don't).
   const navigatingRef = useRef(false);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  // ── Keyboard-aware sheet height ─────────────────────────────────────────────
+  // Same mechanism as the chat route. `max-h-[85dvh]` measures the *layout*
+  // viewport, which iOS Safari does not shrink for the keyboard — only the visual
+  // viewport shrinks. So the sheet kept its full height, its lower portion (the
+  // list) sat under the keyboard, and with the document locked there was no way
+  // to reach it. Only when the keyboard genuinely overlays do we take over from
+  // CSS. On Chromium/Android the layout viewport shrinks natively
+  // (interactive-widget=resizes-content), keyboardInset stays ~0, this stays off,
+  // and `85dvh` — already tracking the smaller viewport — is not shrunk twice.
+  const { height: vvHeight, offsetTop: vvOffsetTop, keyboardInset } = useVisualViewportHeight();
+  const keyboardOverlays = keyboardInset > KEYBOARD_OVERLAY_MIN_PX;
+
+  // The visible band sits at [offsetTop, offsetTop + vvHeight] inside the layout
+  // viewport, and the sheet is anchored to the layout viewport's bottom — which is
+  // under the keyboard. Lifting it by (keyboardInset - offsetTop) lands its bottom
+  // edge exactly on the keyboard's top edge; capping height at vvHeight keeps the
+  // whole sheet inside the visible band. Values are settled, so this commits once
+  // after the keyboard animation rather than on every frame of it.
+  const keyboardSheetStyle =
+    keyboardOverlays && vvHeight
+      ? { bottom: Math.max(0, keyboardInset - vvOffsetTop), maxHeight: `${vvHeight}px` }
+      : undefined;
 
   const [locStep, setLocStep] = useState<LocationStep>("country");
   const [countryCode, setCountryCode] = useState("");
@@ -163,6 +188,18 @@ export default function SearchSheet({ mode, lang, onClose, onSubmitLocation, onS
     setGenericDistrictOptions([]);
     setCatStep("category");
   }, [mode]);
+
+  // Every step keeps its search input at the top of this same scroller, so parking
+  // the scroller at 0 on each keystroke is what guarantees the first match is
+  // on-screen without the user scrolling — and it stays correct when a filtered
+  // list gets shorter than the current scroll offset. Scoped to the list: no
+  // scrollIntoView, which would also pan every scrollable ancestor and, on iOS,
+  // the visual viewport itself. "instant" rather than "auto" because `auto` defers
+  // to CSS, and globals.css sets `scroll-behavior: smooth` on `*` — "auto" would
+  // animate the very jump this is meant to make imperceptible.
+  useEffect(() => {
+    listRef.current?.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+  }, [mode, locStep, catStep, countrySearch, citySearch, districtSearch, neighborhoodSearch]);
 
   // ── Body scroll lock ────────────────────────────────────────────────────────
   // `body { overflow: hidden }` alone does NOT stop the document scrolling on iOS
@@ -396,6 +433,7 @@ export default function SearchSheet({ mode, lang, onClose, onSubmitLocation, onS
             transition={{ type: "spring", damping: 32, stiffness: 320 }}
             dir={isRtl ? "rtl" : "ltr"}
             className={`fixed inset-x-0 bottom-0 z-[10001] flex flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl ${isTallMode ? "max-h-[85dvh]" : ""}`}
+            style={keyboardSheetStyle}
           >
             <div
               onPointerDown={(e) => dragControls.start(e)}
@@ -443,6 +481,7 @@ export default function SearchSheet({ mode, lang, onClose, onSubmitLocation, onS
                 its content and the same non-scrolling box comes back. */}
             <div className="relative flex min-h-0 flex-1 flex-col">
               <div
+                ref={listRef}
                 className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))]"
                 style={{ WebkitOverflowScrolling: "touch" }}
               >

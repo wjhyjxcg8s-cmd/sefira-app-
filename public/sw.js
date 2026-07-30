@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sefira-v4';
+const CACHE_NAME = 'sefira-v5';
 const urlsToCache = ['/'];
 
 self.addEventListener('install', (event) => {
