@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { motion, useReducedMotion } from "framer-motion";
 import { createClient } from "@supabase/supabase-js";
 import { getListingSide, getCommercialBadgeLabel, COMMERCIAL_BADGE_CLASS } from "@/app/lib/listingBadge";
 import { getThumbUrl } from "@/app/lib/imageVariants";
@@ -527,11 +528,16 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
 
   const isRTL = lang === "ar" || lang === "fa";
   const hero = heroText[lang as Lang] ?? heroText.tr;
+  // The single scroll-reveal on this page section. `false` as the initial state opts
+  // the header straight into its final position when the OS asks for reduced motion.
+  const reduceMotion = useReducedMotion();
 
   return (
-    <section className="max-w-7xl mx-auto mt-10 mb-0">
-      {/* Hero header */}
-      <div className="relative overflow-hidden min-h-[200px] sm:min-h-[240px]">
+    <section className="max-w-7xl mx-auto mt-section mb-0">
+      {/* Hero header — min-height only reserves what the artwork needs to read as a
+          band; the text block below sizes it, so a short locale no longer leaves the
+          illustration holding empty height above the copy on small screens. */}
+      <div className="relative flex overflow-hidden min-h-[168px] sm:min-h-[240px]">
         <Image
           src="/son-ilanlar-hero.webp"
           alt=""
@@ -547,18 +553,36 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
           }`}
         />
         <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-b from-transparent to-white pointer-events-none" />
-        <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-stone-50 to-transparent pointer-events-none z-[1]" />
+        <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-stone-50 to-transparent pointer-events-none z-[1]" />
 
-        <div
-          className="relative z-10 h-full flex flex-col justify-center max-w-[75%] sm:max-w-[50%] px-6 py-6"
+        {/* `h-full` was dropped for `flex` on the wrapper above: a percentage height
+            against a min-height-only parent resolves to `auto`, so `justify-center`
+            never applied and the block sat top-aligned with the slack piled around it.
+            As a flex item it stretches to the band's height, so the centering is real —
+            it matters at sm+, where `min-h-[240px]` still exceeds the copy.
+            `w-full` keeps the item the same width it had as a block. */}
+        <motion.div
+          initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+          whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          className="relative z-10 flex w-full flex-col justify-center max-w-[78%] sm:max-w-[50%] px-6 py-5 sm:py-7"
           dir={isRTL ? "rtl" : "ltr"}
           style={{ textAlign: isRTL ? "right" : "left" }}
         >
-          <p className="text-lg sm:text-xl text-stone-700">{hero.l1}</p>
-          <p className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
+          {/* Kicker → headline → subtitle read as one unit: each line is spaced off
+              the one above it (mt-*) instead of every line carrying its own loose
+              default leading. No fixed heights, so the longer FA/AR/DE strings wrap
+              instead of clipping. */}
+          <p className="text-base sm:text-lg leading-tight text-stone-500">{hero.l1}</p>
+          {/* No leading override on this line: `bg-clip-text` paints the gradient only
+              inside the element's own box, so a tighter line-height would cut the
+              gradient off the ascenders/descenders of the Persian and Arabic headlines.
+              The unit's tightness comes from the mt-* rhythm instead. */}
+          <p className="mt-1 text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
             {hero.l2}
           </p>
-          <p className="text-xs sm:text-sm text-stone-500 mt-1 max-w-xs">{hero.sub}</p>
+          <p className="mt-1.5 text-xs sm:text-sm leading-snug text-stone-500 max-w-xs">{hero.sub}</p>
 
           {/* Category filter tabs */}
           <div className="flex gap-2 overflow-x-auto scrollbar-hide mt-4">
@@ -587,7 +611,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
               );
             })}
           </div>
-        </div>
+        </motion.div>
       </div>
 
       <div className="bg-white px-5 pt-2 pb-6">

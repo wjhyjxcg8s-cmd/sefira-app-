@@ -83,6 +83,21 @@
   --color-black: var(--black);
 }
 
+/* ─── Homepage vertical rhythm ───────────────────────────────────────────── */
+/* One gap for every boundary between top-level homepage sections, so the spacing
+   between them is a token (`mt-section` / `pt-section` / `pb-section`) instead of a
+   per-section magic number. Declared in a plain `@theme` — not `@theme inline` — so
+   the utilities compile to `var(--spacing-section)` and the sm+ value below can
+   widen every boundary at once without a second class. */
+@theme {
+  --spacing-section: 2rem;
+}
+@media (min-width: 640px) {
+  :root {
+    --spacing-section: 3rem;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

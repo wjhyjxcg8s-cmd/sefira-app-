@@ -37,8 +37,8 @@ function preloadSearchSheet() {
 const LatestListings = dynamic(() => import("@/app/components/LatestListings"), {
   ssr: false,
   loading: () => (
-    <section className="max-w-7xl mx-auto mt-10 animate-pulse" aria-hidden="true">
-      <div className="h-[200px] sm:h-[240px] w-full bg-stone-200" />
+    <section className="max-w-7xl mx-auto mt-section animate-pulse" aria-hidden="true">
+      <div className="h-[168px] sm:h-[240px] w-full bg-stone-200" />
       <div className="px-5 mt-6 grid grid-cols-2 lg:grid-cols-3 gap-4">
         {Array.from({ length: 6 }).map((_, i) => (
           <div key={i} className="h-64 rounded-2xl bg-stone-200" />
@@ -51,7 +51,7 @@ const LatestListings = dynamic(() => import("@/app/components/LatestListings"), 
 const PopularCities = dynamic(() => import("@/app/components/PopularCities"), {
   ssr: false,
   loading: () => (
-    <section className="max-w-7xl mx-auto px-5 pt-10 pb-20 animate-pulse" aria-hidden="true">
+    <section className="max-w-7xl mx-auto px-5 pt-section pb-20 animate-pulse" aria-hidden="true">
       <div className="mx-auto mb-14 h-8 w-64 rounded-full bg-stone-200" />
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {Array.from({ length: 8 }).map((_, i) => (
@@ -2815,7 +2815,7 @@ export default function Home() {
       </div>
 
       {/* ── PROMO VIDEO ───────────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto mt-8">
+      <section className="max-w-7xl mx-auto mt-section">
         <p className="px-5 mb-3 text-lg font-extrabold text-slate-900">
           {t.promoVideoHeading}
         </p>
@@ -2856,7 +2856,7 @@ export default function Home() {
 
       {/* ── WEEKLY STORIES ────────────────────────────────────────────────────── */}
       {weeklyStories.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-5 mt-8 pb-4">
+        <section className="max-w-7xl mx-auto px-4 sm:px-5 mt-section pb-4">
           <p className="text-sm font-bold text-stone-800 mb-3 sm:mb-4">
             {thisWeekLabel[lang] ?? "Bu Hafta"}
           </p>
@@ -2909,9 +2909,12 @@ export default function Home() {
         />
       )}
 
-      {/* ── SMART RECOMMENDATIONS ─────────────────────────────────────────────── */}
+      {/* ── SMART RECOMMENDATIONS ─────────────────────────────────────────────────
+          pb-0: the boundary below this section is owned by the next section's
+          `mt-section`, so the two no longer stack. The track's own pb-4 stays — it is
+          the room the cards' 32px-blur shadow needs, not dead space. */}
       {smartRecs.length > 0 && (
-        <section className="pt-10 pb-2 bg-white border-b border-stone-100">
+        <section className="pt-section pb-0 bg-white border-b border-stone-100">
           {/* Header */}
           <div className="max-w-2xl mx-auto px-4 mb-5 flex items-end justify-between">
             <div>
