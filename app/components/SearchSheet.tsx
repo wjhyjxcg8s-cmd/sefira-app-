@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useDragControls } from "framer-motion";
 import { ChevronLeft, X } from "lucide-react";
@@ -129,6 +129,9 @@ export default function SearchSheet({ mode, lang, onClose, onSubmitLocation, onS
   const dragControls = useDragControls();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+  // Set when a selection is submitted, so the scroll-lock cleanup can tell a plain
+  // close (restore the page's offset) from a close that navigates (don't).
+  const navigatingRef = useRef(false);
 
   const [locStep, setLocStep] = useState<LocationStep>("country");
   const [countryCode, setCountryCode] = useState("");
@@ -161,9 +164,53 @@ export default function SearchSheet({ mode, lang, onClose, onSubmitLocation, onS
     setCatStep("category");
   }, [mode]);
 
+  // ── Body scroll lock ────────────────────────────────────────────────────────
+  // `body { overflow: hidden }` alone does NOT stop the document scrolling on iOS
+  // Safari — the page keeps rubber-banding behind a fixed overlay. The only
+  // reliable lock there is taking the body out of flow (`position: fixed`) with
+  // its scroll offset held in `top`, then restoring both on close. Every property
+  // is captured before it is touched and put back verbatim, so this composes with
+  // whatever the page had set.
   useEffect(() => {
-    document.body.style.overflow = mode ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    if (!mode) return;
+    const { body } = document;
+    const html = document.documentElement;
+    const scrollY = window.scrollY;
+    const prev = {
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+      overflow: body.style.overflow,
+      htmlOverflow: html.style.overflow,
+    };
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
+    body.style.overflow = "hidden";
+    html.style.overflow = "hidden";
+    return () => {
+      body.style.position = prev.position;
+      body.style.top = prev.top;
+      body.style.left = prev.left;
+      body.style.right = prev.right;
+      body.style.width = prev.width;
+      body.style.overflow = prev.overflow;
+      html.style.overflow = prev.htmlOverflow;
+      // Restoring the offset is only right when we're staying on this page. A submit
+      // closes the sheet and navigates in the same tick, and putting the old homepage
+      // offset back would drag the destination down with it.
+      if (navigatingRef.current) {
+        navigatingRef.current = false;
+        return;
+      }
+      // Explicit "instant": globals.css sets `scroll-behavior: smooth` on `*`, which
+      // would otherwise animate the restore and read as a jump on close.
+      window.scrollTo({ top: scrollY, left: 0, behavior: "instant" as ScrollBehavior });
+    };
   }, [mode]);
 
   if (!mounted) return null;
@@ -206,11 +253,13 @@ export default function SearchSheet({ mode, lang, onClose, onSubmitLocation, onS
   }
 
   function submitLocation(params: LocationSubmit) {
+    navigatingRef.current = true;
     onSubmitLocation(params);
     onClose();
   }
 
   function submitCategory(params: CategorySubmit) {
+    navigatingRef.current = true;
     onSubmitCategory(params);
     onClose();
   }
@@ -384,9 +433,17 @@ export default function SearchSheet({ mode, lang, onClose, onSubmitLocation, onS
               </div>
             )}
 
-            <div className="relative min-h-0 flex-1">
+            {/* Height chain, root → scroller, is flex the whole way down and uses no
+                percentage heights. `h-full` here used to be a `height: 100%` resolved
+                against a flex item that the root's `max-height` clamp had sized — a
+                parent height iOS Safari treats as indefinite, so the scroller fell back
+                to `height: auto`, grew past the sheet, and never became scrollable. With
+                nothing to scroll, the touch chained straight out to the document. Both
+                levels keep `min-h-0`, without which a flex item refuses to shrink below
+                its content and the same non-scrolling box comes back. */}
+            <div className="relative flex min-h-0 flex-1 flex-col">
               <div
-                className="h-full overflow-y-auto overscroll-contain px-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))]"
+                className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))]"
                 style={{ WebkitOverflowScrolling: "touch" }}
               >
               {mode === "location" && (
