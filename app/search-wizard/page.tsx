@@ -7,7 +7,13 @@ import { getThumbUrl } from "@/app/lib/imageVariants";
 import SeekerCardVisual from "@/app/components/SeekerCardVisual";
 import AvatarImage from "@/app/components/AvatarImage";
 import { useLang } from "@/app/lib/LangContext";
-import { tierByLocation } from "./locationTiers";
+import {
+  filterByCategory,
+  filterByCommercialType,
+  filterByIntent,
+  filterByLocation,
+} from "@/app/lib/searchQuery";
+import SearchHereBanner from "@/app/components/SearchHereBanner";
 import {
   getCountryName,
   getOrderedCountryCodes,
@@ -357,12 +363,16 @@ export default function SearchWizardPage() {
   async function runSearch() {
     setLoadingResults(true);
 
-    const { data, error } = await supabase
+    // The country bound goes into the query, not just the client-side filter: without it
+    // a country-only search would only ever see whichever of the 50 newest listings
+    // worldwide happened to be in that country.
+    const query = supabase
       .from("listings")
       .select("id, type, city, district, neighborhood, rent, currency, photos, house_type, rooms, smoking, furnished, elevator, current_residents, user_id, country_code, country, max_budget, seeker_age, seeker_gender, occupation, about_text, listing_category, has_place, needs_place, commercial_type, square_meters")
       .eq("is_deleted", false)
-      .order("created_at", { ascending: false })
-      .limit(50);
+      .order("created_at", { ascending: false });
+
+    const { data, error } = await (countryCode ? query.eq("country_code", countryCode) : query).limit(50);
 
     if (error || !data) {
       setResults([]);
@@ -370,30 +380,16 @@ export default function SearchWizardPage() {
       return;
     }
 
-    // Step 1: category filter
-    let base = data.filter((l) =>
-      wizardCategory === "commercial"
-        ? l.listing_category === "commercial"
-        : l.listing_category !== "commercial"
-    );
+    // Steps 1–3, all through app/lib/searchQuery.ts — the single source of truth these
+    // predicates were originally lifted from.
+    const category = wizardCategory === "commercial" ? "commercial" : "residential";
+    let base = filterByCategory(data, category);
+    base = filterByIntent(base, category, userIntent);
+    if (wizardCategory === "commercial") base = filterByCommercialType(base, commercialType);
 
-    // Step 2: opposite-side filter (has vs needs), using the field the category actually stores
-    if (userIntent) {
-      if (wizardCategory === "commercial") {
-        base = base.filter((l) => (userIntent === "has_home" ? l.needs_place === true : l.has_place === true));
-      } else {
-        const targetType = userIntent === "has_home" ? "needs_place" : "has_place";
-        base = base.filter((l) => l.type === targetType);
-      }
-    }
-
-    // Step 2b: commercial space type, when the user picked one
-    if (wizardCategory === "commercial" && commercialType) {
-      base = base.filter((l) => l.commercial_type === commercialType);
-    }
-
-    // Step 3: location filter with priority tiers (neighborhood > district > city > country)
-    const tiered = tierByLocation(base, { city, district, neighborhood, countryCode });
+    // City/district/neighborhood are optional here: with only a country picked this
+    // returns everything in that country rather than nothing.
+    const tiered = filterByLocation(base, { countryCode, city, district, neighborhood });
 
     if (tiered.length === 0) {
       setResults([]);
@@ -714,9 +710,23 @@ export default function SearchWizardPage() {
             {screen === "loc-city" && (
               <div>
                 <h1 className="text-xl font-black text-gray-900 mb-1">{t.cityLabel}</h1>
-                <p className="text-sm text-gray-400 mb-6">
+                <p className="text-sm text-gray-400 mb-4">
                   {codeToFlag(countryCode)} {countryName}
                 </p>
+                {/* Country-only search — same pinned-banner pattern as the homepage
+                    location sheet, above the input so it never needs scrolling. */}
+                <SearchHereBanner
+                  lang={lang as Lang}
+                  value={countryName}
+                  showOptionalHint
+                  className="mb-5"
+                  onClick={() => {
+                    setCity(""); setCitySearch("");
+                    setDistrict(""); setDistrictSearch("");
+                    setNeighborhood(""); setNeighborhoodSearch("");
+                    goTo("results");
+                  }}
+                />
                 <div className="relative mb-4">
                   <input
                     type="text"

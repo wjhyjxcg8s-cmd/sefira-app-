@@ -8,6 +8,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Search, MapPin, LayoutGrid, SlidersHorizontal } from "lucide-react";
 import type { SheetMode } from "@/app/components/SearchSheet";
+import SearchHereBanner from "@/app/components/SearchHereBanner";
 import { getListingSide, getCommercialBadgeLabel, type Lang as BadgeLang } from "@/app/lib/listingBadge";
 import {
   TOP_COUNTRY_CODES,
@@ -1936,6 +1937,20 @@ export default function Home() {
 
   const sliderPct = ((budgetUSD - 100) / 4900) * 100;
 
+  // Wizard step 3 submit — the same /search contract the location sheet uses, so both
+  // entry points produce identical URLs. `countryOnly` is the pinned banner's path: a
+  // country with no city is a complete search, not a half-finished one, so the city is
+  // dropped rather than the search being blocked.
+  function submitWizardSearch({ countryOnly = false } = {}) {
+    const qs = new URLSearchParams();
+    const q = searchInput.trim();
+    if (q) qs.set("q", q);
+    if (selectedCountry) qs.set("country", selectedCountry);
+    if (!countryOnly && selectedCity) qs.set("city", selectedCity);
+    const query = qs.toString();
+    router.push(query ? `/search?${query}` : "/search");
+  }
+
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900 overflow-x-hidden" dir={lang === "fa" || lang === "ar" ? "rtl" : "ltr"}>
 
@@ -2675,6 +2690,17 @@ export default function Home() {
                         <p className="text-xs text-stone-400 font-medium mb-5" dir="rtl">
                           {t.locationStepSub}
                         </p>
+                        {/* Country-only search — same pinned-banner pattern as the location
+                            sheet, sitting above the selects so it needs no scrolling. */}
+                        {selectedCountry && (
+                          <SearchHereBanner
+                            lang={lang}
+                            value={getCountryName(selectedCountry, lang)}
+                            showOptionalHint
+                            onClick={() => submitWizardSearch({ countryOnly: true })}
+                            className="mb-4"
+                          />
+                        )}
                         <div className="flex flex-col sm:flex-row gap-2 mb-4">
                           <select
                             value={selectedCountry}
@@ -2745,7 +2771,10 @@ export default function Home() {
                   {/* Wizard CTA button */}
                   <div className="px-5 pb-5">
                     <button
-                      onClick={() => { if (wizardStep < 3) setWizardStep((s) => s + 1); }}
+                      onClick={() => {
+                        if (wizardStep < 3) setWizardStep((s) => s + 1);
+                        else submitWizardSearch();
+                      }}
                       className="w-full py-3.5 rounded-xl font-black text-sm bg-gradient-to-r from-orange-500 via-fuchsia-500 to-violet-600 text-white hover:opacity-95 transition-all duration-200 shadow-xl shadow-orange-500/25 hover:shadow-2xl hover:shadow-violet-500/30 active:scale-[0.98] flex items-center justify-center gap-2.5"
                     >
                       {wizardStep === 3 ? (

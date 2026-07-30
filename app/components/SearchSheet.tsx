@@ -21,6 +21,7 @@ import {
   type StateOption,
 } from "@/app/lib/locationData";
 import { COMMERCIAL_TYPES } from "@/app/lib/commercialTypes";
+import SearchHereBanner from "@/app/components/SearchHereBanner";
 
 export type SheetMode = "location" | "category" | null;
 
@@ -51,7 +52,7 @@ const T: Record<Lang, {
   locationTitle: string; categoryTitle: string; back: string; close: string;
   countrySearchPlaceholder: string; citySearchPlaceholder: string;
   districtSearchPlaceholder: string; neighborhoodSearchPlaceholder: string;
-  loading: string; searchHere: string;
+  loading: string;
   residentialLabel: string; residentialSub: string;
   commercialLabel: string; commercialSub: string;
   commercialTypeTitle: string; searchAllCommercial: string;
@@ -60,7 +61,7 @@ const T: Record<Lang, {
     locationTitle: "Konum Seç", categoryTitle: "Kategori Seç", back: "Geri", close: "Kapat",
     countrySearchPlaceholder: "Ülke ara...", citySearchPlaceholder: "Şehir ara...",
     districtSearchPlaceholder: "İlçe ara...", neighborhoodSearchPlaceholder: "Mahalle ara...",
-    loading: "Yükleniyor…", searchHere: "Bu konumda ara",
+    loading: "Yükleniyor…",
     residentialLabel: "Konut", residentialSub: "Ev, oda ve ev arkadaşı ilanları",
     commercialLabel: "Ticari", commercialSub: "Ofis, dükkan ve diğer alanlar",
     commercialTypeTitle: "Alan Türünü Seçin", searchAllCommercial: "Tüm Ticari İlanları Ara",
@@ -69,7 +70,7 @@ const T: Record<Lang, {
     locationTitle: "Choose Location", categoryTitle: "Choose Category", back: "Back", close: "Close",
     countrySearchPlaceholder: "Search country...", citySearchPlaceholder: "Search city...",
     districtSearchPlaceholder: "Search district...", neighborhoodSearchPlaceholder: "Search neighborhood...",
-    loading: "Loading…", searchHere: "Search this location",
+    loading: "Loading…",
     residentialLabel: "Residential", residentialSub: "Homes, rooms and roommate listings",
     commercialLabel: "Commercial", commercialSub: "Offices, shops and other spaces",
     commercialTypeTitle: "Select Space Type", searchAllCommercial: "Search All Commercial Listings",
@@ -78,7 +79,7 @@ const T: Record<Lang, {
     locationTitle: "انتخاب موقعیت", categoryTitle: "انتخاب دسته‌بندی", back: "بازگشت", close: "بستن",
     countrySearchPlaceholder: "جستجوی کشور...", citySearchPlaceholder: "جستجوی شهر...",
     districtSearchPlaceholder: "جستجوی منطقه...", neighborhoodSearchPlaceholder: "جستجوی محله...",
-    loading: "در حال بارگذاری…", searchHere: "جستجو در این موقعیت",
+    loading: "در حال بارگذاری…",
     residentialLabel: "مسکونی", residentialSub: "آگهی‌های خانه، اتاق و هم‌خانه",
     commercialLabel: "تجاری", commercialSub: "دفتر، مغازه و سایر فضاها",
     commercialTypeTitle: "نوع فضا را انتخاب کنید", searchAllCommercial: "جستجوی همه آگهی‌های تجاری",
@@ -87,7 +88,7 @@ const T: Record<Lang, {
     locationTitle: "اختر الموقع", categoryTitle: "اختر الفئة", back: "رجوع", close: "إغلاق",
     countrySearchPlaceholder: "ابحث عن دولة...", citySearchPlaceholder: "ابحث عن مدينة...",
     districtSearchPlaceholder: "ابحث عن حي...", neighborhoodSearchPlaceholder: "ابحث عن حارة...",
-    loading: "جارٍ التحميل…", searchHere: "ابحث في هذا الموقع",
+    loading: "جارٍ التحميل…",
     residentialLabel: "سكني", residentialSub: "إعلانات المنازل والغرف وشريك السكن",
     commercialLabel: "تجاري", commercialSub: "مكاتب ومحلات ومساحات أخرى",
     commercialTypeTitle: "اختر نوع المساحة", searchAllCommercial: "ابحث في جميع الإعلانات التجارية",
@@ -96,7 +97,7 @@ const T: Record<Lang, {
     locationTitle: "Ort wählen", categoryTitle: "Kategorie wählen", back: "Zurück", close: "Schließen",
     countrySearchPlaceholder: "Land suchen...", citySearchPlaceholder: "Stadt suchen...",
     districtSearchPlaceholder: "Bezirk suchen...", neighborhoodSearchPlaceholder: "Viertel suchen...",
-    loading: "Wird geladen…", searchHere: "Hier suchen",
+    loading: "Wird geladen…",
     residentialLabel: "Wohnen", residentialSub: "Wohnungen, Zimmer und Mitbewohner-Inserate",
     commercialLabel: "Gewerbe", commercialSub: "Büros, Läden und andere Flächen",
     commercialTypeTitle: "Flächentyp auswählen", searchAllCommercial: "Alle Gewerbeinserate durchsuchen",
@@ -105,24 +106,12 @@ const T: Record<Lang, {
     locationTitle: "Выбрать локацию", categoryTitle: "Выбрать категорию", back: "Назад", close: "Закрыть",
     countrySearchPlaceholder: "Поиск страны...", citySearchPlaceholder: "Поиск города...",
     districtSearchPlaceholder: "Поиск района...", neighborhoodSearchPlaceholder: "Поиск микрорайона...",
-    loading: "Загрузка…", searchHere: "Искать здесь",
+    loading: "Загрузка…",
     residentialLabel: "Жильё", residentialSub: "Дома, комнаты и объявления соседей",
     commercialLabel: "Коммерция", commercialSub: "Офисы, магазины и другие помещения",
     commercialTypeTitle: "Выберите тип помещения", searchAllCommercial: "Искать все коммерческие объявления",
   },
 };
-
-function SearchHereButton({ label, value, onClick }: { label: string; value: string; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className="mb-3 flex w-full flex-col items-start gap-0.5 rounded-xl bg-orange-500 px-4 py-3 text-start transition-transform active:scale-[0.98]"
-    >
-      <span className="text-[14px] font-bold text-white">{label}</span>
-      <span className="w-full truncate text-[12px] text-orange-100">{value}</span>
-    </button>
-  );
-}
 
 export default function SearchSheet({ mode, lang, onClose, onSubmitLocation, onSubmitCategory }: SearchSheetProps) {
   const t = T[lang];
@@ -372,11 +361,11 @@ export default function SearchSheet({ mode, lang, onClose, onSubmitLocation, onS
   // flex-shrink-0 header instead of scrolling away with the list content.
   const pinnedCta = mode === "location"
     ? locStep === "city"
-      ? <SearchHereButton label={t.searchHere} value={countryName} onClick={() => submitLocation({ country: countryCode })} />
+      ? <SearchHereBanner lang={lang} value={countryName} showOptionalHint onClick={() => submitLocation({ country: countryCode })} />
       : locStep === "district"
-        ? <SearchHereButton label={t.searchHere} value={`${city}, ${countryName}`} onClick={() => submitLocation({ country: countryCode, city })} />
+        ? <SearchHereBanner lang={lang} value={`${city}, ${countryName}`} onClick={() => submitLocation({ country: countryCode, city })} />
         : locStep === "neighborhood"
-          ? <SearchHereButton label={t.searchHere} value={`${district}, ${city}`} onClick={() => submitLocation({ country: countryCode, city, district })} />
+          ? <SearchHereBanner lang={lang} value={`${district}, ${city}`} onClick={() => submitLocation({ country: countryCode, city, district })} />
           : null
     : mode === "category" && catStep === "commercialType"
       ? (

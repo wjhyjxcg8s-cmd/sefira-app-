@@ -7,11 +7,15 @@ import { useLang } from "@/app/lib/LangContext";
 import { getThumbUrl } from "@/app/lib/imageVariants";
 import SeekerCardVisual from "@/app/components/SeekerCardVisual";
 import AvatarImage from "@/app/components/AvatarImage";
-import { tierByLocation } from "@/app/search-wizard/locationTiers";
-import { filterByCategory, filterByCommercialType, type SearchCategory } from "@/app/lib/searchQuery";
+import {
+  filterByCategory,
+  filterByCommercialType,
+  filterByLocation,
+  type SearchCategory,
+} from "@/app/lib/searchQuery";
 import { getListingSide, getCommercialBadgeLabel, COMMERCIAL_BADGE_CLASS } from "@/app/lib/listingBadge";
 import { COMMERCIAL_TYPE_BY_SLUG } from "@/app/lib/commercialTypes";
-import { getCountryName } from "@/app/lib/locationData";
+import { getCountryName, codeToFlag } from "@/app/lib/locationData";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -336,9 +340,9 @@ function SearchPageContent() {
         let filtered = filterByCategory(candidates, category);
         filtered = filterByCommercialType(filtered, commercialType);
 
-        if (city || district || neighborhood) {
-          filtered = tierByLocation(filtered, { city, district, neighborhood, countryCode }) as Listing[];
-        }
+        // Runs for every location shape, including country-with-no-city: the country is
+        // a hard bound and the finer selectors, when present, rank inside it.
+        filtered = filterByLocation(filtered, { countryCode, city, district, neighborhood });
 
         // Enrich seeker listings with the seeker's avatar so photo-less seeker cards
         // can show the avatar instead of the generic seeker visual.
@@ -390,6 +394,15 @@ function SearchPageContent() {
 
   const hasResults = listings.length > 0 || users.length > 0;
   const hasStructuredFilters = !!(category || commercialType || countryCode || city || district || neighborhood);
+
+  // Location chip text. A country-only search is a first-class result set, so it names
+  // the country (flag + Intl.DisplayNames in the viewer's language) instead of falling
+  // back to a bare code; finer selections read "İstanbul, 🇹🇷 Türkiye".
+  const countryLabel = countryCode ? `${codeToFlag(countryCode)} ${getCountryName(countryCode, lang)}` : "";
+  const finestPlace = neighborhood || district || city;
+  const locationLabel = finestPlace
+    ? [finestPlace, countryLabel].filter(Boolean).join(", ")
+    : countryLabel;
 
   return (
     <div dir={isRTL ? "rtl" : "ltr"} style={{ minHeight: "100dvh", backgroundColor: "white" }}>
@@ -573,7 +586,7 @@ function SearchPageContent() {
             )}
             {(countryCode || city || district || neighborhood) && (
               <FilterChip
-                label={`${t.chipLocation}: ${neighborhood || district || city || getCountryName(countryCode, lang)}`}
+                label={`${t.chipLocation}: ${locationLabel}`}
                 onRemove={() => {
                   setCountryCode("");
                   setCity("");
