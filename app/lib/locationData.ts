@@ -129,3 +129,70 @@ export async function loadCitiesOfState(countryIso: string, stateIso: string): P
     return [];
   }
 }
+
+// ── One cascade, one place ────────────────────────────────────────────────────
+// The country → city-step resolution every picker needs: TR/IR/RU come from their
+// own lazy-fetched JSON, everything else prefers real city names and only falls
+// back to state/province names when world-cities has no coverage. Callers that
+// need the deeper steps keep `turkiyeData`/`states` from the same result instead
+// of re-fetching. Nothing here is imported statically — the big JSON files
+// (Russia 2.39MB, Turkey 0.77MB, Iran 0.58MB) are only fetched on country select.
+export interface CountryCityOptions {
+  cityOptions: string[];
+  turkiyeData: Record<string, Record<string, string[]>>;
+  states: StateOption[];
+  // True when `cityOptions` holds state/province names, so the next step down is
+  // loadCitiesOfState() rather than a district list.
+  usingStateFallback: boolean;
+}
+
+export async function loadCountryCityOptions(code: string): Promise<CountryCityOptions> {
+  const empty: CountryCityOptions = {
+    cityOptions: [], turkiyeData: {}, states: [], usingStateFallback: false,
+  };
+  if (!code) return empty;
+
+  if (code === "TR") {
+    const turkiyeData = await loadTurkiyeData();
+    return { ...empty, turkiyeData, cityOptions: Object.keys(turkiyeData) };
+  }
+  if (code === "IR") return { ...empty, cityOptions: await loadIranCounties() };
+  if (code === "RU") return { ...empty, cityOptions: await loadRussiaCities() };
+
+  const [worldCities, states] = await Promise.all([
+    loadWorldCities(getCountryName(code, "en")),
+    loadStatesOfCountry(code),
+  ]);
+  return worldCities.length > 0
+    ? { ...empty, cityOptions: worldCities, states }
+    : { ...empty, cityOptions: states.map((s) => s.name), states, usingStateFallback: states.length > 0 };
+}
+
+// Curated first-choice chips per country, spelled exactly as the underlying dataset
+// spells them (Turkey's il list is uppercase Turkish — "İSTANBUL", not "Istanbul"),
+// so a chip only ever renders when it is a real, selectable option.
+// Each entry is verified against its dataset — Iran's counties are Persian, Russia's
+// cities are Cyrillic, Turkey's il list is uppercase Turkish. A name that does not
+// match is silently dropped by getPopularCityChips(), so these stay in sync or the
+// chip simply disappears; they are never rendered as unselectable text.
+export const POPULAR_CITIES_BY_COUNTRY: Record<string, string[]> = {
+  TR: ["İSTANBUL", "ANKARA", "İZMİR", "ANTALYA", "BURSA", "ADANA"],
+  IR: ["تهران", "مشهد", "اصفهان", "شیراز", "تبریز", "کرج"],
+  RU: ["Москва", "Санкт-Петербург", "Новосибирск", "Екатеринбург", "Казань", "Сочи"],
+  DE: ["Berlin", "Munich", "Hamburg", "Frankfurt am Main", "Cologne", "Stuttgart"],
+  AE: ["Dubai", "Abu Dhabi", "Sharjah", "Al Ain", "Ras al-Khaimah", "Fujairah"],
+  GB: ["London", "Manchester", "Birmingham", "Liverpool", "Edinburgh", "Bristol"],
+  US: ["New York", "Los Angeles", "Chicago", "Houston", "Miami", "San Francisco"],
+  FR: ["Paris", "Marseille", "Lyon", "Toulouse", "Nice", "Bordeaux"],
+  ES: ["Madrid", "Barcelona", "Valencia", "Seville", "Bilbao", "Zaragoza"],
+};
+
+// Chips for a country: curated names that actually exist in the loaded list, topped
+// up from the head of that list so the row is never empty for uncovered countries.
+export function getPopularCityChips(code: string, cityOptions: string[], limit = 6): string[] {
+  if (cityOptions.length === 0) return [];
+  const available = new Set(cityOptions);
+  const curated = (POPULAR_CITIES_BY_COUNTRY[code] || []).filter((c) => available.has(c));
+  const rest = cityOptions.filter((c) => !curated.includes(c));
+  return [...curated, ...rest].slice(0, limit);
+}

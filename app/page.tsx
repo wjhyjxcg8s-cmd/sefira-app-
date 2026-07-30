@@ -9,6 +9,13 @@ import dynamic from "next/dynamic";
 import { Search, MapPin, LayoutGrid, SlidersHorizontal } from "lucide-react";
 import type { SheetMode } from "@/app/components/SearchSheet";
 import { getListingSide, getCommercialBadgeLabel, type Lang as BadgeLang } from "@/app/lib/listingBadge";
+import {
+  TOP_COUNTRY_CODES,
+  getOrderedCountryCodes,
+  getCountryName,
+  loadCountryCityOptions,
+  getPopularCityChips,
+} from "@/app/lib/locationData";
 
 // ── Lazy-loaded client components (kept out of the initial JS bundle) ────────
 // Modals/overlays are only rendered when opened, so their chunk is fetched on
@@ -1286,22 +1293,16 @@ const notifLabels: Record<string, { title: string; messages: string; admin: stri
   },
 };
 
-const PRIORITY_COUNTRIES = [
-  "Turkey", "Germany", "United States", "Spain", "Brazil",
-  "Italy", "France", "United Arab Emirates", "South Korea",
-];
+// Shown in the wizard's chip row before a country is picked — unchanged from the
+// previous behaviour, purely a teaser; the real per-country chips replace it as
+// soon as a country is selected.
+const DEFAULT_CITY_CHIPS = ["Berlin", "Dubai", "Istanbul", "Barcelona", "Paris", "Rome"];
 
-const PRIORITY_CITIES: Record<string, string[]> = {
-  "Turkey":               ["Istanbul", "Ankara", "Izmir", "Antalya", "Bursa", "Adana"],
-  "Germany":              ["Berlin", "Munich", "Hamburg", "Frankfurt", "Cologne", "Stuttgart"],
-  "United States":        ["New York", "Los Angeles", "Chicago", "Houston", "Miami", "San Francisco"],
-  "Spain":                ["Madrid", "Barcelona", "Valencia", "Seville", "Bilbao", "Malaga"],
-  "Brazil":               ["São Paulo", "Rio de Janeiro", "Brasília", "Salvador", "Fortaleza", "Curitiba"],
-  "Italy":                ["Rome", "Milan", "Naples", "Turin", "Florence", "Bologna"],
-  "France":               ["Paris", "Marseille", "Lyon", "Toulouse", "Nice", "Bordeaux"],
-  "United Arab Emirates": ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "Ras Al Khaimah", "Al Ain"],
-  "South Korea":          ["Seoul", "Busan", "Incheon", "Daegu", "Daejeon", "Gwangju"],
-};
+// Countries/cities for the hero wizard's location step come from the shared
+// locationData module — the same source the search sheet and /search-wizard use.
+// The old hardcoded name lists (and the countriesnow.space fetches that fed them)
+// are gone: they were English-only, capped each country at six cities, and their
+// keys never matched a localized country name, which is how İstanbul went missing.
 
 // ─── Wizard types ─────────────────────────────────────────────────────────────
 type WizardMode = "seeking" | "offering" | null;
@@ -1757,7 +1758,7 @@ export default function Home() {
 
   // ── Existing state ────────────────────────────────────────────────────────
   const [searchInput, setSearchInput] = useState("");
-  const [countries, setCountries] = useState<string[]>([]);
+  // ISO-2 code (e.g. "TR"), not a display name — the label is localized at render.
   const [selectedCountry, setSelectedCountry] = useState("");
   const [cities, setCities] = useState<string[]>([]);
   const [selectedCity, setSelectedCity] = useState("");
@@ -1912,29 +1913,25 @@ export default function Home() {
     }
   }, []);
 
-  useEffect(() => {
-    fetch("https://countriesnow.space/api/v0.1/countries")
-      .then((r) => r.json())
-      .then((data) => {
-        if (data?.data) {
-          setCountries(data.data.map((c: { country: string }) => c.country).sort());
-        }
-      })
-      .catch(() => {});
-  }, []);
+  // Country list is derived, not fetched — no network on homepage load, and the
+  // names localize with `lang` (all 6 locales, via Intl.DisplayNames).
+  const orderedWizardCountryCodes = getOrderedCountryCodes(lang);
+  const otherWizardCountryCodes = orderedWizardCountryCodes.filter(
+    (code) => !TOP_COUNTRY_CODES.includes(code)
+  );
 
+  // Cities load only once a country is picked, so the multi-MB per-country JSON
+  // never touches the homepage's initial load / LCP.
+  // The reset (cities/city/loading) happens in the select's onChange, not here, so
+  // this effect only ever setStates from the async callback.
   useEffect(() => {
-    if (!selectedCountry) { setCities([]); setSelectedCity(""); return; }
-    setLoadingCities(true);
-    fetch("https://countriesnow.space/api/v0.1/countries/cities", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ country: selectedCountry }),
-    })
-      .then((r) => r.json())
-      .then((data) => { if (data?.data) setCities(data.data); })
-      .catch(() => setCities([]))
-      .finally(() => setLoadingCities(false));
+    if (!selectedCountry) return;
+    let cancelled = false;
+    loadCountryCityOptions(selectedCountry)
+      .then((data) => { if (!cancelled) setCities(data.cityOptions); })
+      .catch(() => { if (!cancelled) setCities([]); })
+      .finally(() => { if (!cancelled) setLoadingCities(false); });
+    return () => { cancelled = true; };
   }, [selectedCountry]);
 
   const sliderPct = ((budgetUSD - 100) / 4900) * 100;
@@ -2681,21 +2678,25 @@ export default function Home() {
                         <div className="flex flex-col sm:flex-row gap-2 mb-4">
                           <select
                             value={selectedCountry}
-                            onChange={(e) => { setSelectedCountry(e.target.value); setSelectedCity(""); }}
+                            onChange={(e) => {
+                              const code = e.target.value;
+                              setSelectedCountry(code);
+                              setSelectedCity("");
+                              setCities([]);
+                              setLoadingCities(Boolean(code));
+                            }}
                             className="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2.5 text-sm text-stone-600 outline-none cursor-pointer hover:border-stone-400 focus:border-orange-400 transition-colors duration-200"
                           >
                             <option value="">{t.countryPlaceholder}</option>
                             <optgroup label={t.priorityGroupLabel}>
-                              {PRIORITY_COUNTRIES.map((c) => (
-                                <option key={`p-${c}`} value={c}>{c}</option>
+                              {TOP_COUNTRY_CODES.map((code) => (
+                                <option key={`p-${code}`} value={code}>{getCountryName(code, lang)}</option>
                               ))}
                             </optgroup>
                             <optgroup label={t.allCountriesLabel}>
-                              {countries
-                                .filter((c) => !PRIORITY_COUNTRIES.includes(c))
-                                .map((c) => (
-                                  <option key={c} value={c}>{c}</option>
-                                ))}
+                              {otherWizardCountryCodes.map((code) => (
+                                <option key={code} value={code}>{getCountryName(code, lang)}</option>
+                              ))}
                             </optgroup>
                           </select>
                           <select
@@ -2717,13 +2718,12 @@ export default function Home() {
                             className="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2.5 text-stone-800 placeholder:text-stone-400 outline-none text-sm focus:border-orange-400 transition-colors duration-200 min-w-0"
                           />
                         </div>
-                        {/* Quick city chips */}
+                        {/* Quick city chips — drawn from the loaded list, so a chip is
+                            always a real selectable city for the chosen country. */}
                         <div className="flex flex-wrap gap-2">
-                          {(selectedCountry && PRIORITY_CITIES[selectedCountry]
-                            ? PRIORITY_CITIES[selectedCountry]
-                            : selectedCountry && cities.length > 0
-                            ? cities.slice(0, 6)
-                            : ["Berlin", "Dubai", "Istanbul", "Barcelona", "Paris", "Rome"]
+                          {(selectedCountry
+                            ? getPopularCityChips(selectedCountry, cities)
+                            : DEFAULT_CITY_CHIPS
                           ).map((city) => (
                             <button
                               key={city}
