@@ -532,119 +532,105 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
   // the header straight into its final position when the OS asks for reduced motion.
   const reduceMotion = useReducedMotion();
 
+  // A segmented control means exactly one option always reads as selected. The
+  // category model has three states and defaults to "all", so "all" gets its own
+  // segment — previously it was an unrepresented state, which left both visible
+  // segments looking inert on first paint. Filtering behaviour is unchanged: the
+  // default is still "all", it is just visible now.
+  const segmentedControl = (
+    <div className="inline-flex items-center gap-0.5 rounded-full border border-stone-200 bg-white p-0.5 self-start">
+      {categoryTabs.map((tab) => {
+        const isActive = sonIlanlarCategory === tab.key;
+        return (
+          <button
+            key={tab.key}
+            onClick={() => {
+              setSonIlanlarCategory(tab.key);
+              if (tab.key === "all") onClearFilter?.();
+            }}
+            // px/type are sized off the worst case: RU's "Все / Жильё / Коммерческий"
+            // is the widest of the six locales and has to clear the art column at
+            // 390px. py stays at 1.5 so the tap target matches the country chips.
+            className={`rounded-full px-2.5 py-1.5 text-[11px] sm:text-sm font-medium whitespace-nowrap transition-colors duration-200 cursor-pointer ${
+              isActive ? "bg-orange-500 text-white" : "text-stone-600 hover:text-orange-500"
+            }`}
+          >
+            {tab.label[lang as Lang] ?? tab.label.tr}
+          </button>
+        );
+      })}
+    </div>
+  );
+
+  const heroCopy = (
+    <>
+      <p className="text-xs sm:text-sm leading-tight text-stone-500">{hero.l1}</p>
+      {/* No leading override: `bg-clip-text` paints the gradient only inside the
+          element's own box, so a tighter line-height would cut it off the ascenders
+          and descenders of the Persian and Arabic headlines. */}
+      <p className="mt-0.5 text-xl sm:text-2xl font-extrabold bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
+        {hero.l2}
+      </p>
+      <p className="mt-1 text-[11px] sm:text-xs leading-snug text-stone-500">{hero.sub}</p>
+    </>
+  );
+
   return (
     <section className="max-w-7xl mx-auto mt-section mb-0">
-      {/* Hero header — a plate, not a bleeding band. Flat orange-50 tint, hairline
-          border, rounded-3xl: the same surface language as the listing cards below, so
-          the section now starts on a defined object instead of a pale wash. The plate
-          holds ONLY the header (copy + Konut/Ticari control + artwork); the country
-          chips and the grid stay outside it and breathe on the page background.
-          Its own `dir` makes the logical `end-*` inside resolve for FA/AR even if this
-          component is ever mounted outside the RTL page shell.
-          min-height only reserves what the artwork needs to read as a band; the text
-          block below sizes it, so a short locale no longer leaves the illustration
-          holding empty height above the copy on small screens. */}
+      {/* ── Section header ─────────────────────────────────────────────────────
+          A strip, not a billboard: this only has to announce the section and offer
+          the category filter — the listing cards below are the content, so the header
+          must not out-weigh them. The plate carries NO min-height; the copy block
+          sizes it and the art column stretches to match (`items-stretch`), so there is
+          no slack for a dead corner to open up in any locale. Same plate language as
+          before — rounded-3xl, flat orange-50, hairline border.
+          Its own `dir` makes the logical properties inside resolve for FA/AR even if
+          this component is ever mounted outside the RTL page shell. */}
       <div
         dir={isRTL ? "rtl" : "ltr"}
-        className="relative mx-5 flex overflow-hidden rounded-3xl border border-stone-100 bg-orange-50 min-h-[188px] sm:min-h-[248px] lg:min-h-[300px]"
+        className="relative mx-5 flex items-stretch overflow-hidden rounded-3xl border border-stone-100 bg-orange-50"
       >
-        {/* Artwork, anchored to the plate's END edge so it mirrors with FA/AR. It is
-            narrower than the plate, which makes `object-cover` zoom in — that, plus the
-            saturation baked in by scripts/crop-hero-art.mjs, is what stops it reading as
-            a faded wash. object-position keeps the globe + pin in frame at every width:
-            at 1280 the plate is wide enough that cover still crops vertically, and 35%
-            is the band that holds the globe rather than empty sky. `lg:min-h-[300px]`
-            on the plate exists for the same reason — at 248px a 1240px-wide plate is so
-            letterbox-shaped that cover has to zoom the artwork past legibility.
-            -v2 is pre-tinted to orange-50, so the artwork's background IS the plate's
-            colour and the two never seam. */}
-        <div className="pointer-events-none absolute inset-y-0 end-0 w-[82%] sm:w-[58%]">
-          <Image
-            src="/son-ilanlar-hero-v2.webp"
-            alt=""
-            fill
-            priority
-            sizes="(max-width: 640px) 82vw, 58vw"
-            className={`object-cover object-[80%_34%] lg:object-[66%_30%] ${isRTL ? "scale-x-[-1]" : ""}`}
-          />
-          {/* The band's only gradient — it dissolves the artwork's inner edge into the
-              plate and keeps the copy readable over it. Plate-coloured, not white: a
-              white scrim would show as a pale patch on the tint. */}
-          <div
-            className={`absolute inset-0 ${
-              isRTL
-                ? "bg-gradient-to-l from-orange-50 via-orange-50/45 to-transparent"
-                : "bg-gradient-to-r from-orange-50 via-orange-50/45 to-transparent"
-            }`}
-          />
-        </div>
-
-        {/* `h-full` was dropped for `flex` on the wrapper above: a percentage height
-            against a min-height-only parent resolves to `auto`, so `justify-center`
-            never applied and the block sat top-aligned with the slack piled around it.
-            As a flex item it stretches to the band's height, so the centering is real —
-            it matters at sm+, where the min-height still exceeds the copy.
-            `w-full` keeps the item the same width it had as a block. The max-width now
-            sits on the copy block instead of here, so the segmented control below can
-            use the plate's full inner width — RU's "Коммерческий" needs it. */}
+        {/* At lg the copy and the control sit on ONE row with the control pushed to the
+            end (`lg:ms-auto`, logical so FA/AR mirror). Stacked, a 1240px-wide strip
+            would leave most of its width empty; as a toolbar row it reads deliberate. */}
         <motion.div
           initial={reduceMotion ? false : { opacity: 0, y: 10 }}
           whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-10 flex w-full flex-col justify-center px-6 py-6 sm:px-8 sm:py-8"
-          dir={isRTL ? "rtl" : "ltr"}
+          className="relative z-10 min-w-0 flex-1 px-5 py-4 sm:px-6 sm:py-5 lg:flex lg:items-center lg:gap-8"
           style={{ textAlign: isRTL ? "right" : "left" }}
         >
-          {/* Kicker → headline → subtitle read as one unit: each line is spaced off
-              the one above it (mt-*) instead of every line carrying its own loose
-              default leading. No fixed heights, so the longer FA/AR/DE strings wrap
-              instead of clipping. */}
-          <div className="max-w-[80%] sm:max-w-[54%] lg:max-w-[48%]">
-            {/* The kicker stays the quiet line — a notch smaller than before, so the
-                headline is unambiguously the loudest thing on the plate. */}
-            <p className="text-sm sm:text-base leading-tight text-stone-500">{hero.l1}</p>
-            {/* No leading override on this line: `bg-clip-text` paints the gradient only
-                inside the element's own box, so a tighter line-height would cut the
-                gradient off the ascenders/descenders of the Persian and Arabic headlines.
-                The unit's tightness comes from the mt-* rhythm instead. The size went up
-                one step (24→26 / 30→36) and the default leading scales with it, which is
-                the safe direction for those ascenders. */}
-            <p className="mt-1 text-[26px] sm:text-4xl font-extrabold bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
-              {hero.l2}
-            </p>
-            <p className="mt-1.5 text-xs sm:text-sm leading-snug text-stone-500">{hero.sub}</p>
-          </div>
-
-          {/* Konut / Ticari — one segmented control, not two floating pills: a single
-              rounded-full track holds both options, active filled orange-500, inactive
-              transparent on the track. Padding and type match the country chips below so
-              the two rows read as one family instead of competing. `self-start` is a
-              logical alignment, so the control sits on the start edge in FA/AR too.
-              Behaviour is unchanged — tapping the active option clears back to "all". */}
-          <div className="mt-5 self-start inline-flex items-center gap-1 rounded-full border border-stone-200 bg-white p-1">
-            {categoryTabs.filter((tab) => tab.key !== "all").map((tab) => {
-              const isActive = sonIlanlarCategory === tab.key;
-              return (
-                <button
-                  key={tab.key}
-                  onClick={() => {
-                    setSonIlanlarCategory(isActive ? "all" : tab.key);
-                    onClearFilter?.();
-                  }}
-                  className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium whitespace-nowrap transition-colors duration-200 cursor-pointer ${
-                    isActive
-                      ? "bg-orange-500 text-white"
-                      : "text-stone-600 hover:text-orange-500"
-                  }`}
-                >
-                  <span className="text-base leading-none">{tab.icon}</span>
-                  <span>{tab.label[lang as Lang] ?? tab.label.tr}</span>
-                </button>
-              );
-            })}
+          <div className="min-w-0">{heroCopy}</div>
+          <div
+            className={`mt-3 flex lg:mt-0 lg:ms-auto lg:shrink-0 ${
+              isRTL ? "justify-end" : "justify-start"
+            }`}
+          >
+            {segmentedControl}
           </div>
         </motion.div>
+
+        {/* A detail crop, not the cityscape: at strip height the full band art was
+            unreadable, so scripts/crop-hero-art.mjs cuts the globe + pin + magnifier
+            cluster out of -v2. It inherits -v2's orange-50 background, so the column
+            needs no scrim and shows no seam against the plate — only the ink reads.
+            `self-stretch` ties its height to the copy's, which is what keeps the strip
+            free of floating empty space. The width is explicit at both breakpoints: a
+            percentage of a 1240px strip would hand this square source a 2:1 box and
+            `cover` would crop it to an unreadable band, while `aspect-square` cannot
+            help — a flex item resolves its main size from content before stretch gives
+            it a definite cross size, so auto width collapses the column to nothing. */}
+        <div className="relative w-[30%] max-w-[150px] shrink-0 self-stretch lg:w-[150px] lg:max-w-none">
+          <Image
+            src="/son-ilanlar-detail-v1.webp"
+            alt=""
+            fill
+            priority
+            sizes="(max-width: 640px) 30vw, 220px"
+            className={`object-cover object-center ${isRTL ? "scale-x-[-1]" : ""}`}
+          />
+        </div>
       </div>
 
       {/* No `bg-white` here any more: the chips and the grid sit directly on the page's

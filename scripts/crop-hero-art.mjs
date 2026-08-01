@@ -39,6 +39,17 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = path.join(ROOT, 'public', 'son-ilanlar-hero.webp');
 const OUT = path.join(ROOT, 'public', 'son-ilanlar-hero-v2.webp');
 
+// ─── Derived: the detail crop the header strip actually renders ─────────────
+//   The full band art is a wide cityscape; the compact header only has room for a
+//   square, so it shows the one cluster that carries the meaning — globe + pin +
+//   magnifier. Column ink density in -v2 puts that cluster at x 660..1135 (peak
+//   density x≈900); this square clears the globe's left silhouette, lets the
+//   magnifier bleed off the right (it meets the plate's edge there anyway), and
+//   leaves only a thin row of rooftops at the bottom instead of the cityscape.
+const DETAIL_OUT = path.join(ROOT, 'public', 'son-ilanlar-detail-v1.webp');
+const DETAIL_CROP = { left: 600, top: 0, width: 540, height: 540 };
+
+
 // Ink bbox (95..761 / 19..1199) plus a small margin so the globe does not sit hard
 // against the plate's top edge; the right edge has ink all the way to 1199, so
 // nothing is trimmed there. The margin is not the dead white band it replaces —
@@ -86,6 +97,18 @@ async function main() {
 
   await sharp(buf).toFile(OUT);
   console.log(`[hero] wrote ${path.basename(OUT)} ${CROP.width}x${CROP.height} — ${kb(buf.length)}`);
+
+  // Derived detail. Cropped from the finished -v2 buffer, so it inherits the same
+  // saturation and the same orange-50 background — it drops into the plate with no
+  // seam and needs no scrim of its own.
+  const detail = await sharp(buf)
+    .extract(DETAIL_CROP)
+    .webp({ quality: WEBP_QUALITY })
+    .toBuffer();
+  await sharp(detail).toFile(DETAIL_OUT);
+  console.log(
+    `[hero] wrote ${path.basename(DETAIL_OUT)} ${DETAIL_CROP.width}x${DETAIL_CROP.height} — ${kb(detail.length)}`,
+  );
 
   if (VERIFY) {
     const { data, info } = await sharp(buf).raw().toBuffer({ resolveWithObject: true });
