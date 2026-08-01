@@ -39,8 +39,10 @@ const LatestListings = dynamic(() => import("@/app/components/LatestListings"), 
   loading: () => (
     <section className="animate-pulse" aria-hidden="true">
       {/* Matches the section header's real geometry — a full-bleed band, flush to the
-          top with no `mt-section` and no inset — so hydration does not shift the page. */}
-      <div className="h-[150px] sm:h-[158px] w-full bg-stone-200" />
+          top with no `mt-section` and no inset — so hydration does not shift the page.
+          Measured against the default locale (TR, what LangProvider paints before
+          localStorage is read): 200px through sm, 204px from sm, 198px from lg. */}
+      <div className="h-[200px] sm:h-[204px] lg:h-[198px] w-full bg-stone-200" />
       <div className="max-w-7xl mx-auto px-5 mt-5 grid grid-cols-2 lg:grid-cols-3 gap-4">
         {Array.from({ length: 6 }).map((_, i) => (
           <div key={i} className="h-64 rounded-2xl bg-stone-200" />

@@ -548,10 +548,10 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
               setSonIlanlarCategory(tab.key);
               if (tab.key === "all") onClearFilter?.();
             }}
-            // px/type are sized off the worst case: RU's "Все / Жильё / Коммерческий"
-            // is the widest of the six locales and has to clear the art column at
-            // 390px. py stays at 1.5 so the tap target matches the country chips.
-            className={`rounded-full px-2.5 py-1.5 text-[11px] sm:text-sm font-medium whitespace-nowrap transition-colors duration-200 cursor-pointer ${
+            // Sized to match the bigger headline rather than to fit the narrowest
+            // locale: the row below scrolls, so RU's "Все / Жильё / Коммерческий" —
+            // the widest of the six — no longer has to be designed around.
+            className={`rounded-full px-3.5 py-2 text-sm sm:text-base font-medium whitespace-nowrap transition-colors duration-200 cursor-pointer ${
               isActive ? "bg-orange-500 text-white" : "text-stone-600 hover:text-orange-500"
             }`}
           >
@@ -564,14 +564,14 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
 
   const heroCopy = (
     <>
-      <p className="text-xs sm:text-sm leading-tight text-stone-500">{hero.l1}</p>
+      <p className="text-base leading-tight text-stone-500">{hero.l1}</p>
       {/* No leading override: `bg-clip-text` paints the gradient only inside the
           element's own box, so a tighter line-height would cut it off the ascenders
           and descenders of the Persian and Arabic headlines. */}
-      <p className="mt-0.5 text-xl sm:text-2xl font-extrabold bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
+      <p className="mt-1 text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
         {hero.l2}
       </p>
-      <p className="mt-1 text-[11px] sm:text-xs leading-snug text-stone-500">{hero.sub}</p>
+      <p className="mt-2 text-base leading-snug text-stone-500">{hero.sub}</p>
     </>
   );
 
@@ -587,71 +587,90 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
           only the background bleeds. Flush at the top, so the separator is the recs
           section's own full-width hairline; the band adds none of its own rather than
           doubling it up.
-          A strip, not a billboard: this only announces the section and offers the
-          category filter — the listing cards below are the content. No min-height; the
-          copy block sizes the band and the art column stretches to match
-          (`items-stretch`), so there is no slack for a dead zone in any locale.
+          A section title, not a caption: the type is sized to carry the band (text-4xl
+          headline on mobile) and the artwork is back at full size beside it. No
+          min-height — the copy block plus the control size the band and the art column
+          stretches to match (`items-stretch`), so the height is content-driven in every
+          locale and there is no slack for a dead zone.
           The band's own `dir` makes the logical properties inside resolve for FA/AR
           even if this component is ever mounted outside the RTL page shell. */}
       <div dir={isRTL ? "rtl" : "ltr"} className="bg-orange-50">
         {/* px-5 at every width, not sm:px-6 — this has to be the SAME gutter as the
-            chips row and the grid below, or the band's copy sits 4px off them at sm+. */}
-        <div className="relative mx-auto flex max-w-7xl items-stretch px-5">
+            chips row and the grid below, or the band's copy sits 4px off them at sm+.
+            The art is absolutely positioned against this box rather than sitting in a
+            flex row beside the copy, and `inset-0` resolves against the padding box, so
+            the artwork bleeds across the full gutter while the copy stays on it. */}
+        <div className="relative mx-auto max-w-7xl px-5">
+          {/* The cityscape at its own proportions. `object-contain`, NOT `cover`: the
+              art is a 1.74:1 landscape and the band is taller than it is wide per column
+              — covering a narrow column blew the globe up to fill it and lost the
+              cityscape entirely, which is what made the previous strip read as a crop
+              rather than as artwork. Contained, the illustration is drawn whole at
+              345x204 on a 390px viewport, roughly the scale the pre-plate design had.
+              `object-[100%_100%]` pins it to the END edge and the BOTTOM, so the
+              buildings sit on the band's bottom edge like a skyline instead of floating,
+              and the art runs off the end of the screen.
+              Nothing letterboxes visibly: scripts/crop-hero-art.mjs trims -v2 to the
+              skyline's own bottom edge and flattens its empty areas to exactly the band
+              colour, so the picture's box has no edge of its own — the corners the art
+              does not reach are the same orange-50 as the ones it does. */}
+          <Image
+            src="/son-ilanlar-band-v2.webp"
+            alt=""
+            fill
+            priority
+            // `unoptimized`: the file is already 960px / 31KB, which is what this paints
+            // at 2x on a phone. Running it through Next's q=75 pass smears the ink into
+            // the flat background, which is enough to outline the picture box again.
+            unoptimized
+            className={`object-contain object-[100%_100%] ${isRTL ? "scale-x-[-1]" : ""}`}
+          />
+          {/* Below lg the copy overlaps the art's start half — that half is the small
+              houses, the least load-bearing part of the illustration — so it fades to
+              the band colour under the text and runs at full strength from the copy's
+              edge outward. Not needed at lg, where the copy row reserves the art's lane
+              instead (`lg:pe-*` below) and nothing overlaps.
+              It fades to `orange-50/0`, not to `transparent`: `transparent` is
+              rgba(0,0,0,0), so an sRGB ramp to it drags the midpoint toward grey and
+              the artwork underneath comes out muddy rather than merely lighter. */}
+          <div
+            aria-hidden="true"
+            className={`pointer-events-none absolute inset-0 lg:hidden ${
+              isRTL ? "bg-gradient-to-l" : "bg-gradient-to-r"
+            } from-orange-50 from-52% to-orange-50/0 to-96%`}
+          />
+
           {/* At lg the copy and the control sit on ONE row with the control pushed to
               the end (`lg:ms-auto`, logical so FA/AR mirror). Stacked, a 1240px-wide
               band would leave most of its width empty; as a toolbar row it reads
-              deliberate. `py-6` is the band's breathing room — with the corners gone it
-              carries what the card's inset used to. */}
+              deliberate. `lg:pe-[380px]` is the art's lane — at lg the band is short
+              enough that `contain` sizes the artwork off its height (1.74 × the band's
+              ~198px, so ~344px wide), and the padding stops the control landing on top
+              of it.
+              `py-6` is the band's breathing room — with the corners gone it carries what
+              the card's inset used to. */}
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, y: 10 }}
             whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.5 }}
+            className="relative z-10 py-6 lg:flex lg:items-center lg:gap-8 lg:py-12 lg:pe-[380px]"
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-10 min-w-0 flex-1 py-6 lg:flex lg:items-center lg:gap-8"
             style={{ textAlign: isRTL ? "right" : "left" }}
           >
-            <div className="min-w-0">{heroCopy}</div>
-            <div
-              className={`mt-3 flex lg:mt-0 lg:ms-auto lg:shrink-0 ${
-                isRTL ? "justify-end" : "justify-start"
-              }`}
-            >
+            {/* 82%, near the share the pre-plate design gave the copy. The measured
+                constraint is RU: "самые свежие" is 273px at text-4xl, so anything under
+                ~280px breaks that headline over three lines instead of two. At 82% the
+                headline is one line in TR/FA/AR and a clean two in DE/EN/RU, and the
+                copy still stops short of the globe. */}
+            <div className="max-w-[82%] lg:max-w-none">{heroCopy}</div>
+            {/* overflow-x-auto is a guard, not a layout: all six locales fit the control
+                inside 82% at this size (RU is widest at 266px). If a translation ever
+                grows it scrolls — the same affordance as the country chips below —
+                instead of clipping. */}
+            <div className="mt-4 flex max-w-[82%] overflow-x-auto scrollbar-hide lg:mt-0 lg:ms-auto lg:max-w-none lg:shrink-0 lg:overflow-visible">
               {segmentedControl}
             </div>
           </motion.div>
-
-          {/* A detail crop, not the cityscape: at band height the full art was
-              unreadable, so scripts/crop-hero-art.mjs cuts the globe + pin + magnifier
-              cluster out of -v2 and flattens its empty areas to exactly the band
-              colour — the illustration's faint vignette was enough to make this column
-              read as a paler rectangle once the band went edge-to-edge.
-              `object-contain`, not `cover`: the content stays on the page gutter, so
-              `cover` would slice the magnifier with a hard vertical line 20px short of
-              the viewport edge. Contain letterboxes instead, and because the letterbox
-              IS the band colour it is invisible — nothing is cropped on any edge.
-              `self-stretch` ties the column's height to the copy's.
-              The width is explicit at both breakpoints: a percentage of a 1240px band
-              would hand this square source a 2:1 box and `cover` would crop it to an
-              unreadable strip, while `aspect-square` cannot help — a flex item resolves
-              its main size from content before stretch gives it a definite cross size,
-              so auto width collapses the column to nothing.
-              34%, up from 30%: full bleed did not widen the content (the gutter is
-              still px-5), but moving that padding from the copy column onto the shared
-              row handed the copy ~40px back, which is what RU's control needed. */}
-          <div className="relative w-[34%] max-w-[170px] shrink-0 self-stretch lg:w-[150px] lg:max-w-none">
-            <Image
-              src="/son-ilanlar-detail-v2.webp"
-              alt=""
-              fill
-              priority
-              // `unoptimized`: the file is already 320px / 9.8KB, exactly the size this
-              // column renders at 2x. Running it through Next's q=75 pass re-encodes it
-              // to 7.6KB and smears the surrounding ink into the flat background, which
-              // is enough to outline the column against the band again.
-              unoptimized
-              className={`object-contain object-center ${isRTL ? "scale-x-[-1]" : ""}`}
-            />
-          </div>
         </div>
       </div>
 
