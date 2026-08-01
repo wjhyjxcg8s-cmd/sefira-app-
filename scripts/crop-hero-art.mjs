@@ -46,8 +46,20 @@ const OUT = path.join(ROOT, 'public', 'son-ilanlar-hero-v2.webp');
 //   density x≈900); this square clears the globe's left silhouette, lets the
 //   magnifier bleed off the right (it meets the plate's edge there anyway), and
 //   leaves only a thin row of rooftops at the bottom instead of the cityscape.
-const DETAIL_OUT = path.join(ROOT, 'public', 'son-ilanlar-detail-v1.webp');
+const DETAIL_OUT = path.join(ROOT, 'public', 'son-ilanlar-detail-v2.webp');
 const DETAIL_CROP = { left: 600, top: 0, width: 540, height: 540 };
+const DETAIL_WIDTH = 320;
+
+// The illustration carries a faint vignette, so its "empty" areas are 2-4 levels off
+// the plate colour — invisible in isolation, but on the full-bleed band the art column
+// read as a paler rectangle floating on the tint. FLATTEN pulls near-background pixels
+// onto PLATE exactly, on a soft knee so no contour appears where the correction stops:
+// below LOW deviation a pixel becomes exactly PLATE, above HIGH it is left alone, and
+// in between it is scaled. Real ink sits far above HIGH and is untouched.
+// high=26 also takes out the source's faint world-map dot pattern, which was still
+// enough to outline the column. The palest real ink (grey rooftops) sits at deviation
+// ~60, so nothing that should read is touched.
+const FLATTEN = { low: 3, high: 26 };
 
 
 // Ink bbox (95..761 / 19..1199) plus a small margin so the globe does not sit hard
@@ -59,6 +71,7 @@ const CROP = { left: 10, top: 72, width: 1190, height: 704 };
 const SATURATION = 1.22;
 // Chosen so 254,254,253 (source background) lands on 255,247,237 = orange-50.
 const TINT_MULTIPLIER = { r: 255, g: 248, b: 239 };
+const PLATE = [255, 247, 237]; // orange-50, the band's own colour
 const WEBP_QUALITY = 82;
 
 const VERIFY = process.argv.includes('--verify');
@@ -99,15 +112,42 @@ async function main() {
   console.log(`[hero] wrote ${path.basename(OUT)} ${CROP.width}x${CROP.height} — ${kb(buf.length)}`);
 
   // Derived detail. Cropped from the finished -v2 buffer, so it inherits the same
-  // saturation and the same orange-50 background — it drops into the plate with no
-  // seam and needs no scrim of its own.
-  const detail = await sharp(buf)
+  // saturation and background, then flattened so its empty areas are EXACTLY the band
+  // colour — that is what lets the column sit on the band with no visible rectangle
+  // and no scrim.
+  // Resize BEFORE flattening — interpolating afterwards would re-introduce the drift
+  // the flatten just removed. DETAIL_WIDTH covers the largest rendered size (150 CSS
+  // px) at 2x DPR, because the component serves this file unoptimized: Next's q=75
+  // pass smears the neighbouring ink into the flat background and the column starts
+  // outlining itself again on the band.
+  const { data: raw, info: rawInfo } = await sharp(buf)
     .extract(DETAIL_CROP)
+    .resize(DETAIL_WIDTH)
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+
+  const span = FLATTEN.high - FLATTEN.low;
+  for (let i = 0; i < raw.length; i += rawInfo.channels) {
+    const d = Math.max(
+      Math.abs(raw[i] - PLATE[0]),
+      Math.abs(raw[i + 1] - PLATE[1]),
+      Math.abs(raw[i + 2] - PLATE[2]),
+    );
+    if (d >= FLATTEN.high) continue;
+    const keep = d <= FLATTEN.low ? 0 : (d - FLATTEN.low) / span;
+    for (let c = 0; c < 3; c++) {
+      raw[i + c] = Math.round(PLATE[c] + (raw[i + c] - PLATE[c]) * keep);
+    }
+  }
+
+  const detail = await sharp(raw, {
+    raw: { width: rawInfo.width, height: rawInfo.height, channels: rawInfo.channels },
+  })
     .webp({ quality: WEBP_QUALITY })
     .toBuffer();
   await sharp(detail).toFile(DETAIL_OUT);
   console.log(
-    `[hero] wrote ${path.basename(DETAIL_OUT)} ${DETAIL_CROP.width}x${DETAIL_CROP.height} — ${kb(detail.length)}`,
+    `[hero] wrote ${path.basename(DETAIL_OUT)} ${rawInfo.width}x${rawInfo.height} — ${kb(detail.length)}`,
   );
 
   if (VERIFY) {

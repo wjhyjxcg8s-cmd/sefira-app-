@@ -37,12 +37,11 @@ function preloadSearchSheet() {
 const LatestListings = dynamic(() => import("@/app/components/LatestListings"), {
   ssr: false,
   loading: () => (
-    <section className="max-w-7xl mx-auto mt-section animate-pulse" aria-hidden="true">
-      {/* Matches the section header's real shape — a compact rounded strip inset by
-          mx-5 — so the placeholder does not reserve a full-bleed billboard the
-          component never renders. */}
-      <div className="mx-5 h-[140px] sm:h-[150px] rounded-3xl bg-stone-200" />
-      <div className="px-5 mt-6 grid grid-cols-2 lg:grid-cols-3 gap-4">
+    <section className="animate-pulse" aria-hidden="true">
+      {/* Matches the section header's real geometry — a full-bleed band, flush to the
+          top with no `mt-section` and no inset — so hydration does not shift the page. */}
+      <div className="h-[150px] sm:h-[158px] w-full bg-stone-200" />
+      <div className="max-w-7xl mx-auto px-5 mt-5 grid grid-cols-2 lg:grid-cols-3 gap-4">
         {Array.from({ length: 6 }).map((_, i) => (
           <div key={i} className="h-64 rounded-2xl bg-stone-200" />
         ))}

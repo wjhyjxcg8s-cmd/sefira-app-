@@ -576,68 +576,90 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
   );
 
   return (
-    <section className="max-w-7xl mx-auto mt-section mb-0">
+    // No `mt-section`: this section's top boundary is owned by the full-bleed band
+    // below, which sits flush against the smart-recs section's `border-b`. Every other
+    // section boundary on the page still uses the token.
+    <section className="mb-0">
       {/* ── Section header ─────────────────────────────────────────────────────
-          A strip, not a billboard: this only has to announce the section and offer
-          the category filter — the listing cards below are the content, so the header
-          must not out-weigh them. The plate carries NO min-height; the copy block
-          sizes it and the art column stretches to match (`items-stretch`), so there is
-          no slack for a dead corner to open up in any locale. Same plate language as
-          before — rounded-3xl, flat orange-50, hairline border.
-          Its own `dir` makes the logical properties inside resolve for FA/AR even if
-          this component is ever mounted outside the RTL page shell. */}
-      <div
-        dir={isRTL ? "rtl" : "ltr"}
-        className="relative mx-5 flex items-stretch overflow-hidden rounded-3xl border border-stone-100 bg-orange-50"
-      >
-        {/* At lg the copy and the control sit on ONE row with the control pushed to the
-            end (`lg:ms-auto`, logical so FA/AR mirror). Stacked, a 1240px-wide strip
-            would leave most of its width empty; as a toolbar row it reads deliberate. */}
-        <motion.div
-          initial={reduceMotion ? false : { opacity: 0, y: 10 }}
-          whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-10 min-w-0 flex-1 px-5 py-4 sm:px-6 sm:py-5 lg:flex lg:items-center lg:gap-8"
-          style={{ textAlign: isRTL ? "right" : "left" }}
-        >
-          <div className="min-w-0">{heroCopy}</div>
-          <div
-            className={`mt-3 flex lg:mt-0 lg:ms-auto lg:shrink-0 ${
-              isRTL ? "justify-end" : "justify-start"
-            }`}
+          A full-bleed band, not a floating card: the orange-50 runs edge to edge of
+          the viewport so the corners are filled and the top/bottom are straight lines,
+          while the content stays on the page's `px-5` gutter inside a `max-w-7xl` —
+          only the background bleeds. Flush at the top, so the separator is the recs
+          section's own full-width hairline; the band adds none of its own rather than
+          doubling it up.
+          A strip, not a billboard: this only announces the section and offers the
+          category filter — the listing cards below are the content. No min-height; the
+          copy block sizes the band and the art column stretches to match
+          (`items-stretch`), so there is no slack for a dead zone in any locale.
+          The band's own `dir` makes the logical properties inside resolve for FA/AR
+          even if this component is ever mounted outside the RTL page shell. */}
+      <div dir={isRTL ? "rtl" : "ltr"} className="bg-orange-50">
+        {/* px-5 at every width, not sm:px-6 — this has to be the SAME gutter as the
+            chips row and the grid below, or the band's copy sits 4px off them at sm+. */}
+        <div className="relative mx-auto flex max-w-7xl items-stretch px-5">
+          {/* At lg the copy and the control sit on ONE row with the control pushed to
+              the end (`lg:ms-auto`, logical so FA/AR mirror). Stacked, a 1240px-wide
+              band would leave most of its width empty; as a toolbar row it reads
+              deliberate. `py-6` is the band's breathing room — with the corners gone it
+              carries what the card's inset used to. */}
+          <motion.div
+            initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+            whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            className="relative z-10 min-w-0 flex-1 py-6 lg:flex lg:items-center lg:gap-8"
+            style={{ textAlign: isRTL ? "right" : "left" }}
           >
-            {segmentedControl}
-          </div>
-        </motion.div>
+            <div className="min-w-0">{heroCopy}</div>
+            <div
+              className={`mt-3 flex lg:mt-0 lg:ms-auto lg:shrink-0 ${
+                isRTL ? "justify-end" : "justify-start"
+              }`}
+            >
+              {segmentedControl}
+            </div>
+          </motion.div>
 
-        {/* A detail crop, not the cityscape: at strip height the full band art was
-            unreadable, so scripts/crop-hero-art.mjs cuts the globe + pin + magnifier
-            cluster out of -v2. It inherits -v2's orange-50 background, so the column
-            needs no scrim and shows no seam against the plate — only the ink reads.
-            `self-stretch` ties its height to the copy's, which is what keeps the strip
-            free of floating empty space. The width is explicit at both breakpoints: a
-            percentage of a 1240px strip would hand this square source a 2:1 box and
-            `cover` would crop it to an unreadable band, while `aspect-square` cannot
-            help — a flex item resolves its main size from content before stretch gives
-            it a definite cross size, so auto width collapses the column to nothing. */}
-        <div className="relative w-[30%] max-w-[150px] shrink-0 self-stretch lg:w-[150px] lg:max-w-none">
-          <Image
-            src="/son-ilanlar-detail-v1.webp"
-            alt=""
-            fill
-            priority
-            sizes="(max-width: 640px) 30vw, 220px"
-            className={`object-cover object-center ${isRTL ? "scale-x-[-1]" : ""}`}
-          />
+          {/* A detail crop, not the cityscape: at band height the full art was
+              unreadable, so scripts/crop-hero-art.mjs cuts the globe + pin + magnifier
+              cluster out of -v2 and flattens its empty areas to exactly the band
+              colour — the illustration's faint vignette was enough to make this column
+              read as a paler rectangle once the band went edge-to-edge.
+              `object-contain`, not `cover`: the content stays on the page gutter, so
+              `cover` would slice the magnifier with a hard vertical line 20px short of
+              the viewport edge. Contain letterboxes instead, and because the letterbox
+              IS the band colour it is invisible — nothing is cropped on any edge.
+              `self-stretch` ties the column's height to the copy's.
+              The width is explicit at both breakpoints: a percentage of a 1240px band
+              would hand this square source a 2:1 box and `cover` would crop it to an
+              unreadable strip, while `aspect-square` cannot help — a flex item resolves
+              its main size from content before stretch gives it a definite cross size,
+              so auto width collapses the column to nothing.
+              34%, up from 30%: full bleed did not widen the content (the gutter is
+              still px-5), but moving that padding from the copy column onto the shared
+              row handed the copy ~40px back, which is what RU's control needed. */}
+          <div className="relative w-[34%] max-w-[170px] shrink-0 self-stretch lg:w-[150px] lg:max-w-none">
+            <Image
+              src="/son-ilanlar-detail-v2.webp"
+              alt=""
+              fill
+              priority
+              // `unoptimized`: the file is already 320px / 9.8KB, exactly the size this
+              // column renders at 2x. Running it through Next's q=75 pass re-encodes it
+              // to 7.6KB and smears the surrounding ink into the flat background, which
+              // is enough to outline the column against the band again.
+              unoptimized
+              className={`object-contain object-center ${isRTL ? "scale-x-[-1]" : ""}`}
+            />
+          </div>
         </div>
       </div>
 
-      {/* No `bg-white` here any more: the chips and the grid sit directly on the page's
-          stone-50, which is what lets the plate above read as the one raised object in
-          the section — and what the white, shadowed listing cards were always drawn for.
-          It also removes the white/stone seam the old band had to hide with a gradient. */}
-      <div className="px-5 pt-6 pb-6">
+      {/* The `max-w-7xl` that used to sit on the section now lives here, because the
+          band above has to escape it to reach the viewport edges. No `bg-white`: the
+          chips and the grid sit on the page's stone-50, which is what the white,
+          shadowed listing cards were always drawn for. */}
+      <div className="max-w-7xl mx-auto px-5 pt-5 pb-6">
 
       {/* City filter badge */}
       {filterCity && (
