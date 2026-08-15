@@ -43,7 +43,7 @@ const LatestListings = dynamic(() => import("@/app/components/LatestListings"), 
           Measured against the default locale (TR, what LangProvider paints before
           localStorage is read): 200px through sm, 204px from sm, 198px from lg. */}
       <div className="h-[200px] sm:h-[204px] lg:h-[198px] w-full bg-stone-200" />
-      <div className="max-w-7xl mx-auto px-5 mt-5 grid grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="max-w-7xl mx-auto px-5 lg:px-8 mt-5 grid grid-cols-2 lg:grid-cols-3 gap-4">
         {Array.from({ length: 6 }).map((_, i) => (
           <div key={i} className="h-64 rounded-2xl bg-stone-200" />
         ))}
@@ -55,7 +55,7 @@ const LatestListings = dynamic(() => import("@/app/components/LatestListings"), 
 const PopularCities = dynamic(() => import("@/app/components/PopularCities"), {
   ssr: false,
   loading: () => (
-    <section className="max-w-7xl mx-auto px-5 pt-section pb-20 animate-pulse" aria-hidden="true">
+    <section className="max-w-7xl mx-auto px-5 lg:px-8 pt-section pb-20 animate-pulse" aria-hidden="true">
       <div className="mx-auto mb-14 h-8 w-64 rounded-full bg-stone-200" />
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {Array.from({ length: 8 }).map((_, i) => (
@@ -2295,7 +2295,7 @@ export default function Home() {
           arrangement that lets a desktop visitor read what Sefira is before seeing
           the picture. Explicit row/col placement, so DOM order stays mobile's. */}
       <div className="lg:bg-white">
-      <div className="lg:mx-auto lg:grid lg:max-w-7xl lg:grid-cols-2 lg:items-center lg:gap-x-14 lg:px-8 lg:pt-[104px] lg:pb-14">
+      <div className="lg:mx-auto lg:grid lg:max-w-7xl lg:grid-cols-2 lg:items-center lg:gap-x-14 lg:px-8 lg:pt-[104px] lg:pb-10">
 
         {/* Desktop hero copy. `sr-only` on mobile keeps the h1 in the document for
             SEO/a11y without occupying a single pixel (it is position:absolute), so
@@ -2430,7 +2430,7 @@ export default function Home() {
       {/* lg widens to the page-wide container (max-w-7xl / px-8) that the promo,
           listings and cities bands below already use, so the four role cards line
           up with every other section edge instead of sitting in a 672px column. */}
-      <div className="max-w-2xl mx-auto px-5 w-full lg:max-w-7xl lg:px-8 lg:pt-14">
+      <div className="max-w-2xl mx-auto px-5 w-full lg:max-w-7xl lg:px-8 lg:pt-8">
 
         <motion.div
           initial={false}
@@ -2472,7 +2472,7 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=has_place'); }}
-                      className="group flex min-h-[172px] flex-col rounded-3xl bg-orange-50 p-4 text-start transition-transform duration-200 active:scale-[0.98] lg:min-h-[228px] lg:p-6 lg:ring-1 lg:ring-black/5 lg:transition lg:duration-200 lg:hover:-translate-y-1 lg:hover:shadow-lg lg:hover:shadow-stone-900/5"
+                      className="group flex min-h-[172px] flex-col rounded-3xl bg-orange-50 p-4 text-start transition-transform duration-200 active:scale-[0.98] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 lg:min-h-[228px] lg:p-6 lg:shadow-sm lg:ring-1 lg:ring-stone-900/10 lg:transition lg:duration-200 lg:hover:-translate-y-1 lg:hover:shadow-lg lg:hover:shadow-stone-900/8 lg:hover:ring-stone-900/15"
                     >
                       <span className="self-start whitespace-nowrap rounded-md bg-orange-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-orange-700">
                         {t.landlordBadge}
@@ -2495,7 +2495,7 @@ export default function Home() {
                           width={560}
                           height={511}
                           loading="lazy"
-                          className={`h-24 w-auto object-contain drop-shadow-md lg:h-28 ${isRtl ? "scale-x-[-1]" : ""}`}
+                          className={`h-24 w-auto object-contain drop-shadow-md lg:h-28 lg:w-28 ${isRtl ? "scale-x-[-1]" : ""}`}
                         />
                       </div>
                     </motion.button>
@@ -2506,7 +2506,7 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.18 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=needs_place'); }}
-                      className="group flex min-h-[172px] flex-col rounded-3xl bg-blue-50 p-4 text-start transition-transform duration-200 active:scale-[0.98] lg:min-h-[228px] lg:p-6 lg:ring-1 lg:ring-black/5 lg:transition lg:duration-200 lg:hover:-translate-y-1 lg:hover:shadow-lg lg:hover:shadow-stone-900/5"
+                      className="group flex min-h-[172px] flex-col rounded-3xl bg-blue-50 p-4 text-start transition-transform duration-200 active:scale-[0.98] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 lg:min-h-[228px] lg:p-6 lg:shadow-sm lg:ring-1 lg:ring-stone-900/10 lg:transition lg:duration-200 lg:hover:-translate-y-1 lg:hover:shadow-lg lg:hover:shadow-stone-900/8 lg:hover:ring-stone-900/15"
                     >
                       <span className="self-start whitespace-nowrap rounded-md bg-blue-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-700">
                         {t.tenantBadge}
@@ -2529,7 +2529,7 @@ export default function Home() {
                           width={560}
                           height={448}
                           loading="lazy"
-                          className={`h-24 w-auto object-contain drop-shadow-md lg:h-28 ${isRtl ? "scale-x-[-1]" : ""}`}
+                          className={`h-24 w-auto object-contain drop-shadow-md lg:h-28 lg:w-28 ${isRtl ? "scale-x-[-1]" : ""}`}
                         />
                       </div>
                     </motion.button>
@@ -2540,7 +2540,7 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.26 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('owner'); setShowCommercialModal(true); }}
-                      className="group flex min-h-[172px] flex-col rounded-3xl bg-emerald-50 p-4 text-start transition-transform duration-200 active:scale-[0.98] lg:min-h-[228px] lg:p-6 lg:ring-1 lg:ring-black/5 lg:transition lg:duration-200 lg:hover:-translate-y-1 lg:hover:shadow-lg lg:hover:shadow-stone-900/5"
+                      className="group flex min-h-[172px] flex-col rounded-3xl bg-emerald-50 p-4 text-start transition-transform duration-200 active:scale-[0.98] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 lg:min-h-[228px] lg:p-6 lg:shadow-sm lg:ring-1 lg:ring-stone-900/10 lg:transition lg:duration-200 lg:hover:-translate-y-1 lg:hover:shadow-lg lg:hover:shadow-stone-900/8 lg:hover:ring-stone-900/15"
                     >
                       <span className="self-start whitespace-nowrap rounded-md bg-emerald-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700">
                         {t.commercialOwnerBadge}
@@ -2563,7 +2563,7 @@ export default function Home() {
                           width={560}
                           height={448}
                           loading="lazy"
-                          className={`h-24 w-auto object-contain drop-shadow-md lg:h-28 ${isRtl ? "scale-x-[-1]" : ""}`}
+                          className={`h-24 w-auto object-contain drop-shadow-md lg:h-28 lg:w-28 ${isRtl ? "scale-x-[-1]" : ""}`}
                         />
                       </div>
                     </motion.button>
@@ -2574,7 +2574,7 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.34 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('seeker'); setShowCommercialModal(true); }}
-                      className="group flex min-h-[172px] flex-col rounded-3xl bg-teal-50 p-4 text-start transition-transform duration-200 active:scale-[0.98] lg:min-h-[228px] lg:p-6 lg:ring-1 lg:ring-black/5 lg:transition lg:duration-200 lg:hover:-translate-y-1 lg:hover:shadow-lg lg:hover:shadow-stone-900/5"
+                      className="group flex min-h-[172px] flex-col rounded-3xl bg-teal-50 p-4 text-start transition-transform duration-200 active:scale-[0.98] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 lg:min-h-[228px] lg:p-6 lg:shadow-sm lg:ring-1 lg:ring-stone-900/10 lg:transition lg:duration-200 lg:hover:-translate-y-1 lg:hover:shadow-lg lg:hover:shadow-stone-900/8 lg:hover:ring-stone-900/15"
                     >
                       <span className="self-start whitespace-nowrap rounded-md bg-teal-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-teal-700">
                         {t.commercialSeekerBadge}
@@ -2597,7 +2597,7 @@ export default function Home() {
                           width={560}
                           height={448}
                           loading="lazy"
-                          className={`h-24 w-auto object-contain drop-shadow-md lg:h-28 ${isRtl ? "scale-x-[-1]" : ""}`}
+                          className={`h-24 w-auto object-contain drop-shadow-md lg:h-28 lg:w-28 ${isRtl ? "scale-x-[-1]" : ""}`}
                         />
                       </div>
                     </motion.button>
@@ -2872,7 +2872,7 @@ export default function Home() {
               /* self-center: the parent is a flex column, whose default
                  align-items:stretch was blowing this CTA out to the full column
                  width — it read as a divider bar, not a button. */
-              className="hidden sm:flex self-center mt-8 items-center gap-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black text-sm px-7 py-3.5 rounded-2xl shadow-xl shadow-orange-500/30 hover:shadow-2xl hover:shadow-orange-500/50 hover:-translate-y-0.5 active:scale-95 transition-all duration-200 lg:mt-10 lg:px-9 lg:py-4 lg:text-base"
+              className="hidden sm:flex self-center mt-8 items-center gap-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black text-sm px-7 py-3.5 rounded-2xl shadow-xl shadow-orange-500/30 hover:shadow-2xl hover:shadow-orange-500/50 hover:-translate-y-0.5 active:scale-95 transition-all duration-200 lg:mt-7 lg:px-9 lg:py-4 lg:text-base"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4">
                 <line x1="12" y1="5" x2="12" y2="19" />
@@ -2886,12 +2886,12 @@ export default function Home() {
 
       {/* ── PROMO VIDEO ───────────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto mt-section">
-        <p className="px-5 mb-3 text-lg font-extrabold text-slate-900 lg:px-8 lg:mb-5 lg:text-2xl">
+        <p className="px-5 mb-3 text-lg font-extrabold text-slate-900 lg:px-8 lg:mb-5 lg:text-center lg:text-2xl">
           {t.promoVideoHeading}
         </p>
         {/* mx-8 at lg so the band's left edge sits on the same rail as the hero,
             the role cards and the sections below it. */}
-        <div ref={promoVideoSectionRef} className="relative mx-5 aspect-video overflow-hidden rounded-3xl shadow-lg shadow-slate-200/60 ring-1 ring-slate-100 lg:mx-8">
+        <div ref={promoVideoSectionRef} className="relative mx-5 aspect-video overflow-hidden rounded-3xl shadow-lg shadow-slate-200/60 ring-1 ring-slate-100 lg:mx-auto lg:max-w-[760px]">
           {!promoVideoPlaying && (
             <Image src="/video-poster.webp" alt="" fill className="object-cover" />
           )}
@@ -2928,7 +2928,7 @@ export default function Home() {
 
       {/* ── WEEKLY STORIES ────────────────────────────────────────────────────── */}
       {weeklyStories.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-5 mt-section pb-4">
+        <section className="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 mt-section pb-4">
           <p className="text-sm font-bold text-stone-800 mb-3 sm:mb-4">
             {thisWeekLabel[lang] ?? "Bu Hafta"}
           </p>
@@ -2940,7 +2940,10 @@ export default function Home() {
               <button
                 key={story.id}
                 onClick={() => openStory(idx)}
-                className="flex flex-col items-center gap-1.5 flex-shrink-0 focus:outline-none"
+                /* focus:outline-none with nothing in its place left keyboard users
+                   with no visible focus at all; focus-visible keeps the pointer
+                   experience clean while restoring the ring for keyboard nav. */
+                className="flex flex-col items-center gap-1.5 flex-shrink-0 cursor-pointer rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
                 style={{ minHeight: 44 }}
               >
                 {/* Gradient ring: 70px total on mobile, 90px on desktop */}
@@ -2988,7 +2991,7 @@ export default function Home() {
       {smartRecs.length > 0 && (
         <section className="pt-section pb-0 bg-white border-b border-stone-100">
           {/* Header */}
-          <div className="max-w-2xl mx-auto px-4 mb-5 flex items-end justify-between">
+          <div className="max-w-2xl mx-auto px-4 mb-5 flex items-end justify-between lg:max-w-7xl lg:px-8">
             <div>
               <h2 className="text-2xl font-black text-stone-900">
                 {({ tr: "✨ Senin İçin Seçilenler", en: "✨ Picked For You", fa: "✨ پیشنهاد ویژه برای شما", ar: "✨ مختارة لك", de: "✨ Für dich ausgewählt", ru: "✨ Подобрано для вас" } as Record<string, string>)[lang] ?? "✨ Picked For You"}
@@ -3007,7 +3010,7 @@ export default function Home() {
           </div>
 
           {/* Filter tabs */}
-          <div className="max-w-2xl mx-auto px-4 mb-4 flex items-center gap-2">
+          <div className="max-w-2xl mx-auto px-4 mb-4 flex items-center gap-2 lg:max-w-7xl lg:px-8">
             {([
               { value: "all", label: ({ tr: "Tümü", en: "All", fa: "همه", ar: "الكل", de: "Alle", ru: "Все" } as Record<string, string>)[lang] ?? "All" },
               { value: "residential", label: "🏠 " + (({ tr: "Konut", en: "Residential", fa: "مسکونی", ar: "سكني", de: "Wohnen", ru: "Жильё" } as Record<string, string>)[lang] ?? "Residential") },
@@ -3030,7 +3033,7 @@ export default function Home() {
           {/* Horizontal scroll track */}
           <div
             ref={recScrollRef}
-            className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 px-4 overscroll-x-contain"
+            className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 px-4 lg:px-8 overscroll-x-contain"
             style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollBehavior: "smooth", touchAction: "pan-x pan-y", overscrollBehaviorX: "contain" } as React.CSSProperties}
             onScroll={() => {
               const el = recScrollRef.current;
@@ -3225,7 +3228,7 @@ export default function Home() {
 
       {/* ── FOOTER ────────────────────────────────────────────────────────────── */}
       <footer className="bg-gradient-to-b from-stone-900 to-stone-950 border-t border-stone-700 pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
-        <div className="max-w-7xl mx-auto px-5 py-16">
+        <div className="max-w-7xl mx-auto px-5 lg:px-8 py-16">
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-12 mb-14">
             <div className="lg:col-span-2">
               <div className="flex items-center gap-2 mb-5">

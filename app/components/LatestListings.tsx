@@ -600,7 +600,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
             The art is absolutely positioned against this box rather than sitting in a
             flex row beside the copy, and `inset-0` resolves against the padding box, so
             the artwork bleeds across the full gutter while the copy stays on it. */}
-        <div className="relative mx-auto max-w-7xl px-5">
+        <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
           {/* The cityscape at its own proportions. `object-contain`, NOT `cover`: the
               art is a 1.74:1 landscape and the band is taller than it is wide per column
               — covering a narrow column blew the globe up to fill it and lost the
@@ -678,7 +678,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
           band above has to escape it to reach the viewport edges. No `bg-white`: the
           chips and the grid sit on the page's stone-50, which is what the white,
           shadowed listing cards were always drawn for. */}
-      <div className="max-w-7xl mx-auto px-5 pt-5 pb-6">
+      <div className="max-w-7xl mx-auto px-5 lg:px-8 pt-5 pb-6">
 
       {/* City filter badge */}
       {filterCity && (
@@ -705,8 +705,10 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
 
       {/* Country selector */}
       <div className="mb-6">
-        <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 pb-2">
-          <div className="flex gap-2 w-max">
+        {/* Horizontal scroller on touch; at lg the row wraps instead of running off
+            the right edge with no affordance. */}
+        <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 pb-2 lg:mx-0 lg:overflow-visible lg:px-0">
+          <div className="flex gap-2 w-max lg:w-full lg:flex-wrap lg:gap-2.5">
             {orderedCountries.map((country) => (
               <button
                 key={country.code}
@@ -729,7 +731,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-3 lg:gap-5">
           {[1, 2, 3].map((i) => (
             <div key={i} className="animate-pulse bg-gray-200 rounded-2xl h-48" />
           ))}
@@ -754,7 +756,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
           </p>
         )
       ) : (
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-3 lg:gap-5">
           {listings.map((listing) => (
             <div
               key={listing.id}
