@@ -25,9 +25,20 @@ export const metadata: Metadata = {
 // means 100dvh containers (e.g. the /messages chat column) resize natively with
 // no JS at all. iOS Safari ignores it — that path is handled by
 // useVisualViewportHeight().
+//
+// `viewportFit: "cover"` is what makes the layout viewport reach the physical
+// bottom edge of the screen on notch/home-indicator iPhones. Under the default
+// `auto`, iOS lays the page out *inside* the safe area: `position: fixed;
+// bottom: 0` lands ~34px above the real bottom, that strip is painted by the
+// page behind it, and it becomes visible the moment Safari's toolbar collapses
+// on scroll — the floating bottom nav with a gap under it. `auto` also forces
+// every `env(safe-area-inset-*)` in the app to 0px, so all the
+// `calc(... + env(safe-area-inset-bottom))` spacing already written across the
+// codebase was silently dead. Both are fixed by this one declaration.
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
   interactiveWidget: "resizes-content",
 };
 

@@ -79,6 +79,14 @@ export default function BottomNavBar() {
     setProfileDrawerOpen(true);
   };
 
+  // `bottom-0` is measured against the real bottom edge of the screen only
+  // because the root viewport declares `viewport-fit=cover` (app/layout.tsx);
+  // without it iOS insets the layout viewport and this bar floats above the home
+  // indicator. The bar covers the safe area itself — its own padding-bottom,
+  // painted by its own background — rather than being offset above it, so
+  // nothing shows through underneath. Every ancestor is a context provider with
+  // no DOM of its own (body > nav), so nothing can steal the fixed containing
+  // block with a transform/filter/will-change; keep it that way.
   return (
     <nav
       dir={isRtl ? "rtl" : "ltr"}
