@@ -97,6 +97,13 @@
     --spacing-section: 3rem;
   }
 }
+/* Desktop needs a third step: at 1280 the 3rem gap that reads as generous on a
+   phone reads as cramped, and every band below the hero uses this one token. */
+@media (min-width: 1024px) {
+  :root {
+    --spacing-section: 4.5rem;
+  }
+}
 
 body {
   background: var(--background);

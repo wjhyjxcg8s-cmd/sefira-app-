@@ -138,6 +138,11 @@ const translations = {
     heroCompactLine1: "Aradığın alanı",
     heroCompactLine2: "bul veya paylaş",
     heroCompactSub: "İster ev, ister ofis, ister dükkan…",
+    // Desktop hero lockup — the compact lines above are a mobile art-direction
+    // caption; at lg the page has to say what Sefira is before anything else.
+    heroDeskTitle: "Oda, ev arkadaşı ve",
+    heroDeskAccent: "ticari alan bul",
+    heroDeskSub: "52+ şehirde güvenli paylaşım. Doğrulanmış profillerle eşleş, ilanını dakikalar içinde yayınla.",
     heroSearchPlaceholder: "Ev, oda, ofis veya dükkan ara…",
     quickLocationLabel: "Konum seç",
     quickCategoryLabel: "Kategori",
@@ -254,6 +259,9 @@ const translations = {
     heroCompactLine1: "Find your space",
     heroCompactLine2: "or share it",
     heroCompactSub: "Whether it's a home, office, or shop…",
+    heroDeskTitle: "Find rooms, roommates and",
+    heroDeskAccent: "commercial spaces",
+    heroDeskSub: "Safe sharing across 52+ cities. Match with verified profiles and publish your listing in minutes.",
     heroSearchPlaceholder: "Search for a home, room, office or shop…",
     quickLocationLabel: "Choose location",
     quickCategoryLabel: "Category",
@@ -370,6 +378,9 @@ const translations = {
     heroCompactLine1: "فضا",
     heroCompactLine2: "پیدا کن یا به اشتراک بگذار",
     heroCompactSub: "چه خونه، چه دفتر، چه مغازه…",
+    heroDeskTitle: "اتاق، هم‌خانه و",
+    heroDeskAccent: "فضای تجاری پیدا کن",
+    heroDeskSub: "اشتراک‌گذاری امن در بیش از ۵۲ شهر. با پروفایل‌های تأییدشده هم‌خانه شو و آگهی‌ات را در چند دقیقه منتشر کن.",
     heroSearchPlaceholder: "جستجوی خونه، اتاق، دفتر یا مغازه…",
     quickLocationLabel: "انتخاب موقعیت",
     quickCategoryLabel: "دسته‌بندی",
@@ -486,6 +497,9 @@ const translations = {
     heroCompactLine1: "Raum finden",
     heroCompactLine2: "oder teilen",
     heroCompactSub: "Ob Zuhause, Büro oder Laden…",
+    heroDeskTitle: "Zimmer, Mitbewohner und",
+    heroDeskAccent: "Gewerbeflächen finden",
+    heroDeskSub: "Sicher teilen in über 52 Städten. Matche mit verifizierten Profilen und veröffentliche dein Inserat in Minuten.",
     heroSearchPlaceholder: "Wohnung, Zimmer, Büro oder Laden suchen…",
     quickLocationLabel: "Ort wählen",
     quickCategoryLabel: "Kategorie",
@@ -602,6 +616,9 @@ const translations = {
     heroCompactLine1: "جد مساحتك",
     heroCompactLine2: "أو شاركها",
     heroCompactSub: "سواء منزل، مكتب، أو محل…",
+    heroDeskTitle: "اعثر على غرف وشركاء سكن",
+    heroDeskAccent: "ومساحات تجارية",
+    heroDeskSub: "مشاركة آمنة في أكثر من ٥٢ مدينة. تطابق مع ملفات موثّقة وانشر إعلانك في دقائق.",
     heroSearchPlaceholder: "ابحث عن منزل أو غرفة أو مكتب أو محل…",
     quickLocationLabel: "اختر الموقع",
     quickCategoryLabel: "الفئة",
@@ -718,6 +735,9 @@ const translations = {
     heroCompactLine1: "Пространство",
     heroCompactLine2: "найди или сдай",
     heroCompactSub: "Дом, офис или магазин — не важно…",
+    heroDeskTitle: "Комнаты, соседи и",
+    heroDeskAccent: "коммерческие площади",
+    heroDeskSub: "Безопасная аренда в 52+ городах. Находите проверенных соседей и размещайте объявление за минуты.",
     heroSearchPlaceholder: "Искать дом, комнату, офис или магазин…",
     quickLocationLabel: "Выбрать локацию",
     quickCategoryLabel: "Категория",
@@ -1965,7 +1985,7 @@ export default function Home() {
         style={{ transform: "translateZ(0)", WebkitTransform: "translateZ(0)", willChange: "transform" }}
         className={`fixed top-0 left-0 right-0 w-full z-[9999] transition-all duration-300 ${scrolled ? "bg-white border-b border-stone-200 shadow-md shadow-stone-900/6" : "bg-white border-b border-stone-100 shadow-none"}`}
       >
-        <div className="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between gap-4 lg:px-8">
 
           {/* Logo */}
           <div className="flex items-center gap-2 flex-shrink-0 group cursor-pointer">
@@ -1982,16 +2002,16 @@ export default function Home() {
           </div>
 
           {/* Nav links */}
-          <div className="hidden lg:flex items-center gap-7">
+          <div className="hidden lg:flex items-center gap-8 xl:gap-10">
             {t.navLinks.map((l) => (
-              <a key={l.label} href={l.href} className="text-sm text-stone-500 hover:text-stone-900 transition-all duration-200 font-medium relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-orange-500 after:transition-all after:duration-300 hover:after:w-full">
+              <a key={l.label} href={l.href} className="text-[15px] text-stone-500 hover:text-stone-900 transition-all duration-200 font-medium relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-orange-500 after:transition-all after:duration-300 hover:after:w-full">
                 {l.label}
               </a>
             ))}
           </div>
 
           {/* Right controls */}
-          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2 lg:gap-2.5 flex-shrink-0">
 
             {/* Lang switcher — prominent orange pill + dropdown */}
             <div className="relative" ref={langMenuRef}>
@@ -2249,7 +2269,10 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Follow Sefira on Instagram"
-              className="hidden sm:flex items-center justify-center w-9 h-9 rounded-lg border border-stone-200 text-stone-400 hover:text-pink-600 hover:border-pink-300 hover:bg-pink-50 transition-all duration-200 hover:scale-110 active:scale-90 flex-shrink-0"
+              /* rounded-xl + 40px at lg: it was the one square 36px control in a row
+                 of pills, which is what made the right cluster look assembled by
+                 accident. */
+              className="hidden sm:flex items-center justify-center w-9 h-9 lg:w-10 lg:h-10 rounded-xl border border-stone-200 text-stone-400 hover:text-pink-600 hover:border-pink-300 hover:bg-pink-50 transition-all duration-200 hover:scale-110 active:scale-90 flex-shrink-0"
             >
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
                 <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
@@ -2264,11 +2287,38 @@ export default function Home() {
       </nav>
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
-      <div className="w-full px-4 overflow-hidden relative bg-white">
+      {/* HERO ZONE — three children: copy, illustration, search card.
+          Mobile stacks them in source order exactly as before (the wrapper and the
+          search card's own wrapper carry no base-breakpoint styles, so nothing
+          moves). From lg the zone becomes a two-column lockup: copy over search on
+          the left, illustration on the right spanning both rows — which is the only
+          arrangement that lets a desktop visitor read what Sefira is before seeing
+          the picture. Explicit row/col placement, so DOM order stays mobile's. */}
+      <div className="lg:bg-white">
+      <div className="lg:mx-auto lg:grid lg:max-w-7xl lg:grid-cols-2 lg:items-center lg:gap-x-14 lg:px-8 lg:pt-[104px] lg:pb-14">
+
+        {/* Desktop hero copy. `sr-only` on mobile keeps the h1 in the document for
+            SEO/a11y without occupying a single pixel (it is position:absolute), so
+            the mobile hero is untouched; `lg:not-sr-only` promotes it to the real
+            headline on desktop. */}
+        <div
+          dir={isRtl ? "rtl" : "ltr"}
+          className="sr-only lg:not-sr-only lg:col-start-1 lg:row-start-1 lg:mb-7 lg:block"
+        >
+          <h1 className="lg:text-[44px] xl:text-[52px] lg:font-black lg:leading-[1.08] lg:tracking-tight lg:text-stone-900">
+            {t.heroDeskTitle}{" "}
+            <span className="lg:text-orange-500">{t.heroDeskAccent}</span>
+          </h1>
+          <p className="lg:mt-5 lg:max-w-[30rem] lg:text-lg lg:leading-relaxed lg:text-stone-500">
+            {t.heroDeskSub}
+          </p>
+        </div>
+
+      <div className="w-full px-4 overflow-hidden relative bg-white lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:bg-transparent lg:px-0">
 
         {/* 68px clears the 65px fixed navbar by a hair, which is all mobile needs;
             desktop gets a real gap so the artwork never reads as tucked under it. */}
-        <div className="relative z-10 max-w-2xl mx-auto px-5 pt-[68px] md:pt-[88px] w-full">
+        <div className="relative z-10 max-w-2xl mx-auto px-5 pt-[68px] md:pt-[88px] w-full lg:max-w-none lg:px-0 lg:pt-0">
 
           <motion.div
             initial={false}
@@ -2277,14 +2327,8 @@ export default function Home() {
             className="flex w-full flex-col"
           >
 
-            {/* ── HERO: h1 kept for SEO/a11y, hidden visually ───────────────── */}
-            <h1 className="sr-only" dir={isRtl ? "rtl" : "ltr"}>
-              <span>{t.heroCompactLine1}</span>{" "}
-              <span>{t.heroCompactLine2}</span>
-            </h1>
-
             {/* Illustration — full-bleed, the entire visual hero */}
-            <div className="-mx-9">
+            <div className="-mx-9 lg:mx-0">
               {/* hero-illustration.webp is 1536×1024 — exactly 3/2. Mobile's 4/3 is
                   narrower than the source, so `cover` trims the sides and the whole
                   height survives. The old desktop 21/9 was much wider, so `cover`
@@ -2308,16 +2352,85 @@ export default function Home() {
               </div>
             </div>
 
-            {/* White→stone-50 handoff — sized to exactly match the search card's overlap below, so the card floats over the blend with no hard edge beside it */}
-            <div className="h-10 w-full bg-gradient-to-b from-white to-stone-50" />
+            {/* White→stone-50 handoff — sized to exactly match the search card's overlap below, so the card floats over the blend with no hard edge beside it. Desktop has no overlap to blend: the whole zone is white. */}
+            <div className="h-10 w-full bg-gradient-to-b from-white to-stone-50 lg:hidden" />
           </motion.div>
 
         </div>
 
       </div>
 
+        {/* SEARCH CARD — mobile keeps its exact geometry: this wrapper reproduces
+            the max-w-2xl/px-5 column it used to live in, and the card keeps its
+            -mt-10 overlap into the gradient handoff above. At lg it drops into the
+            left column under the headline and the overlap is cancelled. */}
+        <div className="max-w-2xl mx-auto px-5 w-full lg:col-start-1 lg:row-start-2 lg:mx-0 lg:max-w-none lg:px-0">
+            {/* ── SEARCH BAR — overlaps up into the gradient handoff above ─────── */}
+            <div onPointerDown={preloadSearchSheet} className="relative z-10 -mt-10 mx-5 rounded-[28px] bg-white p-3 shadow-xl shadow-slate-200/70 lg:mx-0 lg:mt-0 lg:max-w-[34rem] lg:p-4 lg:ring-1 lg:ring-stone-200/70">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const value = heroSearchValue.trim();
+                  router.push(value ? `/search?q=${encodeURIComponent(value)}` : "/search");
+                }}
+                className="flex w-full min-h-[56px] items-center gap-3 rounded-2xl px-1"
+                dir={isRtl ? "rtl" : "ltr"}
+              >
+                <button
+                  type="submit"
+                  aria-label={t.heroSearchPlaceholder}
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-orange-500 text-white transition-transform duration-200 active:scale-95"
+                >
+                  <Search className="h-5 w-5" />
+                </button>
+                <input
+                  type="text"
+                  id="hero-search"
+                  name="q"
+                  value={heroSearchValue}
+                  onChange={(e) => setHeroSearchValue(e.target.value)}
+                  placeholder={t.heroSearchPlaceholder}
+                  dir={isRtl ? "rtl" : "ltr"}
+                  className="min-w-0 flex-1 truncate bg-transparent text-base text-slate-900 outline-none placeholder:text-slate-400"
+                />
+              </form>
+
+              <div className="my-2 border-t border-slate-100" />
+
+              <div className="flex h-11" dir={isRtl ? "rtl" : "ltr"}>
+                <button
+                  onClick={() => setSheetMode("location")}
+                  className="flex flex-1 items-center justify-center gap-1.5 text-[13px] font-medium text-slate-600"
+                >
+                  <MapPin className="h-4 w-4" />
+                  <span className="truncate">{t.quickLocationLabel}</span>
+                </button>
+                <button
+                  onClick={() => setSheetMode("category")}
+                  className="flex flex-1 items-center justify-center gap-1.5 border-s border-slate-100 text-[13px] font-medium text-slate-600"
+                >
+                  <LayoutGrid className="h-4 w-4" />
+                  <span className="truncate">{t.quickCategoryLabel}</span>
+                </button>
+                <button
+                  onClick={() => router.push("/search")}
+                  className="flex flex-1 items-center justify-center gap-1.5 border-s border-slate-100 text-[13px] font-medium text-slate-600"
+                >
+                  <SlidersHorizontal className="h-4 w-4" />
+                  <span className="truncate">{t.quickFilterLabel}</span>
+                </button>
+              </div>
+            </div>
+        </div>
+
+      </div>
+      </div>
+
       {/* ── INTENT CARDS + İLAN VER (own canvas, no bg — sits on page's stone-50) ── */}
-      <div className="max-w-2xl mx-auto px-5 w-full">
+      {/* lg widens to the page-wide container (max-w-7xl / px-8) that the promo,
+          listings and cities bands below already use, so the four role cards line
+          up with every other section edge instead of sitting in a 672px column. */}
+      <div className="max-w-2xl mx-auto px-5 w-full lg:max-w-7xl lg:px-8 lg:pt-14">
 
         <motion.div
           initial={false}
@@ -2325,63 +2438,6 @@ export default function Home() {
           transition={{ duration: 0.6 }}
           className="flex w-full flex-col"
         >
-
-          {/* ── SEARCH BAR — overlaps up into the gradient handoff above ─────── */}
-          <div onPointerDown={preloadSearchSheet} className="relative z-10 -mt-10 mx-5 rounded-[28px] bg-white p-3 shadow-xl shadow-slate-200/70">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const value = heroSearchValue.trim();
-                router.push(value ? `/search?q=${encodeURIComponent(value)}` : "/search");
-              }}
-              className="flex w-full min-h-[56px] items-center gap-3 rounded-2xl px-1"
-              dir={isRtl ? "rtl" : "ltr"}
-            >
-              <button
-                type="submit"
-                aria-label={t.heroSearchPlaceholder}
-                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-orange-500 text-white transition-transform duration-200 active:scale-95"
-              >
-                <Search className="h-5 w-5" />
-              </button>
-              <input
-                type="text"
-                id="hero-search"
-                name="q"
-                value={heroSearchValue}
-                onChange={(e) => setHeroSearchValue(e.target.value)}
-                placeholder={t.heroSearchPlaceholder}
-                dir={isRtl ? "rtl" : "ltr"}
-                className="min-w-0 flex-1 truncate bg-transparent text-base text-slate-900 outline-none placeholder:text-slate-400"
-              />
-            </form>
-
-            <div className="my-2 border-t border-slate-100" />
-
-            <div className="flex h-11" dir={isRtl ? "rtl" : "ltr"}>
-              <button
-                onClick={() => setSheetMode("location")}
-                className="flex flex-1 items-center justify-center gap-1.5 text-[13px] font-medium text-slate-600"
-              >
-                <MapPin className="h-4 w-4" />
-                <span className="truncate">{t.quickLocationLabel}</span>
-              </button>
-              <button
-                onClick={() => setSheetMode("category")}
-                className="flex flex-1 items-center justify-center gap-1.5 border-s border-slate-100 text-[13px] font-medium text-slate-600"
-              >
-                <LayoutGrid className="h-4 w-4" />
-                <span className="truncate">{t.quickCategoryLabel}</span>
-              </button>
-              <button
-                onClick={() => router.push("/search")}
-                className="flex flex-1 items-center justify-center gap-1.5 border-s border-slate-100 text-[13px] font-medium text-slate-600"
-              >
-                <SlidersHorizontal className="h-4 w-4" />
-                <span className="truncate">{t.quickFilterLabel}</span>
-              </button>
-            </div>
-          </div>
 
           <SearchSheet
             mode={sheetMode}
@@ -2409,26 +2465,26 @@ export default function Home() {
               {wizardMode === null ? (
                 <>
                   {/* Intent cards — 2×2 grid */}
-                  <div className="grid grid-cols-2 gap-3" dir={isRtl ? "rtl" : "ltr"}>
+                  <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-5" dir={isRtl ? "rtl" : "ltr"}>
                     {/* Card 1 — Landlord */}
                     <motion.button
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=has_place'); }}
-                      className="group flex min-h-[172px] flex-col rounded-3xl bg-orange-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group flex min-h-[172px] flex-col rounded-3xl bg-orange-50 p-4 text-start transition-transform duration-200 active:scale-[0.98] lg:min-h-[228px] lg:p-6 lg:ring-1 lg:ring-black/5 lg:transition lg:duration-200 lg:hover:-translate-y-1 lg:hover:shadow-lg lg:hover:shadow-stone-900/5"
                     >
                       <span className="self-start whitespace-nowrap rounded-md bg-orange-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-orange-700">
                         {t.landlordBadge}
                       </span>
-                      <p className="mt-2 text-lg font-extrabold leading-snug text-stone-900">
+                      <p className="mt-2 text-lg font-extrabold leading-snug text-stone-900 lg:mt-3 lg:text-xl">
                         {t.optionSeekingTitle}
                       </p>
-                      <p className="mt-1 text-xs text-slate-500">
+                      <p className="mt-1 text-xs text-slate-500 lg:mt-1.5 lg:text-sm">
                         {t.landlordSubtext}
                       </p>
                       <div className="mt-3 flex items-end justify-between">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md lg:h-11 lg:w-11">
                           <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
                             <path d="M5 12h14M13 6l6 6-6 6" />
                           </svg>
@@ -2439,7 +2495,7 @@ export default function Home() {
                           width={560}
                           height={511}
                           loading="lazy"
-                          className={`h-24 w-auto object-contain drop-shadow-md ${isRtl ? "scale-x-[-1]" : ""}`}
+                          className={`h-24 w-auto object-contain drop-shadow-md lg:h-28 ${isRtl ? "scale-x-[-1]" : ""}`}
                         />
                       </div>
                     </motion.button>
@@ -2450,19 +2506,19 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.18 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } router.push('/create-listing?type=needs_place'); }}
-                      className="group flex min-h-[172px] flex-col rounded-3xl bg-blue-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group flex min-h-[172px] flex-col rounded-3xl bg-blue-50 p-4 text-start transition-transform duration-200 active:scale-[0.98] lg:min-h-[228px] lg:p-6 lg:ring-1 lg:ring-black/5 lg:transition lg:duration-200 lg:hover:-translate-y-1 lg:hover:shadow-lg lg:hover:shadow-stone-900/5"
                     >
                       <span className="self-start whitespace-nowrap rounded-md bg-blue-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-700">
                         {t.tenantBadge}
                       </span>
-                      <p className="mt-2 text-lg font-extrabold leading-snug text-stone-900">
+                      <p className="mt-2 text-lg font-extrabold leading-snug text-stone-900 lg:mt-3 lg:text-xl">
                         {t.optionOfferingTitle}
                       </p>
-                      <p className="mt-1 text-xs text-slate-500">
+                      <p className="mt-1 text-xs text-slate-500 lg:mt-1.5 lg:text-sm">
                         {t.tenantSubtext}
                       </p>
                       <div className="mt-3 flex items-end justify-between">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md lg:h-11 lg:w-11">
                           <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
                             <path d="M5 12h14M13 6l6 6-6 6" />
                           </svg>
@@ -2473,7 +2529,7 @@ export default function Home() {
                           width={560}
                           height={448}
                           loading="lazy"
-                          className={`h-24 w-auto object-contain drop-shadow-md ${isRtl ? "scale-x-[-1]" : ""}`}
+                          className={`h-24 w-auto object-contain drop-shadow-md lg:h-28 ${isRtl ? "scale-x-[-1]" : ""}`}
                         />
                       </div>
                     </motion.button>
@@ -2484,19 +2540,19 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.26 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('owner'); setShowCommercialModal(true); }}
-                      className="group flex min-h-[172px] flex-col rounded-3xl bg-emerald-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group flex min-h-[172px] flex-col rounded-3xl bg-emerald-50 p-4 text-start transition-transform duration-200 active:scale-[0.98] lg:min-h-[228px] lg:p-6 lg:ring-1 lg:ring-black/5 lg:transition lg:duration-200 lg:hover:-translate-y-1 lg:hover:shadow-lg lg:hover:shadow-stone-900/5"
                     >
                       <span className="self-start whitespace-nowrap rounded-md bg-emerald-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700">
                         {t.commercialOwnerBadge}
                       </span>
-                      <p className="mt-2 text-lg font-extrabold leading-snug text-stone-900">
+                      <p className="mt-2 text-lg font-extrabold leading-snug text-stone-900 lg:mt-3 lg:text-xl">
                         {t.commercialOwnerTitle}
                       </p>
-                      <p className="mt-1 text-xs text-slate-500">
+                      <p className="mt-1 text-xs text-slate-500 lg:mt-1.5 lg:text-sm">
                         {t.commercialOwnerSubtitle}
                       </p>
                       <div className="mt-3 flex items-end justify-between">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md lg:h-11 lg:w-11">
                           <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
                             <path d="M5 12h14M13 6l6 6-6 6" />
                           </svg>
@@ -2507,7 +2563,7 @@ export default function Home() {
                           width={560}
                           height={448}
                           loading="lazy"
-                          className={`h-24 w-auto object-contain drop-shadow-md ${isRtl ? "scale-x-[-1]" : ""}`}
+                          className={`h-24 w-auto object-contain drop-shadow-md lg:h-28 ${isRtl ? "scale-x-[-1]" : ""}`}
                         />
                       </div>
                     </motion.button>
@@ -2518,19 +2574,19 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.34 }}
                       onClick={() => { if (!user) { setShowAuthPromptModal(true); return; } setCommercialMode('seeker'); setShowCommercialModal(true); }}
-                      className="group flex min-h-[172px] flex-col rounded-3xl bg-teal-50 p-4 text-start transition-transform duration-200 active:scale-[0.98]"
+                      className="group flex min-h-[172px] flex-col rounded-3xl bg-teal-50 p-4 text-start transition-transform duration-200 active:scale-[0.98] lg:min-h-[228px] lg:p-6 lg:ring-1 lg:ring-black/5 lg:transition lg:duration-200 lg:hover:-translate-y-1 lg:hover:shadow-lg lg:hover:shadow-stone-900/5"
                     >
                       <span className="self-start whitespace-nowrap rounded-md bg-teal-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-teal-700">
                         {t.commercialSeekerBadge}
                       </span>
-                      <p className="mt-2 text-lg font-extrabold leading-snug text-stone-900">
+                      <p className="mt-2 text-lg font-extrabold leading-snug text-stone-900 lg:mt-3 lg:text-xl">
                         {t.commercialSeekerTitle}
                       </p>
-                      <p className="mt-1 text-xs text-slate-500">
+                      <p className="mt-1 text-xs text-slate-500 lg:mt-1.5 lg:text-sm">
                         {t.commercialSeekerSubtitle}
                       </p>
                       <div className="mt-3 flex items-end justify-between">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md lg:h-11 lg:w-11">
                           <svg viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-4 w-4 ${isRtl ? "rotate-180" : ""}`}>
                             <path d="M5 12h14M13 6l6 6-6 6" />
                           </svg>
@@ -2541,7 +2597,7 @@ export default function Home() {
                           width={560}
                           height={448}
                           loading="lazy"
-                          className={`h-24 w-auto object-contain drop-shadow-md ${isRtl ? "scale-x-[-1]" : ""}`}
+                          className={`h-24 w-auto object-contain drop-shadow-md lg:h-28 ${isRtl ? "scale-x-[-1]" : ""}`}
                         />
                       </div>
                     </motion.button>
@@ -2813,7 +2869,10 @@ export default function Home() {
             {/* İlan Ver — desktop hero button */}
             <button
               onClick={handleCreateListing}
-              className="hidden sm:flex mt-8 items-center gap-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black text-sm px-7 py-3.5 rounded-2xl shadow-xl shadow-orange-500/30 hover:shadow-2xl hover:shadow-orange-500/50 hover:-translate-y-0.5 active:scale-95 transition-all duration-200"
+              /* self-center: the parent is a flex column, whose default
+                 align-items:stretch was blowing this CTA out to the full column
+                 width — it read as a divider bar, not a button. */
+              className="hidden sm:flex self-center mt-8 items-center gap-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black text-sm px-7 py-3.5 rounded-2xl shadow-xl shadow-orange-500/30 hover:shadow-2xl hover:shadow-orange-500/50 hover:-translate-y-0.5 active:scale-95 transition-all duration-200 lg:mt-10 lg:px-9 lg:py-4 lg:text-base"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-4 h-4">
                 <line x1="12" y1="5" x2="12" y2="19" />
@@ -2827,10 +2886,12 @@ export default function Home() {
 
       {/* ── PROMO VIDEO ───────────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto mt-section">
-        <p className="px-5 mb-3 text-lg font-extrabold text-slate-900">
+        <p className="px-5 mb-3 text-lg font-extrabold text-slate-900 lg:px-8 lg:mb-5 lg:text-2xl">
           {t.promoVideoHeading}
         </p>
-        <div ref={promoVideoSectionRef} className="relative mx-5 aspect-video overflow-hidden rounded-3xl shadow-lg shadow-slate-200/60 ring-1 ring-slate-100">
+        {/* mx-8 at lg so the band's left edge sits on the same rail as the hero,
+            the role cards and the sections below it. */}
+        <div ref={promoVideoSectionRef} className="relative mx-5 aspect-video overflow-hidden rounded-3xl shadow-lg shadow-slate-200/60 ring-1 ring-slate-100 lg:mx-8">
           {!promoVideoPlaying && (
             <Image src="/video-poster.webp" alt="" fill className="object-cover" />
           )}
