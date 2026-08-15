@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
 import { useLang } from "@/app/lib/LangContext";
+import LangFlag from "@/app/components/LangFlag";
 import ReactCrop, { centerCrop, type Crop, type PixelCrop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 
@@ -1792,9 +1793,7 @@ function CreateListingPage() {
             onClick={() => setLangMenuOpen((o) => !o)}
             className="flex items-center gap-1 bg-stone-100 border border-stone-200 rounded-lg px-2 py-1.5 text-[11px] font-black transition-all duration-200 hover:bg-stone-200 whitespace-nowrap"
           >
-            <span className="text-sm leading-none">
-              {lang === "tr" ? "🇹🇷" : lang === "en" ? "🇬🇧" : lang === "fa" ? "🇮🇷" : lang === "ar" ? "🇸🇦" : lang === "ru" ? "🇷🇺" : "🇩🇪"}
-            </span>
+            <LangFlag lang={lang} width={18} />
             <span className="text-stone-700">
               {lang === "tr" ? "TR" : lang === "en" ? "EN" : lang === "fa" ? "FA" : lang === "ar" ? "AR" : lang === "ru" ? "RU" : "DE"}
             </span>
@@ -1810,7 +1809,7 @@ function CreateListingPage() {
                   onClick={() => { setLang(l); setLangMenuOpen(false); }}
                   className={`flex items-center gap-2 w-full px-3 py-2.5 text-[12px] font-bold transition-colors hover:bg-stone-50 ${lang === l ? "text-orange-500" : "text-stone-700"}`}
                 >
-                  <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : l === "fa" ? "🇮🇷" : l === "ar" ? "🇸🇦" : l === "ru" ? "🇷🇺" : "🇩🇪"}</span>
+                  <LangFlag lang={l} width={18} />
                   {l === "tr" ? "TR" : l === "en" ? "EN" : l === "fa" ? "FA" : l === "ar" ? "AR" : l === "ru" ? "RU" : "DE"}
                 </button>
               ))}

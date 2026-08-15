@@ -131,7 +131,14 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
     <AnimatePresence>
       {show && (
         <motion.div
-          className="fixed inset-0 z-[9998] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+          // z-10000, one above the page navbars' z-9999. At 9998 the fixed header
+          // painted *over* this dialog: on a short desktop viewport (~600px of
+          // content, i.e. a 1280×720 or 1366×768 laptop) the centred card's top
+          // lands above 65px, so the artwork and the close button disappeared
+          // behind the header — and elementFromPoint hit the header, so the close
+          // button was not even clickable. Overlays that must sit above the
+          // chrome live at 10000+ here (SearchSheet 10001, ProfileDrawer 99999).
+          className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -139,13 +146,16 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
         >
           <motion.div
             dir={isRTL ? 'rtl' : 'ltr'}
-            className="relative w-[92vw] max-w-md max-h-[85vh] rounded-3xl overflow-hidden shadow-2xl border border-white/60 bg-white"
+            // flex column + a scrollable body: when the card would outgrow 85vh the
+            // text scrolls instead of the card being clipped, so the artwork block
+            // holding the close button is never the part that gets cut.
+            className="relative flex w-[92vw] max-w-md max-h-[85vh] flex-col rounded-3xl overflow-hidden shadow-2xl border border-white/60 bg-white"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           >
-            <div className="relative w-full h-[38vh] max-h-64 min-h-[170px]">
+            <div className="relative w-full h-[38vh] max-h-64 min-h-[170px] shrink-0">
               <Image
                 src="/welcome-popup-bg.webp"
                 alt=""
@@ -165,7 +175,7 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
               <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
             </div>
 
-            <div className="relative bg-white px-6 pb-7 pt-2 text-center">
+            <div className="relative min-h-0 flex-1 overflow-y-auto bg-white px-6 pb-7 pt-2 text-center">
               <h2 className="text-4xl font-extrabold leading-tight">
                 {t.titleDark && (
                   <>

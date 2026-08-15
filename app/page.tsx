@@ -69,6 +69,7 @@ import { useAuth } from "@/app/lib/AuthContext";
 import { supabase } from "@/app/lib/supabase";
 import { useLang } from "@/app/lib/LangContext";
 import AvatarImage from "@/app/components/AvatarImage";
+import LangFlag from "@/app/components/LangFlag";
 import { useProfileDrawer } from "@/app/lib/ProfileDrawerContext";
 import { useUnreadMessages } from "@/app/lib/useUnreadMessages";
 import {
@@ -2016,9 +2017,7 @@ export default function Home() {
                   animation: 'langPulse 3s infinite',
                 }}
               >
-                <span style={{ fontSize: '22px' }}>
-                  {lang === "tr" ? "🇹🇷" : lang === "en" ? "🇬🇧" : lang === "fa" ? "🇮🇷" : lang === "ar" ? "🇸🇦" : lang === "ru" ? "🇷🇺" : "🇩🇪"}
-                </span>
+                <LangFlag lang={lang} width={22} />
                 <span style={{ color: 'white', fontSize: '13px', fontWeight: '700', letterSpacing: '0.5px' }}>
                   {lang === "tr" ? "TR" : lang === "en" ? "EN" : lang === "fa" ? "FA" : lang === "ar" ? "AR" : lang === "ru" ? "RU" : "DE"}
                 </span>
@@ -2064,7 +2063,7 @@ export default function Home() {
                       onClick={() => { setLang(l); setLangMenuOpen(false); }}
                       className={`flex items-center gap-2 w-full px-3 py-2.5 text-[12px] font-bold transition-colors hover:bg-stone-50 ${lang === l ? "text-orange-500" : "text-stone-700"}`}
                     >
-                      <span className="text-sm">{l === "tr" ? "🇹🇷" : l === "en" ? "🇬🇧" : l === "fa" ? "🇮🇷" : l === "ar" ? "🇸🇦" : l === "ru" ? "🇷🇺" : "🇩🇪"}</span>
+                      <LangFlag lang={l} width={18} />
                       {l === "tr" ? "TR" : l === "en" ? "EN" : l === "fa" ? "FA" : l === "ar" ? "AR" : l === "ru" ? "RU" : "DE"}
                     </button>
                   ))}
@@ -2267,7 +2266,9 @@ export default function Home() {
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
       <div className="w-full px-4 overflow-hidden relative bg-white">
 
-        <div className="relative z-10 max-w-2xl mx-auto px-5 pt-[68px] w-full">
+        {/* 68px clears the 65px fixed navbar by a hair, which is all mobile needs;
+            desktop gets a real gap so the artwork never reads as tucked under it. */}
+        <div className="relative z-10 max-w-2xl mx-auto px-5 pt-[68px] md:pt-[88px] w-full">
 
           <motion.div
             initial={false}
@@ -2284,7 +2285,13 @@ export default function Home() {
 
             {/* Illustration — full-bleed, the entire visual hero */}
             <div className="-mx-9">
-              <div className="relative aspect-[4/3] w-full md:aspect-[21/9] md:max-h-[520px]">
+              {/* hero-illustration.webp is 1536×1024 — exactly 3/2. Mobile's 4/3 is
+                  narrower than the source, so `cover` trims the sides and the whole
+                  height survives. The old desktop 21/9 was much wider, so `cover`
+                  trimmed ~84px off the TOP instead — taking the orange pin's tether
+                  and the building roofs, right against the navbar. Matching the
+                  source ratio on desktop means nothing is cropped at all. */}
+              <div className="relative aspect-[4/3] w-full md:aspect-[3/2] md:max-h-[520px]">
                 <Image
                   src="/hero-illustration.webp"
                   alt=""
