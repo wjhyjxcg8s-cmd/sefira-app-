@@ -5,11 +5,11 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useDragControls } from "framer-motion";
 import { ChevronLeft, X } from "lucide-react";
 import type { Lang } from "@/app/lib/LangContext";
+import CountryFlag from "@/app/components/CountryFlag";
 import { useVisualViewportHeight, KEYBOARD_OVERLAY_MIN_PX } from "@/app/lib/useVisualViewportHeight";
 import {
   getOrderedCountryCodes,
   getCountryName,
-  codeToFlag,
   normalize,
   filterSuggestions,
   loadTurkiyeData,
@@ -489,7 +489,7 @@ export default function SearchSheet({ mode, lang, onClose, onSubmitLocation, onS
                       <div className="flex flex-col gap-1">
                         {filteredCountries.map((code) => (
                           <button key={code} onClick={() => selectCountry(code)} className={`flex items-center gap-3 ${rowClass}`}>
-                            <span className="text-xl">{codeToFlag(code)}</span>
+                            <CountryFlag code={code} width={22} />
                             <span className="truncate">{getCountryName(code, lang)}</span>
                           </button>
                         ))}

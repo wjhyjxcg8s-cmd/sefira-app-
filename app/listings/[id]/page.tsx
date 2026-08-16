@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLang } from "@/app/lib/LangContext";
+import CountryFlag from "@/app/components/CountryFlag";
 import { getThumbUrl, getCardUrl } from "@/app/lib/imageVariants";
 import AvatarImage from "@/app/components/AvatarImage";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
@@ -290,11 +291,6 @@ const labels: Record<Lang, Record<string, string>> = {
     summaryRoommatePref: "Предпочтение соседа: {pref}.",
   },
 };
-
-function codeToFlag(code: string): string {
-  if (!code || !/^[A-Za-z]{2}$/.test(code)) return "🌍";
-  return String.fromCodePoint(...[...code.toUpperCase()].map((c) => 0x1f1e6 - 65 + c.charCodeAt(0)));
-}
 
 // The stored country string is whatever language the poster typed it in at creation time —
 // always re-derive from country_code in the viewer's current language instead of trusting it.
@@ -750,7 +746,7 @@ export default function ListingDetailPage() {
 
             {listing.country && (
               <p className="text-sm text-gray-400 mt-1 flex items-center justify-center gap-1.5">
-                <span>{codeToFlag(listing.country_code)}</span>
+                <CountryFlag code={listing.country_code} width={18} />
                 <span>
                   {localizedCountryName(listing.country_code, listing.country, lang)}
                   {listing.country_code ? ` (${listing.country_code})` : ""}
@@ -1015,7 +1011,7 @@ export default function ListingDetailPage() {
 
           {listing.country && (
             <p className="text-sm text-gray-400 mt-1 flex items-center gap-1.5">
-              <span>{codeToFlag(listing.country_code)}</span>
+              <CountryFlag code={listing.country_code} width={18} />
               <span>{localizedCountryName(listing.country_code, listing.country, lang)}</span>
               {listing.country_code && (
                 <span className="text-[10px] font-bold text-gray-400 border border-gray-200 rounded px-1.5 py-0.5">

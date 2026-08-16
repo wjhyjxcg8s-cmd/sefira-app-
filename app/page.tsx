@@ -70,6 +70,7 @@ import { supabase } from "@/app/lib/supabase";
 import { useLang } from "@/app/lib/LangContext";
 import AvatarImage from "@/app/components/AvatarImage";
 import LangFlag from "@/app/components/LangFlag";
+import CountryFlag from "@/app/components/CountryFlag";
 import { useProfileDrawer } from "@/app/lib/ProfileDrawerContext";
 import { useUnreadMessages } from "@/app/lib/useUnreadMessages";
 import {
@@ -3053,9 +3054,6 @@ export default function Home() {
               return rec.listing_category === "residential" || rec.listing_category == null;
             }).map((rec, i) => {
               const isSaved = savedRecIds.includes(rec.id);
-              const flagEmoji = rec.country_code && rec.country_code.length === 2
-                ? String.fromCodePoint(...(rec.country_code.toUpperCase().split("").map((c: string) => 0x1F1E6 + c.charCodeAt(0) - 65)))
-                : "🌍";
               const thumbnail = rec.photos?.[0] ?? null;
               // Derived, not `rec.type === "has_place"`: commercial rows have a null
               // `type`, which made every commercial owner card render the seeker visual.
@@ -3132,7 +3130,7 @@ export default function Home() {
                     <div className="absolute bottom-[68px] left-0 right-0 px-4 pointer-events-none">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
                         <span className="text-base font-bold text-white truncate" style={{ textShadow: "0 1px 6px rgba(0,0,0,0.5)" }}>
-                          {flagEmoji} {rec.city}
+                          <CountryFlag code={rec.country_code} width={18} className="me-1.5" />{rec.city}
                         </span>
                         {side && (
                           <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full text-white flex-shrink-0 ${getBadgeClass(side, rec.listing_category === "commercial")}`}>

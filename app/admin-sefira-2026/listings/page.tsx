@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/AuthContext";
+import CountryFlag from "@/app/components/CountryFlag";
 import { getListingSide, COMMERCIAL_BADGE_LABELS } from "@/app/lib/listingBadge";
 const ADMIN_EMAIL = "supportsefira@gmail.com";
 
@@ -32,13 +33,6 @@ function formatDate(d: string) {
     month: "short",
     day: "numeric",
   });
-}
-
-function countryFlag(code: string | null) {
-  if (!code || !/^[A-Za-z]{2}$/.test(code)) return "🌍";
-  return String.fromCodePoint(
-    ...[...code.toUpperCase()].map((c) => 0x1f1e6 - 65 + c.charCodeAt(0))
-  );
 }
 
 export default function AdminListingsPage() {
@@ -193,7 +187,7 @@ export default function AdminListingsPage() {
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="text-lg leading-none">{countryFlag(l.country_code)}</span>
+                        <CountryFlag code={l.country_code} width={20} />
                         <span className="font-semibold text-sm text-gray-800 truncate">
                           {l.city ?? "—"}
                           {l.district ? ` / ${l.district}` : ""}

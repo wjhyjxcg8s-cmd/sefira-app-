@@ -6,6 +6,7 @@ import { supabase } from "@/app/lib/supabase";
 import { getThumbUrl } from "@/app/lib/imageVariants";
 import SeekerCardVisual from "@/app/components/SeekerCardVisual";
 import AvatarImage from "@/app/components/AvatarImage";
+import CountryFlag from "@/app/components/CountryFlag";
 import { useLang } from "@/app/lib/LangContext";
 import {
   filterByCategory,
@@ -698,7 +699,7 @@ export default function SearchWizardPage() {
                       onClick={() => selectCountry(code)}
                       className="w-full flex items-center gap-3 px-4 py-3 text-start hover:bg-orange-50 transition-colors"
                     >
-                      <span className="text-xl flex-shrink-0">{codeToFlag(code)}</span>
+                      <CountryFlag code={code} width={22} className="flex-shrink-0" />
                       <span className="text-sm text-gray-800">{getCountryName(code, lang as Lang)}</span>
                     </button>
                   ))}

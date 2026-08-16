@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { supabase } from "@/app/lib/supabase";
 import CountrySelect from "@/app/components/CountrySelect";
+import LangFlag from "@/app/components/LangFlag";
 
 type Lang = "tr" | "en" | "fa" | "ar" | "de" | "ru";
 type StepName = "displayname" | "birthdate" | "gender" | "country" | "photo";
@@ -94,7 +95,7 @@ const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov
 const DAYS   = Array.from({ length: 31 }, (_, i) => i + 1);
 const YEARS  = Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - 18 - i);
 
-const FLAG: Record<Lang, string> = { tr: "🇹🇷", en: "🇬🇧", fa: "🇮🇷", ar: "🇸🇦", de: "🇩🇪", ru: "🇷🇺" };
+// Flags come from <LangFlag> (SVG) — the emoji here rendered as letter pairs on Windows.
 const CODE: Record<Lang, string> = { tr: "TR", en: "EN", fa: "FA", ar: "AR", de: "DE", ru: "RU" };
 
 interface Props {
@@ -306,7 +307,7 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
           onClick={() => setLangOpen((o) => !o)}
           className="flex items-center gap-1.5 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl px-3 py-2 text-white font-black text-sm hover:bg-white/30 active:scale-95 transition-all duration-200 shadow-lg"
         >
-          <span className="text-base leading-none">{FLAG[lang]}</span>
+          <LangFlag lang={lang} width={18} />
           <span>{CODE[lang]}</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
             className={`w-3 h-3 transition-transform duration-200 ${langOpen ? "rotate-180" : ""}`}>
@@ -321,7 +322,7 @@ export default function OnboardingFlow({ userId, lang: initialLang, onLangChange
                 onClick={() => handleLangChange(l)}
                 className={`flex items-center gap-2.5 w-full px-3 py-2.5 text-sm font-bold transition-colors hover:bg-stone-50 ${lang === l ? "text-orange-500 bg-orange-50" : "text-stone-700"}`}
               >
-                <span className="text-base">{FLAG[l]}</span>
+                <LangFlag lang={l} width={18} />
                 {CODE[l]}
               </button>
             ))}

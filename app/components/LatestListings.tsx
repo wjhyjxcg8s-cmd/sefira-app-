@@ -6,6 +6,7 @@ import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { createClient } from "@supabase/supabase-js";
 import { MapPin, PackageOpen } from "lucide-react";
+import CountryFlag from "@/app/components/CountryFlag";
 import { getListingSide, getCommercialBadgeLabel, getBadgeClass } from "@/app/lib/listingBadge";
 import { getThumbUrl } from "@/app/lib/imageVariants";
 import SeekerCardVisual from "@/app/components/SeekerCardVisual";
@@ -744,15 +745,17 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
       )}
 
       {/* ── Country selector ──────────────────────────────────────────────────
-          ONE horizontally scrolling row at every width — a wall of wrapped chips
-          made a 40-country list dominate the section. `dir` is set explicitly so
-          the scroller starts at the right in FA/AR even if this component is ever
-          mounted outside the RTL page shell, and the edge fades swap sides with it.
-          The fades are `hidden lg:block`: on touch the row's own momentum is the
-          affordance, and a fade over the first chip would only dim it. */}
+          Touch: one horizontally scrolling, snapping row — a phone flicks through
+          it and the row's own momentum is the affordance.
+          Desktop (lg+): the row WRAPS instead. A mouse has no horizontal flick, and
+          `scrollbar-hide` removes the only remaining cue, so a single overflowing
+          row read as "clipped at Kanada, rest unreachable". Wrapping puts all 34
+          chips on the rail where every one of them is clickable.
+          `dir` is set explicitly so the scroller starts at the right in FA/AR even
+          if this component is ever mounted outside the RTL page shell. */}
       <div className="mb-6" dir={isRTL ? "rtl" : "ltr"}>
         <div className="relative">
-          <div className="flex snap-x snap-mandatory gap-2 overflow-x-auto scrollbar-hide -mx-5 px-5 pb-2 lg:mx-0 lg:px-0">
+          <div className="flex snap-x snap-mandatory gap-2 overflow-x-auto scrollbar-hide -mx-5 px-5 pb-2 lg:mx-0 lg:snap-none lg:flex-wrap lg:gap-2.5 lg:overflow-visible lg:px-0">
             {orderedCountries.map((country) => {
               const isActive = selectedCountry === country.code;
               return (
@@ -766,28 +769,15 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                       : "border border-gray-200 bg-white text-gray-600 hover:border-orange-300 hover:text-orange-500 hover:scale-[1.03]"
                   }`}
                 >
-                  {/* Real flag emoji. Renders as a flag on Android/iOS; Windows ships
-                      no flag glyph and falls back to the pair's letters (see
-                      LangFlag.tsx for the same platform gap). */}
-                  <span className="text-base leading-none">{country.flag}</span>
+                  {/* SVG, not the emoji: Windows has no flag glyph and renders the
+                      regional-indicator pair as its two letters ("TR Türkiye"). */}
+                  <CountryFlag code={country.code} width={20} />
                   <span>{country.name[lang as Lang] ?? country.name.tr}</span>
                 </button>
               );
             })}
           </div>
 
-          <div
-            aria-hidden="true"
-            className={`pointer-events-none absolute inset-y-0 start-0 hidden w-10 lg:block ${
-              isRTL ? "bg-gradient-to-l" : "bg-gradient-to-r"
-            } from-stone-50 to-stone-50/0`}
-          />
-          <div
-            aria-hidden="true"
-            className={`pointer-events-none absolute inset-y-0 end-0 hidden w-10 lg:block ${
-              isRTL ? "bg-gradient-to-r" : "bg-gradient-to-l"
-            } from-stone-50 to-stone-50/0`}
-          />
         </div>
 
         {selectedCountry !== 'all' && (
@@ -967,12 +957,10 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                 {(() => {
                   const countryInfo = detectCountry(listing.city, listing.district);
                   const code = listing.country_code;
-                  const flag = code && /^[A-Za-z]{2}$/.test(code)
-                    ? String.fromCodePoint(...[...code.toUpperCase()].map(c => 0x1F1E6 - 65 + c.charCodeAt(0)))
-                    : countryInfo.flag;
+                  const flagCode = code && /^[A-Za-z]{2}$/.test(code) ? code : countryInfo.country;
                   return (
                     <div className="flex items-center gap-2 mt-1 mb-2">
-                      <span className="text-base">{flag}</span>
+                      <CountryFlag code={flagCode} width={20} />
                       {countryInfo.plate && (
                         <div className="flex items-center border border-gray-300 rounded overflow-hidden text-xs font-bold shadow-sm">
                           <div className="bg-blue-700 text-white px-1 py-0.5 flex flex-col items-center leading-tight">

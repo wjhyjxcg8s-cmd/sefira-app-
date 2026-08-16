@@ -7,6 +7,7 @@ import { supabase } from "@/app/lib/supabase";
 import { useLang } from "@/app/lib/LangContext";
 import { getListingSide, getCommercialBadgeLabel, getBadgeClass } from "@/app/lib/listingBadge";
 import AvatarImage from "@/app/components/AvatarImage";
+import CountryFlag from "@/app/components/CountryFlag";
 
 type Lang = "tr" | "en" | "fa" | "ar" | "de" | "ru";
 
@@ -95,11 +96,6 @@ interface SavedListing {
   listing_category: string | null;
   has_place: boolean | null;
   needs_place: boolean | null;
-}
-
-function countryFlag(code: string | null) {
-  if (!code || code.length !== 2) return "🌍";
-  return String.fromCodePoint(...[...code.toUpperCase()].map((c) => 0x1f1e6 - 65 + c.charCodeAt(0)));
 }
 
 export default function SavedPage() {
@@ -276,7 +272,7 @@ export default function SavedPage() {
                   {/* Content */}
                   <div className="p-3">
                     <div className="flex items-center gap-1 mb-0.5">
-                      <span className="text-sm">{countryFlag(listing.country_code)}</span>
+                      <CountryFlag code={listing.country_code} width={18} />
                       <p className="font-bold text-sm text-gray-900 truncate">{listing.city}</p>
                     </div>
 
