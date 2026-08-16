@@ -2306,11 +2306,23 @@ export default function Home() {
           dir={isRtl ? "rtl" : "ltr"}
           className="sr-only lg:not-sr-only lg:col-start-1 lg:row-start-1 lg:mb-7 lg:block"
         >
+          {/* One h1, two breakpoint-gated contents. `hidden` is display:none, which
+              screen readers and crawlers skip, so each breakpoint announces exactly
+              one heading: below lg the original compact copy this hero shipped with
+              before the desktop pass (restored — the desktop pass changed what mobile
+              announced, which was never intended), from lg the desktop headline. */}
           <h1 className="lg:text-[44px] xl:text-[52px] lg:font-black lg:leading-[1.08] lg:tracking-tight lg:text-stone-900">
-            {t.heroDeskTitle}{" "}
-            <span className="lg:text-orange-500">{t.heroDeskAccent}</span>
+            <span className="lg:hidden">
+              <span>{t.heroCompactLine1}</span>{" "}
+              <span>{t.heroCompactLine2}</span>
+            </span>
+            <span className="hidden lg:inline">
+              {t.heroDeskTitle}{" "}
+              <span className="lg:text-orange-500">{t.heroDeskAccent}</span>
+            </span>
           </h1>
-          <p className="lg:mt-5 lg:max-w-[30rem] lg:text-lg lg:leading-relaxed lg:text-stone-500">
+          {/* Desktop-only: pre-pass mobile had the h1 alone under sr-only. */}
+          <p className="hidden lg:mt-5 lg:block lg:max-w-[30rem] lg:text-lg lg:leading-relaxed lg:text-stone-500">
             {t.heroDeskSub}
           </p>
         </div>

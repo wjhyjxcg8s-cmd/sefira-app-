@@ -140,6 +140,11 @@ const countries = [
   { code: "CL", flag: "🇨🇱", name: { tr: "Şili", en: "Chile", fa: "شیلی", ar: "شيلي", de: "Chile", ru: "Чили" } },
   { code: "CO", flag: "🇨🇴", name: { tr: "Kolombiya", en: "Colombia", fa: "کلمبیا", ar: "كولومبيا", de: "Kolumbien", ru: "Колумбия" } },
   { code: "HU", flag: "🇭🇺", name: { tr: "Macaristan", en: "Hungary", fa: "مجارستان", ar: "المجر", de: "Ungarn", ru: "Венгрия" } },
+  // AF is here so that fa's second language-priority entry actually resolves. It was
+  // listed in langPriorityCountries from the start but never present in this array,
+  // so `.filter(c => c !== undefined)` dropped it silently and Persian readers only
+  // ever got IR promoted.
+  { code: "AF", flag: "🇦🇫", name: { tr: "Afganistan", en: "Afghanistan", fa: "افغانستان", ar: "أفغانستان", de: "Afghanistan", ru: "Афганистан" } },
 ];
 
 const allCountries = [
@@ -354,6 +359,19 @@ const heroText: Record<Lang, { l1: string; l2: string; sub: string }> = {
 // Turkish sorts Ç/Ş/İ correctly and Russian sorts Cyrillic correctly).
 const MAIN_MARKET_ORDER = ["TR", "IR", "DE", "RU", "US", "AE", "SA", "GB", "FR", "CA", "NL"] as const;
 
+// The reader's own market comes first. This map predates the main-market order
+// (d35fcdb5b, softened from auto-selection to reorder-only in 0f06470d3) and was
+// dropped in 62a7c8667 when the fixed order landed; the two are merged rather than
+// traded off — language priority heads the row, the remaining main markets follow.
+const langPriorityCountries: Record<string, string[]> = {
+  en: ['US', 'GB', 'CA'],
+  fa: ['IR', 'AF'],
+  ru: ['RU'],
+  de: ['DE', 'NO'],
+  ar: ['AE', 'SA', 'QA', 'EG'],
+  tr: ['TR'],
+};
+
 const sectionUI: Record<Lang, {
   count: string; emptyTitle: string; emptyCta: string; lookingForHome: string; lookingForSpace: string; perMonth: string; noSmoking: string;
 }> = {
@@ -552,19 +570,33 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
 
   // "All" first, then the main markets in their fixed business order, then the
   // remainder A→Z in the reader's own language.
+  // "All", then the reader's language-priority countries, then whatever is left of
+  // the main-market order, then the remainder A→Z in the reader's own language.
+  // `seen` is what keeps the three tiers from repeating an entry.
   const orderedCountries = useMemo(() => {
-    const allEntry = countries.find((c) => c.code === "all")!;
-    const mainEntries = MAIN_MARKET_ORDER
-      .map((code) => countries.find((c) => c.code === code))
-      .filter((c): c is typeof countries[number] => c !== undefined);
+    const byCode = (code: string) => countries.find((c) => c.code === code);
+    const seen = new Set<string>(["all"]);
+    const take = (codes: readonly string[]) =>
+      codes
+        .filter((code) => !seen.has(code))
+        .map((code) => {
+          const entry = byCode(code);
+          if (entry) seen.add(code);
+          return entry;
+        })
+        .filter((c): c is typeof countries[number] => c !== undefined);
+
+    const allEntry = byCode("all")!;
+    const priorityEntries = take(langPriorityCountries[lang] ?? []);
+    const mainEntries = take(MAIN_MARKET_ORDER);
     const restEntries = countries
-      .filter((c) => c.code !== "all" && !MAIN_MARKET_ORDER.includes(c.code as typeof MAIN_MARKET_ORDER[number]))
+      .filter((c) => !seen.has(c.code))
       .sort((a, b) => {
         const an = a.name[lang as Lang] ?? a.name.tr;
         const bn = b.name[lang as Lang] ?? b.name.tr;
         return an.localeCompare(bn, lang);
       });
-    return [allEntry, ...mainEntries, ...restEntries];
+    return [allEntry, ...priorityEntries, ...mainEntries, ...restEntries];
   }, [lang]);
 
   const isRTL = lang === "ar" || lang === "fa";
