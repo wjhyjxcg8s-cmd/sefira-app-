@@ -1,7 +1,7 @@
 // scripts/crop-welcome-art.mjs
 //
 // ONE-OFF — builds the welcome modal's artwork as a NEW file. Nothing is
-// overwritten: `public/welcome-popup-art-v2.webp` is written beside the files it
+// overwritten: `public/welcome-popup-art-v3.webp` is written beside the files it
 // supersedes and the component points at the new name.
 //
 // ─── Why this source ────────────────────────────────────────────────────────
@@ -21,7 +21,7 @@
 //   as a cut. This keeps the whole illustration and only removes the dead margin.
 //
 //   The modal keeps the artwork subordinate the other way instead: the band caps
-//   its HEIGHT (160/176px), so the art draws ~280-310px wide inside a ~390px band
+//   its HEIGHT (168/184px), so the art draws ~290-320px wide inside a ~390px band
 //   and the greeting stays the subject. Because the art's background and the band
 //   are the same orange-50, the space either side is invisible.
 //
@@ -32,12 +32,25 @@ import path from 'node:path';
 
 const ROOT = process.cwd();
 const SRC = path.join(ROOT, 'public', 'son-ilanlar-hero-v2.webp');
-const OUT = path.join(ROOT, 'public', 'welcome-popup-art-v2.webp');
+const OUT = path.join(ROOT, 'public', 'welcome-popup-art-v3.webp');
 
-const CROP = { left: 18, top: 22, width: 1170, height: 672 }; // ink box + a hair
-const WIDTH = 760; // ~2.4x the ~310px the modal draws it at
+// ─── Centring ───────────────────────────────────────────────────────────────
+//   The crop hugs the ink EXACTLY: measured ink runs cols 16..1189 of the 1190-wide
+//   source, so `left: 16, width: 1174` leaves zero margin on either side. With the
+//   canvas equal to the ink box, the element's `justify-center` centres the drawing
+//   itself — rendered gaps come out equal to the pixel. The previous crop started at
+//   18, two pixels inside the ink, which is where the ~3px left/right asymmetry came
+//   from.
+//
+//   A padded variant was tried first, extending the canvas rightward to centre the
+//   ink's MASS (the globe is dense on the right, the little houses trail off left,
+//   so the centroid sits ~57% across). It measured worse where it counts: the ink
+//   BOX then sat ~11px left of centre (gaps 78.5 / 100). Box centring is what reads
+//   as centred here, so this keeps it and leaves the weight alone.
+const CROP = { left: 16, top: 22, width: 1174, height: 672 };
+const WIDTH = 820; // ~2.4x the ~340px the modal draws it at
 
-await sharp(SRC).extract(CROP).resize({ width: WIDTH }).webp({ quality: 88 }).toFile(OUT);
+await sharp(SRC).extract(CROP).resize({ width: WIDTH }).webp({ quality: 92 }).toFile(OUT);
 
 const meta = await sharp(OUT).metadata();
 console.log(`wrote ${path.relative(ROOT, OUT)} — ${meta.width}x${meta.height} (${(meta.width / meta.height).toFixed(2)}:1)`);

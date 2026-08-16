@@ -165,12 +165,21 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
                 the greeting is the subject, the picture supports it. `object-contain`
                 keeps the clipping fix — nothing can crop at any band height. */}
             <div className="relative flex h-[168px] w-full shrink-0 items-center justify-center bg-orange-50 px-6 py-4 sm:h-[184px]">
+              {/* `unoptimized`, for the same reason the "en son ilanlar" band art
+                  carries it: this illustration is mostly ONE flat field, and Next's
+                  q=75 pass (it was serving a 380px re-encode here) smears that field
+                  just enough to outline the picture box against the pristine CSS
+                  orange-50 behind it. Served as authored, the art's background is
+                  (254,247,238) against the band's (255,247,237) — a 1/255 delta on
+                  one channel, i.e. no edge at all. The file is 820px for a ~290px
+                  draw, so there is nothing to gain from the optimizer anyway. */}
               <Image
-                src="/welcome-popup-art-v2.webp"
+                src="/welcome-popup-art-v3.webp"
                 alt=""
-                width={760}
-                height={437}
+                width={820}
+                height={469}
                 priority
+                unoptimized
                 className="h-full w-auto object-contain"
               />
 
@@ -184,7 +193,11 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
               </button>
             </div>
 
-            <div className="relative min-h-0 flex-1 overflow-y-auto bg-white px-6 pb-7 pt-6 text-center">
+            {/* pt-4: with the band's own pb-4 that puts 32px between the artwork and
+                the headline — the section break, one step up from the 16px inside the
+                copy block and the 24px before the button. At pt-6 the gap was 40px,
+                the only measurement in the card that was off the 4/8 scale. */}
+            <div className="relative min-h-0 flex-1 overflow-y-auto bg-white px-6 pb-7 pt-4 text-center">
               {/* Two tones, not three: stone-900 with the accent word in the brand
                   orange — the same split the homepage hero uses. The old headline
                   ran a orange→pink→purple gradient through clipped text, which is
