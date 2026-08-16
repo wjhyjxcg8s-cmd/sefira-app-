@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { createClient } from "@supabase/supabase-js";
-import { getListingSide, getCommercialBadgeLabel, COMMERCIAL_BADGE_CLASS } from "@/app/lib/listingBadge";
+import { MapPin, PackageOpen } from "lucide-react";
+import { getListingSide, getCommercialBadgeLabel, getBadgeClass } from "@/app/lib/listingBadge";
 import { getThumbUrl } from "@/app/lib/imageVariants";
 import SeekerCardVisual from "@/app/components/SeekerCardVisual";
 import AvatarImage from "@/app/components/AvatarImage";
@@ -333,13 +334,34 @@ const allCountries = [
   {code:'ZW',flag:'🇿🇼',name:'Zimbabve'},
 ];
 
+// Section title, cased per language rather than by one blanket rule: TR and EN take
+// real title case (TR with the dotted İ — "İlanlar", never "Ilanlar"), DE keeps
+// German orthography where only the nouns capitalise ("Die neuesten Anzeigen" —
+// title-casing the adjective would be wrong), RU takes sentence case, and FA/AR have
+// no letter case at all so they are unchanged.
 const heroText: Record<Lang, { l1: string; l2: string; sub: string }> = {
-  tr: { l1: "Dünyanın her yerinden", l2: "en son ilanlar", sub: "İhtiyacın olan alanı kolayca bul." },
-  en: { l1: "From all around the world", l2: "the latest listings", sub: "Easily find the space you need." },
+  tr: { l1: "Dünyanın her yerinden", l2: "En Son İlanlar", sub: "İhtiyacın olan alanı kolayca bul." },
+  en: { l1: "From all around the world", l2: "The Latest Listings", sub: "Easily find the space you need." },
   fa: { l1: "از سراسر جهان", l2: "جدیدترین آگهی‌ها", sub: "فضای موردنیازت را به‌راحتی پیدا کن." },
   ar: { l1: "من جميع أنحاء العالم", l2: "أحدث الإعلانات", sub: "اعثر بسهولة على المساحة التي تحتاجها." },
-  de: { l1: "Aus der ganzen Welt", l2: "die neuesten Anzeigen", sub: "Finde ganz einfach den Raum, den du brauchst." },
-  ru: { l1: "Со всего мира", l2: "самые свежие объявления", sub: "Легко найдите нужное пространство." },
+  de: { l1: "Aus der ganzen Welt", l2: "Die neuesten Anzeigen", sub: "Finde ganz einfach den Raum, den du brauchst." },
+  ru: { l1: "Со всего мира", l2: "Самые свежие объявления", sub: "Легко найдите нужное пространство." },
+};
+
+// Chip order: the main markets in a fixed business order, then everything else
+// alphabetically in the reader's own language (localeCompare with the locale, so
+// Turkish sorts Ç/Ş/İ correctly and Russian sorts Cyrillic correctly).
+const MAIN_MARKET_ORDER = ["TR", "IR", "DE", "RU", "US", "AE", "SA", "GB", "FR", "CA", "NL"] as const;
+
+const sectionUI: Record<Lang, {
+  count: string; emptyTitle: string; emptyCta: string; lookingForHome: string; lookingForSpace: string; perMonth: string; noSmoking: string;
+}> = {
+  tr: { count: "ilan", emptyTitle: "Bu ülkede henüz ilan yok", emptyCta: "İlk ilanı sen ver", lookingForHome: "Ev/oda arıyor", lookingForSpace: "Alan arıyor", perMonth: "/ay", noSmoking: "Sigara İçilmez" },
+  en: { count: "listings", emptyTitle: "No listings in this country yet", emptyCta: "Post the first listing", lookingForHome: "Looking for a room", lookingForSpace: "Looking for a space", perMonth: "/mo", noSmoking: "No smoking" },
+  fa: { count: "آگهی", emptyTitle: "هنوز آگهی‌ای در این کشور نیست", emptyCta: "اولین آگهی را ثبت کن", lookingForHome: "به دنبال اتاق", lookingForSpace: "به دنبال فضا", perMonth: "/ماه", noSmoking: "سیگار ممنوع" },
+  ar: { count: "إعلان", emptyTitle: "لا توجد إعلانات في هذا البلد بعد", emptyCta: "انشر أول إعلان", lookingForHome: "يبحث عن غرفة", lookingForSpace: "يبحث عن مساحة", perMonth: "/شهر", noSmoking: "ممنوع التدخين" },
+  de: { count: "Inserate", emptyTitle: "Noch keine Inserate in diesem Land", emptyCta: "Erstes Inserat aufgeben", lookingForHome: "Sucht ein Zimmer", lookingForSpace: "Sucht eine Fläche", perMonth: "/Mon.", noSmoking: "Nichtraucher" },
+  ru: { count: "объявлений", emptyTitle: "В этой стране пока нет объявлений", emptyCta: "Разместить первое объявление", lookingForHome: "Ищет комнату", lookingForSpace: "Ищет помещение", perMonth: "/мес", noSmoking: "Не курить" },
 };
 
 const categoryTabs: { key: "all" | "residential" | "commercial"; icon: string; label: Record<Lang, string> }[] = [
@@ -349,16 +371,29 @@ const categoryTabs: { key: "all" | "residential" | "commercial"; icon: string; l
 ];
 
 const cardLabels: Record<Lang, {
-  furnished: string; unfurnished: string; residents: string;
+  furnished: string; unfurnished: string; residents: string; rooms: string;
   maxBudget: string; age: string; working: string; student: string; privateRoom: string;
 }> = {
-  tr: { furnished:"Eşyalı",      unfurnished:"Eşyasız",      residents:"kişi var",     maxBudget:"Max", age:"yaş",  working:"Çalışıyor", student:"Öğrenci",   privateRoom:"Özel oda şart" },
-  en: { furnished:"Furnished",   unfurnished:"Unfurnished",  residents:"residents",    maxBudget:"Max", age:"yrs",  working:"Working",   student:"Student",   privateRoom:"Private room required" },
-  fa: { furnished:"مبله",        unfurnished:"بدون مبل",     residents:"نفر ساکن",     maxBudget:"حداکثر", age:"سال", working:"شاغل",  student:"دانشجو",    privateRoom:"اتاق خصوصی لازم" },
-  ar: { furnished:"مفروش",       unfurnished:"غير مفروش",    residents:"ساكن",         maxBudget:"الحد الأقصى", age:"سنة", working:"موظف", student:"طالب", privateRoom:"غرفة خاصة مطلوبة" },
-  de: { furnished:"Möbliert",    unfurnished:"Unmöbliert",   residents:"Bewohner",     maxBudget:"Max", age:"J.",   working:"Berufstätig", student:"Student/in", privateRoom:"Eigenes Zimmer nötig" },
-  ru: { furnished:"Меблированная", unfurnished:"Без мебели", residents:"жильцов",      maxBudget:"Макс", age:"лет", working:"Работающий", student:"Студент",  privateRoom:"Нужна отд. комната" },
+  tr: { furnished:"Eşyalı",      unfurnished:"Eşyasız",      residents:"kişi var",     rooms:"oda",   maxBudget:"Max", age:"yaş",  working:"Çalışıyor", student:"Öğrenci",   privateRoom:"Özel oda şart" },
+  en: { furnished:"Furnished",   unfurnished:"Unfurnished",  residents:"residents",    rooms:"rooms", maxBudget:"Max", age:"yrs",  working:"Working",   student:"Student",   privateRoom:"Private room required" },
+  fa: { furnished:"مبله",        unfurnished:"بدون مبل",     residents:"نفر ساکن",     rooms:"اتاق",  maxBudget:"حداکثر", age:"سال", working:"شاغل",  student:"دانشجو",    privateRoom:"اتاق خصوصی لازم" },
+  ar: { furnished:"مفروش",       unfurnished:"غير مفروش",    residents:"ساكن",         rooms:"غرف",   maxBudget:"الحد الأقصى", age:"سنة", working:"موظف", student:"طالب", privateRoom:"غرفة خاصة مطلوبة" },
+  de: { furnished:"Möbliert",    unfurnished:"Unmöbliert",   residents:"Bewohner",     rooms:"Zi.",   maxBudget:"Max", age:"J.",   working:"Berufstätig", student:"Student/in", privateRoom:"Eigenes Zimmer nötig" },
+  ru: { furnished:"Меблированная", unfurnished:"Без мебели", residents:"жильцов",      rooms:"комн.", maxBudget:"Макс", age:"лет", working:"Работающий", student:"Студент",  privateRoom:"Нужна отд. комната" },
 };
+
+// Localized country name for the overlay's "city, country" line. Prefers the stored
+// country_code, falls back to the free-text `country` column, then to the code map
+// derived from the city — mirroring what filterByCountry already trusts.
+function countryLabel(listing: { country_code?: string | null; country?: string | null; city?: string | null; district?: string | null }, lang: Lang): string | null {
+  const code = listing.country_code?.toUpperCase()
+    ?? (listing.country ? countryNameToCode[listing.country.toLowerCase()] : undefined)
+    ?? detectCountry(listing.city || "", listing.district || "").country
+    ?? undefined;
+  if (!code) return listing.country ?? null;
+  const entry = countries.find((c) => c.code === code);
+  return entry ? (entry.name[lang] ?? entry.name.tr) : (listing.country ?? code);
+}
 
 const cityFilterUI: Record<Lang, { label: string; clear: string; backToAll: string }> = {
   tr: { label: "ilanları gösteriliyor", clear: "✕ Temizle",    backToAll: "← Tüm İlanlara Dön" },
@@ -405,14 +440,9 @@ const langPriorityCountry: Record<string, string> = {
   en: 'US',
 };
 
-const langPriorityCountries: Record<string, string[]> = {
-  en: ['US', 'GB', 'CA'],
-  fa: ['IR', 'AF'],
-  ru: ['RU'],
-  de: ['DE', 'NO'],
-  ar: ['AE', 'SA', 'QA', 'EG'],
-  tr: ['TR'],
-};
+// (The old per-language priority map lived here. Chip order is now one fixed
+// business order for every locale — MAIN_MARKET_ORDER — with the tail sorted
+// alphabetically in the reader's language.)
 
 interface LatestListingsProps {
   lang: string;
@@ -517,14 +547,24 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
   }, [allListings, sonIlanlarCategory, filterCity, selectedCountry]);
 
   const lbl = cardLabels[lang as Lang] ?? cardLabels.tr;
+  const ui = sectionUI[lang as Lang] ?? sectionUI.tr;
 
-  const priorityCodes = langPriorityCountries[lang] ?? [];
-  const allEntry = countries.find((c) => c.code === 'all')!;
-  const priorityEntries = priorityCodes
-    .map((code) => countries.find((c) => c.code === code))
-    .filter((c): c is typeof countries[number] => c !== undefined);
-  const restEntries = countries.filter((c) => c.code !== 'all' && !priorityCodes.includes(c.code));
-  const orderedCountries = [allEntry, ...priorityEntries, ...restEntries];
+  // "All" first, then the main markets in their fixed business order, then the
+  // remainder A→Z in the reader's own language.
+  const orderedCountries = useMemo(() => {
+    const allEntry = countries.find((c) => c.code === "all")!;
+    const mainEntries = MAIN_MARKET_ORDER
+      .map((code) => countries.find((c) => c.code === code))
+      .filter((c): c is typeof countries[number] => c !== undefined);
+    const restEntries = countries
+      .filter((c) => c.code !== "all" && !MAIN_MARKET_ORDER.includes(c.code as typeof MAIN_MARKET_ORDER[number]))
+      .sort((a, b) => {
+        const an = a.name[lang as Lang] ?? a.name.tr;
+        const bn = b.name[lang as Lang] ?? b.name.tr;
+        return an.localeCompare(bn, lang);
+      });
+    return [allEntry, ...mainEntries, ...restEntries];
+  }, [lang]);
 
   const isRTL = lang === "ar" || lang === "fa";
   const hero = heroText[lang as Lang] ?? heroText.tr;
@@ -703,37 +743,78 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
         </>
       )}
 
-      {/* Country selector */}
-      <div className="mb-6">
-        {/* Horizontal scroller on touch; at lg the row wraps instead of running off
-            the right edge with no affordance. */}
-        <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 pb-2 lg:mx-0 lg:overflow-visible lg:px-0">
-          <div className="flex gap-2 w-max lg:w-full lg:flex-wrap lg:gap-2.5">
-            {orderedCountries.map((country) => (
-              <button
-                key={country.code}
-                onClick={() => setSelectedCountry(country.code)}
-                className={`rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200 whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
-                  selectedCountry === country.code
-                    ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md scale-105"
-                    : "bg-white border border-stone-200 text-stone-700 hover:border-orange-300 hover:text-orange-500"
-                }`}
-              >
-                <span>{country.flag}</span>
-                <span>{country.name[lang as Lang] ?? country.name.tr}</span>
-              </button>
-            ))}
+      {/* ── Country selector ──────────────────────────────────────────────────
+          ONE horizontally scrolling row at every width — a wall of wrapped chips
+          made a 40-country list dominate the section. `dir` is set explicitly so
+          the scroller starts at the right in FA/AR even if this component is ever
+          mounted outside the RTL page shell, and the edge fades swap sides with it.
+          The fades are `hidden lg:block`: on touch the row's own momentum is the
+          affordance, and a fade over the first chip would only dim it. */}
+      <div className="mb-6" dir={isRTL ? "rtl" : "ltr"}>
+        <div className="relative">
+          <div className="flex snap-x snap-mandatory gap-2 overflow-x-auto scrollbar-hide -mx-5 px-5 pb-2 lg:mx-0 lg:px-0">
+            {orderedCountries.map((country) => {
+              const isActive = selectedCountry === country.code;
+              return (
+                <button
+                  key={country.code}
+                  onClick={() => setSelectedCountry(country.code)}
+                  aria-pressed={isActive}
+                  className={`flex shrink-0 snap-start cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 ${
+                    isActive
+                      ? "bg-orange-500 text-white shadow-md shadow-orange-500/25"
+                      : "border border-gray-200 bg-white text-gray-600 hover:border-orange-300 hover:text-orange-500 hover:scale-[1.03]"
+                  }`}
+                >
+                  {/* Real flag emoji. Renders as a flag on Android/iOS; Windows ships
+                      no flag glyph and falls back to the pair's letters (see
+                      LangFlag.tsx for the same platform gap). */}
+                  <span className="text-base leading-none">{country.flag}</span>
+                  <span>{country.name[lang as Lang] ?? country.name.tr}</span>
+                </button>
+              );
+            })}
           </div>
+
+          <div
+            aria-hidden="true"
+            className={`pointer-events-none absolute inset-y-0 start-0 hidden w-10 lg:block ${
+              isRTL ? "bg-gradient-to-l" : "bg-gradient-to-r"
+            } from-stone-50 to-stone-50/0`}
+          />
+          <div
+            aria-hidden="true"
+            className={`pointer-events-none absolute inset-y-0 end-0 hidden w-10 lg:block ${
+              isRTL ? "bg-gradient-to-r" : "bg-gradient-to-l"
+            } from-stone-50 to-stone-50/0`}
+          />
         </div>
+
         {selectedCountry !== 'all' && (
-          <p className="text-xs text-stone-400 mt-1">{listings.length} ilan</p>
+          <p className="text-xs text-stone-400 mt-1">
+            {listings.length} {ui.count}
+          </p>
         )}
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-3 gap-3 lg:gap-5">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="animate-pulse bg-gray-200 rounded-2xl h-48" />
+        /* Skeletons mirror the real card — 4:3 image block, two text lines, a price
+           line — so the grid does not reflow when the data lands. The third is
+           `hidden sm:block`: two columns on a phone means a third pulsing card would
+           start a lonely second row. */
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-5" aria-hidden="true">
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className={`overflow-hidden rounded-2xl bg-white shadow-md ${i === 2 ? "hidden lg:block" : ""}`}
+            >
+              <div className="aspect-[4/3] animate-pulse rounded-xl bg-gray-200" />
+              <div className="p-4">
+                <div className="h-3.5 w-3/4 animate-pulse rounded bg-gray-200" />
+                <div className="mt-2 h-3 w-1/2 animate-pulse rounded bg-gray-200" />
+                <div className="mt-3 h-3.5 w-1/3 animate-pulse rounded bg-gray-200" />
+              </div>
+            </div>
           ))}
         </div>
       ) : listings.length === 0 ? (
@@ -746,17 +827,27 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
             </button>
           </div>
         ) : (
-          <p className="text-center text-gray-400 py-8">
-            {lang === "tr" ? "Bu ülkede ilan yok" :
-             lang === "fa" ? "آگهی‌ای در این کشور وجود ندارد" :
-             lang === "ar" ? "لا توجد إعلانات في هذا البلد" :
-             lang === "de" ? "Keine Anzeigen in diesem Land" :
-             lang === "ru" ? "Нет объявлений в этой стране" :
-             "No listings in this country"}
-          </p>
+          /* A dead end became an invitation: the country filter's empty result now
+             offers the one action that fixes it. */
+          <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
+            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-orange-50 ring-1 ring-orange-100">
+              <PackageOpen className="h-7 w-7 text-orange-500" aria-hidden="true" />
+            </span>
+            <p className="mt-4 max-w-xs text-base font-semibold text-stone-700">
+              {ui.emptyTitle}
+            </p>
+            <button
+              onClick={() => router.push("/create-listing")}
+              className="mt-5 cursor-pointer rounded-full bg-orange-500 px-6 py-3 text-sm font-bold text-white shadow-md shadow-orange-500/25 transition-all duration-200 hover:bg-orange-600 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
+            >
+              {ui.emptyCta}
+            </button>
+          </div>
         )
       ) : (
-        <div className="grid grid-cols-3 gap-3 lg:gap-5">
+        /* 2-up on phones, 3-up from lg. The fixed 3-up left ~110px-wide cards on a
+           390px screen, which the new photo overlay could not be read in. */
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-5">
           {listings.map((listing) => (
             <div
               key={listing.id}
@@ -765,9 +856,14 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
               sessionStorage.setItem('homeScrollPosition', window.scrollY.toString());
               router.push(`/listings/${listing.id}`);
             }}
-              className="rounded-2xl overflow-hidden shadow-md bg-white hover:shadow-xl transition-shadow cursor-pointer"
+              className="group rounded-2xl overflow-hidden shadow-md bg-white hover:shadow-xl transition-shadow cursor-pointer"
             >
-              <div className="aspect-video bg-gray-100 relative">
+              {/* aspect-[4/3] at every width so a photo card, an avatar card and the
+                  illustrated fallback are all exactly the same shape — the grid used to
+                  ripple because `aspect-video` framed 4:3 photos differently from the
+                  square-ish avatars. overflow-hidden + rounded-xl on the frame is what
+                  clips the image's hover zoom; only the image scales. */}
+              <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-gray-100">
                 {listing.photos?.[0] ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -775,7 +871,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                     alt={listing.city}
                     loading="lazy"
                     decoding="async"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : getListingSide(listing) === "needs_place" ? (
                   // Seeker: prefer the seeker's avatar filling the slot; fall back to
@@ -808,13 +904,48 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                   const label = isCommercial
                     ? getCommercialBadgeLabel(side, lang as Lang)
                     : listingTypeTrans[side]?.[lang] || listingTypeTrans[side]?.["tr"];
-                  const colorClass = isCommercial
-                    ? COMMERCIAL_BADGE_CLASS[side]
-                    : side === "has_place" ? "bg-emerald-500" : "bg-blue-500";
                   return (
-                    <span className={`absolute top-2 start-2 text-white text-xs px-2 py-1 rounded-full font-medium ${colorClass}`}>
+                    <span className={`absolute top-2 start-2 z-10 rounded-full px-2 py-1 text-[11px] font-semibold text-white ${getBadgeClass(side, isCommercial)}`}>
                       {label}
                     </span>
+                  );
+                })()}
+
+                {/* ── Info overlay ───────────────────────────────────────────
+                    Sits on the photo so the card leads with what/where/how much
+                    before any of the detail rows below. The listings table has no
+                    title column (nothing in any select across the app returns one),
+                    so the headline is composed from the fields that do exist —
+                    house_type/rooms for a place, the localized "looking for" line
+                    for a seeker — and falls back to the city. `rent` is read as-is.
+                    Logical inset (start/end) so FA/AR mirror. */}
+                {(() => {
+                  const side = getListingSide(listing);
+                  const isSeeker = side === "needs_place";
+                  const roomsPart = listing.rooms ? `${listing.rooms} ${lbl.rooms}` : null;
+                  const title = isSeeker
+                    ? (listing.listing_category === "commercial" ? ui.lookingForSpace : ui.lookingForHome)
+                    : [listing.house_type, roomsPart].filter(Boolean).join(" · ") || listing.city;
+                  const place = [listing.city, countryLabel(listing, lang as Lang)].filter(Boolean).join(", ");
+                  const amount = isSeeker ? listing.max_budget : listing.rent;
+                  return (
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/60 via-black/25 to-transparent px-3 pb-2.5 pt-8">
+                      <p className="truncate text-sm font-semibold text-white drop-shadow-sm">{title}</p>
+                      <div className="mt-0.5 flex items-center justify-between gap-2">
+                        {place && (
+                          <span className="flex min-w-0 items-center gap-1 text-[11px] text-white/90">
+                            <MapPin className="h-3 w-3 shrink-0" aria-hidden="true" />
+                            <span className="truncate">{place}</span>
+                          </span>
+                        )}
+                        {amount && listing.currency && (
+                          <span className="shrink-0 text-xs font-bold text-white drop-shadow-sm">
+                            {amount} {listing.currency}
+                            <span className="font-medium text-white/80">{ui.perMonth}</span>
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   );
                 })()}
               </div>
@@ -861,14 +992,14 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                   <>
                     {listing.rent && listing.currency && (
                       <p className="text-orange-500 font-bold text-sm mt-1">
-                        {listing.rent} {listing.currency}/ay
+                        {listing.rent} {listing.currency}{ui.perMonth}
                       </p>
                     )}
                     {(listing.house_type || listing.rooms || listing.furnished != null || listing.elevator) && (
                       <p className="text-gray-500 text-xs mt-1">
                         {[
                           listing.house_type,
-                          listing.rooms ? `${listing.rooms} oda` : null,
+                          listing.rooms ? `${listing.rooms} ${lbl.rooms}` : null,
                           listing.furnished === true ? lbl.furnished : listing.furnished === false ? lbl.unfurnished : null,
                           listing.elevator ? "🛗" : null,
                         ].filter(Boolean).join(" • ")}
@@ -878,14 +1009,14 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                       <p className="text-gray-400 text-xs mt-1">👥 {listing.current_residents} {lbl.residents}</p>
                     )}
                     {listing.smoking === false && (
-                      <p className="text-gray-400 text-xs mt-1">🚭 Sigara İçilmez</p>
+                      <p className="text-gray-400 text-xs mt-1">🚭 {ui.noSmoking}</p>
                     )}
                   </>
                 ) : (
                   <>
                     {listing.max_budget && listing.currency && (
                       <p className="text-orange-500 font-bold text-sm mt-1">
-                        {lbl.maxBudget}: {listing.max_budget} {listing.currency}/ay
+                        {lbl.maxBudget}: {listing.max_budget} {listing.currency}{ui.perMonth}
                       </p>
                     )}
                     <div className="flex flex-wrap items-center gap-1.5 mt-1">
@@ -908,7 +1039,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
                       <p className="text-gray-500 text-xs mt-1">🚪 {lbl.privateRoom}</p>
                     )}
                     {listing.smoking === false && (
-                      <p className="text-gray-400 text-xs mt-1">🚭 Sigara İçilmez</p>
+                      <p className="text-gray-400 text-xs mt-1">🚭 {ui.noSmoking}</p>
                     )}
                     {listing.about_text && (
                       <p className="text-gray-400 text-xs mt-1 italic">

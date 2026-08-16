@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 import { useLang } from "@/app/lib/LangContext";
-import { getListingSide, getCommercialBadgeLabel, COMMERCIAL_BADGE_CLASS } from "@/app/lib/listingBadge";
+import { getListingSide, getCommercialBadgeLabel, getBadgeClass } from "@/app/lib/listingBadge";
 import AvatarImage from "@/app/components/AvatarImage";
 
 type Lang = "tr" | "en" | "fa" | "ar" | "de" | "ru";
@@ -256,9 +256,7 @@ export default function SavedPage() {
                       const label = isCommercial
                         ? getCommercialBadgeLabel(side, lang as "tr" | "en" | "fa" | "ar" | "de" | "ru")
                         : listingTypeTrans[side]?.[lang] || side;
-                      const colorClass = isCommercial
-                        ? COMMERCIAL_BADGE_CLASS[side]
-                        : side === "has_place" ? "bg-emerald-500" : "bg-blue-500";
+                      const colorClass = getBadgeClass(side, isCommercial);
                       return (
                         <span className={`absolute top-2 start-2 text-white text-xs px-2 py-1 rounded-full font-medium ${colorClass}`}>
                           {label}

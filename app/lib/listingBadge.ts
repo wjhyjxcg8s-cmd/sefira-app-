@@ -29,13 +29,29 @@ export const COMMERCIAL_BADGE_LABELS: Record<ListingSide, Record<Lang, string>> 
   needs_place: { tr: "Alan Arıyor", en: "Looking for Space", fa: "جویای فضا", ar: "يبحث عن مساحة", de: "Sucht Fläche", ru: "Ищет помещение" },
 };
 
-// White-text pill classes for the commercial badge — a distinct gradient family (green
-// family for owner, blue/indigo for seeker) so commercial reads differently from the
-// residential solid-color badge at a glance, while sharing the same pill shape.
+// White-text pill classes. Both the commercial and the residential badge now sit on
+// the brand pair — orange #f97316 for the side that HAS the space, deep slate for the
+// side that WANTS one — instead of the old emerald/blue gradients, which read as a
+// second, unrelated palette on top of every card photo. The /90 alpha plus
+// `backdrop-blur-sm` is what keeps the label legible over a bright photo without an
+// opaque block. Commercial and residential share the pair; the wording is what
+// distinguishes them ("Alan Sahibi" vs "Ev Sahibi").
 export const COMMERCIAL_BADGE_CLASS: Record<ListingSide, string> = {
-  has_place: "bg-gradient-to-r from-emerald-500 to-teal-600",
-  needs_place: "bg-gradient-to-r from-blue-500 to-indigo-600",
+  has_place: "bg-orange-500/90 backdrop-blur-sm",
+  needs_place: "bg-slate-800/85 backdrop-blur-sm",
 };
+
+// Residential equivalent — previously duplicated inline as `bg-emerald-500` /
+// `bg-blue-500` in five different card renderers.
+export const RESIDENTIAL_BADGE_CLASS: Record<ListingSide, string> = {
+  has_place: "bg-orange-500/90 backdrop-blur-sm",
+  needs_place: "bg-slate-800/85 backdrop-blur-sm",
+};
+
+/** Badge classes for either category, so no card has to branch on colour itself. */
+export function getBadgeClass(side: ListingSide, isCommercial: boolean): string {
+  return isCommercial ? COMMERCIAL_BADGE_CLASS[side] : RESIDENTIAL_BADGE_CLASS[side];
+}
 
 export function getCommercialBadgeLabel(side: ListingSide, lang: Lang): string {
   return COMMERCIAL_BADGE_LABELS[side][lang] ?? COMMERCIAL_BADGE_LABELS[side].tr;

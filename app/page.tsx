@@ -9,7 +9,7 @@ import dynamic from "next/dynamic";
 import { Search, MapPin, LayoutGrid, SlidersHorizontal } from "lucide-react";
 import type { SheetMode } from "@/app/components/SearchSheet";
 import SearchHereBanner from "@/app/components/SearchHereBanner";
-import { getListingSide, getCommercialBadgeLabel, type Lang as BadgeLang } from "@/app/lib/listingBadge";
+import { getListingSide, getCommercialBadgeLabel, getBadgeClass, type Lang as BadgeLang } from "@/app/lib/listingBadge";
 import {
   TOP_COUNTRY_CODES,
   getOrderedCountryCodes,
@@ -3135,7 +3135,7 @@ export default function Home() {
                           {flagEmoji} {rec.city}
                         </span>
                         {side && (
-                          <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full text-white flex-shrink-0 ${isHasPlace ? "bg-emerald-500" : "bg-blue-500"}`}>
+                          <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full text-white flex-shrink-0 ${getBadgeClass(side, rec.listing_category === "commercial")}`}>
                             {rec.listing_category === "commercial"
                               ? getCommercialBadgeLabel(side, lang as BadgeLang)
                               : listingTypeTrans[side]?.[lang] ?? listingTypeTrans[side]?.tr}

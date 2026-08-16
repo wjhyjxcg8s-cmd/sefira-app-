@@ -27,7 +27,7 @@ import {
   loadCitiesOfState,
   type StateOption,
 } from "@/app/lib/locationData";
-import { getListingSide, getCommercialBadgeLabel, COMMERCIAL_BADGE_CLASS } from "@/app/lib/listingBadge";
+import { getListingSide, getCommercialBadgeLabel, getBadgeClass } from "@/app/lib/listingBadge";
 import { COMMERCIAL_TYPES, COMMERCIAL_TYPE_BY_SLUG } from "@/app/lib/commercialTypes";
 
 type Lang = "tr" | "en" | "fa" | "ar" | "de" | "ru";
@@ -240,7 +240,7 @@ function ListingCard({
         )}
         {side && (() => {
           const label = isCommercial ? getCommercialBadgeLabel(side, lang) : listingTypeTrans[side][lang];
-          const colorClass = isCommercial ? COMMERCIAL_BADGE_CLASS[side] : isHasPlace ? "bg-emerald-500" : "bg-blue-500";
+          const colorClass = getBadgeClass(side, isCommercial);
           return (
             <span className={`absolute top-2 start-2 text-white text-xs px-2 py-1 rounded-full font-medium ${colorClass}`}>
               {isHasPlace ? "🏠" : "🔍"} {label}
