@@ -155,13 +155,25 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           >
-            <div className="relative w-full h-[38vh] max-h-64 min-h-[170px] shrink-0">
+            {/* welcome-popup-art.webp is welcome-popup-bg.webp cropped to the
+                illustration itself (the source parks the scene in its right 59%,
+                starting 127px down). The old treatment filled this band with
+                `object-cover` from the uncropped source, and at the band's ~1.75
+                ratio that crop ate ~140px off the top of the source — straight
+                through the blue building pin. `object-contain` on the cropped art
+                can't clip at any band height, and the flanking space is the same
+                white as the card, so it reads as padding rather than letterboxing. */}
+            <div className="relative flex w-full h-[38vh] max-h-72 min-h-[180px] shrink-0 items-center justify-center bg-white px-6 pt-5 pb-1">
               <Image
-                src="/welcome-popup-bg.webp"
+                src="/welcome-popup-art.webp"
                 alt=""
-                fill
+                width={760}
+                height={869}
                 priority
-                className="object-cover object-[70%_35%]"
+                // The crop keeps the asset's own pale backdrop, which is a shade off
+                // the card's white; rounding the art box makes that edge read as an
+                // inset tile rather than an untrimmed rectangle.
+                className="h-full w-auto rounded-2xl object-contain"
               />
 
               <button
@@ -171,8 +183,6 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
               >
                 <X className="h-4 w-4 text-slate-700" />
               </button>
-
-              <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
             </div>
 
             <div className="relative min-h-0 flex-1 overflow-y-auto bg-white px-6 pb-7 pt-2 text-center">
