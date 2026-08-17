@@ -199,12 +199,28 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
                 object-cover was ruled out by arithmetic, not taste: at these band ratios it
                 has to drop 23-33% of the artwork's height, which loses either the top pin
                 (tip at y=0) or the house.
-                From lg the capped band returns — a full-bleed band there would be far too
-                tall and would push the card past the cap on a 1280x600 window. There the
-                art is height-fitted, so this crop renders the scene at exactly the size v6
-                did, just inside a narrower frame.
-                object-contain throughout, so nothing can clip at any size. */}
-            <div className="relative flex aspect-[955/818] w-full shrink-0 items-center justify-center overflow-hidden bg-white lg:aspect-auto lg:h-[38vh] lg:max-h-64 lg:min-h-[170px] lg:px-6 lg:pt-5 lg:pb-2">
+                DESKTOP now runs the same treatment, which is why the base classes carry no
+                lg: override any more: the card is max-w-md, so a full-bleed band is 446px
+                wide and 382px tall at this ratio, and the art is 955px native — it upscales
+                to nothing. Card = 382 + 258 text + 2 borders = 642px, which clears 92dvh
+                from a 720px-tall window upwards (662 at 1280x720, 20px spare; 94px spare at
+                1280x800). Previously the band was height-fitted and padded, so the drawing
+                sat at 266px wide inside 446px of white with its own edges showing — small
+                and framed next to the mobile composition.
+                The framed band survives only where full bleed cannot fit: BELOW 720px of
+                viewport height on a desktop-width window, hence the stacked
+                lg:[@media(max-height:719px)] variant rather than a plain lg:. 1280x600 has
+                a 552px budget (92dvh) against a 642px full-bleed card — 90px short, and
+                cover cannot make up the difference because at 446x292 it would crop 24% of
+                the artwork's height and take the top pin with it. So that window keeps the
+                contained band, resized to the budget it actually has: 245px rather than the
+                old 228, leaving 47px spare — one wrapped headline line of slack, kept
+                deliberately rather than spent, since 292px is what the invariant alone
+                would allow.
+                object-contain throughout, so nothing can clip at any size; at full bleed the
+                band takes the art's own ratio, so contain fills it exactly and no flank or
+                art edge is ever drawn. */}
+            <div className="relative flex aspect-[955/818] w-full shrink-0 items-center justify-center overflow-hidden bg-white lg:[@media(max-height:719px)]:aspect-auto lg:[@media(max-height:719px)]:h-[41vh] lg:[@media(max-height:719px)]:max-h-[245px] lg:[@media(max-height:719px)]:min-h-[170px] lg:[@media(max-height:719px)]:px-6 lg:[@media(max-height:719px)]:pt-5 lg:[@media(max-height:719px)]:pb-2">
               <Image
                 src="/welcome-popup-art-v7.webp"
                 alt=""
