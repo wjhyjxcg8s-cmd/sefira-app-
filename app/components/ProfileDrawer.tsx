@@ -85,11 +85,35 @@ export default function ProfileDrawer() {
   const [unreadSupportCount, setUnreadSupportCount] = useState(0);
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   const isRtl = lang === "fa" || lang === "ar";
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  // Which EDGE the panel is pinned to. Below lg it follows the text direction, as it
+  // always has: RTL opens from the left, LTR from the right. From lg up it is always
+  // the left edge, in all six languages — the owner's call. `isRtl` still drives every
+  // `dir` below, so FA/AR content stays right-to-left inside a left-pinned panel.
+  //
+  // This is a matchMedia read rather than an `lg:` class because the slide is an inline
+  // transform, and an inline style cannot be overridden by a stylesheet — the anchor and
+  // the direction it slides from have to come from ONE source or they can disagree and
+  // the panel slides in from the wrong side. It is hydration-safe: the component already
+  // returns null until `mounted`, so this never renders on the server.
+  const leftAnchored = isDesktop || isRtl;
   const menuScrollRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // lg = 64rem, the same breakpoint Tailwind's `lg:` uses elsewhere in this codebase.
+  // Tracked live so dragging a window across it re-pins the panel instead of stranding
+  // it on the edge it opened from.
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 64rem)");
+    const sync = () => setIsDesktop(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
   }, []);
 
   useEffect(() => {
@@ -152,12 +176,12 @@ export default function ProfileDrawer() {
       <div
         dir={isRtl ? "rtl" : "ltr"}
         className={
-          isRtl
+          leftAnchored
             ? "fixed inset-y-0 left-0 h-dvh z-[10001] w-[72%] max-w-[300px] flex flex-col shadow-2xl rounded-r-3xl overflow-hidden bg-white"
             : "fixed inset-y-0 right-0 h-dvh z-[10001] w-[72%] max-w-[300px] flex flex-col shadow-2xl rounded-l-3xl overflow-hidden bg-white"
         }
         style={{
-          transform: isOpen ? "translateX(0)" : isRtl ? "translateX(-100%)" : "translateX(100%)",
+          transform: isOpen ? "translateX(0)" : leftAnchored ? "translateX(-100%)" : "translateX(100%)",
           transition: "transform 0.3s ease",
         }}
       >
@@ -179,7 +203,7 @@ export default function ProfileDrawer() {
             onClick={close}
             aria-label="Close"
             className={
-              isRtl
+              leftAnchored
                 ? "absolute top-[max(0.75rem,env(safe-area-inset-top))] left-3 w-8 h-8 rounded-full bg-black/30 text-white flex items-center justify-center z-10"
                 : "absolute top-[max(0.75rem,env(safe-area-inset-top))] right-3 w-8 h-8 rounded-full bg-black/30 text-white flex items-center justify-center z-10"
             }
