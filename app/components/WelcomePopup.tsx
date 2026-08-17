@@ -161,7 +161,19 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
             // scrolled by a hair. 92dvh = 589 there, and the backdrop's own p-4 still
             // keeps the card off the viewport edges. The scrollable body remains the
             // last-resort backstop; with the band capped below, it should never engage.
-            className="relative flex w-[92vw] max-w-md max-h-[92dvh] flex-col rounded-3xl overflow-hidden shadow-2xl border border-white/60 bg-white"
+            //
+            // The clamp is what keeps a 768p laptop on the full-bleed treatment. A
+            // full-bleed band is cardWidth/1.167 tall, so the ONLY way to shorten it
+            // without reframing the art is to narrow the card. Solving
+            // band + text + borders <= 92dvh for the width gives
+            // width = (0.92*100dvh - text - borders) * 1.167, and 249px is that constant:
+            // 235px of compressed text (the tallest of the six languages at these widths,
+            // measured) + 2px of border + 12px held back as margin. Clamped below at 356
+            // because at 355 and under the Russian headline takes a second line and the
+            // text zone jumps 235 -> 272, which costs more height than the narrower card
+            // saves; clamped above at 448 so it never exceeds max-w-md. Only 600..719px
+            // tall desktop windows get it — see the band for what happens either side.
+            className="relative flex w-[92vw] max-w-md max-h-[92dvh] flex-col rounded-3xl overflow-hidden shadow-2xl border border-white/60 bg-white lg:[@media(max-height:719px)_and_(min-height:600px)]:max-w-[clamp(356px,(0.92*100dvh-249px)*1.167,448px)]"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
@@ -199,28 +211,32 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
                 object-cover was ruled out by arithmetic, not taste: at these band ratios it
                 has to drop 23-33% of the artwork's height, which loses either the top pin
                 (tip at y=0) or the house.
-                DESKTOP now runs the same treatment, which is why the base classes carry no
-                lg: override any more: the card is max-w-md, so a full-bleed band is 446px
-                wide and 382px tall at this ratio, and the art is 955px native — it upscales
-                to nothing. Card = 382 + 258 text + 2 borders = 642px, which clears 92dvh
-                from a 720px-tall window upwards (662 at 1280x720, 20px spare; 94px spare at
-                1280x800). Previously the band was height-fitted and padded, so the drawing
-                sat at 266px wide inside 446px of white with its own edges showing — small
-                and framed next to the mobile composition.
-                The framed band survives only where full bleed cannot fit: BELOW 720px of
-                viewport height on a desktop-width window, hence the stacked
-                lg:[@media(max-height:719px)] variant rather than a plain lg:. 1280x600 has
-                a 552px budget (92dvh) against a 642px full-bleed card — 90px short, and
-                cover cannot make up the difference because at 446x292 it would crop 24% of
-                the artwork's height and take the top pin with it. So that window keeps the
-                contained band, resized to the budget it actually has: 245px rather than the
-                old 228, leaving 47px spare — one wrapped headline line of slack, kept
-                deliberately rather than spent, since 292px is what the invariant alone
-                would allow.
+                DESKTOP runs the same treatment, which is why the base classes carry no lg:
+                override for it: at max-w-md a full-bleed band is 446x382 and the art is
+                955px native, so it upscales to nothing. Card = 382 + 258 text + 2 borders =
+                642px, which clears 92dvh from a 720px-tall window upwards (20px spare at
+                1280x720, 94px at 1280x800). Before this, the band was height-fitted and
+                padded, so the drawing sat at 266px wide inside 446px of white with its own
+                edges showing — small and framed next to the mobile composition.
+                A 768px laptop reports ~630px of viewport once browser chrome and the
+                taskbar are taken out, so "short desktop" is the COMMON case, not the edge:
+                it must get the full-bleed composition too. It does, by narrowing the card
+                (the clamp on the card above) and compressing the text stack (the lg:
+                overrides below) rather than by reframing the art. At 1366x630 that lands a
+                376px card with a 321px full-bleed band and 14px of slack; at 1280x600, a
+                356px card, a 303px band and 12px. Narrower and shorter than the desktop
+                default, identical composition — no flanks, no frame, all five pins.
+                The contained band survives only where even a 356px card cannot hold a
+                full-bleed one: below 600px of viewport height. That floor is arithmetic,
+                not preference — 356 is the narrowest card the Russian headline stays on one
+                line in, its full-bleed card is 540px tall, and 92dvh drops under that at
+                587px. cover cannot rescue the shorter windows either: it would crop 24% of
+                the artwork's height and take the top pin with it. So under 600px the band
+                goes back to height-fitted and padded, at the 245px the budget allows.
                 object-contain throughout, so nothing can clip at any size; at full bleed the
                 band takes the art's own ratio, so contain fills it exactly and no flank or
                 art edge is ever drawn. */}
-            <div className="relative flex aspect-[955/818] w-full shrink-0 items-center justify-center overflow-hidden bg-white lg:[@media(max-height:719px)]:aspect-auto lg:[@media(max-height:719px)]:h-[41vh] lg:[@media(max-height:719px)]:max-h-[245px] lg:[@media(max-height:719px)]:min-h-[170px] lg:[@media(max-height:719px)]:px-6 lg:[@media(max-height:719px)]:pt-5 lg:[@media(max-height:719px)]:pb-2">
+            <div className="relative flex aspect-[955/818] w-full shrink-0 items-center justify-center overflow-hidden bg-white lg:[@media(max-height:599px)]:aspect-auto lg:[@media(max-height:599px)]:h-[41vh] lg:[@media(max-height:599px)]:max-h-[245px] lg:[@media(max-height:599px)]:min-h-[170px] lg:[@media(max-height:599px)]:px-6 lg:[@media(max-height:599px)]:pt-5 lg:[@media(max-height:599px)]:pb-2">
               <Image
                 src="/welcome-popup-art-v7.webp"
                 alt=""
@@ -248,8 +264,15 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
                 inside the band (its bottom 80px), so it cannot reach across this padding —
                 the earlier overlap was the text zone SCROLLING, not the fade, and the
                 capped band above is what removes the need to scroll at all. */}
-            <div className="relative min-h-0 flex-1 overflow-y-auto bg-white px-6 pb-7 pt-4 text-center">
-              <h2 className="text-4xl font-extrabold leading-tight">
+            {/* The lg:[@media(max-height:719px)] overrides are the other half of keeping a
+                768p laptop full-bleed: every pixel taken out of this stack is a pixel the
+                band can spend, and at this ratio each one buys 1.167px of card width. The
+                four of them take the zone from 258px to 210px (235px in Russian and German,
+                which wrap), which is what lets the clamp above reach 356-448px instead of
+                bottoming out. They apply to short desktop windows only — mobile and desktop
+                from 720px up keep the stack exactly as it was. */}
+            <div className="relative min-h-0 flex-1 overflow-y-auto bg-white px-6 pb-7 pt-4 text-center lg:[@media(max-height:719px)]:pb-4 lg:[@media(max-height:719px)]:pt-3">
+              <h2 className="text-4xl font-extrabold leading-tight lg:[@media(max-height:719px)]:text-3xl">
                 {t.titleDark && (
                   <>
                     <span className="text-slate-800">{t.titleDark}</span>{' '}
@@ -260,7 +283,7 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
                 </span>
               </h2>
 
-              <div className="flex items-center justify-center gap-2 my-3">
+              <div className="flex items-center justify-center gap-2 my-3 lg:[@media(max-height:719px)]:my-2">
                 <span className="h-px w-10 bg-gradient-to-r from-transparent to-orange-400" />
                 <span className="text-pink-500 text-base">♥</span>
                 <span className="h-px w-10 bg-gradient-to-l from-transparent to-purple-500" />
@@ -274,7 +297,7 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
 
               <button
                 onClick={handleConfirm}
-                className="mt-5 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-orange-500 to-purple-600 px-8 py-3.5 text-base font-bold text-white shadow-lg shadow-pink-500/40 active:scale-95 transition"
+                className="mt-5 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-orange-500 to-purple-600 px-8 py-3.5 text-base font-bold text-white shadow-lg shadow-pink-500/40 active:scale-95 transition lg:[@media(max-height:719px)]:mt-3 lg:[@media(max-height:719px)]:py-2.5"
               >
                 {isRTL ? (
                   <>
