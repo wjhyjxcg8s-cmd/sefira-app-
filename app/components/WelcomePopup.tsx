@@ -169,10 +169,9 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
           >
             {/* Image zone — the owner's original split-zone proportions kept exactly
                 (h-[38vh] / max-h-64 / min-h-[170px]), with the placement discipline
-                carried forward. welcome-popup-art-v4.webp is the owner's violet
-                source cropped to its measured ink box by
-                scripts/crop-welcome-violet-art.mjs — no retint, no colour change —
-                and drawn with object-contain, which cannot clip at any band height.
+                carried forward. The asset is the owner's violet source (see the
+                crop named below) — crop only, no retint, no colour change — and
+                drawn with object-contain, which cannot clip at any band height.
                 The original object-cover with object-[70%_35%] on the untrimmed
                 source is what cut the blue building pin off the top and put the
                 empty dot-grid corner on screen on a phone. Padding gives the pins
@@ -181,23 +180,35 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
                 drawing spans the card edge to edge — no white flanks, and therefore no
                 straight edge for the art's lavender/peach wash to meet. That part of the
                 previous fix stays.
-                What changed: the asset is now the LANDSCAPE crop (1104x818 = 1.350:1,
-                scripts/crop-welcome-violet-wide.mjs) instead of the portrait ink box. Full
-                bleed at 0.926 made the band 384px tall at 390 and the whole card 636px,
-                which does not fit a real phone's ~595px usable height with the toolbars up;
-                the body scrolled and the headline slid under the band. At 1.350 the band is
-                264px there and the card 518px, so everything fits with the body static.
-                object-cover at these ratios was ruled out by arithmetic, not taste: it has
-                to drop 23-33% of the artwork's height, which loses either the top pin (tip
-                at y=0) or the house (dense ink to y=804). See the crop script.
-                From lg the capped band returns — a full-bleed band there would be 484px
-                tall and would push the card past 85dvh on a 1280x600 window.
+                The asset is the BALANCED landscape crop (955x818 = 1.167:1,
+                scripts/crop-welcome-violet-balanced.mjs), replacing v6's 1104x818. Same top
+                edge, same height — not one pixel of the scene differs — with 149px of empty
+                wash taken off the left, which moves the scene from 63.5% to 57.8% of the
+                frame. It cannot reach 50%: the shop's platform is clipped by the source's
+                own right edge, so there is no right-hand background to extend into, and
+                object-position cannot help because the band takes the art's ratio (cover
+                degenerates to contain — nothing to pan). The crop script carries the
+                measurements.
+                The ratio is what the no-scroll invariant costs: full bleed at the ink box's
+                own 0.926 made the card 636px at 390 wide, and even 1.167 makes Russian —
+                the longest copy — scroll on a 360x640 phone. That config was dropped
+                deliberately in exchange for the balance; 390x700 Russian, a real iPhone
+                with Safari's toolbars up, is now the tightest config held and clears by
+                10px. Going further (1.131, scene at 56.4%) leaves it clearing by 0.1px,
+                which is the boundary rather than a margin — hence 1.167.
+                object-cover was ruled out by arithmetic, not taste: at these band ratios it
+                has to drop 23-33% of the artwork's height, which loses either the top pin
+                (tip at y=0) or the house.
+                From lg the capped band returns — a full-bleed band there would be far too
+                tall and would push the card past the cap on a 1280x600 window. There the
+                art is height-fitted, so this crop renders the scene at exactly the size v6
+                did, just inside a narrower frame.
                 object-contain throughout, so nothing can clip at any size. */}
-            <div className="relative flex aspect-[1104/818] w-full shrink-0 items-center justify-center overflow-hidden bg-white lg:aspect-auto lg:h-[38vh] lg:max-h-64 lg:min-h-[170px] lg:px-6 lg:pt-5 lg:pb-2">
+            <div className="relative flex aspect-[955/818] w-full shrink-0 items-center justify-center overflow-hidden bg-white lg:aspect-auto lg:h-[38vh] lg:max-h-64 lg:min-h-[170px] lg:px-6 lg:pt-5 lg:pb-2">
               <Image
-                src="/welcome-popup-art-v6.webp"
+                src="/welcome-popup-art-v7.webp"
                 alt=""
-                width={1104}
+                width={955}
                 height={818}
                 priority
                 unoptimized
