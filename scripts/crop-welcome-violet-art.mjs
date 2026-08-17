@@ -1,8 +1,20 @@
 // scripts/crop-welcome-violet-art.mjs
 //
 // ONE-OFF — crops the OWNER'S ORIGINAL violet welcome illustration for the
-// restored modal. Writes a NEW file, `public/welcome-popup-art-v4.webp`; the
+// restored modal. Writes a NEW file, `public/welcome-popup-art-v5.webp`; the
 // source and every earlier crop stay on disk untouched.
+//
+// v5 vs v4: identical crop, kept at the crop's NATIVE 791px width instead of being
+// downscaled to 640. The band now draws the art up to 356 CSS px on a phone, which
+// is 712 device px at 2x — 640 would have been upscaled. No colour is touched.
+//
+// A background FLATTEN to white was attempted first and rejected on measurement:
+// this artwork's background wash and its own light violet surfaces occupy the same
+// (luma, saturation) region — background at mid-left is (241,225,242) L232 s17 while
+// a genuine house wall is (248,232,247) L238 s16. No luminance/saturation key can
+// separate them, and a per-channel linear map cannot hit white for both the lavender
+// and the peach side of the gradient without tinting the illustration. See the
+// component for how the seam is handled geometrically instead.
 //
 // ─── Why a new crop ─────────────────────────────────────────────────────────
 //   `welcome-popup-bg.webp` (1346x1168) parks the scene in its right 59% — the
@@ -42,12 +54,12 @@ import path from 'node:path';
 
 const ROOT = process.cwd();
 const SRC = path.join(ROOT, 'public', 'welcome-popup-bg.webp');
-const OUT = path.join(ROOT, 'public', 'welcome-popup-art-v4.webp');
+const OUT = path.join(ROOT, 'public', 'welcome-popup-art-v5.webp');
 
 const CROP = { left: 555, top: 127, width: 791, height: 854 };
-const WIDTH = 640; // ~2.5x the ~250px the band draws it at
+const WIDTH = 791; // native crop width — the band now draws it up to 356 CSS px (712 @2x)
 
-await sharp(SRC).extract(CROP).resize({ width: WIDTH }).webp({ quality: 92 }).toFile(OUT);
+await sharp(SRC).extract(CROP).webp({ quality: 92 }).toFile(OUT); // no resize: keep native pixels
 
 const meta = await sharp(OUT).metadata();
 console.log(`wrote ${path.relative(ROOT, OUT)} — ${meta.width}x${meta.height} (${(meta.width / meta.height).toFixed(3)}:1)`);

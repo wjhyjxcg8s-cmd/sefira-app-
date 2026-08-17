@@ -167,12 +167,29 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
                 source is what cut the blue building pin off the top and put the
                 empty dot-grid corner on screen on a phone. Padding gives the pins
                 their air rather than baked-in whitespace. */}
-            <div className="relative flex h-[38vh] max-h-64 min-h-[170px] w-full shrink-0 items-center justify-center bg-white px-6 pt-5 pb-2">
+            {/* Below lg the band takes the ARTWORK'S OWN ratio (791/854) and carries no
+                padding, so the drawing spans the card edge to edge. That is what kills
+                the "small framed rectangle": with no white either side of it there is no
+                straight edge for the art's lavender/peach wash to meet, and the picture
+                goes from ~59% of the band's width to 100%. It is also how the owner's
+                original treated this art — bleeding to the card's edges.
+                A flatten-to-white was tried first and does not work on this asset: its
+                background wash and its light violet walls share the same luma/saturation
+                band (background 241,225,242 L232 s17 vs a house wall 248,232,247 L238
+                s16), so any key that whitens one punches holes in the other.
+                The guard is height-conditional rather than a vh fraction: a fraction that
+                is safe on a 640px-tall phone also clamps a 844px one and puts the white
+                flanks back. Only viewports under 700px tall clamp, which is what keeps
+                a 360x640 device off the scrollbar without touching 390x844.
+                From lg the capped band returns — a full-bleed band there would be 484px
+                tall and would push the card past 85vh on a 1280x600 window.
+                object-contain throughout, so nothing can clip at any size. */}
+            <div className="relative flex aspect-[791/854] w-full shrink-0 items-center justify-center overflow-hidden bg-white [@media(max-height:700px)]:max-h-[40vh] lg:aspect-auto lg:h-[38vh] lg:max-h-64 lg:min-h-[170px] lg:px-6 lg:pt-5 lg:pb-2">
               <Image
-                src="/welcome-popup-art-v4.webp"
+                src="/welcome-popup-art-v5.webp"
                 alt=""
-                width={640}
-                height={691}
+                width={791}
+                height={854}
                 priority
                 unoptimized
                 className="h-full w-auto object-contain"
