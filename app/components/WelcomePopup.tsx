@@ -151,7 +151,17 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
             // when the card would outgrow 85vh the copy scrolls instead of the card
             // being clipped — the image zone holding the close button is never the
             // part that gets cut.
-            className="relative flex w-[92vw] max-w-md max-h-[85vh] flex-col rounded-3xl overflow-hidden shadow-2xl border border-white/60 bg-white"
+            // `dvh`, not `vh`: on iOS `vh` resolves against the LARGE viewport, so with
+            // Safari's toolbars up the cap allowed a card taller than the visible area —
+            // the text zone then scrolled and the headline slid up under the band. `dvh`
+            // tracks the viewport that is actually on screen.
+            // 92 rather than 85 because the cap is a backstop, not a design measure, and
+            // at 85 it was the thing that clipped: 360x640 in Russian (the longest copy —
+            // a 300px text zone) needs 544px and 85dvh gives exactly 544, so the body
+            // scrolled by a hair. 92dvh = 589 there, and the backdrop's own p-4 still
+            // keeps the card off the viewport edges. The scrollable body remains the
+            // last-resort backstop; with the band capped below, it should never engage.
+            className="relative flex w-[92vw] max-w-md max-h-[92dvh] flex-col rounded-3xl overflow-hidden shadow-2xl border border-white/60 bg-white"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
@@ -167,29 +177,28 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
                 source is what cut the blue building pin off the top and put the
                 empty dot-grid corner on screen on a phone. Padding gives the pins
                 their air rather than baked-in whitespace. */}
-            {/* Below lg the band takes the ARTWORK'S OWN ratio (791/854) and carries no
-                padding, so the drawing spans the card edge to edge. That is what kills
-                the "small framed rectangle": with no white either side of it there is no
-                straight edge for the art's lavender/peach wash to meet, and the picture
-                goes from ~59% of the band's width to 100%. It is also how the owner's
-                original treated this art — bleeding to the card's edges.
-                A flatten-to-white was tried first and does not work on this asset: its
-                background wash and its light violet walls share the same luma/saturation
-                band (background 241,225,242 L232 s17 vs a house wall 248,232,247 L238
-                s16), so any key that whitens one punches holes in the other.
-                The guard is height-conditional rather than a vh fraction: a fraction that
-                is safe on a 640px-tall phone also clamps a 844px one and puts the white
-                flanks back. Only viewports under 700px tall clamp, which is what keeps
-                a 360x640 device off the scrollbar without touching 390x844.
+            {/* Below lg the band takes the ARTWORK'S ratio and carries no padding, so the
+                drawing spans the card edge to edge — no white flanks, and therefore no
+                straight edge for the art's lavender/peach wash to meet. That part of the
+                previous fix stays.
+                What changed: the asset is now the LANDSCAPE crop (1104x818 = 1.350:1,
+                scripts/crop-welcome-violet-wide.mjs) instead of the portrait ink box. Full
+                bleed at 0.926 made the band 384px tall at 390 and the whole card 636px,
+                which does not fit a real phone's ~595px usable height with the toolbars up;
+                the body scrolled and the headline slid under the band. At 1.350 the band is
+                264px there and the card 518px, so everything fits with the body static.
+                object-cover at these ratios was ruled out by arithmetic, not taste: it has
+                to drop 23-33% of the artwork's height, which loses either the top pin (tip
+                at y=0) or the house (dense ink to y=804). See the crop script.
                 From lg the capped band returns — a full-bleed band there would be 484px
-                tall and would push the card past 85vh on a 1280x600 window.
+                tall and would push the card past 85dvh on a 1280x600 window.
                 object-contain throughout, so nothing can clip at any size. */}
-            <div className="relative flex aspect-[791/854] w-full shrink-0 items-center justify-center overflow-hidden bg-white [@media(max-height:700px)]:max-h-[40vh] lg:aspect-auto lg:h-[38vh] lg:max-h-64 lg:min-h-[170px] lg:px-6 lg:pt-5 lg:pb-2">
+            <div className="relative flex aspect-[1104/818] w-full shrink-0 items-center justify-center overflow-hidden bg-white lg:aspect-auto lg:h-[38vh] lg:max-h-64 lg:min-h-[170px] lg:px-6 lg:pt-5 lg:pb-2">
               <Image
-                src="/welcome-popup-art-v5.webp"
+                src="/welcome-popup-art-v6.webp"
                 alt=""
-                width={791}
-                height={854}
+                width={1104}
+                height={818}
                 priority
                 unoptimized
                 className="h-full w-auto object-contain"
@@ -208,7 +217,11 @@ export default function WelcomePopup({ lang: langProp = 'tr' }: { lang?: string 
               <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
             </div>
 
-            <div className="relative min-h-0 flex-1 overflow-y-auto bg-white px-6 pb-7 pt-2 text-center">
+            {/* pt-4 is the headline's fixed clearance from the band. The white fade lives
+                inside the band (its bottom 80px), so it cannot reach across this padding —
+                the earlier overlap was the text zone SCROLLING, not the fade, and the
+                capped band above is what removes the need to scroll at all. */}
+            <div className="relative min-h-0 flex-1 overflow-y-auto bg-white px-6 pb-7 pt-4 text-center">
               <h2 className="text-4xl font-extrabold leading-tight">
                 {t.titleDark && (
                   <>
