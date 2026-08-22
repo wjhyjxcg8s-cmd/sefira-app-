@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { createClient } from "@supabase/supabase-js";
 import { MapPin, PackageOpen } from "lucide-react";
@@ -373,14 +374,14 @@ const langPriorityCountries: Record<string, string[]> = {
 };
 
 const sectionUI: Record<Lang, {
-  count: string; emptyTitle: string; emptyCta: string; lookingForHome: string; lookingForSpace: string; perMonth: string; noSmoking: string;
+  count: string; emptyTitle: string; emptyCta: string; lookingForHome: string; lookingForSpace: string; perMonth: string; noSmoking: string; showMore: string; seeAll: string;
 }> = {
-  tr: { count: "ilan", emptyTitle: "Bu ülkede henüz ilan yok", emptyCta: "İlk ilanı sen ver", lookingForHome: "Ev/oda arıyor", lookingForSpace: "Alan arıyor", perMonth: "/ay", noSmoking: "Sigara İçilmez" },
-  en: { count: "listings", emptyTitle: "No listings in this country yet", emptyCta: "Post the first listing", lookingForHome: "Looking for a room", lookingForSpace: "Looking for a space", perMonth: "/mo", noSmoking: "No smoking" },
-  fa: { count: "آگهی", emptyTitle: "هنوز آگهی‌ای در این کشور نیست", emptyCta: "اولین آگهی را ثبت کن", lookingForHome: "به دنبال اتاق", lookingForSpace: "به دنبال فضا", perMonth: "/ماه", noSmoking: "سیگار ممنوع" },
-  ar: { count: "إعلان", emptyTitle: "لا توجد إعلانات في هذا البلد بعد", emptyCta: "انشر أول إعلان", lookingForHome: "يبحث عن غرفة", lookingForSpace: "يبحث عن مساحة", perMonth: "/شهر", noSmoking: "ممنوع التدخين" },
-  de: { count: "Inserate", emptyTitle: "Noch keine Inserate in diesem Land", emptyCta: "Erstes Inserat aufgeben", lookingForHome: "Sucht ein Zimmer", lookingForSpace: "Sucht eine Fläche", perMonth: "/Mon.", noSmoking: "Nichtraucher" },
-  ru: { count: "объявлений", emptyTitle: "В этой стране пока нет объявлений", emptyCta: "Разместить первое объявление", lookingForHome: "Ищет комнату", lookingForSpace: "Ищет помещение", perMonth: "/мес", noSmoking: "Не курить" },
+  tr: { count: "ilan", emptyTitle: "Bu ülkede henüz ilan yok", emptyCta: "İlk ilanı sen ver", lookingForHome: "Ev/oda arıyor", lookingForSpace: "Alan arıyor", perMonth: "/ay", noSmoking: "Sigara İçilmez", showMore: "Daha fazla göster", seeAll: "Tüm ilanları gör" },
+  en: { count: "listings", emptyTitle: "No listings in this country yet", emptyCta: "Post the first listing", lookingForHome: "Looking for a room", lookingForSpace: "Looking for a space", perMonth: "/mo", noSmoking: "No smoking", showMore: "Show more", seeAll: "See all listings" },
+  fa: { count: "آگهی", emptyTitle: "هنوز آگهی‌ای در این کشور نیست", emptyCta: "اولین آگهی را ثبت کن", lookingForHome: "به دنبال اتاق", lookingForSpace: "به دنبال فضا", perMonth: "/ماه", noSmoking: "سیگار ممنوع", showMore: "نمایش بیشتر", seeAll: "مشاهده همه آگهی‌ها" },
+  ar: { count: "إعلان", emptyTitle: "لا توجد إعلانات في هذا البلد بعد", emptyCta: "انشر أول إعلان", lookingForHome: "يبحث عن غرفة", lookingForSpace: "يبحث عن مساحة", perMonth: "/شهر", noSmoking: "ممنوع التدخين", showMore: "عرض المزيد", seeAll: "عرض كل الإعلانات" },
+  de: { count: "Inserate", emptyTitle: "Noch keine Inserate in diesem Land", emptyCta: "Erstes Inserat aufgeben", lookingForHome: "Sucht ein Zimmer", lookingForSpace: "Sucht eine Fläche", perMonth: "/Mon.", noSmoking: "Nichtraucher", showMore: "Mehr anzeigen", seeAll: "Alle Inserate ansehen" },
+  ru: { count: "объявлений", emptyTitle: "В этой стране пока нет объявлений", emptyCta: "Разместить первое объявление", lookingForHome: "Ищет комнату", lookingForSpace: "Ищет помещение", perMonth: "/мес", noSmoking: "Не курить", showMore: "Показать ещё", seeAll: "Смотреть все объявления" },
 };
 
 const categoryTabs: { key: "all" | "residential" | "commercial"; icon: string; label: Record<Lang, string> }[] = [
@@ -487,6 +488,15 @@ function readPersistedFilter<T extends string>(key: string, fallback: T, valid?:
   return fallback;
 }
 
+// One page of the "En Son İlanlar" grid. 12 fills four rows on a phone and four
+// rows of three on desktop, so a page boundary never lands mid-row.
+const PAGE_SIZE = 12;
+
+// Shared by both states of the control below so the swap is a label change and
+// nothing else. Same orange token as the empty-state CTA in this section.
+const showMorePill =
+  "inline-flex items-center justify-center cursor-pointer rounded-full border-2 border-orange-500 px-8 py-3 text-sm font-bold text-orange-500 transition-all duration-200 hover:bg-orange-50 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2";
+
 export default function LatestListings({ lang, filterCity, onClearFilter }: LatestListingsProps) {
   const router = useRouter();
   const [allListings, setAllListings] = useState<any[]>([]);
@@ -497,6 +507,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
     () => readPersistedFilter('sefira-listings-country', 'all')
   );
   const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   useEffect(() => {
     try { sessionStorage.setItem('sefira-listings-category', sonIlanlarCategory); } catch { /* ignore */ }
@@ -543,7 +554,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
     if (filterCity) setSonIlanlarCategory("all");
   }, [filterCity]);
 
-  const listings = useMemo(() => {
+  const filteredListings = useMemo(() => {
     let base = filterCity
       ? allListings
       : allListings.filter((l) => {
@@ -562,8 +573,41 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
     if (selectedCountry !== 'all') {
       base = filterByCountry(base, selectedCountry);
     }
-    return base.slice(0, 12);
+    return base;
   }, [allListings, sonIlanlarCategory, filterCity, selectedCountry]);
+
+  /* A new filter is a new list, so paging starts over: switching Konut/Ticari or
+     picking another country chip drops the reader back to the first page. Reset
+     during render rather than in an effect — React re-renders before painting, so
+     the reader never sees the stale page, and no cascading effect render is queued. */
+  const filterKey = `${sonIlanlarCategory}|${selectedCountry}|${filterCity ?? ""}`;
+  const [pagedFilterKey, setPagedFilterKey] = useState(filterKey);
+  if (pagedFilterKey !== filterKey) {
+    setPagedFilterKey(filterKey);
+    setVisibleCount(PAGE_SIZE);
+  }
+
+  const listings = useMemo(
+    () => filteredListings.slice(0, visibleCount),
+    [filteredListings, visibleCount]
+  );
+  const hasMore = filteredListings.length > listings.length;
+
+  /* Where "see all listings" goes once the locally-held page runs out. The param
+     names are /search's own (app/search/page.tsx reads q/category/commercial_type/
+     country/city/district/neighborhood); we send the three this section can express.
+     A city filter overrides the category tab here exactly as it does in
+     `filteredListings` above, so the link reproduces what is on screen. */
+  const searchHref = useMemo(() => {
+    const params = new URLSearchParams();
+    if (!filterCity && sonIlanlarCategory !== "all") params.set("category", sonIlanlarCategory);
+    if (selectedCountry !== "all") params.set("country", selectedCountry);
+    if (filterCity) params.set("city", filterCity);
+    const qs = params.toString();
+    // No filter active means "everything", which /search needs told explicitly —
+    // param-less /search is its own prompt state and must stay that way.
+    return qs ? `/search?${qs}` : "/search?browse=1";
+  }, [sonIlanlarCategory, selectedCountry, filterCity]);
 
   const lbl = cardLabels[lang as Lang] ?? cardLabels.tr;
   const ui = sectionUI[lang as Lang] ?? sectionUI.tr;
@@ -1089,6 +1133,29 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {!loading && listings.length > 0 && (
+        /* One control, two states, never absent. While local listings remain it pages
+           in place — the cards already on screen stay mounted and the next page lands
+           underneath them. Once they run out it becomes the way out to the full
+           catalogue instead of vanishing, which would read as "that is all there is".
+           Both states carry the same pill classes, so the swap moves nothing. */
+        <div className="mt-section flex justify-center">
+          {hasMore ? (
+            <button
+              type="button"
+              onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
+              className={showMorePill}
+            >
+              {ui.showMore}
+            </button>
+          ) : (
+            <Link href={searchHref} className={showMorePill}>
+              {ui.seeAll}
+            </Link>
+          )}
         </div>
       )}
 

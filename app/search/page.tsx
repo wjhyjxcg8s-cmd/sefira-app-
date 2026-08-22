@@ -232,6 +232,11 @@ function SearchPageContent() {
   const [district, setDistrict] = useState(() => searchParams.get("district") ?? "");
   const [neighborhood, setNeighborhood] = useState(() => searchParams.get("neighborhood") ?? "");
 
+  // "Show everything." Not a filter — it narrows nothing and draws no chip; it only
+  // says a search should run. That is what separates an explicit browse from arriving
+  // at /search with no params at all, where the prompt is still the right answer.
+  const browse = searchParams.get("browse") === "1";
+
   const [listings, setListings] = useState<Listing[]>([]);
   const [users, setUsers] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(false);
@@ -269,6 +274,7 @@ function SearchPageContent() {
     if (ci) params.set("city", ci);
     if (di) params.set("district", di);
     if (ne) params.set("neighborhood", ne);
+    if (browse) params.set("browse", "1");
 
     const qs = params.toString();
     router.replace(qs ? `/search?${qs}` : "/search", { scroll: false });
@@ -276,7 +282,7 @@ function SearchPageContent() {
 
   useEffect(() => {
     const hasQuery = !!query.trim();
-    const hasStructuredFilters = !!(category || commercialType || countryCode || city || district || neighborhood);
+    const hasStructuredFilters = !!(browse || category || commercialType || countryCode || city || district || neighborhood);
 
     if (!hasQuery && !hasStructuredFilters) {
       setListings([]);
@@ -390,10 +396,13 @@ function SearchPageContent() {
     }, delay);
 
     return () => clearTimeout(timeout);
-  }, [query, filter, category, commercialType, countryCode, city, district, neighborhood]);
+  }, [browse, query, filter, category, commercialType, countryCode, city, district, neighborhood]);
 
   const hasResults = listings.length > 0 || users.length > 0;
   const hasStructuredFilters = !!(category || commercialType || countryCode || city || district || neighborhood);
+  // Whether a search is running at all. `hasStructuredFilters` stays the chip row's
+  // condition — browse has no chip to remove — but the empty states below key off this.
+  const isSearching = hasStructuredFilters || browse;
 
   // Location chip text. A country-only search is a first-class result set, so it names
   // the country (flag + Intl.DisplayNames in the viewer's language) instead of falling
@@ -658,7 +667,7 @@ function SearchPageContent() {
         )}
 
         {/* Empty state — before typing */}
-        {!loading && !query.trim() && !hasStructuredFilters && (
+        {!loading && !query.trim() && !isSearching && (
           <div
             style={{
               display: "flex",
@@ -679,7 +688,7 @@ function SearchPageContent() {
         )}
 
         {/* No results */}
-        {!loading && searched && !hasResults && (query.trim() || hasStructuredFilters) && (
+        {!loading && searched && !hasResults && (query.trim() || isSearching) && (
           <div
             style={{
               display: "flex",
