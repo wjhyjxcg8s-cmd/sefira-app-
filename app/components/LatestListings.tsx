@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -374,14 +374,14 @@ const langPriorityCountries: Record<string, string[]> = {
 };
 
 const sectionUI: Record<Lang, {
-  count: string; emptyTitle: string; emptyCta: string; lookingForHome: string; lookingForSpace: string; perMonth: string; noSmoking: string; showMore: string; seeAll: string;
+  count: string; emptyTitle: string; emptyCta: string; lookingForHome: string; lookingForSpace: string; perMonth: string; noSmoking: string; showMore: string; seeAll: string; showLess: string;
 }> = {
-  tr: { count: "ilan", emptyTitle: "Bu ülkede henüz ilan yok", emptyCta: "İlk ilanı sen ver", lookingForHome: "Ev/oda arıyor", lookingForSpace: "Alan arıyor", perMonth: "/ay", noSmoking: "Sigara İçilmez", showMore: "Daha fazla göster", seeAll: "Tüm ilanları gör" },
-  en: { count: "listings", emptyTitle: "No listings in this country yet", emptyCta: "Post the first listing", lookingForHome: "Looking for a room", lookingForSpace: "Looking for a space", perMonth: "/mo", noSmoking: "No smoking", showMore: "Show more", seeAll: "See all listings" },
-  fa: { count: "آگهی", emptyTitle: "هنوز آگهی‌ای در این کشور نیست", emptyCta: "اولین آگهی را ثبت کن", lookingForHome: "به دنبال اتاق", lookingForSpace: "به دنبال فضا", perMonth: "/ماه", noSmoking: "سیگار ممنوع", showMore: "نمایش بیشتر", seeAll: "مشاهده همه آگهی‌ها" },
-  ar: { count: "إعلان", emptyTitle: "لا توجد إعلانات في هذا البلد بعد", emptyCta: "انشر أول إعلان", lookingForHome: "يبحث عن غرفة", lookingForSpace: "يبحث عن مساحة", perMonth: "/شهر", noSmoking: "ممنوع التدخين", showMore: "عرض المزيد", seeAll: "عرض كل الإعلانات" },
-  de: { count: "Inserate", emptyTitle: "Noch keine Inserate in diesem Land", emptyCta: "Erstes Inserat aufgeben", lookingForHome: "Sucht ein Zimmer", lookingForSpace: "Sucht eine Fläche", perMonth: "/Mon.", noSmoking: "Nichtraucher", showMore: "Mehr anzeigen", seeAll: "Alle Inserate ansehen" },
-  ru: { count: "объявлений", emptyTitle: "В этой стране пока нет объявлений", emptyCta: "Разместить первое объявление", lookingForHome: "Ищет комнату", lookingForSpace: "Ищет помещение", perMonth: "/мес", noSmoking: "Не курить", showMore: "Показать ещё", seeAll: "Смотреть все объявления" },
+  tr: { count: "ilan", emptyTitle: "Bu ülkede henüz ilan yok", emptyCta: "İlk ilanı sen ver", lookingForHome: "Ev/oda arıyor", lookingForSpace: "Alan arıyor", perMonth: "/ay", noSmoking: "Sigara İçilmez", showMore: "Daha fazla göster", seeAll: "Tüm ilanlar", showLess: "Daha az göster" },
+  en: { count: "listings", emptyTitle: "No listings in this country yet", emptyCta: "Post the first listing", lookingForHome: "Looking for a room", lookingForSpace: "Looking for a space", perMonth: "/mo", noSmoking: "No smoking", showMore: "Show more", seeAll: "All listings", showLess: "Show less" },
+  fa: { count: "آگهی", emptyTitle: "هنوز آگهی‌ای در این کشور نیست", emptyCta: "اولین آگهی را ثبت کن", lookingForHome: "به دنبال اتاق", lookingForSpace: "به دنبال فضا", perMonth: "/ماه", noSmoking: "سیگار ممنوع", showMore: "نمایش بیشتر", seeAll: "همه آگهی‌ها", showLess: "نمایش کمتر" },
+  ar: { count: "إعلان", emptyTitle: "لا توجد إعلانات في هذا البلد بعد", emptyCta: "انشر أول إعلان", lookingForHome: "يبحث عن غرفة", lookingForSpace: "يبحث عن مساحة", perMonth: "/شهر", noSmoking: "ممنوع التدخين", showMore: "عرض المزيد", seeAll: "كل الإعلانات", showLess: "عرض أقل" },
+  de: { count: "Inserate", emptyTitle: "Noch keine Inserate in diesem Land", emptyCta: "Erstes Inserat aufgeben", lookingForHome: "Sucht ein Zimmer", lookingForSpace: "Sucht eine Fläche", perMonth: "/Mon.", noSmoking: "Nichtraucher", showMore: "Mehr anzeigen", seeAll: "Alle Inserate", showLess: "Weniger anzeigen" },
+  ru: { count: "объявлений", emptyTitle: "В этой стране пока нет объявлений", emptyCta: "Разместить первое объявление", lookingForHome: "Ищет комнату", lookingForSpace: "Ищет помещение", perMonth: "/мес", noSmoking: "Не курить", showMore: "Показать ещё", seeAll: "Все объявления", showLess: "Свернуть" },
 };
 
 const categoryTabs: { key: "all" | "residential" | "commercial"; icon: string; label: Record<Lang, string> }[] = [
@@ -497,6 +497,29 @@ const PAGE_SIZE = 12;
 const showMorePill =
   "inline-flex items-center justify-center cursor-pointer rounded-full border-2 border-orange-500 px-8 py-3 text-sm font-bold text-orange-500 transition-all duration-200 hover:bg-orange-50 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2";
 
+// The secondary half of the pager: no border, so it reads as the lesser of the two,
+// but `h-12` pins it to the pill's 48px so the row's height never depends on which
+// pair of labels is showing.
+const showLessGhost =
+  "inline-flex h-12 items-center justify-center cursor-pointer rounded-full px-5 text-sm font-bold text-orange-500 transition-all duration-200 hover:bg-orange-50 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2";
+
+// The navbar is `position: fixed`, so it covers the top of the viewport and a section
+// scrolled flush to y=0 would have its heading tucked underneath. Measure whatever bar
+// is actually rendered — its height is a layout detail of another component.
+function stickyHeaderHeight(): number {
+  for (const el of Array.from(document.querySelectorAll("nav, header"))) {
+    if (getComputedStyle(el).position !== "fixed") continue;
+    const r = el.getBoundingClientRect();
+    if (r.top <= 0 && r.bottom > 0) return r.height;
+  }
+  return 0;
+}
+
+// useLayoutEffect warns when it is called during SSR. The collapse scroll only ever
+// happens on the client, where it has to run before paint so the reader never sees
+// the collapsed grid at the old scroll offset.
+const useIsomorphicLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
+
 export default function LatestListings({ lang, filterCity, onClearFilter }: LatestListingsProps) {
   const router = useRouter();
   const [allListings, setAllListings] = useState<any[]>([]);
@@ -508,6 +531,10 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
   );
   const [loading, setLoading] = useState(true);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  /* Bumped by the collapse handler so the scroll below runs after the shorter grid
+     has been committed and can be measured. Nothing sets state in the effect itself. */
+  const [collapseTick, setCollapseTick] = useState(0);
 
   useEffect(() => {
     try { sessionStorage.setItem('sefira-listings-category', sonIlanlarCategory); } catch { /* ignore */ }
@@ -609,6 +636,16 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
     return qs ? `/search?${qs}` : "/search?browse=1";
   }, [sonIlanlarCategory, selectedCountry, filterCity]);
 
+  useIsomorphicLayoutEffect(() => {
+    if (collapseTick === 0) return; // nothing to restore on first mount
+    const section = sectionRef.current;
+    if (!section) return;
+    const top = section.getBoundingClientRect().top + window.scrollY - stickyHeaderHeight();
+    /* Explicitly instant: the stylesheet sets `scroll-behavior: smooth` globally, and
+       animating a collapse the reader just asked for only delays the result. */
+    window.scrollTo({ top, behavior: "instant" });
+  }, [collapseTick]);
+
   const lbl = cardLabels[lang as Lang] ?? cardLabels.tr;
   const ui = sectionUI[lang as Lang] ?? sectionUI.tr;
 
@@ -696,7 +733,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
     // No `mt-section`: this section's top boundary is owned by the full-bleed band
     // below, which sits flush against the smart-recs section's `border-b`. Every other
     // section boundary on the page still uses the token.
-    <section className="mb-0">
+    <section className="mb-0" ref={sectionRef}>
       {/* ── Section header ─────────────────────────────────────────────────────
           A full-bleed band, not a floating card: the orange-50 runs edge to edge of
           the viewport so the corners are filled and the top/bottom are straight lines,
@@ -1142,7 +1179,7 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
            underneath them. Once they run out it becomes the way out to the full
            catalogue instead of vanishing, which would read as "that is all there is".
            Both states carry the same pill classes, so the swap moves nothing. */
-        <div className="mt-section flex justify-center">
+        <div className="mt-section flex flex-wrap items-center justify-center gap-3">
           {hasMore ? (
             <button
               type="button"
@@ -1155,6 +1192,21 @@ export default function LatestListings({ lang, filterCity, onClearFilter }: Late
             <Link href={searchHref} className={showMorePill}>
               {ui.seeAll}
             </Link>
+          )}
+          {/* Only once there is something to collapse. DOM order is primary-then-
+              secondary; an RTL `dir` reverses the flex row on its own, so the pair
+              mirrors without an `order` override. */}
+          {visibleCount > PAGE_SIZE && (
+            <button
+              type="button"
+              onClick={() => {
+                setVisibleCount(PAGE_SIZE);
+                setCollapseTick((t) => t + 1);
+              }}
+              className={showLessGhost}
+            >
+              {ui.showLess}
+            </button>
           )}
         </div>
       )}
